@@ -14,12 +14,14 @@ if backend_dir not in sys.path:
 
 import pdf_parser
 from routes.constraint_routes import constraint_bp
+from routes.generation_routes import generation_bp
 
 app = Flask(__name__, static_folder='static', static_url_path='')
 CORS(app)
 
 # Register blueprints
 app.register_blueprint(constraint_bp)
+app.register_blueprint(generation_bp)
 
 # Data directory setup
 DATA_DIR = 'data'
