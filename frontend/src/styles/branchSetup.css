@@ -1,0 +1,410 @@
+/* ===================================
+   BRANCH SETUP WIZARD - Main Page
+   =================================== */
+
+.wizard-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+    padding: var(--spacing-8) 0;
+    padding-top: 100px;
+    /* Account for navbar */
+}
+
+.wizard-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-6);
+}
+
+/* Wizard Header */
+.wizard-header {
+    text-align: center;
+    margin-bottom: var(--spacing-8);
+    animation: slideInUp 0.6s ease-out;
+}
+
+.wizard-title {
+    font-size: var(--font-size-4xl);
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-2);
+}
+
+.wizard-subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-6);
+}
+
+/* Wizard Content Card */
+.wizard-card {
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    animation: scaleIn 0.6s ease-out;
+}
+
+.wizard-card-header {
+    padding: var(--spacing-6);
+    border-bottom: 2px solid var(--color-gray-100);
+}
+
+.wizard-card-body {
+    padding: var(--spacing-8);
+    min-height: 400px;
+}
+
+/* Step Content */
+.step-content {
+    animation: fadeIn 0.4s ease-out;
+}
+
+.step-title {
+    font-size: var(--font-size-2xl);
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-2);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+}
+
+.step-description {
+    font-size: var(--font-size-base);
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-8);
+    line-height: 1.6;
+}
+
+/* Wizard Footer */
+.wizard-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-6);
+    border-top: 2px solid var(--color-gray-100);
+    background: var(--color-gray-50);
+}
+
+.wizard-footer-left {
+    display: flex;
+    gap: var(--spacing-3);
+}
+
+.wizard-footer-right {
+    display: flex;
+    gap: var(--spacing-3);
+}
+
+/* Wizard Buttons */
+.btn-wizard {
+    padding: var(--spacing-4) var(--spacing-8);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-base);
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.btn-wizard-back {
+    background: transparent;
+    color: var(--color-gray-700);
+    border: 2px solid var(--color-gray-300);
+}
+
+.btn-wizard-back:hover:not(:disabled) {
+    background: var(--color-gray-100);
+    border-color: var(--color-gray-400);
+}
+
+.btn-wizard-cancel {
+    background: transparent;
+    color: var(--color-error);
+    border: 2px solid var(--color-error);
+}
+
+.btn-wizard-cancel:hover {
+    background: var(--color-error);
+    color: var(--color-white);
+}
+
+.btn-wizard-next {
+    background: var(--color-primary);
+    color: var(--color-white);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-wizard-next:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-wizard-submit {
+    background: var(--gradient-cta);
+    color: var(--color-white);
+    box-shadow: var(--shadow-lg);
+    padding: var(--spacing-4) var(--spacing-12);
+}
+
+.btn-wizard-submit:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--shadow-xl), 0 0 30px rgba(59, 79, 223, 0.4);
+}
+
+.btn-wizard:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Loading State */
+.btn-wizard.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn-wizard.loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Division Cards (for Step 3) */
+.division-config-cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+}
+
+.division-card {
+    background: var(--color-gray-50);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--color-gray-200);
+}
+
+.division-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-4);
+}
+
+.division-card-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+.division-input-group {
+    display: flex;
+    gap: var(--spacing-4);
+    align-items: center;
+}
+
+/* Room Input Section (for Step 6) */
+.room-section {
+    margin-bottom: var(--spacing-8);
+}
+
+.room-section-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-4);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.room-input-wrapper {
+    display: flex;
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-3);
+}
+
+.room-input-wrapper .input-text {
+    flex: 1;
+}
+
+.btn-add {
+    padding: var(--spacing-4) var(--spacing-6);
+    background: var(--color-accent);
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    white-space: nowrap;
+}
+
+.btn-add:hover {
+    background: var(--color-accent-dark);
+    transform: translateY(-1px);
+}
+
+.btn-quick-add {
+    margin-top: var(--spacing-2);
+    padding: var(--spacing-2) var(--spacing-4);
+    background: transparent;
+    border: 2px dashed var(--color-primary);
+    color: var(--color-primary);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.btn-quick-add:hover {
+    background: rgba(59, 79, 223, 0.05);
+    border-style: solid;
+}
+
+/* Review Table */
+.review-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--spacing-4);
+}
+
+.review-table th {
+    background: var(--color-gray-100);
+    padding: var(--spacing-3) var(--spacing-4);
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--color-gray-300);
+}
+
+.review-table td {
+    padding: var(--spacing-3) var(--spacing-4);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.review-info-item {
+    margin-bottom: var(--spacing-3);
+    display: flex;
+    gap: var(--spacing-2);
+}
+
+.review-info-label {
+    font-weight: 600;
+    color: var(--color-gray-700);
+    min-width: 150px;
+}
+
+.review-info-value {
+    color: var(--color-gray-900);
+}
+
+.review-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--spacing-4) 0;
+}
+
+.review-list li {
+    padding: var(--spacing-2) 0;
+    border-bottom: 1px solid var(--color-gray-100);
+}
+
+.review-list li:last-child {
+    border-bottom: none;
+}
+
+/* Success State */
+.success-animation {
+    text-align: center;
+    padding: var(--spacing-12) var(--spacing-6);
+}
+
+.success-icon {
+    font-size: 80px;
+    margin-bottom: var(--spacing-6);
+    animation: scaleIn 0.6s ease-out;
+}
+
+.success-title {
+    font-size: var(--font-size-3xl);
+    color: var(--color-success);
+    margin-bottom: var(--spacing-3);
+}
+
+.success-message {
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-600);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wizard-page {
+        padding: var(--spacing-4) 0;
+        padding-top: 80px;
+    }
+
+    .wizard-title {
+        font-size: var(--font-size-3xl);
+    }
+
+    .wizard-card-body {
+        padding: var(--spacing-4);
+        min-height: 300px;
+    }
+
+    .wizard-footer {
+        flex-direction: column;
+        gap: var(--spacing-4);
+    }
+
+    .wizard-footer-left,
+    .wizard-footer-right {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn-wizard {
+        flex: 1;
+    }
+
+    .division-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-3);
+    }
+
+    .room-input-wrapper {
+        flex-direction: column;
+    }
+
+    .btn-add {
+        width: 100%;
+    }
+
+    .review-info-item {
+        flex-direction: column;
+        gap: var(--spacing-1);
+    }
+
+    .review-info-label {
+        min-width: auto;
+    }
+}

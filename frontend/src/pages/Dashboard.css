@@ -1,0 +1,437 @@
+/* Professional Dashboard Styles */
+
+.dashboard-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding-top: 80px;
+    padding-bottom: 3rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Header Section */
+.dashboard-header {
+    background: white;
+    padding: 2.5rem 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2.5rem;
+}
+
+.dashboard-title {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+}
+
+.user-name {
+    background: linear-gradient(135deg, #1e3a8a, #3b4fdf);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+.dashboard-subtitle {
+    font-size: 1.1rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Dashboard Content */
+.dashboard-content {
+    padding: 0;
+}
+
+/* Status Section */
+.status-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.status-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.status-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.card-icon-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.card-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.branch-icon {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.status-icon {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    color: #374151;
+    margin: 0;
+}
+
+/* Branch Card */
+.branch-info {
+    padding-top: 0.5rem;
+}
+
+.branch-name {
+    font-size: 1.75rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #1e3a8a, #3b4fdf);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.75rem;
+}
+
+.branch-details {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #6b7280;
+    font-size: 1rem;
+}
+
+.detail-item strong {
+    color: #1f2937;
+    font-size: 1.1rem;
+}
+
+.detail-separator {
+    color: #d1d5db;
+}
+
+.no-branch {
+    text-align: center;
+    padding: 1.5rem 0;
+}
+
+.no-branch-text {
+    color: #9ca3af;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.setup-branch-btn {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.setup-branch-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Timetable Status Card */
+.status-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.status-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    border: 2px solid;
+    margin-bottom: 1rem;
+    min-width: 200px;
+}
+
+.status-icon-large {
+    font-size: 3rem;
+}
+
+.status-label {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-description {
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.95rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Quick Actions Section */
+.quick-actions-section {
+    margin-top: 3rem;
+}
+
+.section-title {
+    font-size: 1.75rem;
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.action-button {
+    background: white;
+    border: none;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, currentColor 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.action-button:hover::before {
+    opacity: 0.05;
+}
+
+.action-button:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.action-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+}
+
+.action-button.disabled:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.action-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.action-button:hover .action-icon-wrapper {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.action-button.disabled:hover .action-icon-wrapper {
+    transform: none;
+}
+
+.action-icon {
+    font-size: 2.5rem;
+}
+
+.generate-action {
+    color: #3b82f6;
+}
+
+.generate-action .action-icon-wrapper {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.upload-action {
+    color: #10b981;
+}
+
+.upload-action .action-icon-wrapper {
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.edit-action {
+    color: #8b5cf6;
+}
+
+.edit-action .action-icon-wrapper {
+    background: rgba(139, 92, 246, 0.1);
+}
+
+.action-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.action-description {
+    color: #6b7280;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.action-footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+    z-index: 1;
+}
+
+.action-arrow {
+    font-size: 1.5rem;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+    color: currentColor;
+}
+
+.action-button:hover .action-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.action-button.disabled .action-arrow {
+    display: none;
+}
+
+.disabled-badge {
+    background: #f3f4f6;
+    color: #9ca3af;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-page {
+        padding-top: 70px;
+    }
+
+    .container {
+        padding: 0 1rem;
+    }
+
+    .dashboard-title {
+        font-size: 2rem;
+    }
+
+    .dashboard-subtitle {
+        font-size: 1rem;
+    }
+
+    .status-section {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .action-button {
+        padding: 1.5rem;
+    }
+
+    .branch-name {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-header {
+        padding: 1.5rem 0;
+    }
+
+    .dashboard-title {
+        font-size: 1.75rem;
+    }
+
+    .card-icon-header {
+        gap: 0.75rem;
+    }
+
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.25rem;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+    }
+
+    .branch-name {
+        font-size: 1.35rem;
+    }
+}

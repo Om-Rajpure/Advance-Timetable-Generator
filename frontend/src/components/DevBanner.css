@@ -1,0 +1,70 @@
+/* Development Mode Banner */
+
+.dev-banner {
+    position: fixed;
+    top: 60px;
+    /* Below navbar */
+    left: 0;
+    width: 100%;
+    background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    z-index: 999;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dev-banner-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.dev-banner-icon {
+    font-size: 1.2rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.dev-banner-text {
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.dev-banner-text strong {
+    font-weight: 700;
+    margin-right: 0.25rem;
+}
+
+/* Adjust module page padding when banner is visible */
+body:has(.dev-banner) .module-page {
+    padding-top: 110px;
+    /* 60px navbar + 50px banner */
+}
+
+@media (max-width: 768px) {
+    .dev-banner {
+        padding: 0.4rem 0.5rem;
+    }
+
+    .dev-banner-text {
+        font-size: 0.8rem;
+    }
+
+    .dev-banner-icon {
+        font-size: 1rem;
+    }
+}

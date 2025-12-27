@@ -1,0 +1,441 @@
+/* ===================================
+   FORM COMPONENTS - Reusable Elements
+   =================================== */
+
+/* Form Field Wrapper */
+.form-field {
+    margin-bottom: var(--spacing-6);
+}
+
+.form-label {
+    display: block;
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-2);
+}
+
+.form-label-optional {
+    font-weight: 400;
+    color: var(--color-gray-600);
+    font-size: var(--font-size-sm);
+}
+
+.form-hint {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    margin-top: var(--spacing-1);
+}
+
+/* Text Inputs */
+.input-text {
+    width: 100%;
+    padding: var(--spacing-4);
+    font-size: var(--font-size-base);
+    border: 2px solid var(--color-gray-300);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-base);
+    font-family: var(--font-body);
+}
+
+.input-text:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 79, 223, 0.1);
+}
+
+.input-text.error {
+    border-color: var(--color-error);
+}
+
+.input-text.success {
+    border-color: var(--color-success);
+}
+
+.input-error {
+    color: var(--color-error);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-2);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1);
+}
+
+.input-success {
+    color: var(--color-success);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-2);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1);
+}
+
+/* Checkbox Cards */
+.checkbox-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-4);
+}
+
+.checkbox-card {
+    position: relative;
+    padding: var(--spacing-6);
+    border: 2px solid var(--color-gray-300);
+    border-radius: var(--radius-xl);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    text-align: center;
+    background: var(--color-white);
+}
+
+.checkbox-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.checkbox-card.selected {
+    border-color: var(--color-primary);
+    background: linear-gradient(135deg, rgba(59, 79, 223, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+    box-shadow: var(--shadow-md);
+}
+
+.checkbox-card-icon {
+    font-size: var(--font-size-4xl);
+    margin-bottom: var(--spacing-2);
+}
+
+.checkbox-card-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-1);
+}
+
+.checkbox-card-subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.checkbox-card-checkmark {
+    position: absolute;
+    top: var(--spacing-3);
+    right: var(--spacing-3);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--color-success);
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+    opacity: 0;
+    transform: scale(0);
+    transition: all var(--transition-base);
+}
+
+.checkbox-card.selected .checkbox-card-checkmark {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Toggle Switch */
+.toggle-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-4);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-4);
+}
+
+.toggle-label {
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+.toggle-switch {
+    position: relative;
+    width: 56px;
+    height: 28px;
+    background: var(--color-gray-300);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.toggle-switch.active {
+    background: var(--color-primary);
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 24px;
+    height: 24px;
+    background: var(--color-white);
+    border-radius: 50%;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-sm);
+}
+
+.toggle-switch.active .toggle-slider {
+    transform: translateX(28px);
+}
+
+/* Pill Selector (for days) */
+.pill-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
+}
+
+.pill-button {
+    padding: var(--spacing-3) var(--spacing-6);
+    border: 2px solid var(--color-gray-300);
+    border-radius: var(--radius-full);
+    background: var(--color-white);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    color: var(--color-gray-700);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.pill-button:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.pill-button.selected {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+/* Tag List (for rooms/divisions) */
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
+    margin-top: var(--spacing-2);
+}
+
+.tag {
+    padding: var(--spacing-2) var(--spacing-4);
+    background: var(--color-gray-100);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-800);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.tag-remove {
+    cursor: pointer;
+    color: var(--color-error);
+    font-weight: bold;
+    transition: all var(--transition-base);
+}
+
+.tag-remove:hover {
+    transform: scale(1.2);
+}
+
+/* Number Stepper */
+.number-stepper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+}
+
+.stepper-button {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--color-primary);
+    background: var(--color-white);
+    color: var(--color-primary);
+    font-size: var(--font-size-lg);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stepper-button:hover:not(:disabled) {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.stepper-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.stepper-value {
+    min-width: 40px;
+    text-align: center;
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+/* Review Card */
+.review-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-6);
+    margin-bottom: var(--spacing-6);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-base);
+}
+
+.review-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.review-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-4);
+    padding-bottom: var(--spacing-4);
+    border-bottom: 2px solid var(--color-gray-100);
+}
+
+.review-card-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+}
+
+.review-card-title h3 {
+    margin: 0;
+    font-size: var(--font-size-xl);
+    color: var(--color-gray-900);
+}
+
+.review-card-icon {
+    font-size: var(--font-size-3xl);
+}
+
+.btn-edit {
+    padding: var(--spacing-2) var(--spacing-4);
+    background: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.btn-edit:hover {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.review-card-content {
+    color: var(--color-gray-700);
+    line-height: 1.8;
+}
+
+/* Time Slot Preview */
+.timeslot-preview {
+    background: var(--color-gray-50);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-lg);
+    margin-top: var(--spacing-4);
+}
+
+.timeslot-summary {
+    text-align: center;
+    margin-bottom: var(--spacing-4);
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-700);
+}
+
+.timeslot-summary strong {
+    color: var(--color-primary);
+    font-size: var(--font-size-xl);
+}
+
+.timeslot-timeline {
+    display: flex;
+    gap: var(--spacing-1);
+    overflow-x: auto;
+    padding: var(--spacing-2) 0;
+}
+
+.timeslot-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-3);
+    border-radius: var(--radius-md);
+    min-width: 80px;
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.timeslot-block.lecture {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.timeslot-block.recess {
+    background: var(--color-warning);
+    color: var(--color-white);
+}
+
+.timeslot-block:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.slot-label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    margin-bottom: var(--spacing-1);
+}
+
+.slot-time {
+    font-size: var(--font-size-xs);
+    opacity: 0.9;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .checkbox-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .pill-selector {
+        justify-content: center;
+    }
+
+    .timeslot-timeline {
+        flex-direction: column;
+        gap: var(--spacing-2);
+    }
+
+    .timeslot-block {
+        min-width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}

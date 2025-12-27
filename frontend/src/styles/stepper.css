@@ -1,0 +1,148 @@
+/* ===================================
+   STEPPER - Progress Indicator
+   =================================== */
+
+.stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-8) 0;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.stepper-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-2);
+    flex: 1;
+    position: relative;
+}
+
+.stepper-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: var(--font-size-lg);
+    transition: all var(--transition-base);
+    z-index: 2;
+    position: relative;
+}
+
+/* Upcoming step */
+.stepper-step.upcoming .stepper-circle {
+    background: var(--color-gray-100);
+    color: var(--color-gray-600);
+    border: 2px solid var(--color-gray-300);
+}
+
+/* Active step */
+.stepper-step.active .stepper-circle {
+    background: var(--gradient-cta);
+    color: var(--color-white);
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(59, 79, 223, 0.4);
+    transform: scale(1.1);
+}
+
+/* Completed step */
+.stepper-step.completed .stepper-circle {
+    background: var(--color-accent);
+    color: var(--color-white);
+    border: 2px solid var(--color-accent);
+}
+
+.stepper-circle .checkmark {
+    font-size: 24px;
+}
+
+.stepper-circle .step-number {
+    font-size: var(--font-size-lg);
+}
+
+/* Step label */
+.stepper-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-1);
+    text-align: center;
+}
+
+.step-icon {
+    font-size: var(--font-size-xl);
+    opacity: 0.8;
+}
+
+.step-text {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-gray-700);
+    max-width: 100px;
+}
+
+.stepper-step.active .step-text {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.stepper-step.completed .step-text {
+    color: var(--color-accent);
+}
+
+/* Connecting line */
+.stepper-line {
+    flex: 1;
+    height: 3px;
+    background: var(--color-gray-300);
+    margin: 0 var(--spacing-2);
+    margin-bottom: 60px;
+    position: relative;
+    transition: all var(--transition-base);
+}
+
+.stepper-line.completed {
+    background: var(--color-accent);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .stepper {
+        flex-direction: column;
+        gap: var(--spacing-4);
+        padding: var(--spacing-4) 0;
+    }
+
+    .stepper-step {
+        flex-direction: row;
+        width: 100%;
+        text-align: left;
+        align-items: center;
+        gap: var(--spacing-3);
+    }
+
+    .stepper-circle {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+    }
+
+    .stepper-label {
+        flex-direction: row;
+        text-align: left;
+        align-items: center;
+        flex: 1;
+    }
+
+    .step-text {
+        max-width: none;
+    }
+
+    .stepper-line {
+        display: none;
+    }
+}
