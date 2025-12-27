@@ -218,7 +218,7 @@ function Dashboard() {
                                 </div>
                                 <h3 className="action-title">Upload Existing Timetable</h3>
                                 <p className="action-description">
-                                    Upload Excel/CSV and auto-detect clashes
+                                    Import existing timetables from CSV, Excel, or PDF with automatic structure detection
                                 </p>
                                 <div className="action-footer">
                                     <span className="action-arrow">→</span>

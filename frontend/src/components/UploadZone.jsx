@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import PropTypes from 'prop-types'
 
-function UploadZone({ onFileSelect, accept = '.csv,.xlsx,.xls', maxSize = 10 * 1024 * 1024 }) {
+function UploadZone({ onFileSelect, accept = '.csv,.xlsx,.xls,.pdf', maxSize = 10 * 1024 * 1024 }) {
     const [dragActive, setDragActive] = useState(false)
     const [error, setError] = useState(null)
     const fileInputRef = useRef(null)
@@ -104,7 +104,7 @@ function UploadZone({ onFileSelect, accept = '.csv,.xlsx,.xls', maxSize = 10 * 1
                         Browse Files
                     </button>
                     <p className="upload-hint">
-                        Supported formats: CSV, Excel (.xlsx)
+                        Supported formats: CSV, Excel (.xlsx), PDF
                     </p>
                 </div>
             </div>
@@ -119,7 +119,7 @@ function UploadZone({ onFileSelect, accept = '.csv,.xlsx,.xls', maxSize = 10 * 1
             <div className="upload-instructions">
                 <h4>📝 Instructions</h4>
                 <ul>
-                    <li>Upload your existing timetable in CSV or Excel format</li>
+                    <li>Upload your existing timetable in CSV, Excel, or PDF format</li>
                     <li>The system will automatically detect the structure</li>
                     <li>You can confirm or adjust the column mappings</li>
                     <li>Conflicts will be detected and highlighted</li>

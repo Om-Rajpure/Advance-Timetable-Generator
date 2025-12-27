@@ -1,20 +1,42 @@
 from flask import Flask, jsonify, send_from_directory, request
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 import os
+import sys
 import json
 from datetime import datetime
 import uuid
 
+# Add backend directory to Python path
+backend_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'backend')
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
+
+import pdf_parser
+from routes.constraint_routes import constraint_bp
+
 app = Flask(__name__, static_folder='static', static_url_path='')
 CORS(app)
+
+# Register blueprints
+app.register_blueprint(constraint_bp)
 
 # Data directory setup
 DATA_DIR = 'data'
 BRANCHES_FILE = os.path.join(DATA_DIR, 'branches.json')
+UPLOAD_DIR = os.path.join(DATA_DIR, 'uploads')
 
-# Ensure data directory exists
+# Ensure data directories exist
 if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
+if not os.path.exists(UPLOAD_DIR):
+    os.makedirs(UPLOAD_DIR)
+
+# Allowed file extensions
+ALLOWED_EXTENSIONS = {'csv', 'xlsx', 'xls', 'pdf'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Initialize branches file if it doesn't exist
 if not os.path.exists(BRANCHES_FILE):
@@ -261,6 +283,68 @@ def validate_smart_input():
             'errors': errors,
             'warnings': warnings
         }), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Timetable Upload API Endpoints
+@app.route('/api/upload/timetable/pdf', methods=['POST'])
+def upload_pdf_timetable():
+    """Handle PDF timetable uploads"""
+    try:
+        # Check if file is present
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+        
+        file = request.files['file']
+        
+        # Check if file is selected
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
+        # Validate file type
+        if not allowed_file(file.filename):
+            return jsonify({'error': 'Invalid file type. Please upload a PDF file.'}), 400
+        
+        # Secure the filename
+        filename = secure_filename(file.filename)
+        
+        # Add timestamp to avoid conflicts
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        unique_filename = f"{timestamp}_{filename}"
+        filepath = os.path.join(UPLOAD_DIR, unique_filename)
+        
+        # Save the file
+        file.save(filepath)
+        
+        try:
+            # Parse the PDF
+            result = pdf_parser.parse_pdf_file(filepath)
+            
+            # Clean up the file after processing
+            if os.path.exists(filepath):
+                os.remove(filepath)
+            
+            if result['success']:
+                return jsonify({
+                    'success': True,
+                    'type': result['type'],
+                    'pages': result['pages'],
+                    'extractionMethod': result['extraction_method'],
+                    'rowCount': result['row_count'],
+                    'data': result['rows']
+                }), 200
+            else:
+                return jsonify({
+                    'success': False,
+                    'error': result['error']
+                }), 400
+        
+        except Exception as e:
+            # Clean up on error
+            if os.path.exists(filepath):
+                os.remove(filepath)
+            raise e
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500

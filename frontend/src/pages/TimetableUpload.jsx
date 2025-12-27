@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import UploadZone from '../components/UploadZone'
+import PdfExtractionStatus from '../components/PdfExtractionStatus'
 import StructureMapper from '../components/StructureMapper'
 import TimetablePreview from '../components/TimetablePreview'
 import LoadingState from '../components/LoadingState'
 import { parseFile, detectStructure, parseWithMapping } from '../utils/timetableParser'
+import { uploadPdfFile } from '../utils/pdfParserClient'
 import { detectAllConflicts } from '../utils/conflictDetector'
 import '../styles/timetableUpload.css'
 
@@ -25,34 +27,76 @@ function TimetableUpload() {
     const [conflicts, setConflicts] = useState([])
     const [parseErrors, setParseErrors] = useState([])
 
+    // PDF-specific state
+    const [pdfExtractionInfo, setPdfExtractionInfo] = useState(null)
+    const [isPdfExtraction, setIsPdfExtraction] = useState(false)
+
     // Handle file selection
     const handleFileSelect = async (file) => {
         setUploadedFile(file)
         setLoading(true)
         setLoadingMessage('Reading file...')
 
+        // Check if file is PDF
+        const isPdf = file.name.toLowerCase().endsWith('.pdf')
+        setIsPdfExtraction(isPdf)
+
         try {
-            // Parse file
-            const result = await parseFile(file)
-            setRawData(result.data)
+            if (isPdf) {
+                // Handle PDF upload
+                setLoadingMessage('Extracting PDF data...')
 
-            if (result.data.length === 0) {
-                alert('No data found in file. Please check the file and try again.')
+                const pdfResult = await uploadPdfFile(file)
+                setPdfExtractionInfo(pdfResult.pdfInfo)
+                setRawData(pdfResult.data)
+
+                // Show PDF extraction status
                 setLoading(false)
-                return
+                setCurrentStep(1.5) // Intermediate step to show PDF status
+            } else {
+                // Handle CSV/Excel upload (existing logic)
+                const result = await parseFile(file)
+                setRawData(result.data)
+
+                if (result.data.length === 0) {
+                    alert('No data found in file. Please check the file and try again.')
+                    setLoading(false)
+                    return
+                }
+
+                setLoadingMessage('Detecting structure...')
+
+                // Detect structure
+                const detected = detectStructure(result.data)
+                setDetectedMapping(detected)
+
+                // Move to mapping step
+                setCurrentStep(2)
+                setLoading(false)
             }
+        } catch (error) {
+            console.error('File parsing error:', error)
+            alert(`Failed to parse file: ${error.message}`)
+            setLoading(false)
+            setLoadingMessage('')
+        }
+    }
 
-            setLoadingMessage('Detecting structure...')
+    // Handle PDF extraction status continuation
+    const handlePdfContinue = () => {
+        setLoading(true)
+        setLoadingMessage('Detecting structure...')
 
-            // Detect structure
-            const detected = detectStructure(result.data)
+        try {
+            // Detect structure from PDF data
+            const detected = detectStructure(rawData)
             setDetectedMapping(detected)
 
             // Move to mapping step
             setCurrentStep(2)
         } catch (error) {
-            console.error('File parsing error:', error)
-            alert(`Failed to parse file: ${error.message}`)
+            console.error('Structure detection error:', error)
+            alert(`Failed to detect structure: ${error.message}`)
         } finally {
             setLoading(false)
             setLoadingMessage('')
@@ -132,6 +176,16 @@ function TimetableUpload() {
             case 1:
                 return <UploadZone onFileSelect={handleFileSelect} />
 
+            case 1.5:
+                // PDF extraction status (intermediate step)
+                return (
+                    <PdfExtractionStatus
+                        pdfInfo={pdfExtractionInfo}
+                        isLoading={loading}
+                        onContinue={handlePdfContinue}
+                    />
+                )
+
             case 2:
                 return (
                     <StructureMapper
@@ -169,7 +223,7 @@ function TimetableUpload() {
                     </button>
                     <h1 className="upload-title">📤 Upload Existing Timetable</h1>
                     <p className="upload-subtitle">
-                        Import your existing timetable and let us detect conflicts automatically
+                        Import your existing timetable (CSV, Excel, or PDF) and let us detect conflicts automatically
                     </p>
                 </div>
             </div>
