@@ -1,24 +1,36 @@
 import { useAuth } from '../auth/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import { useDashboardState } from '../hooks/useDashboardState'
+import ProgressTimeline from '../components/ProgressTimeline'
 import './Dashboard.css'
 
 function Dashboard() {
     const { user } = useAuth()
     const navigate = useNavigate()
-    const { getBranchInfo, getTimetableStatus, hasActiveTimetable } = useDashboardState()
+    const { getBranchInfo, getTimetableStatus, hasActiveTimetable, getWorkflowStatus } = useDashboardState()
 
     const branchInfo = getBranchInfo()
     const statusInfo = getTimetableStatus()
     const canEdit = hasActiveTimetable()
+    const workflowStatus = getWorkflowStatus()
 
     // Smart navigation for Generate button
     const handleGenerate = () => {
         if (!branchInfo.exists) {
             navigate('/branch-setup')
+        } else if (!workflowStatus.smartInputCompleted) {
+            navigate('/smart-input')
         } else {
             navigate('/generate')
         }
+    }
+
+    const handleSmartInput = () => {
+        navigate('/smart-input')
+    }
+
+    const handleBranchSetup = () => {
+        navigate('/branch-setup')
     }
 
     const handleUpload = () => {
@@ -43,6 +55,11 @@ function Dashboard() {
                         Your central control panel for timetable management
                     </p>
                 </div>
+            </div>
+
+            {/* Progress Timeline */}
+            <div className="container">
+                <ProgressTimeline workflowStatus={workflowStatus} />
             </div>
 
             <div className="dashboard-content">
@@ -82,6 +99,63 @@ function Dashboard() {
                                     </button>
                                 </div>
                             )}
+                        </div>
+
+                        {/* Smart Input Status Card */}
+                        <div className="status-card smart-input-card">
+                            <div className="card-icon-header">
+                                <div className="card-icon smart-input-icon">
+                                    <span>🎯</span>
+                                </div>
+                                <h3 className="card-title">Smart Input</h3>
+                            </div>
+
+                            <div className="smart-input-status">
+                                {workflowStatus.smartInputCompleted ? (
+                                    <div className="status-completed">
+                                        <div className="status-badge-success">
+                                            <span className="status-icon-large">✅</span>
+                                            <span className="status-label" style={{ color: '#10b981' }}>Completed</span>
+                                        </div>
+                                        <p className="status-description">
+                                            Teachers, subjects, and workload have been configured.
+                                        </p>
+                                        <button
+                                            onClick={handleSmartInput}
+                                            className="status-btn-secondary"
+                                        >
+                                            Review Data →
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="status-pending">
+                                        <div className={`status-badge ${workflowStatus.branchSetupCompleted ? '' : 'locked'}`}
+                                            style={{
+                                                backgroundColor: workflowStatus.branchSetupCompleted ? '#fef3c720' : '#e2e8f020',
+                                                borderColor: workflowStatus.branchSetupCompleted ? '#f59e0b' : '#cbd5e1'
+                                            }}
+                                        >
+                                            <span className="status-icon-large" style={{ color: workflowStatus.branchSetupCompleted ? '#f59e0b' : '#94a3b8' }}>
+                                                {workflowStatus.branchSetupCompleted ? '⏳' : '🔒'}
+                                            </span>
+                                            <span className="status-label" style={{ color: workflowStatus.branchSetupCompleted ? '#f59e0b' : '#94a3b8' }}>
+                                                {workflowStatus.branchSetupCompleted ? 'Not Started' : 'Locked'}
+                                            </span>
+                                        </div>
+                                        <p className="status-description">
+                                            Add teachers, subjects, and workload using CSV, bulk text, or natural language.
+                                        </p>
+                                        <button
+                                            onClick={handleSmartInput}
+                                            className="status-btn-primary"
+                                            disabled={!workflowStatus.branchSetupCompleted}
+                                            title={!workflowStatus.branchSetupCompleted ? 'Complete Branch Setup first' : ''}
+                                        >
+                                            {workflowStatus.branchSetupCompleted ? 'Start Smart Input →' : '🔒 Locked'}
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         {/* Timetable Status Indicator */}

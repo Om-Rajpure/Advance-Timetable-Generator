@@ -1,1 +1,81 @@
-{"branches": []}
+{
+  "branches": [
+    {
+      "id": "6dba2d8a-f0d1-4398-bb8a-d43bf871bdb3",
+      "createdAt": "2025-12-27T14:43:49.559093",
+      "branchName": "Artificial Intelligence",
+      "academicYears": [
+        "SE",
+        "TE",
+        "BE"
+      ],
+      "divisions": {
+        "SE": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "TE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "BE": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      "workingDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "startTime": "9:00 AM",
+      "endTime": "5:00 PM",
+      "lectureDuration": 45,
+      "recessEnabled": true,
+      "recessStart": "1:00 PM",
+      "recessDuration": 45,
+      "classrooms": {
+        "SE": [
+          "SE-1",
+          "SE-2",
+          "SE-3",
+          "SE-4"
+        ],
+        "TE": [
+          "TE-1",
+          "TE-2",
+          "TE-3"
+        ],
+        "BE": [
+          "BE-1",
+          "BE-2",
+          "BE-3"
+        ]
+      },
+      "sharedLabs": [
+        {
+          "name": "Computer Lab 1",
+          "capacity": 30
+        },
+        {
+          "name": "Computer Lab 2",
+          "capacity": 30
+        },
+        {
+          "name": "Electronics Lab",
+          "capacity": 25
+        },
+        {
+          "name": "AI",
+          "capacity": 30
+        }
+      ]
+    }
+  ]
+}

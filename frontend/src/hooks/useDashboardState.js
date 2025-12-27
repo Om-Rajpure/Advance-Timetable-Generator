@@ -10,11 +10,21 @@ export function useDashboardState() {
     const [timetableStatus, setTimetableStatus] = useState('draft')
     const [hasTimetable, setHasTimetable] = useState(false)
 
+    // Workflow completion tracking
+    const [branchSetupCompleted, setBranchSetupCompleted] = useState(false)
+    const [smartInputCompleted, setSmartInputCompleted] = useState(false)
+    const [timetableGenerated, setTimetableGenerated] = useState(false)
+
     // Load state from localStorage on mount
     useEffect(() => {
         const branchData = localStorage.getItem('selectedBranch')
         const statusData = localStorage.getItem('timetableStatus')
         const hasTimetableData = localStorage.getItem('hasTimetable')
+
+        // Load workflow completion states
+        const branchSetupData = localStorage.getItem('branchSetupCompleted')
+        const smartInputData = localStorage.getItem('smartInputCompleted')
+        const timetableGeneratedData = localStorage.getItem('timetableGenerated')
 
         if (branchData) {
             try {
@@ -31,6 +41,11 @@ export function useDashboardState() {
         if (hasTimetableData) {
             setHasTimetable(hasTimetableData === 'true')
         }
+
+        // Set workflow states
+        setBranchSetupCompleted(branchSetupData === 'true')
+        setSmartInputCompleted(smartInputData === 'true')
+        setTimetableGenerated(timetableGeneratedData === 'true')
     }, [])
 
     // Helper methods
@@ -97,12 +112,46 @@ export function useDashboardState() {
         setHasTimetable(value)
     }
 
+    // Workflow completion methods
+    const completeBranchSetup = () => {
+        localStorage.setItem('branchSetupCompleted', 'true')
+        setBranchSetupCompleted(true)
+    }
+
+    const completeSmartInput = () => {
+        localStorage.setItem('smartInputCompleted', 'true')
+        setSmartInputCompleted(true)
+    }
+
+    const completeTimetableGeneration = () => {
+        localStorage.setItem('timetableGenerated', 'true')
+        setTimetableGenerated(true)
+    }
+
+    // Get current workflow status
+    const getWorkflowStatus = () => {
+        return {
+            branchSetupCompleted,
+            smartInputCompleted,
+            timetableGenerated,
+            currentStep: branchSetupCompleted
+                ? (smartInputCompleted ? (timetableGenerated ? 3 : 2) : 1)
+                : 0,
+            canAccessSmartInput: branchSetupCompleted,
+            canAccessGenerate: branchSetupCompleted && smartInputCompleted
+        }
+    }
+
     return {
         getBranchInfo,
         getTimetableStatus,
         hasActiveTimetable,
         updateBranch,
         updateTimetableStatus,
-        updateHasTimetable
+        updateHasTimetable,
+        completeBranchSetup,
+        completeSmartInput,
+        completeTimetableGeneration,
+        getWorkflowStatus
     }
 }

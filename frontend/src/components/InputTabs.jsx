@@ -1,6 +1,7 @@
 import React from 'react'
 
-function InputTabs({ activeTab, onTabChange, tabs = [] }) {
+
+function InputTabs({ activeTab, onTabChange = () => { }, tabs = [] }) {
     return (
         <div className="input-tabs">
             <div className="tabs-container">

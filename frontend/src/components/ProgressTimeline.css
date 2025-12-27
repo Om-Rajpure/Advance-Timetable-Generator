@@ -1,0 +1,169 @@
+/* Progress Timeline Styles */
+.progress-timeline {
+    margin: var(--spacing-6) 0;
+    padding: var(--spacing-6) var(--spacing-4);
+    background: linear-gradient(to bottom, #f8fafc, #ffffff);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border, #e2e8f0);
+}
+
+.timeline-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-2);
+    position: relative;
+}
+
+.step-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+    background: #f1f5f9;
+}
+
+/* Completed Step */
+.timeline-step.completed .step-circle {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-color: #10b981;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.step-check {
+    color: white;
+    font-weight: bold;
+    font-size: 28px;
+}
+
+/* Current Step */
+.timeline-step.current .step-circle {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-color: #3b82f6;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.step-icon-pulse {
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.6);
+    }
+}
+
+@keyframes iconPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Locked Step */
+.timeline-step.locked .step-circle {
+    background: #e2e8f0;
+    border-color: #cbd5e1;
+    opacity: 0.6;
+}
+
+.step-icon-locked {
+    font-size: 18px;
+    opacity: 0.5;
+}
+
+/* Step Label */
+.step-label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-secondary, #64748b);
+    text-align: center;
+    margin-top: var(--spacing-1);
+    white-space: nowrap;
+}
+
+.timeline-step.completed .step-label {
+    color: #10b981;
+}
+
+.timeline-step.current .step-label {
+    color: #3b82f6;
+    font-weight: 700;
+}
+
+.timeline-step.locked .step-label {
+    color: #94a3b8;
+}
+
+/* Timeline Connector */
+.timeline-connector {
+    flex: 1;
+    height: 3px;
+    background: #e2e8f0;
+    margin: 0 var(--spacing-2);
+    margin-bottom: 30px;
+    transition: background 0.3s ease;
+}
+
+.timeline-connector.completed {
+    background: linear-gradient(to right, #10b981, #059669);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .timeline-container {
+        gap: var(--spacing-1);
+    }
+
+    .step-circle {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+    }
+
+    .step-label {
+        font-size: 11px;
+    }
+
+    .timeline-connector {
+        margin: 0 var(--spacing-1);
+    }
+}
+
+@media (max-width: 480px) {
+    .step-label {
+        display: none;
+    }
+
+    .step-circle {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+}

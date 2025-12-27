@@ -24,7 +24,7 @@ const WIZARD_STEPS = [
 
 function BranchSetup() {
     const navigate = useNavigate()
-    const { updateBranch } = useDashboardState()
+    const { updateBranch, completeBranchSetup } = useDashboardState()
     const [currentStep, setCurrentStep] = useState(0)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [showSuccess, setShowSuccess] = useState(false)
@@ -205,6 +205,9 @@ function BranchSetup() {
                 divisions: Object.values(formData.divisions).reduce((sum, divs) => sum + divs.length, 0)
             }
             updateBranch(branchInfo)
+
+            // Mark branch setup as completed
+            completeBranchSetup()
 
             // Show success animation
             setShowSuccess(true)

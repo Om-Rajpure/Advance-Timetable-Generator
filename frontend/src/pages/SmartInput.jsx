@@ -1,4 +1,8 @@
 import React, { lazy, Suspense, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useDashboardState } from '../hooks/useDashboardState'
+import LoadingState from '../components/LoadingState'
+import '../components/LoadingState.css'
 import '../styles/smartInput.css'
 
 // ✅ DYNAMIC IMPORTS - Load child components only when needed
@@ -8,7 +12,11 @@ const BulkTextInput = lazy(() => import('../components/BulkTextInput'))
 const PromptInput = lazy(() => import('../components/PromptInput'))
 const PreviewTable = lazy(() => import('../components/PreviewTable'))
 
+
 function SmartInput() {
+    const navigate = useNavigate()
+    const { completeSmartInput } = useDashboardState()
+
     // Tab Management
     const [activeTab, setActiveTab] = useState('csv')
     const [completedTabs, setCompletedTabs] = useState({
@@ -136,8 +144,15 @@ function SmartInput() {
     // Save/Submit Data
     const handleSaveData = () => {
         console.log('Saving aggregated data:', aggregatedData)
-        // TODO: Implement actual save logic (API call, localStorage, etc.)
-        alert(`Data saved!\n${aggregatedData.teachers.length} teachers\n${aggregatedData.subjects.length} subjects\n${aggregatedData.teacherSubjectMap.length} mappings`)
+
+        // Mark Smart Input as completed
+        completeSmartInput()
+
+        // Show success message
+        alert(`✅ Smart Input Completed!\n\n${aggregatedData.teachers.length} teachers\n${aggregatedData.subjects.length} subjects\n${aggregatedData.teacherSubjectMap.length} mappings\n\nReady for timetable generation!`)
+
+        // Navigate to dashboard (or generate-timetable when ready)
+        navigate('/dashboard')
     }
 
     return (
@@ -152,7 +167,7 @@ function SmartInput() {
                 </div>
 
                 {/* Suspense Wrapper - Load components dynamically */}
-                <Suspense fallback={<div className="loading-fallback">Loading Smart Input...</div>}>
+                <Suspense fallback={<LoadingState message="Loading Smart Input..." />}>
                     {/* Tab Navigation */}
                     <InputTabs
                         activeTab={activeTab}
