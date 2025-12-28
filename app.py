@@ -17,6 +17,7 @@ from routes.constraint_routes import constraint_bp
 from routes.generation_routes import generation_bp
 from routes.validation_routes import validation_bp
 from routes.edit_routes import edit_bp
+from routes.analytics_routes import analytics_bp
 
 app = Flask(__name__, static_folder='static', static_url_path='')
 CORS(app)
@@ -26,6 +27,7 @@ app.register_blueprint(constraint_bp)
 app.register_blueprint(generation_bp)
 app.register_blueprint(validation_bp)
 app.register_blueprint(edit_bp)
+app.register_blueprint(analytics_bp)
 
 # Data directory setup
 DATA_DIR = 'data'

@@ -1,0 +1,182 @@
+/* Lab Usage Heatmap Styles */
+
+.lab-usage-heatmap {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.lab-usage-heatmap h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #1f2937;
+}
+
+.lab-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e5e7eb;
+    overflow-x: auto;
+}
+
+.lab-tab {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.lab-tab:hover {
+    color: #374151;
+}
+
+.lab-tab.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+}
+
+.lab-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f9fafb;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.lab-info-item {
+    font-size: 14px;
+}
+
+.lab-info-label {
+    color: #6b7280;
+    margin-right: 8px;
+}
+
+.lab-info-value {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.utilization-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.utilization-badge.low {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.utilization-badge.medium {
+    background: #fed7aa;
+    color: #92400e;
+}
+
+.utilization-badge.high {
+    background: #fecaca;
+    color: #991b1b;
+}
+
+.heatmap-grid {
+    overflow-x: auto;
+}
+
+.heatmap-grid table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.heatmap-grid th {
+    padding: 10px;
+    text-align: center;
+    font-weight: 600;
+    color: #6b7280;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    font-size: 12px;
+}
+
+.heatmap-grid td {
+    border: 1px solid #e5e7eb;
+    padding: 0;
+}
+
+.time-label {
+    text-align: left;
+    padding: 10px !important;
+    font-weight: 500;
+    color: #374151;
+    white-space: nowrap;
+}
+
+.grid-cell {
+    min-width: 70px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: default;
+}
+
+.grid-cell:hover {
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.grid-cell.free {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.grid-cell.occupied {
+    background: #ef4444;
+    color: white;
+}
+
+.legend {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.legend-color {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+}
+
+.legend-color.free {
+    background: #d1fae5;
+}
+
+.legend-color.occupied {
+    background: #ef4444;
+}

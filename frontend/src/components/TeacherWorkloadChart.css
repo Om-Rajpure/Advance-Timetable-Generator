@@ -1,0 +1,176 @@
+/* Teacher Workload Chart Styles */
+
+.teacher-workload-chart {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.teacher-workload-chart h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #1f2937;
+}
+
+.chart-section {
+    margin-bottom: 32px;
+}
+
+.chart-section:last-child {
+    margin-bottom: 0;
+}
+
+.chart-subtitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.teacher-name {
+    min-width: 120px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bar-container {
+    flex: 1;
+    position: relative;
+    height: 32px;
+    background: #f3f4f6;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+}
+
+.bar-fill.balanced {
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+}
+
+.bar-fill.slight_overload {
+    background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+}
+
+.bar-fill.heavy_overload {
+    background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+}
+
+/* Heatmap */
+.heatmap {
+    overflow-x: auto;
+}
+
+.heatmap-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.heatmap-table th {
+    padding: 8px;
+    text-align: center;
+    font-weight: 600;
+    color: #6b7280;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+}
+
+.heatmap-table td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+    font-weight: 500;
+}
+
+.heatmap-cell {
+    min-width: 60px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.heatmap-cell:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.heatmap-cell.intensity-0 {
+    background: #f3f4f6;
+    color: #9ca3af;
+}
+
+.heatmap-cell.intensity-1,
+.heatmap-cell.intensity-2 {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.heatmap-cell.intensity-3,
+.heatmap-cell.intensity-4 {
+    background: #fed7aa;
+    color: #92400e;
+}
+
+.heatmap-cell.intensity-5,
+.heatmap-cell.intensity-6 {
+    background: #fecaca;
+    color: #991b1b;
+}
+
+.heatmap-cell.intensity-7,
+.heatmap-cell.intensity-8,
+.heatmap-cell.intensity-9 {
+    background: #ef4444;
+    color: white;
+}
+
+.insights-list {
+    list-style: none;
+    padding: 16px;
+    margin: 0;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.insights-list li {
+    padding: 8px 0;
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.6;
+}
