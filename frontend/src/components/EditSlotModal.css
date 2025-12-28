@@ -1,0 +1,156 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: 24px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-header h2 {
+    margin: 0 0 8px 0;
+    font-size: 20px;
+    color: #212529;
+}
+
+.slot-info {
+    margin: 0;
+    font-size: 13px;
+    color: #6c757d;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.practical-warning {
+    padding: 12px;
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #856404;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 13px;
+    color: #495057;
+    margin-bottom: 6px;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.validating {
+    padding: 10px;
+    background: #e7f3ff;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 13px;
+    color: #1565c0;
+    margin-top: 12px;
+}
+
+.modal-footer {
+    padding: 18px 24px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.btn-cancel,
+.btn-save {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancel {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.btn-cancel:hover {
+    background: #dee2e6;
+}
+
+.btn-save {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-save:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-save:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

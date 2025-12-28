@@ -1,0 +1,58 @@
+.auto-fix-container {
+    margin-top: 10px;
+}
+
+.auto-fix-button {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auto-fix-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.auto-fix-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.fix-suggestion {
+    margin-top: 12px;
+    padding: 12px;
+    background: #e7f3ff;
+    border: 1px solid #90caf9;
+    border-radius: 6px;
+}
+
+.fix-explanation {
+    font-size: 13px;
+    color: #1565c0;
+}
+
+.fix-explanation p {
+    margin: 0 0 10px 0;
+}
+
+.apply-fix-button {
+    padding: 6px 14px;
+    background: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.apply-fix-button:hover {
+    background: #1976d2;
+}

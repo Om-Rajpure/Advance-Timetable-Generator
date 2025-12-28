@@ -1,0 +1,156 @@
+{
+    "branchId": "test-branch-1",
+    "currentTimetable": [
+        {
+            "id": "Mon_0_FE_A",
+            "day": "Monday",
+            "slot": 0,
+            "year": "FE",
+            "division": "A",
+            "subject": "Mathematics",
+            "teacher": "Prof. Neha",
+            "room": "Room-101",
+            "type": "Lecture"
+        },
+        {
+            "id": "Mon_1_FE_A",
+            "day": "Monday",
+            "slot": 1,
+            "year": "FE",
+            "division": "A",
+            "subject": "Physics",
+            "teacher": "Prof. Neha",
+            "room": "Room-102",
+            "type": "Lecture"
+        },
+        {
+            "id": "Tue_0_FE_A",
+            "day": "Tuesday",
+            "slot": 0,
+            "year": "FE",
+            "division": "A",
+            "subject": "Chemistry",
+            "teacher": "Prof. Raj",
+            "room": "Room-101",
+            "type": "Lecture"
+        },
+        {
+            "id": "Mon_2_FE_A_B1",
+            "day": "Monday",
+            "slot": 2,
+            "year": "FE",
+            "division": "A",
+            "batch": "B1",
+            "subject": "Physics Lab",
+            "teacher": "Prof. Raj",
+            "room": "Lab-1",
+            "type": "Practical"
+        },
+        {
+            "id": "Mon_2_FE_A_B2",
+            "day": "Monday",
+            "slot": 2,
+            "year": "FE",
+            "division": "A",
+            "batch": "B2",
+            "subject": "Physics Lab",
+            "teacher": "Prof. Raj",
+            "room": "Lab-2",
+            "type": "Practical"
+        }
+    ],
+    "scenarioType": "TEACHER_UNAVAILABLE",
+    "parameters": {
+        "teacherName": "Prof. Neha",
+        "unavailableSpec": {
+            "days": [
+                "Monday"
+            ]
+        }
+    },
+    "branchData": {
+        "id": "test-branch-1",
+        "branchName": "Computer Engineering",
+        "academicYears": [
+            "FE",
+            "SE",
+            "TE",
+            "BE"
+        ],
+        "divisions": {
+            "FE": [
+                "A",
+                "B"
+            ],
+            "SE": [
+                "A",
+                "B"
+            ]
+        },
+        "workingDays": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+        ],
+        "slotsPerDay": 6,
+        "rooms": [
+            "Room-101",
+            "Room-102",
+            "Room-201"
+        ],
+        "labs": [
+            "Lab-1",
+            "Lab-2",
+            "Lab-3"
+        ]
+    },
+    "smartInputData": {
+        "teachers": [
+            {
+                "name": "Prof. Neha",
+                "id": "t1"
+            },
+            {
+                "name": "Prof. Raj",
+                "id": "t2"
+            },
+            {
+                "name": "Prof. Sharma",
+                "id": "t3"
+            }
+        ],
+        "subjects": [
+            {
+                "name": "Mathematics",
+                "type": "Lecture",
+                "year": "FE",
+                "division": "A",
+                "lecturesPerWeek": 4
+            },
+            {
+                "name": "Physics",
+                "type": "Lecture",
+                "year": "FE",
+                "division": "A",
+                "lecturesPerWeek": 3
+            },
+            {
+                "name": "Chemistry",
+                "type": "Lecture",
+                "year": "FE",
+                "division": "A",
+                "lecturesPerWeek": 3
+            },
+            {
+                "name": "Physics Lab",
+                "type": "Practical",
+                "year": "FE",
+                "division": "A",
+                "batches": 2
+            }
+        ]
+    }
+}

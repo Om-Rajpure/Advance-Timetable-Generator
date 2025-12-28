@@ -1,0 +1,142 @@
+.impact-summary {
+    margin-bottom: 2rem;
+}
+
+.feasibility-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.feasibility-badge.feasible {
+    background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+    color: white;
+}
+
+.feasibility-badge.not-feasible {
+    background: linear-gradient(135deg, #f44336 0%, #e91e63 100%);
+    color: white;
+}
+
+.badge-icon {
+    font-size: 1.5rem;
+}
+
+.key-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.metric-card {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.metric-icon {
+    font-size: 2.5rem;
+}
+
+.metric-content {
+    flex: 1;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.metric-value.score-change {
+    color: #667eea;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+.recommendations-section {
+    background: rgba(255, 193, 7, 0.1);
+    border-left: 4px solid #ffc107;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.recommendations-section h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+}
+
+.recommendations-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.recommendation-item {
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    background: white;
+    border-left: 3px solid #ffc107;
+}
+
+.recommendation-item.error {
+    border-left-color: #f44336;
+    background: rgba(244, 67, 54, 0.05);
+}
+
+.recommendation-item.warning {
+    border-left-color: #ff9800;
+    background: rgba(255, 152, 0, 0.05);
+}
+
+.conflict-details {
+    background: #f5f5f5;
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.conflict-details summary {
+    font-weight: 600;
+    color: #333;
+    padding: 0.5rem;
+}
+
+.conflict-list {
+    list-style: none;
+    padding: 1rem 0 0 0;
+    margin: 0;
+}
+
+.conflict-item {
+    padding: 0.5rem 1rem;
+    background: white;
+    margin-bottom: 0.5rem;
+    border-radius: 6px;
+    border-left: 3px solid #f44336;
+}

@@ -1,0 +1,108 @@
+.timetable-grid {
+    width: 100%;
+    overflow-x: auto;
+    margin: 20px 0;
+}
+
+.grid-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.grid-table th,
+.grid-table td {
+    border: 1px solid #e0e0e0;
+    padding: 12px;
+    text-align: center;
+}
+
+.day-header,
+.slot-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 14px;
+}
+
+.day-cell {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+    min-width: 100px;
+}
+
+.slot-cell {
+    min-width: 150px;
+    vertical-align: top;
+    padding: 8px;
+}
+
+.slot-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.slot-item {
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.slot-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.slot-item.valid {
+    background: #e8f5e9;
+    border-color: #4caf50;
+}
+
+.slot-item.hard-conflict {
+    background: #ffebee;
+    border-color: #f44336;
+}
+
+.slot-item.soft-conflict {
+    background: #fff3e0;
+    border-color: #ff9800;
+}
+
+.slot-subject {
+    font-weight: 600;
+    font-size: 13px;
+    color: #212529;
+    margin-bottom: 4px;
+}
+
+.slot-teacher {
+    font-size: 11px;
+    color: #6c757d;
+    margin-bottom: 2px;
+}
+
+.slot-room {
+    font-size: 11px;
+    color: #6c757d;
+    margin-bottom: 2px;
+}
+
+.slot-batch {
+    font-size: 10px;
+    color: #9c27b0;
+    font-weight: 500;
+}
+
+.empty-slot {
+    color: #adb5bd;
+    font-size: 18px;
+    padding: 20px;
+}

@@ -1,0 +1,70 @@
+.quality-badge {
+    padding: 12px 18px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.quality-badge:hover {
+    transform: translateY(-2px);
+}
+
+.quality-green {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    color: white;
+}
+
+.quality-blue {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+}
+
+.quality-orange {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+}
+
+.quality-red {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+    color: white;
+}
+
+.badge-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.score-display {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.grade-text {
+    font-size: 11px;
+    font-weight: 500;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.delta {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.delta.positive {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.delta.negative {
+    background: rgba(0, 0, 0, 0.2);
+    color: white;
+}

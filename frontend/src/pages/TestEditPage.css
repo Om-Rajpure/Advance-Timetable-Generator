@@ -1,0 +1,97 @@
+.test-edit-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.test-container {
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 600px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.test-container h1 {
+    margin: 0 0 12px 0;
+    font-size: 32px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.test-container>p {
+    color: #6c757d;
+    margin: 0 0 30px 0;
+}
+
+.sample-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+}
+
+.sample-info h3 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    color: #495057;
+}
+
+.sample-info ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.sample-info li {
+    color: #6c757d;
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.test-button {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 30px;
+}
+
+.test-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.test-instructions {
+    background: #e7f3ff;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #2196f3;
+}
+
+.test-instructions h3 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    color: #1565c0;
+}
+
+.test-instructions ol {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.test-instructions li {
+    color: #1976d2;
+    margin-bottom: 6px;
+    font-size: 14px;
+}

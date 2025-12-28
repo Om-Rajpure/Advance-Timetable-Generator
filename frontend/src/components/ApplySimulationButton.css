@@ -1,0 +1,163 @@
+.apply-simulation-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e0e0e0;
+}
+
+.simulation-btn {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.simulation-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.apply-btn {
+    background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+    color: white;
+}
+
+.apply-btn.disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.discard-btn {
+    background: linear-gradient(135deg, #757575 0%, #9e9e9e 100%);
+    color: white;
+}
+
+.try-another-btn {
+    background: linear-gradient(135deg, #2196f3 0%, #03a9f4 100%);
+    color: white;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.modal-content p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.modal-warning {
+    background: rgba(255, 193, 7, 0.1);
+    border-left: 4px solid #ffc107;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+.confirm-btn,
+.cancel-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.confirm-btn {
+    background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+    color: white;
+}
+
+.cancel-btn {
+    background: #f5f5f5;
+    color: #333;
+}
+
+.confirm-btn:hover,
+.cancel-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+    .apply-simulation-buttons {
+        flex-direction: column;
+    }
+
+    .simulation-btn {
+        width: 100%;
+    }
+
+    .modal-actions {
+        flex-direction: column-reverse;
+    }
+
+    .confirm-btn,
+    .cancel-btn {
+        width: 100%;
+    }
+}

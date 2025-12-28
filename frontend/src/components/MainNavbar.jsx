@@ -53,7 +53,7 @@ function MainNavbar() {
                         Upload Timetable
                     </NavLink>
                     <NavLink
-                        to="/edit"
+                        to="/test-edit"
                         className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
                     >
                         Edit Timetable

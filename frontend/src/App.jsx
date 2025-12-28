@@ -16,6 +16,9 @@ import Analytics from './pages/Analytics'
 import Export from './pages/Export'
 import History from './pages/History'
 import TimetableUpload from './pages/TimetableUpload'
+import EditableTimetable from './pages/EditableTimetable'
+import TestEditPage from './pages/TestEditPage'
+import WhatIfSimulation from './pages/WhatIfSimulation'
 
 function App() {
   return (
@@ -92,6 +95,33 @@ function App() {
             element={
               <ProtectedRoute>
                 <TimetableUpload />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/edit-timetable"
+            element={
+              <ProtectedRoute>
+                <EditableTimetable />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/test-edit"
+            element={
+              <ProtectedRoute>
+                <TestEditPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/what-if-simulation"
+            element={
+              <ProtectedRoute>
+                <WhatIfSimulation />
               </ProtectedRoute>
             }
           />
