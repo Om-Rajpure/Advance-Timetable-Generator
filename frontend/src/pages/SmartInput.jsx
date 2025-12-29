@@ -17,6 +17,22 @@ function SmartInput() {
     const navigate = useNavigate()
     const { completeSmartInput } = useDashboardState()
 
+    // ✅ SIMPLIFIED WORKFLOW GUARD - Use selectedBranch as single source of truth
+    useEffect(() => {
+        const selectedBranch = localStorage.getItem('selectedBranch')
+
+        console.log('🔍 SmartInput Guard - selectedBranch:', selectedBranch ? 'EXISTS' : 'NULL')
+
+        if (!selectedBranch) {
+            console.log('❌ No branch - redirecting to Branch Setup')
+            alert('⚠️ Branch Setup Required\n\nPlease complete Branch Setup before accessing Smart Input.')
+            navigate('/branch-setup')
+            return
+        }
+
+        console.log('✅ Branch exists - Smart Input access granted')
+    }, [navigate])
+
     // Tab Management
     const [activeTab, setActiveTab] = useState('csv')
     const [completedTabs, setCompletedTabs] = useState({
@@ -46,6 +62,12 @@ function SmartInput() {
     const handleCsvData = (data, uploadType) => {
         console.log('CSV Data received:', uploadType, data)
 
+        // Route mapping data to dedicated handler
+        if (uploadType === 'teacher_subject_map') {
+            handleMappingData(data)
+            return
+        }
+
         setAggregatedData(prev => {
             const updated = { ...prev }
 
@@ -65,6 +87,68 @@ function SmartInput() {
 
             return updated
         })
+
+        // Mark tab as completed
+        setCompletedTabs(prev => ({ ...prev, csv: true }))
+    }
+
+    // Handle Teacher-Subject Mapping Upload
+    const handleMappingData = (data) => {
+        console.log('Mapping data received:', data)
+
+        // Validate mappings against existing teachers and subjects
+        const validMappings = []
+        const errors = []
+
+        data.forEach((mapping, index) => {
+            const teacher = aggregatedData.teachers.find(
+                t => t.name.toLowerCase() === mapping.teacherName.toLowerCase()
+            )
+            const subject = aggregatedData.subjects.find(
+                s => s.name.toLowerCase() === mapping.subjectName.toLowerCase()
+            )
+
+            if (!teacher) {
+                errors.push(`Row ${index + 1}: Teacher "${mapping.teacherName}" not found in Teachers list`)
+            }
+            if (!subject) {
+                errors.push(`Row ${index + 1}: Subject "${mapping.subjectName}" not found in Subjects list`)
+            }
+
+            if (teacher && subject) {
+                // Check for duplicate mapping
+                const isDuplicate = aggregatedData.teacherSubjectMap.some(
+                    m => m.teacherId === teacher.id && m.subjectId === subject.id
+                )
+
+                if (!isDuplicate) {
+                    validMappings.push({
+                        teacherId: teacher.id,
+                        subjectId: subject.id,
+                        teacherName: teacher.name,
+                        subjectName: subject.name
+                    })
+                }
+            }
+        })
+
+        if (errors.length > 0) {
+            alert('❌ Mapping Validation Errors:\n\n' + errors.join('\n') +
+                '\n\nPlease upload Teachers and Subjects first, then upload Mapping.')
+            return
+        }
+
+        if (validMappings.length === 0) {
+            alert('⚠️ No new mappings to add (all already exist)')
+            return
+        }
+
+        setAggregatedData(prev => ({
+            ...prev,
+            teacherSubjectMap: [...prev.teacherSubjectMap, ...validMappings]
+        }))
+
+        alert(`✅ Added ${validMappings.length} teacher-subject mapping(s)`)
 
         // Mark tab as completed
         setCompletedTabs(prev => ({ ...prev, csv: true }))
@@ -261,6 +345,20 @@ function SmartInput() {
                                             }
                                         ]}
                                         title="Subjects"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Teacher-Subject Mappings Preview */}
+                            {aggregatedData.teacherSubjectMap.length > 0 && (
+                                <div className="preview-section">
+                                    <PreviewTable
+                                        data={aggregatedData.teacherSubjectMap}
+                                        columns={[
+                                            { key: 'teacherName', label: 'Teacher' },
+                                            { key: 'subjectName', label: 'Subject' }
+                                        ]}
+                                        title="🧩 Teacher-Subject Mappings"
                                     />
                                 </div>
                             )}

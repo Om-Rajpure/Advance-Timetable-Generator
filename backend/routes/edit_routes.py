@@ -7,9 +7,13 @@ Flask routes for timetable editing operations.
 from flask import Blueprint, request, jsonify
 from edit.validate_edit import validate_slot_edit, validate_timetable_changes
 from edit.suggest_fix import suggest_fix, find_alternate_teacher, find_alternate_room
+from history.history_service import HistoryService
 
 # Create blueprint
 edit_bp = Blueprint('edit', __name__, url_prefix='/api/edit')
+
+# Initialize history service
+history_service = HistoryService()
 
 
 @edit_bp.route('/validate', methods=['POST'])
@@ -210,10 +214,24 @@ def save_timetable():
         # TODO: Actually save to database/file
         # For now, just return success
         
+        # Create version in history
+        try:
+            version = history_service.auto_create_version(
+                timetable=timetable,
+                context=context,
+                action="Manual Edit",
+                description="Manual edits saved"
+            )
+            version_id = version['versionId']
+        except Exception as e:
+            print(f"Failed to create version: {e}")
+            version_id = None
+        
         return jsonify({
             "success": True,
             "message": "Timetable saved successfully",
-            "validation": validation
+            "validation": validation,
+            "versionId": version_id
         }), 200
         
     except Exception as e:

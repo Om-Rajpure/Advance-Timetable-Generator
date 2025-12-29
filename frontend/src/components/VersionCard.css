@@ -1,0 +1,163 @@
+.version-card {
+    position: relative;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.version-card:hover {
+    border-color: #6366f1;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+    transform: translateY(-2px);
+}
+
+.version-card.selected {
+    border-color: #6366f1;
+    background: #f5f7ff;
+}
+
+.version-card::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 24px;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border: 3px solid #6366f1;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.version-card.selected::before {
+    background: #6366f1;
+}
+
+.version-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.version-card__left {
+    flex: 1;
+}
+
+.version-card__id {
+    font-size: 12px;
+    color: #6b7280;
+    font-family: monospace;
+    margin-bottom: 4px;
+}
+
+.version-card__time {
+    font-size: 14px;
+    color: #4b5563;
+    font-weight: 500;
+}
+
+.version-card__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.version-card__badge.blue {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.version-card__badge.green {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.version-card__badge.orange {
+    background: #fed7aa;
+    color: #9a3412;
+}
+
+.version-card__badge.purple {
+    background: #e9d5ff;
+    color: #6b21a8;
+}
+
+.version-card__badge.gray {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.version-card__badge.teal {
+    background: #ccfbf1;
+    color: #115e59;
+}
+
+.version-card__description {
+    font-size: 14px;
+    color: #1f2937;
+    margin-bottom: 12px;
+}
+
+.version-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.version-card__meta {
+    display: flex;
+    gap: 15px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.version-card__meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.version-card__actions {
+    display: flex;
+    gap: 8px;
+}
+
+.version-card__btn {
+    padding: 6px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.version-card__btn:hover {
+    background: #f3f4f6;
+}
+
+.version-card__btn--primary {
+    background: #6366f1;
+    color: white;
+    border-color: #6366f1;
+}
+
+.version-card__btn--primary:hover {
+    background: #4f46e5;
+}
+
+.version-card__btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

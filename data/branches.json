@@ -154,6 +154,450 @@
           "capacity": 25
         }
       ]
+    },
+    {
+      "id": "1716cd6e-d8b0-485a-a6ed-a58c5ee8782d",
+      "createdAt": "2025-12-28T23:11:36.781983",
+      "branchName": "Computer EngineeringComputer Engineering",
+      "academicYears": [
+        "SE",
+        "TE",
+        "BE"
+      ],
+      "divisions": {
+        "SE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "TE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "BE": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      "workingDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "startTime": "8:00 AM",
+      "endTime": "5:00 PM",
+      "lectureDuration": 60,
+      "recessEnabled": true,
+      "recessStart": "12:00 PM",
+      "recessDuration": 60,
+      "classrooms": {
+        "BE": [
+          "BE-1",
+          "BE-2",
+          "BE-3"
+        ],
+        "SE": [
+          "SE-1",
+          "SE-2",
+          "SE-3"
+        ],
+        "TE": [
+          "TE-1",
+          "TE-2",
+          "TE-3"
+        ]
+      },
+      "sharedLabs": [
+        {
+          "name": "Computer Lab 1",
+          "capacity": 30
+        },
+        {
+          "name": "Computer Lab 2",
+          "capacity": 30
+        },
+        {
+          "name": "Electronics Lab",
+          "capacity": 25
+        }
+      ]
+    },
+    {
+      "id": "d0dcbfe3-4aab-4e79-a61a-7e163f1bf0e2",
+      "createdAt": "2025-12-29T08:25:49.608107",
+      "branchName": "Computer",
+      "academicYears": [
+        "SE",
+        "TE",
+        "BE"
+      ],
+      "divisions": {
+        "SE": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "TE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "BE": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      "workingDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "startTime": "9:00 AM",
+      "endTime": "5:00 PM",
+      "lectureDuration": 60,
+      "recessEnabled": true,
+      "recessStart": "1:00 PM",
+      "recessDuration": 45,
+      "classrooms": {
+        "SE": [
+          "SE-1",
+          "SE-2",
+          "SE-3",
+          "SE-4"
+        ],
+        "TE": [
+          "TE-1",
+          "TE-2",
+          "TE-3"
+        ],
+        "BE": [
+          "BE-1",
+          "BE-2",
+          "BE-3"
+        ]
+      },
+      "sharedLabs": [
+        {
+          "name": "Computer Lab 1",
+          "capacity": 30
+        },
+        {
+          "name": "Computer Lab 2",
+          "capacity": 30
+        },
+        {
+          "name": "Electronics Lab",
+          "capacity": 25
+        },
+        {
+          "name": "AI",
+          "capacity": 25
+        }
+      ]
+    },
+    {
+      "id": "52802e3a-2621-4f57-a5a2-394c1bc43b12",
+      "createdAt": "2025-12-29T08:40:40.204196",
+      "branchName": "Computer Scie",
+      "academicYears": [
+        "SE",
+        "TE",
+        "BE"
+      ],
+      "divisions": {
+        "SE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "TE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "BE": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      "workingDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "startTime": "8:00 AM",
+      "endTime": "5:00 PM",
+      "lectureDuration": 60,
+      "recessEnabled": true,
+      "recessStart": "12:00 PM",
+      "recessDuration": 60,
+      "classrooms": {
+        "SE": [
+          "SE-1",
+          "SE-2",
+          "SE-3"
+        ],
+        "TE": [
+          "TE-1",
+          "TE-2",
+          "TE-3"
+        ],
+        "BE": [
+          "BE-1",
+          "BE-2",
+          "BE-3"
+        ]
+      },
+      "sharedLabs": [
+        {
+          "name": "Computer Lab 1",
+          "capacity": 30
+        },
+        {
+          "name": "Computer Lab 2",
+          "capacity": 30
+        },
+        {
+          "name": "Electronics Lab",
+          "capacity": 25
+        }
+      ]
+    },
+    {
+      "id": "20651b4a-d218-48c6-beda-b2090402dc66",
+      "createdAt": "2025-12-29T08:46:02.826268",
+      "branchName": "Artificial",
+      "academicYears": [
+        "SE",
+        "TE",
+        "BE"
+      ],
+      "divisions": {
+        "SE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "TE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "BE": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      "workingDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "startTime": "8:00 AM",
+      "endTime": "5:00 PM",
+      "lectureDuration": 60,
+      "recessEnabled": true,
+      "recessStart": "12:00 PM",
+      "recessDuration": 60,
+      "classrooms": {
+        "SE": [
+          "SE-1",
+          "SE-2",
+          "SE-3"
+        ],
+        "TE": [
+          "TE-1",
+          "TE-2",
+          "TE-3"
+        ],
+        "BE": [
+          "BE-1",
+          "BE-2",
+          "BE-3"
+        ]
+      },
+      "sharedLabs": [
+        {
+          "name": "Computer Lab 1",
+          "capacity": 30
+        },
+        {
+          "name": "Computer Lab 2",
+          "capacity": 30
+        },
+        {
+          "name": "Electronics Lab",
+          "capacity": 25
+        }
+      ]
+    },
+    {
+      "id": "3376438f-16a8-48b7-86d9-617e7b2d1f9d",
+      "createdAt": "2025-12-29T09:05:02.790140",
+      "branchName": "Omkar",
+      "academicYears": [
+        "SE",
+        "TE",
+        "BE"
+      ],
+      "divisions": {
+        "SE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "TE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "BE": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      "workingDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday"
+      ],
+      "startTime": "8:00 AM",
+      "endTime": "5:00 PM",
+      "lectureDuration": 60,
+      "recessEnabled": true,
+      "recessStart": "12:00 PM",
+      "recessDuration": 60,
+      "classrooms": {
+        "SE": [
+          "SE-1",
+          "SE-2",
+          "SE-3"
+        ],
+        "TE": [
+          "TE-1",
+          "TE-2",
+          "TE-3"
+        ],
+        "BE": [
+          "BE-1",
+          "BE-2",
+          "BE-3"
+        ]
+      },
+      "sharedLabs": [
+        {
+          "name": "Computer Lab 1",
+          "capacity": 30
+        },
+        {
+          "name": "Computer Lab 2",
+          "capacity": 30
+        },
+        {
+          "name": "Electronics Lab",
+          "capacity": 25
+        }
+      ]
+    },
+    {
+      "id": "5599daf5-2610-492e-b66f-47941b381159",
+      "createdAt": "2025-12-29T09:27:19.230471",
+      "branchName": "Artificial Intelli",
+      "academicYears": [
+        "SE",
+        "TE",
+        "BE"
+      ],
+      "divisions": {
+        "SE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "TE": [
+          "A",
+          "B"
+        ],
+        "BE": [
+          "A",
+          "B"
+        ]
+      },
+      "workingDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "startTime": "9:00 AM",
+      "endTime": "4:00 PM",
+      "lectureDuration": 60,
+      "recessEnabled": true,
+      "recessStart": "1:00 PM",
+      "recessDuration": 45,
+      "classrooms": {
+        "SE": [
+          "SE-1",
+          "SE-2",
+          "SE-3"
+        ],
+        "TE": [
+          "TE-1",
+          "TE-2"
+        ],
+        "BE": [
+          "BE-1",
+          "BE-2"
+        ]
+      },
+      "sharedLabs": [
+        {
+          "name": "Computer Lab 1",
+          "capacity": 30
+        },
+        {
+          "name": "Computer Lab 2",
+          "capacity": 30
+        },
+        {
+          "name": "Electronics Lab",
+          "capacity": 25
+        },
+        {
+          "name": "lab1",
+          "capacity": 30
+        },
+        {
+          "name": "lab2",
+          "capacity": 30
+        },
+        {
+          "name": "lab3",
+          "capacity": 30
+        },
+        {
+          "name": "lab4",
+          "capacity": null
+        }
+      ]
     }
   ]
 }

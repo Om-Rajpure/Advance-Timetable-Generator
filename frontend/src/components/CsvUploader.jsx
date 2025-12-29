@@ -101,6 +101,11 @@ function CsvUploader({ onDataParsed, existingData = {} }) {
                         render: (val) => val ? '✓ Yes' : '✗ No'
                     }
                 ]
+            case 'teacher_subject_map':
+                return [
+                    { key: 'teacherName', label: 'Teacher' },
+                    { key: 'subjectName', label: 'Subject' }
+                ]
             default:
                 return []
         }
@@ -161,6 +166,15 @@ function CsvUploader({ onDataParsed, existingData = {} }) {
                             onChange={(e) => setUploadType(e.target.value)}
                         />
                         <span>Subjects</span>
+                    </label>
+                    <label className="radio-label">
+                        <input
+                            type="radio"
+                            value="teacher_subject_map"
+                            checked={uploadType === 'teacher_subject_map'}
+                            onChange={(e) => setUploadType(e.target.value)}
+                        />
+                        <span>🧩 Teacher-Subject Mapping</span>
                     </label>
                 </div>
             </div>

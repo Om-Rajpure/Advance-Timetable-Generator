@@ -16,20 +16,32 @@ function WorkflowGuard({ children, requiredStep }) {
         let shouldRedirect = false
         let message = ''
 
+        // ✅ Use selectedBranch as single source of truth
+        const selectedBranch = localStorage.getItem('selectedBranch')
+
+        console.log('🛡️ WorkflowGuard Check:', {
+            requiredStep,
+            selectedBranch: selectedBranch ? 'EXISTS' : 'NULL'
+        })
+
         switch (requiredStep) {
             case 'branchSetup':
-                if (!workflowStatus.canAccessSmartInput) {
+                if (!selectedBranch) {
                     shouldRedirect = true
                     message = 'Please complete Branch Setup first'
+                    console.log('❌ Guard BLOCKED - no branch setup')
                 }
                 break
 
             case 'smartInput':
-                if (!workflowStatus.canAccessGenerate) {
+                if (!selectedBranch) {
                     shouldRedirect = true
-                    message = workflowStatus.branchSetupCompleted
-                        ? 'Please complete Smart Input first'
-                        : 'Please complete Branch Setup and Smart Input first'
+                    message = 'Please complete Branch Setup first'
+                    console.log(' Guard BLOCKED - no branch setup')
+                } else if (!workflowStatus.smartInputCompleted) {
+                    shouldRedirect = true
+                    message = 'Please complete Smart Input first'
+                    console.log('❌ Guard BLOCKED - Smart Input not completed')
                 }
                 break
 

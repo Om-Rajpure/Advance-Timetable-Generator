@@ -7,9 +7,13 @@ Flask routes for timetable generation operations.
 from flask import Blueprint, request, jsonify
 from engine.scheduler import TimetableScheduler
 from engine.optimizer import TimetableOptimizer
+from history.history_service import HistoryService
 
 # Create blueprint
 generation_bp = Blueprint('generation', __name__, url_prefix='/api/generate')
+
+# Initialize history service
+history_service = HistoryService()
 
 
 @generation_bp.route('/full', methods=['POST'])
@@ -69,6 +73,19 @@ def generate_full_timetable():
             from constraints.constraint_engine import ConstraintEngine
             engine = ConstraintEngine()
             result['qualityScore'] = engine.compute_quality_score(optimized, context)
+            
+            # Create version in history
+            try:
+                version = history_service.auto_create_version(
+                    timetable=optimized,
+                    context=context,
+                    action="Generation",
+                    description=f"Full timetable generated with {len(optimized)} slots"
+                )
+                result['versionId'] = version['versionId']
+            except Exception as e:
+                print(f"Failed to create version: {e}")
+                # Continue even if version creation fails
         
         return jsonify(result), 200 if result['success'] else 400
         
@@ -188,12 +205,26 @@ def optimize_timetable():
         # Compute final score
         final_score = engine.compute_quality_score(optimized, context)
         
+        # Create version in history
+        try:
+            version = history_service.auto_create_version(
+                timetable=optimized,
+                context=context,
+                action="Optimization",
+                description=f"Timetable optimized - quality improved by {round(final_score - initial_score, 2)} points"
+            )
+            version_id = version['versionId']
+        except Exception as e:
+            print(f"Failed to create version: {e}")
+            version_id = None
+        
         return jsonify({
             "success": True,
             "timetable": optimized,
             "qualityScore": final_score,
             "improvement": final_score - initial_score,
-            "initialScore": initial_score
+            "initialScore": initial_score,
+            "versionId": version_id
         }), 200
         
     except Exception as e:

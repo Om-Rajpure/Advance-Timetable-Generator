@@ -19,6 +19,7 @@ function EditableTimetable() {
     const [timetable, setTimetable] = useState(initialTimetable);
     const [savedTimetable, setSavedTimetable] = useState(initialTimetable);
     const [undoStack, setUndoStack] = useState([]);
+    const [redoStack, setRedoStack] = useState([]);
 
     // UI state
     const [editingSlot, setEditingSlot] = useState(null);
@@ -30,6 +31,7 @@ function EditableTimetable() {
     const context = initialContext;
     const hasChanges = JSON.stringify(timetable) !== JSON.stringify(savedTimetable);
     const canUndo = undoStack.length > 0;
+    const canRedo = redoStack.length > 0;
 
     useEffect(() => {
         // Compute initial quality score if not provided
@@ -69,6 +71,9 @@ function EditableTimetable() {
         // Add current state to undo stack
         setUndoStack(prev => [...prev, timetable]);
 
+        // Clear redo stack when new edit is made
+        setRedoStack([]);
+
         // Update timetable
         const updatedTimetable = timetable.map(s =>
             s.id === modifiedSlot.id ? modifiedSlot : s
@@ -83,9 +88,26 @@ function EditableTimetable() {
     const handleUndo = () => {
         if (canUndo) {
             const previousState = undoStack[undoStack.length - 1];
+
+            // Add current state to redo stack
+            setRedoStack(prev => [...prev, timetable]);
+
             setTimetable(previousState);
             setUndoStack(prev => prev.slice(0, -1));
             computeQualityScore(previousState);
+        }
+    };
+
+    const handleRedo = () => {
+        if (canRedo) {
+            const nextState = redoStack[redoStack.length - 1];
+
+            // Add current state to undo stack
+            setUndoStack(prev => [...prev, timetable]);
+
+            setTimetable(nextState);
+            setRedoStack(prev => prev.slice(0, -1));
+            computeQualityScore(nextState);
         }
     };
 
@@ -93,6 +115,7 @@ function EditableTimetable() {
         if (window.confirm('Reset to last saved version? All unsaved changes will be lost.')) {
             setTimetable(savedTimetable);
             setUndoStack([]);
+            setRedoStack([]);
             computeQualityScore(savedTimetable);
         }
     };
@@ -140,7 +163,9 @@ function EditableTimetable() {
 
             <UndoControls
                 canUndo={canUndo}
+                canRedo={canRedo}
                 onUndo={handleUndo}
+                onRedo={handleRedo}
                 onReset={handleReset}
                 onSave={handleSave}
                 hasChanges={hasChanges}

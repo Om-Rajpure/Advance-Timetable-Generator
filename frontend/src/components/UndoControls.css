@@ -32,6 +32,15 @@
     background: #dee2e6;
 }
 
+.control-button.redo {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.control-button.redo:hover:not(:disabled) {
+    background: #dee2e6;
+}
+
 .control-button.reset {
     background: #fff3cd;
     color: #856404;

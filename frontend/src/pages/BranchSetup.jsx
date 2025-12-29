@@ -175,9 +175,15 @@ function BranchSetup() {
 
     // Handle final submission
     const handleSubmit = async () => {
-        if (!validateCurrentStep()) return
+        console.log('🚀 Branch Setup: handleSubmit called')
+
+        if (!validateCurrentStep()) {
+            console.log('❌ Branch Setup: Validation failed')
+            return
+        }
 
         setIsSubmitting(true)
+        console.log('📤 Branch Setup: Submitting to API...', formData)
 
         try {
             // Submit to backend API
@@ -189,11 +195,14 @@ function BranchSetup() {
                 body: JSON.stringify(formData)
             })
 
+            console.log('📥 Branch Setup: API response status:', response.status)
+
             if (!response.ok) {
                 throw new Error('Failed to save branch configuration')
             }
 
             const data = await response.json()
+            console.log('✅ Branch Setup: API success', data)
 
             // Clear draft since submission was successful
             clearDraft()
@@ -204,21 +213,33 @@ function BranchSetup() {
                 years: formData.academicYears.length,
                 divisions: Object.values(formData.divisions).reduce((sum, divs) => sum + divs.length, 0)
             }
+            console.log('💾 Branch Setup: Updating branch info', branchInfo)
             updateBranch(branchInfo)
 
             // Mark branch setup as completed
+            console.log('⏰ ABOUT TO CALL completeBranchSetup()')
             completeBranchSetup()
+            console.log('✨ AFTER calling completeBranchSetup()')
+
+            // Verify it was set
+            const wasSet = localStorage.getItem('branchSetupCompleted')
+            console.log('🔍 Branch Setup: localStorage check after completion:', wasSet)
+
+            if (wasSet !== 'true') {
+                console.error('🚨 CRITICAL: localStorage was NOT set correctly!')
+            }
 
             // Show success animation
             setShowSuccess(true)
 
             // Navigate to Smart Input Module after 2 seconds
             setTimeout(() => {
+                console.log('🔄 Branch Setup: Navigating to Smart Input')
                 navigate('/smart-input')
             }, 2000)
 
         } catch (error) {
-            console.error('Error saving branch:', error)
+            console.error('💥 Branch Setup: Error saving branch:', error)
             alert('Failed to save branch configuration. Please try again.')
         } finally {
             setIsSubmitting(false)

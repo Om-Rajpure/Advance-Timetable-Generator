@@ -10,6 +10,9 @@ export function useDashboardState() {
     const [timetableStatus, setTimetableStatus] = useState('draft')
     const [hasTimetable, setHasTimetable] = useState(false)
 
+    // Loading state to prevent race conditions
+    const [isLoading, setIsLoading] = useState(true)
+
     // Workflow completion tracking
     const [branchSetupCompleted, setBranchSetupCompleted] = useState(false)
     const [smartInputCompleted, setSmartInputCompleted] = useState(false)
@@ -46,6 +49,9 @@ export function useDashboardState() {
         setBranchSetupCompleted(branchSetupData === 'true')
         setSmartInputCompleted(smartInputData === 'true')
         setTimetableGenerated(timetableGeneratedData === 'true')
+
+        // Mark as loaded
+        setIsLoading(false)
     }, [])
 
     // Helper methods
@@ -114,7 +120,11 @@ export function useDashboardState() {
 
     // Workflow completion methods
     const completeBranchSetup = () => {
+        console.log('🎯 completeBranchSetup() EXECUTED')
         localStorage.setItem('branchSetupCompleted', 'true')
+        console.log('💾 localStorage.setItem("branchSetupCompleted", "true") DONE')
+        const verify = localStorage.getItem('branchSetupCompleted')
+        console.log('✅ VERIFICATION: localStorage now has:', verify)
         setBranchSetupCompleted(true)
     }
 
@@ -143,6 +153,7 @@ export function useDashboardState() {
     }
 
     return {
+        isLoading,
         getBranchInfo,
         getTimetableStatus,
         hasActiveTimetable,

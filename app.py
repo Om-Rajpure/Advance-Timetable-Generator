@@ -18,6 +18,7 @@ from routes.generation_routes import generation_bp
 from routes.validation_routes import validation_bp
 from routes.edit_routes import edit_bp
 from routes.analytics_routes import analytics_bp
+from routes.history_routes import history_bp
 
 app = Flask(__name__, static_folder='static', static_url_path='')
 CORS(app)
@@ -28,17 +29,21 @@ app.register_blueprint(generation_bp)
 app.register_blueprint(validation_bp)
 app.register_blueprint(edit_bp)
 app.register_blueprint(analytics_bp)
+app.register_blueprint(history_bp)
 
 # Data directory setup
 DATA_DIR = 'data'
 BRANCHES_FILE = os.path.join(DATA_DIR, 'branches.json')
 UPLOAD_DIR = os.path.join(DATA_DIR, 'uploads')
+VERSIONS_DIR = os.path.join(DATA_DIR, 'versions')
 
 # Ensure data directories exist
 if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 if not os.path.exists(UPLOAD_DIR):
     os.makedirs(UPLOAD_DIR)
+if not os.path.exists(VERSIONS_DIR):
+    os.makedirs(VERSIONS_DIR)
 
 # Allowed file extensions
 ALLOWED_EXTENSIONS = {'csv', 'xlsx', 'xls', 'pdf'}
@@ -302,6 +307,10 @@ from simulation.scenarios import (
     simulate_days_reduced
 )
 from simulation.simulation_report import generate_simulation_report
+from history.history_service import HistoryService
+
+# Initialize history service for simulation
+history_service_sim = HistoryService()
 
 @app.route('/api/simulation/scenarios', methods=['GET'])
 def get_available_scenarios():
@@ -482,10 +491,36 @@ def apply_simulation():
         # For now, we'll just return a success message
         # You can extend this to integrate with your existing timetable storage
         
+        # Create version in history
+        try:
+            # Get branch and smart input data from request
+            branch_data = data.get('branchData')
+            smart_input_data = data.get('smartInputData')
+            
+            if branch_data and smart_input_data:
+                context = {
+                    'branchData': branch_data,
+                    'smartInputData': smart_input_data
+                }
+                
+                version = history_service_sim.auto_create_version(
+                    timetable=simulated_timetable,
+                    context=context,
+                    action="Simulation Applied",
+                    description="What-If simulation applied to active timetable"
+                )
+                version_id = version['versionId']
+            else:
+                version_id = None
+        except Exception as e:
+            print(f"Failed to create version: {e}")
+            version_id = None
+        
         return jsonify({
             'success': True,
             'message': 'Simulation applied successfully',
-            'timetableSlots': len(simulated_timetable)
+            'timetableSlots': len(simulated_timetable),
+            'versionId': version_id
         }), 200
         
     except Exception as e:

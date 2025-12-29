@@ -1,0 +1,25 @@
+subject_code,subject_name,year,type,lectures_per_week
+FE_T1,Engineering Mathematics I,FE,Theory,4
+FE_T2,Engineering Physics,FE,Theory,4
+FE_T3,Engineering Chemistry,FE,Theory,4
+FE_T4,Basic Electrical Engineering,FE,Theory,3
+FE_T5,Engineering Mechanics,FE,Theory,3
+FE_L1,Physics Lab,FE,Lab,2
+FE_L2,Chemistry Lab,FE,Lab,2
+FE_L3,Workshop Practice,FE,Lab,2
+SE_T1,Discrete Mathematics,SE,Theory,4
+SE_T2,Data Structures,SE,Theory,4
+SE_T3,Computer Organization,SE,Theory,3
+SE_T4,Object Oriented Programming,SE,Theory,3
+SE_T5,Probability & Statistics,SE,Theory,3
+SE_L1,Data Structures Lab,SE,Lab,2
+SE_L2,OOP Lab,SE,Lab,2
+SE_L3,Digital Logic Lab,SE,Lab,2
+TE_T1,Database Management Systems,TE,Theory,4
+TE_T2,Operating Systems,TE,Theory,4
+TE_T3,Computer Networks,TE,Theory,3
+TE_T4,Software Engineering,TE,Theory,3
+TE_T5,Theory of Computation,TE,Theory,3
+TE_L1,DBMS Lab,TE,Lab,2
+TE_L2,OS Lab,TE,Lab,2
+TE_L3,CN Lab,TE,Lab,2
