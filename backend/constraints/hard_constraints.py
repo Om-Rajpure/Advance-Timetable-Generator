@@ -207,8 +207,8 @@ class WeeklyLectureCompletionConstraint(Constraint):
         # Count actual lectures in timetable
         actual_lectures = {}
         for slot in timetable:
-            if slot.get('type') == 'Practical':
-                continue  # Don't count practicals as lectures
+            if slot.get('type') == 'Practical' or slot.get('subject') == 'Free':
+                continue  # Don't count practicals or free slots as lectures
             
             key = (slot.get('subject'), slot.get('year'), slot.get('division'))
             if key not in actual_lectures:
@@ -305,7 +305,7 @@ class StructuralValidityConstraint(Constraint):
             
             # Check subject
             subject = slot.get('subject')
-            if subject and subject != 'Unassigned' and subject not in valid_subjects:
+            if subject and subject not in ['Unassigned', 'Free'] and subject not in valid_subjects:
                 violations.append(ConstraintViolation(
                     message=f"Invalid subject '{subject}' referenced in timetable",
                     entities={"subject": subject},

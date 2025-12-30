@@ -191,20 +191,25 @@ function Dashboard() {
 
                             {/* Generate New Timetable */}
                             <button
-                                className="action-button generate-action"
+                                className={`action-button generate-action ${!workflowStatus.smartInputCompleted ? 'disabled' : ''}`}
                                 onClick={handleGenerate}
+                                disabled={!workflowStatus.smartInputCompleted}
                             >
                                 <div className="action-icon-wrapper">
                                     <span className="action-icon">🚀</span>
                                 </div>
                                 <h3 className="action-title">Generate New Timetable</h3>
                                 <p className="action-description">
-                                    {!branchInfo.exists
-                                        ? 'Set up branch first, then generate clash-free timetable'
+                                    {!workflowStatus.smartInputCompleted
+                                        ? 'Smart Input Incomplete. Please confirm data first.'
                                         : 'Create a new AI-powered clash-free timetable'}
                                 </p>
                                 <div className="action-footer">
-                                    <span className="action-arrow">→</span>
+                                    {workflowStatus.smartInputCompleted ? (
+                                        <span className="action-arrow">→</span>
+                                    ) : (
+                                        <span className="disabled-badge">Locked</span>
+                                    )}
                                 </div>
                             </button>
 

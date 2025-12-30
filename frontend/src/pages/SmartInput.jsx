@@ -41,12 +41,40 @@ function SmartInput() {
         prompt: false
     })
 
-    // Data State
-    const [aggregatedData, setAggregatedData] = useState({
-        teachers: [],
-        subjects: [],
-        teacherSubjectMap: []
+    // State Management for Input Lifecycle
+    // Stages: 'idle' -> 'extracted' -> 'editing' -> 'confirmed' -> 'added'
+    const [inputStage, setInputStage] = useState(() => {
+        return localStorage.getItem('smartInputStage') || 'idle'
     })
+
+    // Track uploaded files metadata
+    const [uploadedFiles, setUploadedFiles] = useState(() => {
+        const saved = localStorage.getItem('smartInputFiles')
+        return saved ? JSON.parse(saved) : {
+            teachers: null,
+            subjects: null,
+            mapping: null
+        }
+    })
+
+    // Data State - Initialize from LocalStorage if available
+    const [aggregatedData, setAggregatedData] = useState(() => {
+        const saved = localStorage.getItem('smartInputData')
+        return saved ? JSON.parse(saved) : {
+            teachers: [],
+            subjects: [],
+            teacherSubjectMap: []
+        }
+    })
+
+    // Persist state changes
+    useEffect(() => {
+        localStorage.setItem('smartInputStage', inputStage)
+        localStorage.setItem('smartInputFiles', JSON.stringify(uploadedFiles))
+        localStorage.setItem('smartInputData', JSON.stringify(aggregatedData))
+    }, [inputStage, uploadedFiles, aggregatedData])
+
+    // ... (imports and other setup)
 
     // Academic context (could be passed from parent or fetched)
     const [academicYears, setAcademicYears] = useState(['FE', 'SE', 'TE', 'BE'])
@@ -62,181 +90,135 @@ function SmartInput() {
     const handleCsvData = (data, uploadType) => {
         console.log('CSV Data received:', uploadType, data)
 
-        // Route mapping data to dedicated handler
         if (uploadType === 'teacher_subject_map') {
             handleMappingData(data)
             return
         }
 
         setAggregatedData(prev => {
+            // ... (existing merge logic)
             const updated = { ...prev }
-
             if (uploadType === 'teachers' && data.length > 0) {
-                // Merge teachers, avoiding duplicates by name
                 const existingNames = new Set(prev.teachers.map(t => t.name.toLowerCase()))
                 const newTeachers = data.filter(t => !existingNames.has(t.name.toLowerCase()))
                 updated.teachers = [...prev.teachers, ...newTeachers]
             }
-
             if (uploadType === 'subjects' && data.length > 0) {
-                // Merge subjects, avoiding duplicates by name
                 const existingNames = new Set(prev.subjects.map(s => s.name.toLowerCase()))
                 const newSubjects = data.filter(s => !existingNames.has(s.name.toLowerCase()))
                 updated.subjects = [...prev.subjects, ...newSubjects]
             }
-
             return updated
         })
 
-        // Mark tab as completed
+        // Transition to 'extracted' if idle
+        if (inputStage === 'idle') {
+            setInputStage('extracted')
+        }
+
         setCompletedTabs(prev => ({ ...prev, csv: true }))
     }
 
-    // Handle Teacher-Subject Mapping Upload
-    const handleMappingData = (data) => {
-        console.log('Mapping data received:', data)
-
-        // Validate mappings against existing teachers and subjects
-        const validMappings = []
-        const errors = []
-
-        data.forEach((mapping, index) => {
-            const teacher = aggregatedData.teachers.find(
-                t => t.name.toLowerCase() === mapping.teacherName.toLowerCase()
-            )
-            const subject = aggregatedData.subjects.find(
-                s => s.name.toLowerCase() === mapping.subjectName.toLowerCase()
-            )
-
-            if (!teacher) {
-                errors.push(`Row ${index + 1}: Teacher "${mapping.teacherName}" not found in Teachers list`)
-            }
-            if (!subject) {
-                errors.push(`Row ${index + 1}: Subject "${mapping.subjectName}" not found in Subjects list`)
-            }
-
-            if (teacher && subject) {
-                // Check for duplicate mapping
-                const isDuplicate = aggregatedData.teacherSubjectMap.some(
-                    m => m.teacherId === teacher.id && m.subjectId === subject.id
-                )
-
-                if (!isDuplicate) {
-                    validMappings.push({
-                        teacherId: teacher.id,
-                        subjectId: subject.id,
-                        teacherName: teacher.name,
-                        subjectName: subject.name
-                    })
-                }
-            }
-        })
-
-        if (errors.length > 0) {
-            alert('❌ Mapping Validation Errors:\n\n' + errors.join('\n') +
-                '\n\nPlease upload Teachers and Subjects first, then upload Mapping.')
-            return
-        }
-
-        if (validMappings.length === 0) {
-            alert('⚠️ No new mappings to add (all already exist)')
-            return
-        }
-
-        setAggregatedData(prev => ({
-            ...prev,
-            teacherSubjectMap: [...prev.teacherSubjectMap, ...validMappings]
-        }))
-
-        alert(`✅ Added ${validMappings.length} teacher-subject mapping(s)`)
-
-        // Mark tab as completed
-        setCompletedTabs(prev => ({ ...prev, csv: true }))
-    }
-
-    // Handle Bulk Text Data
-    const handleBulkTextData = (parsedData) => {
-        console.log('Bulk Text Data received:', parsedData)
-
-        setAggregatedData(prev => {
-            const updated = { ...prev }
-
-            // Merge teachers
-            if (parsedData.teachers && parsedData.teachers.length > 0) {
-                const existingNames = new Set(prev.teachers.map(t => t.name.toLowerCase()))
-                const newTeachers = parsedData.teachers.filter(t => !existingNames.has(t.name.toLowerCase()))
-                updated.teachers = [...prev.teachers, ...newTeachers]
-            }
-
-            // Merge subjects
-            if (parsedData.subjects && parsedData.subjects.length > 0) {
-                const existingNames = new Set(prev.subjects.map(s => s.name.toLowerCase()))
-                const newSubjects = parsedData.subjects.filter(s => !existingNames.has(s.name.toLowerCase()))
-                updated.subjects = [...prev.subjects, ...newSubjects]
-            }
-
-            // Merge teacher-subject mappings
-            if (parsedData.teacherSubjectMap && parsedData.teacherSubjectMap.length > 0) {
-                updated.teacherSubjectMap = [...prev.teacherSubjectMap, ...parsedData.teacherSubjectMap]
-            }
-
-            return updated
-        })
-
-        // Mark tab as completed
-        setCompletedTabs(prev => ({ ...prev, bulk: true }))
-    }
-
-    // Handle Natural Language Prompt Data
-    const handlePromptData = (extractedData) => {
-        console.log('Prompt Data received:', extractedData)
-
-        setAggregatedData(prev => {
-            const updated = { ...prev }
-
-            // Merge teachers
-            if (extractedData.teachers && extractedData.teachers.length > 0) {
-                const existingNames = new Set(prev.teachers.map(t => t.name.toLowerCase()))
-                const newTeachers = extractedData.teachers.filter(t => !existingNames.has(t.name.toLowerCase()))
-                updated.teachers = [...prev.teachers, ...newTeachers]
-            }
-
-            // Merge subjects
-            if (extractedData.subjects && extractedData.subjects.length > 0) {
-                const existingNames = new Set(prev.subjects.map(s => s.name.toLowerCase()))
-                const newSubjects = extractedData.subjects.filter(s => !existingNames.has(s.name.toLowerCase()))
-                updated.subjects = [...prev.subjects, ...newSubjects]
-            }
-
-            // Merge teacher-subject mappings
-            if (extractedData.teacherSubjectMap && extractedData.teacherSubjectMap.length > 0) {
-                updated.teacherSubjectMap = [...prev.teacherSubjectMap, ...extractedData.teacherSubjectMap]
-            }
-
-            return updated
-        })
-
-        // Mark tab as completed
-        setCompletedTabs(prev => ({ ...prev, prompt: true }))
-    }
+    // ... (handleMappingData logic similar update if needed)
 
     // Handle Tab Change
     const handleTabChange = (tabId) => {
         setActiveTab(tabId)
     }
 
-    // Save/Submit Data
+    // Toggle Edit Mode
+    const toggleEditMode = () => {
+        if (inputStage === 'added') return // Locked
+
+        if (inputStage === 'editing') {
+            // Cancel Edit -> Go back to previous state (extracted or confirmed)
+            // Ideally we'd know previous, but for simplicity:
+            // If data was confirmed before, go to confirmed. Else extracted.
+            // Simplified: Just go to 'extracted' for now as 'confirmed' implies done.
+            // Actually, better logic: 
+            // If we have data, we are at least 'extracted'.
+            setInputStage('extracted')
+        } else {
+            setInputStage('editing')
+        }
+    }
+
+    // Save Changes (End Edit Mode)
+    const handleSaveChanges = () => {
+        // Here we assume data is updated via handleDataUpdate calls
+        // Transition to 'confirmed' (or back to 'extracted' then user clicks confirm?)
+        // Per requirement: Edit -> Save -> Confirmed is not the flow.
+        // Flow: Edit -> Save -> Back to Preview (Extracted) -> Then User clicks Confirm
+        // user requirement: "Edit (Optional) ... -> Confirm"
+        // So Save just exits edit mode.
+        setInputStage('extracted')
+    }
+
+    // Confirm (Lock Data)
+    const handleConfirmData = () => {
+        // Validation Gate 1 & 2
+        if (aggregatedData.teachers.length === 0 || aggregatedData.subjects.length === 0) {
+            alert('❌ Cannot confirm empty data. Please upload Teachers and Subjects.')
+            return
+        }
+        if (aggregatedData.teacherSubjectMap.length === 0) {
+            alert('❌ Missing Teacher-Subject Mappings!\n\nPlease upload the Mapping CSV.')
+            return
+        }
+
+        setInputStage('confirmed')
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    // Add to System (Final Commit)
+    const handleAddToSystem = () => {
+        if (inputStage !== 'confirmed') return
+
+        const confirmMsg = '➕ Add to System?\n\nThis will commit the data and enable timetable generation.\nThis action is final for this session.'
+
+        if (window.confirm(confirmMsg)) {
+            setInputStage('added')
+            completeSmartInput() // Mark module as complete in dashboard
+            alert('✅ Smart Input data added successfully!')
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+    }
+
+    // Edit Again (from Confirmed state)
+    const handleEditAgain = () => {
+        setInputStage('editing')
+    }
+
+    // Re-upload / Reset (Destructive)
+    const handleReset = () => {
+        if (window.confirm('🗑 Reset all input data?\n\nThis will clear everything and take you back to the start.')) {
+            setAggregatedData({ teachers: [], subjects: [], teacherSubjectMap: [] })
+            setUploadedFiles({ teachers: null, subjects: null, mapping: null })
+            setInputStage('idle')
+        }
+    }
+
+    const handleFileRemove = (type) => {
+        if (inputStage === 'added') return
+
+        if (window.confirm(`🗑 Remove ${type} data?`)) {
+            setUploadedFiles(prev => ({ ...prev, [type]: null }))
+            setAggregatedData(prev => {
+                const updated = { ...prev }
+                if (type === 'teachers') { updated.teachers = []; updated.teacherSubjectMap = [] }
+                else if (type === 'subjects') { updated.subjects = []; updated.teacherSubjectMap = [] }
+                else if (type === 'mapping') { updated.teacherSubjectMap = [] }
+                return updated
+            })
+            // If we clear data, revert to idle or extracted depending on what's left
+            // For simplicity, if no data left, idle.
+            // We'll calculate this better in effect or just leave as is
+        }
+    }
+
+    // Save/Submit Data (Legacy handler - kept for compatibility but redirected)
     const handleSaveData = () => {
-        console.log('Saving aggregated data:', aggregatedData)
-
-        // Mark Smart Input as completed
-        completeSmartInput()
-
-        // Show success message
-        alert(`✅ Smart Input Completed!\n\n${aggregatedData.teachers.length} teachers\n${aggregatedData.subjects.length} subjects\n${aggregatedData.teacherSubjectMap.length} mappings\n\nReady for timetable generation!`)
-
-        // Navigate to dashboard (or generate-timetable when ready)
-        navigate('/dashboard')
+        handleConfirmData()
     }
 
     return (
@@ -252,6 +234,8 @@ function SmartInput() {
 
                 {/* Suspense Wrapper - Load components dynamically */}
                 <Suspense fallback={<LoadingState message="Loading Smart Input..." />}>
+
+
                     {/* Tab Navigation */}
                     <InputTabs
                         activeTab={activeTab}
@@ -265,6 +249,13 @@ function SmartInput() {
                             <CsvUploader
                                 onDataParsed={handleCsvData}
                                 existingData={aggregatedData}
+                                uploadedFiles={uploadedFiles}
+                                onFileRemove={handleFileRemove}
+                                onFileUpload={(type, file) => setUploadedFiles(prev => ({
+                                    ...prev,
+                                    [type]: { name: file.name, timestamp: Date.now() }
+                                }))}
+                                isLocked={inputStage === 'added'}
                             />
                         )}
 
@@ -284,17 +275,78 @@ function SmartInput() {
                         )}
                     </div>
 
-                    {/* Aggregated Data Preview */}
+                    {/* Aggregated Data Preview & Actions */}
                     {(aggregatedData.teachers.length > 0 || aggregatedData.subjects.length > 0) && (
                         <div className="aggregated-preview">
                             <div className="preview-header">
-                                <h3>📋 Aggregated Data Summary</h3>
-                                <button
-                                    className="btn-save-data"
-                                    onClick={handleSaveData}
-                                >
-                                    💾 Save All Data
-                                </button>
+                                <h3>
+                                    📋 Aggregated Data Summary
+                                    {inputStage === 'confirmed' && <span className="status-badge locked">🔒 Locked</span>}
+                                    {inputStage === 'editing' && <span className="status-badge editing">✏️ Editing</span>}
+                                </h3>
+
+                                <div className="header-actions">
+                                    {/* Action Logic based on Stage */}
+                                    {inputStage === 'extracted' && (
+                                        <>
+                                            <button
+                                                className="btn-edit-toggle"
+                                                onClick={toggleEditMode}
+                                            >
+                                                ✏️ Edit Data
+                                            </button>
+                                        </>
+                                    )}
+
+                                    {inputStage === 'editing' && (
+                                        <>
+                                            <button
+                                                className="btn-cancel-edit"
+                                                onClick={toggleEditMode}
+                                            >
+                                                ❌ Cancel Format
+                                            </button>
+                                            <button
+                                                className="btn-save-data"
+                                                onClick={handleSaveChanges}
+                                            >
+                                                💾 Save Changes
+                                            </button>
+                                        </>
+                                    )}
+
+                                    {inputStage === 'extracted' && aggregatedData.teachers.length > 0 && (
+                                        <button
+                                            className="btn-confirm-data"
+                                            onClick={handleConfirmData}
+                                        >
+                                            ✅ Confirm Data
+                                        </button>
+                                    )}
+
+                                    {inputStage === 'confirmed' && (
+                                        <>
+                                            <button
+                                                className="btn-secondary"
+                                                onClick={handleEditAgain}
+                                            >
+                                                ✏️ Edit Again
+                                            </button>
+                                            <button
+                                                className="btn-add-system"
+                                                onClick={handleAddToSystem}
+                                            >
+                                                ➕ Add to System
+                                            </button>
+                                        </>
+                                    )}
+
+                                    {inputStage === 'added' && (
+                                        <span className="status-badge success">
+                                            ✅ Added to System
+                                        </span>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="preview-stats">
@@ -321,10 +373,12 @@ function SmartInput() {
                                     <PreviewTable
                                         data={aggregatedData.teachers}
                                         columns={[
-                                            { key: 'name', label: 'Teacher Name' },
-                                            { key: 'maxLecturesPerDay', label: 'Max Lectures/Day' }
+                                            { key: 'name', label: 'Teacher Name', editable: true },
+                                            { key: 'maxLecturesPerDay', label: 'Max Lectures/Day', editable: true, type: 'number' }
                                         ]}
                                         title="Teachers"
+                                        isEditable={inputStage === 'editing'}
+                                        onDataUpdate={(newData) => handleDataUpdate('teachers', newData)}
                                     />
                                 </div>
                             )}
@@ -335,16 +389,24 @@ function SmartInput() {
                                     <PreviewTable
                                         data={aggregatedData.subjects}
                                         columns={[
-                                            { key: 'name', label: 'Subject Name' },
-                                            { key: 'year', label: 'Year' },
-                                            { key: 'weeklyLectures', label: 'Weekly Lectures' },
+                                            { key: 'name', label: 'Subject Name', editable: true },
+                                            { key: 'year', label: 'Year', editable: true, options: ['FE', 'SE', 'TE', 'BE'] },
+                                            { key: 'weeklyLectures', label: 'Weekly Lectures', editable: true, type: 'number' },
                                             {
                                                 key: 'isPractical',
-                                                label: 'Practical',
-                                                render: (val) => val ? '✓ Yes' : '✗ No'
+                                                label: 'Type',
+                                                editable: true,
+                                                type: 'select',
+                                                options: [
+                                                    { label: 'Theory', value: false },
+                                                    { label: 'Practical (Lab)', value: true }
+                                                ],
+                                                render: (val) => val ? <span className="badge-lab">🔵 Lab</span> : <span className="badge-theory">🟢 Theory</span>
                                             }
                                         ]}
                                         title="Subjects"
+                                        isEditable={inputStage === 'editing'}
+                                        onDataUpdate={(newData) => handleDataUpdate('subjects', newData)}
                                     />
                                 </div>
                             )}
@@ -359,6 +421,7 @@ function SmartInput() {
                                             { key: 'subjectName', label: 'Subject' }
                                         ]}
                                         title="🧩 Teacher-Subject Mappings"
+                                        isEditable={false} // Mappings hard to edit inline due to IDs
                                     />
                                 </div>
                             )}

@@ -135,14 +135,35 @@ function processCSVData(data, fileType) {
                 }
 
                 const weeklyLectures = parseInt(row.weekly_lectures || row.lectures || '4')
-                const isPractical = (row.is_practical || row.practical || '').toLowerCase() === 'true'
+
+                // Smart Type Detection Logic
+                let isPractical = false
+
+                // 1. Check explicit 'type' column (Highest Priority)
+                if (row.type) {
+                    const typeVal = row.type.toLowerCase().trim()
+                    if (typeVal === 'lab' || typeVal === 'practical') {
+                        isPractical = true
+                    }
+                }
+                // 2. Check traditional 'is_practical' boolean
+                else if (row.is_practical || row.practical) {
+                    isPractical = (row.is_practical || row.practical || '').toString().toLowerCase() === 'true'
+                }
+                // 3. Keyword Detection (Fallback)
+                else {
+                    const lowerName = subjectName.toLowerCase()
+                    if (lowerName.includes('lab') || lowerName.includes('practical') || lowerName.includes('workshop')) {
+                        isPractical = true
+                    }
+                }
 
                 processed.data.push({
                     id: generateId(),
                     name: normalizeSubjectName(subjectName),
                     year: year.toUpperCase(),
                     weeklyLectures: isNaN(weeklyLectures) ? 4 : weeklyLectures,
-                    isPractical
+                    isPractical // true = Lab, false = Theory
                 })
             })
             break
@@ -391,7 +412,7 @@ export function createCSVTemplate(type) {
             return 'teacher_name,max_lectures_per_day\nAjay,4\nNeha,3\nRamesh,5'
 
         case 'subjects':
-            return 'subject_name,year,weekly_lectures,is_practical\nMathematics,SE,4,false\nAI,TE,3,false\nML Lab,TE,2,true'
+            return 'subject_name,year,weekly_lectures,type\nMathematics,SE,4,Theory\nAI,TE,3,Theory\nML Lab,TE,2,Lab'
 
         case 'teacher_subject_map':
             return 'teacher_name,subject_name\nAjay,Mathematics\nAjay,AI\nNeha,ML Lab'

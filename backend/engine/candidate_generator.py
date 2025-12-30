@@ -46,6 +46,22 @@ class CandidateGenerator:
         all_candidates = practical_candidates + lecture_candidates
         all_candidates.sort(key=lambda x: x.get('score', 0))
         
+        # Always add a "Free" slot candidate as the last resort
+        # This allows the scheduler to leave a slot empty if necessary
+        free_candidate = {
+            'day': day,
+            'slot': slot_index,
+            'year': year,
+            'division': division,
+            'subject': 'Free',
+            'teacher': 'TBA',
+            'room': 'TBA',
+            'type': 'Free',
+            'batch': None,
+            'score': 1000  # High score so it's tried last
+        }
+        all_candidates.append(free_candidate)
+        
         return all_candidates
     
     def _generate_lecture_candidates(self, slot_info):

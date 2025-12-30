@@ -1,6 +1,6 @@
 import React from 'react'
 
-function PreviewTable({ data = [], columns = [], title = '', onEdit, validationResults = {} }) {
+function PreviewTable({ data = [], columns = [], title = '', onEdit, validationResults = {}, isEditable = false, onDataUpdate }) {
     const [sortColumn, setSortColumn] = React.useState(null)
     const [sortDirection, setSortDirection] = React.useState('asc')
 
@@ -81,7 +81,6 @@ function PreviewTable({ data = [], columns = [], title = '', onEdit, validationR
                                     </div>
                                 </th>
                             ))}
-                            {onEdit && <th className="preview-table-th actions-col">Actions</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -92,21 +91,56 @@ function PreviewTable({ data = [], columns = [], title = '', onEdit, validationR
                                     key={row.id || rowIndex}
                                     className={`preview-table-row ${rowStatus}`}
                                 >
-                                    {columns.map(col => (
-                                        <td key={col.key} className="preview-table-td">
-                                            {col.render ? col.render(row[col.key], row) : row[col.key]}
-                                        </td>
-                                    ))}
-                                    {onEdit && (
-                                        <td className="preview-table-td actions-col">
-                                            <button
-                                                className="btn-edit-row"
-                                                onClick={() => onEdit(row)}
-                                            >
-                                                Edit
-                                            </button>
-                                        </td>
-                                    )}
+                                    {columns.map(col => {
+                                        const isCellEditable = isEditable && col.editable
+
+                                        return (
+                                            <td key={col.key} className={`preview-table-td ${isCellEditable ? 'editable-cell' : ''}`}>
+                                                {isCellEditable ? (
+                                                    col.type === 'select' ? (
+                                                        <select
+                                                            value={row[col.key]}
+                                                            onChange={(e) => {
+                                                                const val = e.target.value === 'true' ? true : e.target.value === 'false' ? false : e.target.value
+                                                                const updatedRow = { ...row, [col.key]: val }
+                                                                // Call update handler
+                                                                const newData = [...data]
+                                                                const index = newData.findIndex(item => item.id === row.id)
+                                                                if (index !== -1) {
+                                                                    newData[index] = updatedRow
+                                                                    onDataUpdate && onDataUpdate(newData)
+                                                                }
+                                                            }}
+                                                        >
+                                                            {col.options.map(opt => (
+                                                                <option key={opt.value} value={opt.value}>
+                                                                    {opt.label}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    ) : (
+                                                        <input
+                                                            type={col.type || 'text'}
+                                                            value={row[col.key]}
+                                                            onChange={(e) => {
+                                                                const val = col.type === 'number' ? parseInt(e.target.value) : e.target.value
+                                                                const updatedRow = { ...row, [col.key]: val }
+                                                                // Call update handler
+                                                                const newData = [...data]
+                                                                const index = newData.findIndex(item => item.id === row.id)
+                                                                if (index !== -1) {
+                                                                    newData[index] = updatedRow
+                                                                    onDataUpdate && onDataUpdate(newData)
+                                                                }
+                                                            }}
+                                                        />
+                                                    )
+                                                ) : (
+                                                    col.render ? col.render(row[col.key], row) : row[col.key]
+                                                )}
+                                            </td>
+                                        )
+                                    })}
                                 </tr>
                             )
                         })}

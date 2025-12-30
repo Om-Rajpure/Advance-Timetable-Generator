@@ -34,13 +34,126 @@
 }
 
 /* Main Card */
+/* Main Card - Glassmorphism */
 .smart-input-card {
-    background: var(--color-white);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-xl);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
     padding: var(--spacing-8);
     margin-bottom: var(--spacing-6);
-    animation: scaleIn 0.5s ease-out;
+    animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Add a subtle gradient orb effect */
+.smart-input-card::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Progress Ribbon */
+.progress-ribbon-container {
+    width: 100%;
+    margin-top: var(--spacing-6);
+    padding: var(--spacing-4) 0;
+}
+
+.progress-ribbon {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.ribbon-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 2;
+    position: relative;
+    flex: 1;
+}
+
+.step-marker {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #e2e8f0;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.step-label {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.step-connector {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    /* Start from center of this step */
+    width: 100%;
+    /* Go to next step */
+    height: 2px;
+    background: #e2e8f0;
+    z-index: -1;
+    transition: all 0.3s ease;
+}
+
+.ribbon-step:last-child .step-connector {
+    display: none;
+}
+
+/* Active State */
+.ribbon-step.active .step-marker {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: white;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.ribbon-step.active .step-label {
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+/* Completed State */
+.ribbon-step.completed .step-marker {
+    border-color: #10b981;
+    background: #10b981;
+    color: white;
+}
+
+.ribbon-step.completed .step-label {
+    color: #10b981;
+}
+
+.ribbon-step.completed .step-connector {
+    background: #10b981;
 }
 
 /* Tab Navigation */
@@ -237,6 +350,27 @@
 .btn-browse:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+.btn-remove-file {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid #EF4444;
+    color: #EF4444;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-remove-file:hover {
+    background: #FEF2F2;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1);
 }
 
 /* Parse Errors */
@@ -464,7 +598,104 @@
 
 .empty-icon {
     font-size: 4rem;
-    margin-bottom: var(--spacing-3);
+    margin-bottom: var(--spacing-4);
+    opacity: 0.5;
+}
+
+/* Button Hierarchy */
+.btn-edit-toggle {
+    padding: 8px 16px;
+    border: 1px solid #cbd5e1;
+    background: white;
+    color: #475569;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-edit-toggle:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+    border-color: #94a3b8;
+}
+
+.btn-cancel-edit {
+    padding: 8px 16px;
+    border: 1px solid #ef4444;
+    background: white;
+    color: #ef4444;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-right: 8px;
+}
+
+.btn-cancel-edit:hover {
+    background: #fef2f2;
+}
+
+.btn-confirm-data {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+    transition: all 0.2s;
+}
+
+.btn-confirm-data:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-add-system {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+
+.btn-add-system:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(59, 130, 246, 0.3);
+}
+
+/* Secondary Button (for Edit Again, Unlock) */
+.btn-secondary {
+    padding: 8px 16px;
+    background: #e2e8f0;
+    color: #475569;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #cbd5e1;
+    color: #1e293b;
+}
+
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+margin-bottom: var(--spacing-3);
 }
 
 .preview-errors {
@@ -599,6 +830,44 @@
 .btn-analyze:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+/* ===================================
+   EDITABLE CELLS (TACTILE FEEL)
+   =================================== */
+.editable-cell {
+    position: relative;
+    cursor: text;
+    transition: all 0.2s ease;
+}
+
+.editable-cell:hover {
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.editable-cell input,
+.editable-cell select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    background: transparent;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.editable-cell input:hover,
+.editable-cell select:hover {
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.editable-cell input:focus,
+.editable-cell select:focus {
+    background: white;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    outline: none;
 }
 
 .clarification-box {
@@ -798,7 +1067,101 @@
 .setup-card:hover {
     border-color: var(--color-primary);
     transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+/* ===================================
+   BADGES & STATUS
+   =================================== */
+
+.badge-lab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563EB;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(59, 130, 246, 0.05);
+}
+
+.badge-theory {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(16, 185, 129, 0.05);
+}
+
+.status-badge {
+    padding: 6px 16px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 12px;
+}
+
+.status-badge.locked {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.status-badge.editing {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+/* ===================================
+   LOCKED STATE OVERLAY
+   =================================== */
+.smart-input-content.locked {
+    opacity: 0.7;
+    pointer-events: none;
+    filter: grayscale(0.1);
+    transition: all 0.5s ease;
+}
+
+/* ===================================
+   ANIMATIONS
+   =================================== */
+@keyframes scaleIn {
+    0% {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInUp {
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+box-shadow: var(--shadow-lg);
 }
 
 .setup-card-header {

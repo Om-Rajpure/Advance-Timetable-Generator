@@ -142,7 +142,11 @@ def test_generation():
     print("Test Completed!")
     print("=" * 60)
     
-    return result
+    # Final Assertions for Pytest
+    assert result['success'] is True, f"Generation failed: {result.get('message')}"
+    assert result['valid'] is True, "Generated timetable is invalid"
+    assert result['stats']['totalSlots'] > 0, "No slots were filled"
+
 
 
 if __name__ == "__main__":

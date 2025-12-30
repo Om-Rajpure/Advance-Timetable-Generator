@@ -1,0 +1,25 @@
+teacher_name,subject_name,year,type
+Amit Patil,SE Theory Subject 1,SE,Theory
+Amit Patil,SE Theory Subject 2,SE,Theory
+Rahul Deshmukh,SE Theory Subject 3,SE,Theory
+Rahul Deshmukh,SE Theory Subject 4,SE,Theory
+Sandeep Kulkarni,SE Theory Subject 5,SE,Theory
+Sandeep Kulkarni,TE Theory Subject 1,TE,Theory
+Pravin Joshi,TE Theory Subject 2,TE,Theory
+Pravin Joshi,TE Theory Subject 3,TE,Theory
+Nilesh Pawar,TE Theory Subject 4,TE,Theory
+Nilesh Pawar,TE Theory Subject 5,TE,Theory
+Sachin More,BE Theory Subject 1,BE,Theory
+Sachin More,BE Theory Subject 2,BE,Theory
+Akshay Jadhav,BE Theory Subject 3,BE,Theory
+Akshay Jadhav,BE Theory Subject 4,BE,Theory
+Rohit Shinde,BE Theory Subject 5,BE,Theory
+Amit Patil,SE Lab Subject 1,SE,Lab
+Rahul Deshmukh,SE Lab Subject 2,SE,Lab
+Sandeep Kulkarni,SE Lab Subject 3,SE,Lab
+Pravin Joshi,TE Lab Subject 1,TE,Lab
+Nilesh Pawar,TE Lab Subject 2,TE,Lab
+Sachin More,TE Lab Subject 3,TE,Lab
+Akshay Jadhav,BE Lab Subject 1,BE,Lab
+Rohit Shinde,BE Lab Subject 2,BE,Lab
+Vishal Patil,BE Lab Subject 3,BE,Lab
