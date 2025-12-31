@@ -99,7 +99,23 @@ class TimetableState:
         )
         
         # Store in grid
-        self.slot_grid[slot_key] = assignment
+        # Store in grid
+        # Handle collision/multi-batch:
+        # If key exists, convert to list? Or fail?
+        # For labs, we might assign multiple batches.
+        # Let's verify usage. LabScheduler calls assign_slot for EACH batch.
+        # So we simply append to a list or support list values?
+        
+        existing = self.slot_grid.get(slot_key)
+        if existing:
+            if isinstance(existing, list):
+                existing.append(assignment)
+                self.slot_grid[slot_key] = existing
+            else:
+                self.slot_grid[slot_key] = [existing, assignment]
+        else:
+            self.slot_grid[slot_key] = assignment
+
         self.slots.append(assignment)
         
         # Track teacher assignment
@@ -207,6 +223,40 @@ class TimetableState:
     def get_slot_assignment(self, day, slot_index, year, division):
         """Get assignment for specific slot"""
         return self.slot_grid.get((day, slot_index, year, division))
+
+    def is_slot_free(self, day, slot_index, year, division):
+        """Check if a slot is completely free for a division (no lectures, no labs)."""
+        # Division level check
+        if (day, slot_index, year, division) in self.slot_grid:
+            return False
+            
+        # Batch level safety check (if we implement hybrid)
+        # For now, if the division slot is empty, it's free.
+        # But wait, labs assign to (year, division) but with 'batch' key.
+        # So slot_grid might imply full division occupancy?
+        
+        # Our assign_slot puts it in slot_grid. 
+        # If we assign multiple batches to the same (day, slot, year, div), 
+        # we need to handle list of assignments or distinct keys.
+        
+        # Current implementation: slot_grid[(d,s,y,div)] = assignment
+        # If we overwrite, we lose data.
+        # LAB CHANGE: slot_grid should store a LIST if it's a lab/multi-batch slot.
+        # Or we check 'batches' occupancy.
+        
+        # FAST FIX: simple dict keys don't support parallel batches.
+        # We need to refine assign_slot to handle lists or check batch conflicts.
+        
+        val = self.slot_grid.get((day, slot_index, year, division))
+        if val:
+            # If there is something here, is it a parallel batch or a full lecture?
+            # If full lecture (type!=LAB), it's occupied.
+            if val.get('type') != 'LAB':
+                return False
+            # If it is LAB, it is occupied for THIS context (we usually want empty for new placement)
+            return False
+            
+        return True
     
     def is_teacher_available(self, teacher, day, slot_index):
         """Check if teacher is available at given time"""

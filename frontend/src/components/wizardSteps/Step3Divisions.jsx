@@ -34,6 +34,22 @@ function Step3Divisions({ formData, onChange, errors, setErrors }) {
         }
     }
 
+    // Handle batch count change
+    const handleBatchCountChange = (year, delta) => {
+        const currentBatches = formData.labBatchesPerYear?.[year] || 3
+        const newCount = Math.max(1, Math.min(6, currentBatches + delta))
+
+        const updatedBatches = { ...formData.labBatchesPerYear, [year]: newCount }
+
+        if (applyToAll) {
+            academicYears.forEach(y => {
+                updatedBatches[y] = newCount
+            })
+        }
+
+        onChange('labBatchesPerYear', updatedBatches)
+    }
+
     // Handle apply to all toggle
     const handleApplyToAllToggle = () => {
         const newApplyToAll = !applyToAll
@@ -65,6 +81,20 @@ function Step3Divisions({ formData, onChange, errors, setErrors }) {
 
         if (hasChanges) {
             onChange('divisions', updatedDivisions)
+        }
+
+        // Initialize Batches
+        const updatedBatches = { ...formData.labBatchesPerYear }
+        let hasBatchChanges = false
+        academicYears.forEach(year => {
+            if (!updatedBatches[year]) {
+                updatedBatches[year] = 3 // Default to 3 batches
+                hasBatchChanges = true
+            }
+        })
+
+        if (hasBatchChanges) {
+            onChange('labBatchesPerYear', updatedBatches)
         }
     }, [academicYears])
 
@@ -115,6 +145,47 @@ function Step3Divisions({ formData, onChange, errors, setErrors }) {
                                     >
                                         +
                                     </button>
+                                </div>
+                            </div>
+
+                            {/* Batches Configuration */}
+                            <div className="batch-config-section" style={{
+                                marginTop: '12px',
+                                padding: '12px',
+                                backgroundColor: '#f8fafc',
+                                borderRadius: '8px',
+                                border: '1px solid #e2e8f0'
+                            }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#475569' }}>
+                                        Batches per Division
+                                        <span style={{
+                                            display: 'block',
+                                            fontSize: '0.75rem',
+                                            fontWeight: '400',
+                                            color: '#64748b',
+                                            marginTop: '2px'
+                                        }}>
+                                            Parallel lab groups (e.g., A1, A2, A3)
+                                        </span>
+                                    </div>
+                                    <div className="number-stepper">
+                                        <button
+                                            className="stepper-button"
+                                            onClick={() => handleBatchCountChange(year, -1)}
+                                            disabled={(formData.labBatchesPerYear?.[year] || 3) <= 1}
+                                        >
+                                            −
+                                        </button>
+                                        <div className="stepper-value">{formData.labBatchesPerYear?.[year] || 3}</div>
+                                        <button
+                                            className="stepper-button"
+                                            onClick={() => handleBatchCountChange(year, 1)}
+                                            disabled={(formData.labBatchesPerYear?.[year] || 3) >= 6}
+                                        >
+                                            +
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 

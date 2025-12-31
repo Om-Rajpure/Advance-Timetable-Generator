@@ -47,6 +47,10 @@ function SmartInput() {
         return localStorage.getItem('smartInputStage') || 'idle'
     })
 
+    // Generation Loading State
+    const [isGenerating, setIsGenerating] = useState(false)
+    const [generationStatus, setGenerationStatus] = useState('')
+
     // Track uploaded files metadata
     const [uploadedFiles, setUploadedFiles] = useState(() => {
         const saved = localStorage.getItem('smartInputFiles')
@@ -81,7 +85,7 @@ function SmartInput() {
 
     // Tab Configuration
     const tabs = [
-        { id: 'csv', label: 'CSV Upload', icon: '📊', completed: completedTabs.csv },
+        { id: 'csv', label: 'File Upload', icon: '📊', completed: completedTabs.csv },
         { id: 'bulk', label: 'Bulk Text', icon: '✍️', completed: completedTabs.bulk },
         { id: 'prompt', label: 'Natural Language', icon: '🤖', completed: completedTabs.prompt }
     ]
@@ -90,24 +94,31 @@ function SmartInput() {
     const handleCsvData = (data, uploadType) => {
         console.log('CSV Data received:', uploadType, data)
 
-        if (uploadType === 'teacher_subject_map') {
-            handleMappingData(data)
-            return
-        }
-
         setAggregatedData(prev => {
-            // ... (existing merge logic)
+            // Basic merge logic
             const updated = { ...prev }
+
             if (uploadType === 'teachers' && data.length > 0) {
                 const existingNames = new Set(prev.teachers.map(t => t.name.toLowerCase()))
                 const newTeachers = data.filter(t => !existingNames.has(t.name.toLowerCase()))
                 updated.teachers = [...prev.teachers, ...newTeachers]
             }
-            if (uploadType === 'subjects' && data.length > 0) {
+            else if (uploadType === 'subjects' && data.length > 0) {
                 const existingNames = new Set(prev.subjects.map(s => s.name.toLowerCase()))
                 const newSubjects = data.filter(s => !existingNames.has(s.name.toLowerCase()))
                 updated.subjects = [...prev.subjects, ...newSubjects]
             }
+            else if (uploadType === 'teacher_subject_map') {
+                // Replace mapping significantly or append? Append is safer.
+                updated.teacherSubjectMap = [...prev.teacherSubjectMap, ...data]
+            }
+            else if (uploadType === 'lab_mapping') {
+                const existingNames = new Set(prev.labs.map(l => l.name.toLowerCase()))
+                const newLabs = data.filter(l => !existingNames.has(l.name.toLowerCase()))
+                updated.labs = [...(prev.labs || []), ...newLabs]
+            }
+
+
             return updated
         })
 
@@ -119,7 +130,18 @@ function SmartInput() {
         setCompletedTabs(prev => ({ ...prev, csv: true }))
     }
 
-    // ... (handleMappingData logic similar update if needed)
+    // Handle Bulk/Prompt Data (Placeholder connections)
+    const handleBulkTextData = (data) => {
+        console.log('Bulk Data:', data)
+        // Implementation similar to CSV merge
+    }
+    const handlePromptData = (data) => {
+        console.log('Prompt Data:', data)
+    }
+    const handleDataUpdate = (type, newData) => {
+        setAggregatedData(prev => ({ ...prev, [type]: newData }))
+    }
+
 
     // Handle Tab Change
     const handleTabChange = (tabId) => {
@@ -131,12 +153,6 @@ function SmartInput() {
         if (inputStage === 'added') return // Locked
 
         if (inputStage === 'editing') {
-            // Cancel Edit -> Go back to previous state (extracted or confirmed)
-            // Ideally we'd know previous, but for simplicity:
-            // If data was confirmed before, go to confirmed. Else extracted.
-            // Simplified: Just go to 'extracted' for now as 'confirmed' implies done.
-            // Actually, better logic: 
-            // If we have data, we are at least 'extracted'.
             setInputStage('extracted')
         } else {
             setInputStage('editing')
@@ -145,12 +161,6 @@ function SmartInput() {
 
     // Save Changes (End Edit Mode)
     const handleSaveChanges = () => {
-        // Here we assume data is updated via handleDataUpdate calls
-        // Transition to 'confirmed' (or back to 'extracted' then user clicks confirm?)
-        // Per requirement: Edit -> Save -> Confirmed is not the flow.
-        // Flow: Edit -> Save -> Back to Preview (Extracted) -> Then User clicks Confirm
-        // user requirement: "Edit (Optional) ... -> Confirm"
-        // So Save just exits edit mode.
         setInputStage('extracted')
     }
 
@@ -161,41 +171,92 @@ function SmartInput() {
             alert('❌ Cannot confirm empty data. Please upload Teachers and Subjects.')
             return
         }
+
+        // Removed Strict Mapping Check for now to allow partial progress per "No hard dependency" rule
+        // But warning is good.
         if (aggregatedData.teacherSubjectMap.length === 0) {
-            alert('❌ Missing Teacher-Subject Mappings!\n\nPlease upload the Mapping CSV.')
-            return
+            if (!window.confirm('⚠️ No Teacher-Subject mappings found!\n\nTimetable generation requires mappings. Proceed anyway?')) {
+                return
+            }
         }
 
         setInputStage('confirmed')
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
-    // Add to System (Final Commit)
+    // Add to System (Final Commit & Generate)
+    const triggerTimetableGeneration = async () => {
+        setIsGenerating(true)
+        setGenerationStatus('Preparing data...')
+
+        try {
+            const branchConfig = JSON.parse(localStorage.getItem('branchConfig') || '{}')
+
+            // Payload
+            const payload = {
+                branchData: branchConfig,
+                smartInputData: aggregatedData,
+                maxIterations: 5000
+            }
+
+            setGenerationStatus('Generating initial schedule...')
+            // Call API
+            const response = await fetch('http://localhost:5000/api/generate/full', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+
+            if (!response.ok) {
+                const err = await response.json()
+                throw new Error(err.error || 'Generation failed')
+            }
+
+            const result = await response.json()
+            console.log('Generation Result:', result)
+
+            if (result.success) {
+                setGenerationStatus('Finalizing timetable...')
+                // Save timetable to local storage or context for View Page
+                localStorage.setItem('generatedTimetable', JSON.stringify(result.timetable))
+
+                // Navigate
+                completeSmartInput()
+                navigate('/edit-timetable', {
+                    state: {
+                        timetable: result.timetable,
+                        context: {
+                            teachers: aggregatedData.teachers,
+                            subjects: aggregatedData.subjects
+                        }
+                    }
+                }) // Navigate to timetable view
+            } else {
+                alert('Generation failed: ' + result.message)
+            }
+
+        } catch (error) {
+            console.error('Generation Error:', error)
+            alert('Simulation failed: ' + error.message)
+        } finally {
+            setIsGenerating(false)
+        }
+    }
+
     const handleAddToSystem = () => {
         if (inputStage !== 'confirmed') return
 
-        const confirmMsg = '➕ Add to System?\n\nThis will commit the data and enable timetable generation.\nThis action is final for this session.'
+        const confirmMsg = '🎯 Finish & Generate?\n\nThis will lock your inputs and attempt to generate the timetable.'
 
         if (window.confirm(confirmMsg)) {
             setInputStage('added')
-            completeSmartInput() // Mark module as complete in dashboard
-            alert('✅ Smart Input data added successfully!')
-            window.scrollTo({ top: 0, behavior: 'smooth' })
+            triggerTimetableGeneration()
         }
     }
 
     // Edit Again (from Confirmed state)
     const handleEditAgain = () => {
         setInputStage('editing')
-    }
-
-    // Re-upload / Reset (Destructive)
-    const handleReset = () => {
-        if (window.confirm('🗑 Reset all input data?\n\nThis will clear everything and take you back to the start.')) {
-            setAggregatedData({ teachers: [], subjects: [], teacherSubjectMap: [] })
-            setUploadedFiles({ teachers: null, subjects: null, mapping: null })
-            setInputStage('idle')
-        }
     }
 
     const handleFileRemove = (type) => {
@@ -205,20 +266,20 @@ function SmartInput() {
             setUploadedFiles(prev => ({ ...prev, [type]: null }))
             setAggregatedData(prev => {
                 const updated = { ...prev }
-                if (type === 'teachers') { updated.teachers = []; updated.teacherSubjectMap = [] }
-                else if (type === 'subjects') { updated.subjects = []; updated.teacherSubjectMap = [] }
-                else if (type === 'mapping') { updated.teacherSubjectMap = [] }
+                if (type === 'teachers') { updated.teachers = []; } // Don't clear mappings aggressively
+                else if (type === 'subjects') { updated.subjects = []; }
+                else if (type === 'mapping') { updated.teacherSubjectMap = []; }
                 return updated
             })
-            // If we clear data, revert to idle or extracted depending on what's left
-            // For simplicity, if no data left, idle.
-            // We'll calculate this better in effect or just leave as is
         }
     }
 
-    // Save/Submit Data (Legacy handler - kept for compatibility but redirected)
-    const handleSaveData = () => {
-        handleConfirmData()
+    if (isGenerating) {
+        return (
+            <div className="smart-input-page">
+                <LoadingState message={generationStatus} />
+            </div>
+        )
     }
 
     return (
@@ -228,7 +289,7 @@ function SmartInput() {
                 <div className="smart-input-header">
                     <h1 className="smart-input-title">🎯 Smart Input Module</h1>
                     <p className="smart-input-subtitle">
-                        Choose your preferred input method: CSV Upload, Bulk Text Entry, or Natural Language
+                        Choose your preferred input method: File Upload (Excel/CSV), Bulk Text, or Prompt
                     </p>
                 </div>
 
@@ -286,7 +347,6 @@ function SmartInput() {
                                 </h3>
 
                                 <div className="header-actions">
-                                    {/* Action Logic based on Stage */}
                                     {inputStage === 'extracted' && (
                                         <>
                                             <button
@@ -336,15 +396,9 @@ function SmartInput() {
                                                 className="btn-add-system"
                                                 onClick={handleAddToSystem}
                                             >
-                                                ➕ Add to System
+                                                🚀 Finish & Generate
                                             </button>
                                         </>
-                                    )}
-
-                                    {inputStage === 'added' && (
-                                        <span className="status-badge success">
-                                            ✅ Added to System
-                                        </span>
                                     )}
                                 </div>
                             </div>
@@ -365,6 +419,7 @@ function SmartInput() {
                                     <span className="stat-value">{aggregatedData.teacherSubjectMap.length}</span>
                                     <span className="stat-label">Mappings</span>
                                 </div>
+
                             </div>
 
                             {/* Teachers Preview */}
@@ -402,7 +457,8 @@ function SmartInput() {
                                                     { label: 'Practical (Lab)', value: true }
                                                 ],
                                                 render: (val) => val ? <span className="badge-lab">🔵 Lab</span> : <span className="badge-theory">🟢 Theory</span>
-                                            }
+                                            },
+                                            { key: 'sessionLength', label: 'Slots', editable: true, type: 'number' },
                                         ]}
                                         title="Subjects"
                                         isEditable={inputStage === 'editing'}
@@ -410,6 +466,8 @@ function SmartInput() {
                                     />
                                 </div>
                             )}
+
+
 
                             {/* Teacher-Subject Mappings Preview */}
                             {aggregatedData.teacherSubjectMap.length > 0 && (

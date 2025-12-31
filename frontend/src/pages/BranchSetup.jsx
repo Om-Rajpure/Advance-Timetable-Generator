@@ -45,7 +45,12 @@ function BranchSetup() {
         recessStart: '12:00 PM',
         recessDuration: 60,
         classrooms: {},
-        sharedLabs: []
+        sharedLabs: [],
+        labBatchesPerYear: {
+            SE: 3,
+            TE: 3,
+            BE: 3
+        }
     })
 
     const [errors, setErrors] = useState({})
@@ -84,7 +89,7 @@ function BranchSetup() {
     const validateCurrentStep = () => {
         switch (currentStep) {
             case 0: // Branch Identity
-                if (!formData.branchName || formData.branchName.trim().length < 3) {
+                if (!formData.branchName || formData.branchName.trim().length === 0) {
                     return false
                 }
                 return !errors.branchName
@@ -140,8 +145,8 @@ function BranchSetup() {
 
         if (!isValid) {
             // Set appropriate error messages
-            if (currentStep === 0 && (!formData.branchName || formData.branchName.trim().length < 3)) {
-                setErrors({ ...errors, branchName: 'Branch name must be at least 3 characters' })
+            if (currentStep === 0 && (!formData.branchName || formData.branchName.trim().length === 0)) {
+                setErrors({ ...errors, branchName: 'Branch name is required' })
             } else if (currentStep === 1 && formData.academicYears.length === 0) {
                 setErrors({ ...errors, academicYears: 'Please select at least one academic year' })
             } else if (currentStep === 3 && formData.workingDays.length === 0) {
@@ -215,6 +220,9 @@ function BranchSetup() {
             }
             console.log('💾 Branch Setup: Updating branch info', branchInfo)
             updateBranch(branchInfo)
+
+            // Save full config for Smart Input validation
+            localStorage.setItem('branchConfig', JSON.stringify(formData))
 
             // Mark branch setup as completed
             console.log('⏰ ABOUT TO CALL completeBranchSetup()')

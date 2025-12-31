@@ -104,10 +104,10 @@ def create_branch():
         # Load existing branches
         branches_data = load_branches()
         
-        # Check for duplicate branch name
-        for branch in branches_data['branches']:
-            if branch['branchName'].lower() == data['branchName'].lower():
-                return jsonify({'error': 'Branch name already exists'}), 409
+        # Check for duplicate branch name - REMOVED per requirements
+        # for branch in branches_data['branches']:
+        #     if branch['branchName'].lower() == data['branchName'].lower():
+        #         return jsonify({'error': 'Branch name already exists'}), 409
         
         # Create new branch with ID and timestamp
         new_branch = {

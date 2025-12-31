@@ -8,7 +8,8 @@ from .state_manager import TimetableState
 from .candidate_generator import CandidateGenerator
 from .heuristics import SlotHeuristics
 from constraints.constraint_engine import ConstraintEngine
-
+from .feasibility import FeasibilityVerifier
+from .lab_scheduler import LabScheduler
 
 class TimetableScheduler:
     """Main CSP scheduler for timetable generation"""
@@ -29,6 +30,8 @@ class TimetableScheduler:
         self.candidate_gen = CandidateGenerator(self.state, context)
         self.heuristics = SlotHeuristics(self.state, context)
         self.constraint_engine = ConstraintEngine()
+        self.feasibility = FeasibilityVerifier(context)
+        self.lab_scheduler = LabScheduler(self.state, context)
         
         # Statistics
         self.iterations = 0
@@ -37,23 +40,43 @@ class TimetableScheduler:
     def generate(self):
         """
         Generate a complete timetable.
-        
-        Returns:
-            {
-                "success": bool,
-                "timetable": [...],
-                "valid": bool,
-                "qualityScore": float,
-                "violations": [...],
-                "message": str,
-                "stats": {...}
-            }
         """
+        # Step 1: Feasibility Check
+        feasibility_result = self.feasibility.verify()
+        if not feasibility_result['valid']:
+            return {
+                "success": False,
+                "message": f"Feasibility Check Failed: {feasibility_result.get('reason')}",
+                "blockers": [{
+                    "issue": feasibility_result.get('reason'),
+                    "details": feasibility_result.get('details')
+                }]
+            }
+
+        # Step 2: Lab Scheduling (Hard Constraint)
+        print("Starting Lab Scheduling...")
+        if not self.lab_scheduler.schedule_labs():
+             return {
+                "success": False,
+                "message": "Lab Scheduling Failed",
+                "blockers": [{"issue": "Insufficient Lab Resources", "details": "Could not place all parallel lab sessions."}]
+            }
+        print("Lab Scheduling Complete.")
+
+        # Step 3: Theory Scheduling (Backtracking)
         # Generate all possible slots
         all_slots = self.state.generate_slot_grid()
         
+        # Filter out slots already taken by Labs
+        available_slots = []
+        for slot in all_slots:
+            if self.state.is_slot_free(slot['day'], slot['slot'], slot['year'], slot['division']):
+                available_slots.append(slot)
+        
+        print(f"Scheduling {len(available_slots)} theory slots...")
+
         # Order slots by difficulty
-        ordered_slots = self.heuristics.order_slots(all_slots)
+        ordered_slots = self.heuristics.order_slots(available_slots)
         
         # Run backtracking
         result = self._backtrack(ordered_slots, 0)

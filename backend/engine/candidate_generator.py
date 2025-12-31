@@ -175,30 +175,70 @@ class CandidateGenerator:
             
             # Find enough available labs
             labs = self.branch_data.get('labs', [])
-            available_labs = [
-                lab for lab in labs 
-                if self.state.is_room_available(lab, day, slot_index)
-            ]
             
-            if len(available_labs) < num_batches:
+            available_labs = []
+            
+            # Filter Labs
+            available_labs_for_slot = []
+            
+            for lab in labs:
+                # lab is a dictionary from sharedLabs
+                # Session Duration is now per-lab!
+                lab_duration = int(lab.get('requiredSlots', 2))
+                
+                if is_lab_available_for_session(lab, day, slot_index, lab_duration):
+                    # Store lab with its specific duration for assignment
+                    available_labs_for_slot.append({
+                        'name': lab['name'],
+                        'duration': lab_duration
+                    })
+            
+            if len(available_labs_for_slot) < num_batches:
                 continue  # Not enough labs
             
             # Create synchronized practical candidate
+            # We select the first N available labs (naive) or could optimize
+            # But we must ensure if we pick N labs, they are valid.
+            
+            # Optimization: Sort labs by duration? Or just pick first N.
+            selected_labs = available_labs_for_slot[:num_batches]
+            
             for teacher_name in available_teachers:
+                # Check teacher availability for the MAX duration of selected labs
+                # Because teacher supervises the session?
+                # If teacher is assigned to specific batches, we check per batch.
+                # Current logic assigns SAME teacher to ALL batches in this candidate?
+                # "Teacher assignment is flexible; any available teacher can be used." from Step 56/User Objective.
+                # "Theory: 1 teacher. Lab: Flexible".
+                # The current code: `for teacher_name... batch_assignments.append(..., teacher: teacher_name)`.
+                # Use MAX duration to be safe for teacher availability check?
+                max_duration = max(l['duration'] for l in selected_labs)
+                
+                # Check teacher availability for max duration
+                is_teacher_avail = True
+                for s_offset in range(max_duration):
+                     if not self.state.is_teacher_available(teacher_name, day, slot_index + s_offset):
+                         is_teacher_avail = False
+                         break
+                
+                if not is_teacher_avail:
+                    continue
+
                 # Assign labs to batches
                 batch_assignments = []
                 for i in range(num_batches):
                     batch_name = f"B{i+1}"
-                    lab = available_labs[i]
+                    lab_info = selected_labs[i]
                     
                     batch_assignments.append({
                         'day': day,
                         'slot': slot_index,
+                        'duration': lab_info['duration'], # Store duration
                         'year': year,
                         'division': division,
                         'subject': subject_name,
                         'teacher': teacher_name,
-                        'room': lab,
+                        'room': lab_info['name'],
                         'type': 'Practical',
                         'batch': batch_name
                     })
@@ -208,7 +248,7 @@ class CandidateGenerator:
                     subject_name, teacher_name, day, slot_index, year, division
                 )
                 
-                # Return as single candidate (but represents multiple slots)
+                # Return as single candidate
                 candidates.append({
                     'practical_group': True,
                     'assignments': batch_assignments,

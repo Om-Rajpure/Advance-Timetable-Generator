@@ -147,32 +147,10 @@ class PracticalBatchSyncConstraint(Constraint):
             practical_groups[key].append(slot)
         
         # Check each practical group
-        for (subject, year, division), slots in practical_groups.items():
-            if len(slots) <= 1:
-                continue  # Only one batch, no sync needed
-            
-            # Check if all batches are at the same time
-            times = set((s['day'], s['slot']) for s in slots)
-            
-            if len(times) > 1:
-                # Batches are not synchronized
-                batch_times = {}
-                for slot in slots:
-                    batch = slot.get('batch', 'Unknown')
-                    time_key = f"{slot['day']} Slot {slot['slot']}"
-                    batch_times[batch] = time_key
-                
-                violations.append(ConstraintViolation(
-                    message=f"Practical batches for {subject} ({year}-{division}) are not synchronized",
-                    entities={
-                        "subject": subject,
-                        "year": year,
-                        "division": division,
-                        "batch_times": batch_times
-                    },
-                    slot=f"Multiple time slots",
-                    severity="HARD"
-                ))
+        # NOTE: This constraint is disabled/relaxed because Rule 11 ("Each sub-batch must be assigned a different lab subject")
+        # implies that "Python Lab" will happen at different times for different batches.
+        # Strict synchronization of "Subject X" across all batches is NOT required for this rotation model.
+        pass
         
         return {
             "valid": len(violations) == 0,
@@ -199,10 +177,21 @@ class WeeklyLectureCompletionConstraint(Constraint):
         subjects_data = smart_input.get('subjects', [])
         
         # Build required lecture map
+        # Build required lecture map
+        lab_batches = context.get('branchData', {}).get('labBatchesPerYear', {})
+        
         required_lectures = {}
         for subject in subjects_data:
             key = (subject.get('name'), subject.get('year'), subject.get('division'))
-            required_lectures[key] = subject.get('lecturesPerWeek', 0)
+            req = subject.get('lecturesPerWeek', 0)
+            
+            # If practical, multiply by number of batches
+            if subject.get('isPractical') or subject.get('type') == 'Practical':
+                year = subject.get('year')
+                num_batches = int(lab_batches.get(year, 3)) # Default 3
+                req = req * num_batches
+                
+            required_lectures[key] = req
         
         # Count actual lectures in timetable
         actual_lectures = {}
@@ -276,7 +265,15 @@ class StructuralValidityConstraint(Constraint):
         valid_subjects = set(s.get('name') for s in smart_input.get('subjects', []))
         valid_teachers = set(t.get('name') for t in smart_input.get('teachers', []))
         valid_rooms = set(branch_data.get('rooms', []))
-        valid_labs = set(branch_data.get('labs', []))
+        
+        # Checking both 'labs' (legacy) and 'sharedLabs' (new structure)
+        legacy_labs = branch_data.get('labs', [])
+        valid_labs = set(legacy_labs)
+        
+        shared_labs = branch_data.get('sharedLabs', [])
+        for lab in shared_labs:
+            valid_labs.add(lab.get('name'))
+            
         valid_rooms.update(valid_labs)
         
         # Validate each slot

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { parseCSV, createCSVTemplate } from '../utils/dataParser'
+import { parseFile, createCSVTemplate } from '../utils/dataParser'
 import PreviewTable from './PreviewTable'
 
 function CsvUploader({ onDataParsed, existingData = {}, uploadedFiles = {}, onFileRemove, onFileUpload, isLocked }) {
@@ -40,8 +40,11 @@ function CsvUploader({ onDataParsed, existingData = {}, uploadedFiles = {}, onFi
     }
 
     const handleFileUpload = async (file) => {
-        if (!file.name.toLowerCase().endsWith('.csv')) {
-            alert('Please upload a CSV file')
+        const isExcel = file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls')
+        const isCsv = file.name.toLowerCase().endsWith('.csv')
+
+        if (!isExcel && !isCsv) {
+            alert('Please upload a CSV or Excel file')
             return
         }
 
@@ -49,9 +52,8 @@ function CsvUploader({ onDataParsed, existingData = {}, uploadedFiles = {}, onFi
         setParseErrors([])
 
         try {
-            const text = await file.text()
-            // Pass true for smart lab detection if uploading subjects
-            const result = await parseCSV(text, uploadType)
+            // Pass file directly to parseFile which handles both CSV and Excel
+            const result = await parseFile(file, uploadType)
 
             setPreviewData(result.data)
             setParseErrors(result.errors)
@@ -62,8 +64,8 @@ function CsvUploader({ onDataParsed, existingData = {}, uploadedFiles = {}, onFi
                 if (onFileUpload) onFileUpload(uploadType, file)
             }
         } catch (error) {
-            console.error('CSV parse error:', error)
-            alert('Failed to parse CSV file. Please check the format.')
+            console.error('File parse error:', error)
+            alert('Failed to parse file. Please check the format.')
         } finally {
             setParsing(false)
         }
@@ -104,13 +106,15 @@ function CsvUploader({ onDataParsed, existingData = {}, uploadedFiles = {}, onFi
                         key: 'isPractical',
                         label: 'Type',
                         render: (val) => val ? <span className="badge-lab">🔵 Lab</span> : <span className="badge-theory">🟢 Theory</span>
-                    }
+                    },
+                    { key: 'sessionLength', label: 'Slots' }
                 ]
             case 'teacher_subject_map':
                 return [
                     { key: 'teacherName', label: 'Teacher' },
                     { key: 'subjectName', label: 'Subject' }
                 ]
+
             default:
                 return []
         }
@@ -122,15 +126,15 @@ function CsvUploader({ onDataParsed, existingData = {}, uploadedFiles = {}, onFi
     return (
         <div className="csv-uploader">
             <div className="csv-uploader-header">
-                <h3>📊 CSV / Excel Upload</h3>
+                <h3>📊 Excel / CSV Upload</h3>
                 <p className="csv-uploader-description">
-                    Upload CSV files for fast bulk import. Download templates to get started.
+                    Upload CSV or Excel files for fast bulk import. Download templates to get started.
                 </p>
             </div>
 
             {/* Template Downloads */}
             <div className="template-section">
-                <h4>Download CSV Templates:</h4>
+                <h4>Download Templates:</h4>
                 <div className="template-buttons">
                     <button className="btn-template" onClick={() => downloadTemplate('teachers')}>📥 Teachers</button>
                     <button className="btn-template" onClick={() => downloadTemplate('subjects')}>📥 Subjects</button>
@@ -138,26 +142,96 @@ function CsvUploader({ onDataParsed, existingData = {}, uploadedFiles = {}, onFi
                 </div>
             </div>
 
-            {/* Upload Type Selector */}
+            {/* Upload Type Selector - Cards */}
             <div className="upload-type-selector">
-                <label>Upload Type:</label>
-                <div className="radio-group">
-                    {['teachers', 'subjects', 'teacher_subject_map'].map(type => (
-                        <label key={type} className={`radio-label ${uploadedFiles[type] ? 'uploaded' : ''}`}>
-                            <input
-                                type="radio"
-                                value={type}
-                                checked={uploadType === type}
-                                onChange={(e) => setUploadType(e.target.value)}
-                            />
-                            <span>
-                                {type === 'teachers' && 'Teachers'}
-                                {type === 'subjects' && 'Subjects'}
-                                {type === 'teacher_subject_map' && 'Mapping'}
-                                {uploadedFiles[type] && ' ✅'}
-                            </span>
-                        </label>
-                    ))}
+                <div className="upload-cards-grid">
+                    {/* Teachers Card */}
+                    <div
+                        className={`upload-card ${uploadType === 'teachers' ? 'active' : ''} ${uploadedFiles.teachers ? 'completed' : ''}`}
+                        onClick={() => {
+                            setUploadType('teachers')
+                            document.querySelector('.upload-zone')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                        }}
+                    >
+                        <div className="card-icon">👨‍🏫</div>
+                        <div className="card-content">
+                            <h4>Teachers</h4>
+                            <p>Upload teachers file</p>
+                        </div>
+                        {uploadedFiles.teachers && <div className="card-badge">✔ Uploaded</div>}
+                        {uploadedFiles.teachers && (
+                            <button
+                                className="ctx-reupload"
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    setUploadType('teachers')
+                                    onFileRemove('teachers')
+                                }}
+                            >
+                                ↺ Re-upload
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Subjects Card */}
+                    <div
+                        className={`upload-card ${uploadType === 'subjects' ? 'active' : ''} ${uploadedFiles.subjects ? 'completed' : ''}`}
+                        onClick={() => {
+                            setUploadType('subjects')
+                            document.querySelector('.upload-zone')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                        }}
+                    >
+                        <div className="card-icon">📘</div>
+                        <div className="card-content">
+                            <h4>Subjects</h4>
+                            <p>Theory & Labs</p>
+                        </div>
+                        {uploadedFiles.subjects && <div className="card-badge">✔ Uploaded</div>}
+                        {uploadedFiles.subjects && (
+                            <button
+                                className="ctx-reupload"
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    setUploadType('subjects')
+                                    onFileRemove('subjects')
+                                }}
+                            >
+                                ↺ Re-upload
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Mapping Card */}
+                    <div
+                        className={`upload-card ${uploadType === 'teacher_subject_map' ? 'active' : ''} ${uploadedFiles.teacher_subject_map ? 'completed' : ''}`}
+                        onClick={() => {
+                            setUploadType('teacher_subject_map')
+                            document.querySelector('.upload-zone')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                        }}
+                    >
+                        <div className="card-icon">🔗</div>
+                        <div className="card-content">
+                            <h4>Mapping</h4>
+                            <p>Teacher ↔ Subject</p>
+                        </div>
+                        {uploadedFiles.teacher_subject_map && <div className="card-badge">✔ Uploaded</div>}
+                        {uploadedFiles.teacher_subject_map && (
+                            <button
+                                className="ctx-reupload"
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    setUploadType('teacher_subject_map')
+                                    onFileRemove('teacher_subject_map')
+                                }}
+                            >
+                                ↺ Re-upload
+                            </button>
+                        )}
+                    </div>
+
+
+
+
                 </div>
             </div>
 
@@ -167,7 +241,7 @@ function CsvUploader({ onDataParsed, existingData = {}, uploadedFiles = {}, onFi
                     <div className="file-info">
                         <span className="file-icon">📄</span>
                         <div>
-                            <h4>{uploadType.toUpperCase().replace(/_/g, ' ')} Uploaded</h4>
+                            <h4>{uploadType.replace(/_/g, ' ').toUpperCase()} Uploaded</h4>
                             <p>{uploadedFiles[uploadType].name}</p>
                         </div>
                     </div>
@@ -193,7 +267,7 @@ function CsvUploader({ onDataParsed, existingData = {}, uploadedFiles = {}, onFi
                     <input
                         ref={fileInputRef}
                         type="file"
-                        accept=".csv"
+                        accept=".csv,.xlsx,.xls"
                         onChange={handleChange}
                         style={{ display: 'none' }}
                         disabled={isLocked}
@@ -202,7 +276,7 @@ function CsvUploader({ onDataParsed, existingData = {}, uploadedFiles = {}, onFi
                     <div className="upload-zone-content">
                         <div className="upload-icon">📁</div>
                         <p className="upload-text">
-                            {isLocked ? 'Input Locked' : (parsing ? 'Parsing CSV...' : `Drag & Drop ${uploadType} CSV`)}
+                            {isLocked ? 'Input Locked' : (parsing ? 'Parsing File...' : `Drag & Drop ${uploadType.replace(/_/g, ' ')} File`)}
                         </p>
                         {!isLocked && (
                             <button

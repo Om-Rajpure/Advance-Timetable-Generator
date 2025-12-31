@@ -24,7 +24,14 @@ test_context = {
         },
         "slotsPerDay": 6,  # Increased slots per day
         "rooms": ["Room-1", "Room-2"],
-        "labs": ["Lab-1", "Lab-2", "Lab-3"]
+        "sharedLabs": [
+            {"name": "Lab-1", "capacity": 30},
+            {"name": "Lab-2", "capacity": 30},
+            {"name": "Lab-3", "capacity": 30}
+        ],
+        "labBatchesPerYear": {
+            "SE": 3
+        }
     },
     "smartInputData": {
         "subjects": [
@@ -32,31 +39,64 @@ test_context = {
                 "name": "Machine Learning",
                 "year": "SE",
                 "division": "A",
-                "lecturesPerWeek": 2,  # Reduced from 3
+                "lecturesPerWeek": 2,
                 "type": "Lecture",
+                "isPractical": False,
                 "subjects": ["Machine Learning"]
             },
             {
                 "name": "AI",
                 "year": "SE",
                 "division": "A",
-                "lecturesPerWeek": 2,  # Reduced from 3
+                "lecturesPerWeek": 2,
                 "type": "Lecture",
+                "isPractical": False,
                 "subjects": ["AI"]
+            },
+            {
+                "name": "Python Lab",
+                "year": "SE",
+                "division": "A",
+                "lecturesPerWeek": 4, # 2 sessions?
+                "type": "Practical",
+                "isPractical": True,
+                "subjects": ["Python Lab"]
+            },
+            {
+                "name": "AI Lab",
+                "year": "SE",
+                "division": "A",
+                "lecturesPerWeek": 4,
+                "type": "Practical",
+                "isPractical": True,
+                "subjects": ["AI Lab"]
+            },
+             {
+                "name": "Data Lab",
+                "year": "SE",
+                "division": "A",
+                "lecturesPerWeek": 4,
+                "type": "Practical",
+                "isPractical": True,
+                "subjects": ["Data Lab"]
             }
         ],
         "teachers": [
             {
                 "name": "Neha",
-                "subjects": ["Machine Learning", "AI"]
+                "subjects": ["Machine Learning", "AI", "Python Lab"]
             },
             {
                 "name": "John",
-                "subjects": []  # Can teach anything
+                "subjects": ["AI Lab", "Data Lab"] 
             },
             {
                 "name": "Sarah",
-                "subjects": ["Machine Learning", "AI"]
+                "subjects": ["Machine Learning", "AI", "Python Lab", "Data Lab", "AI Lab"]
+            },
+             {
+                "name": "Amit",
+                "subjects": ["Data Lab", "AI Lab"] 
             }
         ]
     }
