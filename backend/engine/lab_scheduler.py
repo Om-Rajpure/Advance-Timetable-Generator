@@ -158,7 +158,10 @@ class LabScheduler:
         # Candidate windows: (day, start_slot)
         for day in days:
             # Check all i to i + duration
-            for i in range(slots - duration + 1):
+            # Standardize to 1-based indexing to match Theory Scheduler
+            # Slots 1 to N.
+            # Valid start slots: 1 to (Total - Duration + 1)
+            for i in range(1, slots - duration + 2):
                 # CHECK RECESS OVERLAP
                 # Window covers slots [i, i+1, ..., i+duration-1]
                 window_indices = range(i, i + duration)

@@ -2328,6 +2328,561 @@
         "TE": 3,
         "BE": 3
       }
+    },
+    {
+      "id": "a695bfd1-2939-44f1-9115-475df6c953fe",
+      "createdAt": "2026-01-02T19:17:11.324576",
+      "branchName": "Computer Engineering",
+      "academicYears": [
+        "SE",
+        "TE",
+        "BE"
+      ],
+      "divisions": {
+        "SE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "TE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "BE": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      "workingDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "startTime": "8:00 AM",
+      "endTime": "5:00 PM",
+      "lectureDuration": 60,
+      "recessEnabled": true,
+      "recessStart": "12:00 PM",
+      "recessDuration": 60,
+      "classrooms": {
+        "SE": [
+          "SE-1",
+          "SE-2",
+          "SE-3"
+        ],
+        "TE": [
+          "SE-1",
+          "SE-2",
+          "SE-3"
+        ],
+        "BE": [
+          "SE-1",
+          "SE-2",
+          "SE-3"
+        ]
+      },
+      "sharedLabs": [
+        {
+          "name": "Computer Lab 1",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 30
+        },
+        {
+          "name": "Computer Lab 2",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 30
+        },
+        {
+          "name": "Electronics Lab",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 20
+        }
+      ],
+      "labBatchesPerYear": {
+        "SE": 3,
+        "TE": 3,
+        "BE": 3
+      }
+    },
+    {
+      "id": "8534e488-0964-4e55-9b3d-7968fa053b92",
+      "createdAt": "2026-01-02T22:17:40.939847",
+      "branchName": "Test Branch",
+      "academicYears": [
+        "SE",
+        "TE",
+        "BE"
+      ],
+      "divisions": {
+        "SE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "TE": [
+          "A",
+          "B"
+        ],
+        "BE": [
+          "A",
+          "B"
+        ]
+      },
+      "workingDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "startTime": "8:00 AM",
+      "endTime": "5:00 PM",
+      "lectureDuration": 60,
+      "recessEnabled": true,
+      "recessStart": "1:00 PM",
+      "recessDuration": 45,
+      "classrooms": {
+        "SE": [
+          "SE-1",
+          "SE-2",
+          "SE-3"
+        ],
+        "TE": [
+          "TE-1",
+          "TE-2"
+        ],
+        "BE": [
+          "BE-1"
+        ]
+      },
+      "sharedLabs": [
+        {
+          "name": "Computer Lab 1",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 30
+        },
+        {
+          "name": "Computer Lab 2",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 30
+        },
+        {
+          "name": "Electronics Lab",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 20
+        },
+        {
+          "name": "lab1",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        },
+        {
+          "name": "lab2",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        },
+        {
+          "name": "lab3",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        },
+        {
+          "name": "lab4",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        }
+      ],
+      "labBatchesPerYear": {
+        "SE": 3,
+        "TE": 3,
+        "BE": 3
+      }
+    },
+    {
+      "id": "f9fa78bd-9c6a-4657-b513-db6fec92fa6d",
+      "createdAt": "2026-01-02T22:21:51.254746",
+      "branchName": "Artificial Intelligence",
+      "academicYears": [
+        "SE",
+        "TE",
+        "BE"
+      ],
+      "divisions": {
+        "SE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "TE": [
+          "A",
+          "B"
+        ],
+        "BE": [
+          "A",
+          "B"
+        ]
+      },
+      "workingDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "startTime": "8:00 AM",
+      "endTime": "5:00 PM",
+      "lectureDuration": 60,
+      "recessEnabled": true,
+      "recessStart": "12:00 PM",
+      "recessDuration": 45,
+      "classrooms": {
+        "SE": [
+          "SE-1",
+          "SE-2"
+        ],
+        "TE": [
+          "TE-1"
+        ],
+        "BE": [
+          "BE-1"
+        ]
+      },
+      "sharedLabs": [
+        {
+          "name": "Computer Lab 1",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 30
+        },
+        {
+          "name": "Computer Lab 2",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 30
+        },
+        {
+          "name": "Electronics Lab",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 20
+        },
+        {
+          "name": "lab1",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        },
+        {
+          "name": "lab2",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        },
+        {
+          "name": "lab3",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        },
+        {
+          "name": "lab4",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        }
+      ],
+      "labBatchesPerYear": {
+        "SE": 3,
+        "TE": 3,
+        "BE": 3
+      }
     }
   ]
 }

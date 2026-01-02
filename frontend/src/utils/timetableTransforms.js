@@ -41,26 +41,70 @@ export const transformToGrid = (data, branchData) => {
     // Structure B: { "Year-Div": { Day: [SlotObjects] } } (Canonical)
 
     Object.keys(data).forEach(key => {
-        // Check if key is "Year-Div"
+        // Check if key is "Year-Div" e.g. "SE-A"
         if (key.includes('-')) {
-            const [year, div] = key.split('-');
+            const parts = key.split('-');
+            // Robust Split: "SE-A" -> year="SE", div="A"
+            // "Final Year-B" -> year="Final Year", div="B"? No, standard is Year-Div.
+            // Assumption: Last part is div, rest is year? Or First part is year?
+            // Scheduler uses f"{year}-{div}". If year has hyphen, this breaks.
+            // But Year is typically "SE", "TE".
+
+            // Let's assume standard format: "Year-Div"
+            // If year contains hyphen, this split logic needs care.
+            // For now, assume single hyphen or take first part.
+            // Better: use the known years/divs from context? No, strictly from key.
+
+            const div = parts.pop();
+            const year = parts.join('-');
+
+            // console.log(`[transformToGrid] Parsing Canonical: ${key} -> Year: ${year}, Div: ${div}`);
 
             if (!grid[year]) grid[year] = {};
             if (!grid[year][div]) grid[year][div] = {};
 
             const schedule = data[key]; // { Day: [Slots] }
-            Object.keys(schedule).forEach(day => {
-                if (!grid[year][div][day]) grid[year][div][day] = {};
 
-                const slotsList = schedule[day];
-                if (Array.isArray(slotsList)) {
-                    slotsList.forEach(slot => {
-                        const slotIdx = slot.slot;
-                        if (!grid[year][div][day][slotIdx]) grid[year][div][day][slotIdx] = [];
-                        grid[year][div][day][slotIdx].push(slot);
-                    });
-                }
-            });
+            // Support both Object { Monday: ... } and Array [ { day: ... } ]
+            if (Array.isArray(schedule)) {
+                // Should not happen in new canonical format but safe to support
+                schedule.forEach(slot => {
+                    const d = slot.day;
+                    const sIdx = slot.slot;
+                    if (!grid[year][div][d]) grid[year][div][d] = {};
+                    if (!grid[year][div][d][sIdx]) grid[year][div][d][sIdx] = [];
+                    grid[year][div][d][sIdx].push(slot);
+                });
+            } else {
+                Object.keys(schedule).forEach(day => {
+                    if (!grid[year][div][day]) grid[year][div][day] = {};
+
+                    const slotsList = schedule[day];
+                    // In canonical format, slotsList IS the array of slots.
+                    // But wait, canonical is { Day: [ {slot:1...}, {slot:2...} ] }
+                    // OR { Day: { Slot1: ... } } ?
+                    // User's Step 2 says: "Monday": { "Slot1": ... } (Object)
+                    // My Scheduler output says: "Monday": [ {...}, ... ] (Array)
+
+                    // Let's handle BOTH.
+                    if (Array.isArray(slotsList)) {
+                        slotsList.forEach(slot => {
+                            const slotIdx = slot.slot;
+                            if (!grid[year][div][day][slotIdx]) grid[year][div][day][slotIdx] = [];
+                            grid[year][div][day][slotIdx].push(slot);
+                        });
+                    } else if (typeof slotsList === 'object') {
+                        // "Slot1": { ... }
+                        Object.values(slotsList).forEach(slot => {
+                            if (!slot) return;
+                            // Backend might output "Slot1": null
+                            const slotIdx = slot.slot; // 1-based?
+                            if (!grid[year][div][day][slotIdx]) grid[year][div][day][slotIdx] = [];
+                            grid[year][div][day][slotIdx].push(slot);
+                        });
+                    }
+                });
+            }
 
         } else {
             // Assume Standard Nested { Year: { Div: ... } }

@@ -2,6 +2,7 @@ import React from 'react';
 import './TimetableGrid.css';
 
 function TimetableGrid({ gridData = {}, conflictingSlots = [], onSlotClick }) {
+    console.log("🧩 [TimetableGrid] Received gridData:", gridData);
     // Organize timetable into grid structure
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -43,6 +44,7 @@ function TimetableGrid({ gridData = {}, conflictingSlots = [], onSlotClick }) {
 
     return (
         <div className="timetable-grid">
+
             <table className="grid-table">
                 <thead>
                     <tr>

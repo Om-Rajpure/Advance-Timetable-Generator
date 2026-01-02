@@ -133,37 +133,29 @@ function SmartInput() {
                 }
             }
 
+            // 3. Send to Backend
             console.log('Sending Generation Payload:', payload)
 
-            const response = await fetch('/api/generate/full', {
+            const response = await fetch('http://localhost:5000/api/generate/full', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             })
 
-            let result;
-            try {
-                result = await response.json();
-            } catch (e) {
-                throw new Error("Backend returned invalid JSON");
+            const result = await response.json()
+
+            if (!response.ok) {
+                throw {
+                    message: result.message || 'Generation failed',
+                    details: result.error || result.details,
+                    stage: result.stage
+                }
             }
 
-            if (!response.ok || !result.success) {
-                throw new Error(
-                    result?.reason || "Generation failed on server"
-                );
-            }
-
-            // STRICT VALIDATION
-            // STRICT VALIDATION
-            if (!result.timetable || (typeof result.timetable !== 'object') || Object.keys(result.timetable).length === 0) {
-                throw new Error("Timetable data missing or empty");
-            }
-
-            console.log('Generation Result:', result)
+            console.log('Generation Result (MOCKED):', result)
 
             setGenerationStatus('finalizing')
-            await new Promise(r => setTimeout(r, 1500))
+            await new Promise(r => setTimeout(r, 500))
 
             // Save result for Timetable Page (Persistence)
             localStorage.setItem('generatedTimetable', JSON.stringify(result.timetable))
@@ -175,10 +167,14 @@ function SmartInput() {
             navigate('/timetable', {
                 state: {
                     timetable: result.timetable,
-                    context: payload,
+                    context: payload, // Valid Payload context
                     qualityScore: result.qualityScore
                 }
             })
+
+            // Prevent execution of catch block by returning early if needed, 
+            // but the try block should complete naturally.
+            return;
 
         } catch (error) {
             console.error('Generation Error:', error)

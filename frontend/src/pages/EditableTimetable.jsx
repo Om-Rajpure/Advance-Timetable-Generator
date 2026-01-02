@@ -7,6 +7,10 @@ import UndoControls from '../components/UndoControls';
 import { saveTimetable } from '../utils/editValidator';
 import './EditableTimetable.css';
 
+import { transformToGrid } from '../utils/timetableTransforms';
+
+// --- DEBUG DATA REMOVED ---
+
 function EditableTimetable() {
     const location = useLocation();
 
@@ -17,6 +21,8 @@ function EditableTimetable() {
         const stored = localStorage.getItem('generatedTimetable');
         return stored ? JSON.parse(stored) : [];
     };
+    // ... (rest of code)
+
 
     const getInitialContext = () => {
         if (location.state?.context) return location.state.context;
@@ -156,25 +162,61 @@ function EditableTimetable() {
         }
     };
 
-    if (!timetable || timetable.length === 0) {
-        return (
-            <div className="editable-timetable">
-                <div className="empty-state">
-                    <h2>No Timetable Loaded</h2>
-                    <p>Please generate or upload a timetable first.</p>
-                    <div style={{ marginTop: '20px', padding: '10px', background: '#f5f5f5', borderRadius: '5px', fontSize: '12px', textAlign: 'left' }}>
-                        <strong>Debug Info:</strong><br />
-                        Location State: {location.state ? 'Present' : 'None'}<br />
-                        LocalStorage 'generatedTimetable': {localStorage.getItem('generatedTimetable') ? 'Found' : 'Empty'}
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    // --- TRANSFORMATION FOR VIEW ---
+    // 1. Convert State (Flat or Canonical) -> Full Grid Object
+    const fullGrid = transformToGrid(timetable, context.branchData || {});
+
+    // 2. Select First Year/Division (MVP View Strategy)
+    // TODO: Add Year/Div selectors in UI if handling multiple divisions
+    const years = Object.keys(fullGrid);
+    const selectedYear = years.length > 0 ? years[0] : null;
+    const divs = selectedYear ? Object.keys(fullGrid[selectedYear]) : [];
+    const selectedDiv = divs.length > 0 ? divs[0] : null;
+
+    // 3. Extract Grid Data for View
+    const viewData = (selectedYear && selectedDiv)
+        ? fullGrid[selectedYear][selectedDiv]
+        : {};
+
+    // DEBUG: Logs
+    // console.log("EditableTimetable Render. View keys:", Object.keys(viewData));
+
+
+    // NOTE: We REMOVED the early return for empty state to ensure Debug Panel is visible.
+    // Instead, we let TimetableGrid handle empty data (it shows empty slots).
 
     return (
         <div className="editable-timetable">
-            <div className="page-header">
+            {/* DEBUG PANEL - ALWAYS VISIBLE */}
+            {/* DEBUG PANEL - COMMENTED OUT FOR PRODUCTION
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                zIndex: 99999,
+                background: '#fffcd7',
+                borderBottom: '2px solid #e6b800',
+                padding: '10px',
+                fontSize: '12px',
+                fontFamily: 'monospace',
+                maxHeight: '200px',
+                overflowY: 'auto',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.2)'
+            }}>
+                <div style={{ marginBottom: '5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h3 style={{ margin: '0' }}>🔍 Debug Info</h3>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    <div>
+                        <p style={{ margin: '2px 0' }}>Data Type: {Array.isArray(timetable) ? "Flat Array" : "Object"}</p>
+                        <p style={{ margin: '2px 0' }}>Selected Year/Div: {selectedYear} - {selectedDiv}</p>
+                    </div>
+                </div>
+            </div>
+            */}
+
+            <div className="page-header" style={{ marginTop: '140px' }}>
                 <div>
                     <h1>Edit Timetable</h1>
                     <p>Click any slot to edit. Changes are validated in real-time.</p>
@@ -196,8 +238,9 @@ function EditableTimetable() {
                 isSaving={isSaving}
             />
 
+            {/* ERROR: TimetableGrid expects 'gridData' prop, was passed 'timetable' */}
             <TimetableGrid
-                timetable={timetable}
+                gridData={viewData}
                 conflictingSlots={conflictingSlots}
                 onSlotClick={handleSlotClick}
             />

@@ -4,6 +4,22 @@ import TimetableGrid from './TimetableGrid';
 import { transformToGrid } from '../../utils/timetableTransforms';
 import './Timetable.css';
 
+// --- DEBUG DATA ---
+const DEBUG_DATA = {
+    "SE-A": {
+        "Monday": [
+            { id: "d1", slot: 1, subject: "DEBUG-THEORY", type: "THEORY", teacher: "TESTER", room: "101" },
+            { id: "d2", slot: 2, subject: "DEBUG-LAB", type: "LAB", teacher: "TESTER", room: "LAB-A", batch: "B1" }
+        ],
+        "Tuesday": [
+            { id: "d3", slot: 1, subject: "DEBUG-SUB", type: "THEORY", teacher: "TESTER", room: "101" }
+        ]
+    },
+    "SE-B": {
+        "Monday": [{ id: "d4", slot: 1, subject: "DEBUG-B", type: "THEORY", teacher: "TESTER", room: "102" }]
+    }
+};
+
 const TimetablePage = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -14,6 +30,10 @@ const TimetablePage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // DEBUG: Top Level Render Trace
+    console.log(`🧩 [TimetablePage] RENDER. Loading=${loading}, RawTimetableType=${typeof rawTimetable}, IsArray=${Array.isArray(rawTimetable)}, Keys=${rawTimetable ? Object.keys(rawTimetable).length : 0}`);
+    console.log("  > Location State:", location.state);
+
     // 2. View State
     const [selectedYear, setSelectedYear] = useState('');
     const [selectedDivision, setSelectedDivision] = useState('');
@@ -21,83 +41,120 @@ const TimetablePage = () => {
     const [availableYears, setAvailableYears] = useState([]);
     const [availableDivisions, setAvailableDivisions] = useState([]);
 
+    // Debug: Log rawTimetable changes
     useEffect(() => {
-        try {
-            // Priority 1: Navigation State (Fastest)
-            let loadedTimetable = location.state?.timetable;
-            let loadedContext = location.state?.context;
-
-            // Priority 2: LocalStorage (Persistence)
-            if (!loadedTimetable) {
-                const storedTimetable = localStorage.getItem('generatedTimetable');
-                if (storedTimetable) loadedTimetable = JSON.parse(storedTimetable);
-            }
-
-            if (!loadedContext) {
-                const branchConfStr = localStorage.getItem('branchConfig');
-                if (branchConfStr) loadedContext = JSON.parse(branchConfStr);
-            }
-
-
-            if (loadedTimetable && (Array.isArray(loadedTimetable) || typeof loadedTimetable === 'object')) {
-                setRawTimetable(loadedTimetable);
-                setBranchConfig(loadedContext || {});
-
-                // Initialize View Options
-                let years = [];
-                let isCanonical = false;
-
-                if (Array.isArray(loadedTimetable)) {
-                    years = [...new Set(loadedTimetable.map(item => item.year))].sort();
-                } else {
-                    const keys = Object.keys(loadedTimetable);
-                    // Check if keys are "Year-Div"
-                    if (keys.some(k => k.includes('-'))) {
-                        isCanonical = true;
-                        const uniqueYears = new Set(keys.map(k => k.split('-')[0]));
-                        years = [...uniqueYears].sort();
-                    } else {
-                        years = keys.sort();
-                    }
-                }
-
-                setAvailableYears(years);
-                if (years.length > 0) {
-                    const firstYear = years[0];
-                    setSelectedYear(firstYear);
-
-                    // Divisions for first year
-                    let divs = [];
-                    if (Array.isArray(loadedTimetable)) {
-                        divs = [...new Set(loadedTimetable.filter(t => t.year === firstYear).map(t => t.division))].sort();
-                    } else if (isCanonical) {
-                        // Filter keys starting with firstYear + "-"
-                        const keys = Object.keys(loadedTimetable);
-                        const relevantKeys = keys.filter(k => k.startsWith(firstYear + '-'));
-                        divs = relevantKeys.map(k => k.split('-')[1]).sort();
-                    } else {
-                        divs = Object.keys(loadedTimetable[firstYear] || {}).sort();
-                    }
-
-                    setAvailableDivisions(divs);
-                    if (divs.length > 0) setSelectedDivision(divs[0]);
-                }
-            } else {
-                setError("No timetable data found. Please generate one first.");
-            }
-        } catch (err) {
-            console.error("Timetable Load Error:", err);
-            setError("Failed to load timetable data.");
-        } finally {
-            setLoading(false);
+        if (rawTimetable) {
+            console.log("🧩 [TimetablePage] State 'rawTimetable' updated:", typeof rawTimetable, Array.isArray(rawTimetable));
+            console.log("🧩 [TimetablePage] Keys:", Object.keys(rawTimetable));
         }
+    }, [rawTimetable]);
+
+    useEffect(() => {
+        console.log("🧩 [TimetablePage] MOUNT Check Location:", location);
+
+        const fetchData = async () => {
+            try {
+                // Priority 1: Navigation State (Fastest)
+                let loadedTimetable = location.state?.timetable;
+                let loadedContext = location.state?.context;
+
+                // Priority 2: LocalStorage (Persistence)
+                if (!loadedTimetable) {
+                    const storedTimetable = localStorage.getItem('generatedTimetable');
+                    if (storedTimetable) {
+                        try {
+                            loadedTimetable = JSON.parse(storedTimetable);
+                            console.log("🧩 [TimetablePage] Loaded from Storage");
+                        } catch (e) {
+                            console.error("Storage Parse Error", e);
+                        }
+                    }
+                }
+
+                if (!loadedContext) {
+                    const branchConfStr = localStorage.getItem('branchConfig');
+                    if (branchConfStr) loadedContext = JSON.parse(branchConfStr);
+                }
+
+                if (loadedTimetable && (Array.isArray(loadedTimetable) || typeof loadedTimetable === 'object')) {
+                    console.log("🧩 [TimetablePage] Data Retrieval: Setting rawTimetable", loadedTimetable);
+
+                    // CRITICAL FIX: Deep Clone to avoid Proxy/Reference issues
+                    const cleanData = JSON.parse(JSON.stringify(loadedTimetable));
+                    setRawTimetable(cleanData);
+
+                    setBranchConfig(loadedContext || {});
+
+                    // Initialize View Options
+                    let years = [];
+                    let isCanonical = false;
+                    const keys = Array.isArray(cleanData) ? [] : Object.keys(cleanData);
+
+                    if (Array.isArray(cleanData)) {
+                        years = [...new Set(cleanData.map(item => item.year))].sort();
+                    } else {
+                        // Check if keys are "Year-Div"
+                        if (keys.some(k => k.includes('-'))) {
+                            isCanonical = true;
+                            const uniqueYears = new Set(keys.map(k => k.split('-')[0]));
+                            years = [...uniqueYears].sort();
+                        } else {
+                            years = keys.sort();
+                        }
+                    }
+
+                    console.log("🧩 [TimetablePage] Parsed Years:", years);
+                    setAvailableYears(years);
+
+                    if (years.length > 0) {
+                        const firstYear = years[0];
+                        setSelectedYear(firstYear);
+
+                        // Divisions for first year
+                        let divs = [];
+                        if (Array.isArray(cleanData)) {
+                            divs = [...new Set(cleanData.filter(t => t.year === firstYear).map(t => t.division))].sort();
+                        } else if (isCanonical) {
+                            // Filter keys starting with firstYear + "-"
+                            const relevantKeys = keys.filter(k => k.startsWith(firstYear + '-'));
+                            divs = relevantKeys.map(k => k.split('-')[1]).sort();
+                        } else {
+                            divs = Object.keys(cleanData[firstYear] || {}).sort();
+                        }
+
+                        console.log("🧩 [TimetablePage] Parsed Divisions:", divs);
+                        setAvailableDivisions(divs);
+                        if (divs.length > 0) setSelectedDivision(divs[0]);
+                    }
+                } else {
+                    console.warn("⚠️ [TimetablePage] No Valid Timetable Data Found");
+                    setError("No timetable data found. Please generate one first.");
+                }
+            } catch (err) {
+                console.error("Timetable Load Error:", err);
+                setError("Failed to load timetable data.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, [location.state]); // Run once on mount
 
     // 3. Transformation Effect
     useEffect(() => {
-        if (rawTimetable) { // Just check truthy, transform handles both
+        console.log("🧩 [TimetablePage] Transformation Effect Triggered");
+        console.log("  > rawTimetable type:", typeof rawTimetable, Array.isArray(rawTimetable) ? "Array" : "Object");
+        if (rawTimetable && Object.keys(rawTimetable).length > 0) {
+            console.log("  > Transforming data...");
             const transformed = transformToGrid(rawTimetable, branchConfig);
+            console.log("  > Transformed Grid Data Keys:", Object.keys(transformed));
+            if (Object.keys(transformed).length > 0) {
+                console.log("  > First Year Keys:", Object.keys(transformed[Object.keys(transformed)[0]] || {}));
+            }
             setGridData(transformed);
+        } else {
+            console.log("  > rawTimetable is empty, skipping transform.");
         }
     }, [rawTimetable, branchConfig]);
 
@@ -129,12 +186,16 @@ const TimetablePage = () => {
     };
 
 
-    // Render Helpers
-    if (loading) return <div className="tt-loading-container">Loading Timetable...</div>;
+    // Render Logic
+    const currentGrid = (gridData[selectedYear] && gridData[selectedYear][selectedDivision])
+        ? gridData[selectedYear][selectedDivision]
+        : {};
 
-    if (error) {
-        return (
-            <div className="tt-page-container">
+    const renderMainContent = () => {
+        if (loading) return <div className="tt-loading-container">Loading Timetable...</div>;
+
+        if (error) {
+            return (
                 <div className="tt-permission-denied">
                     <h2>⚠️ {error}</h2>
                     <p>Debug Info:</p>
@@ -144,62 +205,120 @@ const TimetablePage = () => {
                         Go to Generator
                     </button>
                 </div>
-            </div>
-        )
-    }
+            );
+        }
 
-    const currentGrid = (gridData[selectedYear] && gridData[selectedYear][selectedDivision])
-        ? gridData[selectedYear][selectedDivision]
-        : {};
+        return (
+            <>
+                {/* Header */}
+                <div className="tt-header-section">
+                    <div className="tt-title">
+                        <h1>Academic Timetable {new Date().getFullYear()}</h1>
+                        <div className="tt-subtitle">Generated via Smart Scheduler AI</div>
+                    </div>
+
+                    <div className="tt-controls">
+                        {/* Year Selector */}
+                        <select
+                            className="tt-select"
+                            value={selectedYear}
+                            onChange={(e) => handleYearChange(e.target.value)}
+                        >
+                            {availableYears.map(y => <option key={y} value={y}>{y}</option>)}
+                        </select>
+
+                        {/* Division Selector */}
+                        <select
+                            className="tt-select"
+                            value={selectedDivision}
+                            onChange={(e) => setSelectedDivision(e.target.value)}
+                        >
+                            {availableDivisions.map(d => <option key={d} value={d}>Division {d}</option>)}
+                        </select>
+
+                        <div style={{ width: 20 }}></div>
+
+                        <button className="btn-download" onClick={() => window.print()}>
+                            🖨️ Print / PDF
+                        </button>
+
+                        <button className="btn-download" onClick={() => navigate('/edit-timetable')}>
+                            ✏️ Edit Data
+                        </button>
+                    </div>
+                </div>
+
+                {/* Grid */}
+                <TimetableGrid
+                    gridData={currentGrid}
+                    year={selectedYear}
+                    division={selectedDivision}
+                    branchData={branchConfig}
+                />
+            </>
+        );
+    };
 
     return (
         <div className="tt-page-container">
-            {/* Header */}
-            <div className="tt-header-section">
-                <div className="tt-title">
-                    <h1>Academic Timetable {new Date().getFullYear()}</h1>
-                    <div className="tt-subtitle">Generated via Smart Scheduler AI</div>
-                </div>
+            {/* DEBUG PANEL - ALWAYS VISIBLE */}
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                zIndex: 99999,
+                background: '#fffcd7',
+                borderBottom: '2px solid #e6b800',
+                padding: '10px',
+                fontSize: '12px',
+                fontFamily: 'monospace',
+                maxHeight: '200px',
+                overflowY: 'auto',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.2)'
+            }}>
+                <div style={{ marginBottom: '5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h3 style={{ margin: '0' }}>🔍 ALPHA OMEGA DEBUG</h3>
+                    <button
+                        onClick={() => {
+                            console.log("🛠️ FORCING DUMMY DATA");
+                            setRawTimetable(DEBUG_DATA);
+                            setError(null); // Clear error if any
+                            setLoading(false); // Ensure loading is off
 
-                <div className="tt-controls">
-                    {/* Year Selector */}
-                    <select
-                        className="tt-select"
-                        value={selectedYear}
-                        onChange={(e) => handleYearChange(e.target.value)}
+                            // Initialize Views manually for Debug Data
+                            setSelectedYear("SE");
+                            setSelectedDivision("A");
+                            setAvailableYears(["SE"]);
+                            setAvailableDivisions(["A", "B"]);
+                        }}
+                        style={{ background: 'red', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer', fontWeight: 'bold' }}
                     >
-                        {availableYears.map(y => <option key={y} value={y}>{y}</option>)}
-                    </select>
-
-                    {/* Division Selector */}
-                    <select
-                        className="tt-select"
-                        value={selectedDivision}
-                        onChange={(e) => setSelectedDivision(e.target.value)}
-                    >
-                        {availableDivisions.map(d => <option key={d} value={d}>Division {d}</option>)}
-                    </select>
-
-                    <div style={{ width: 20 }}></div>
-
-                    <button className="btn-download" onClick={() => window.print()}>
-                        🖨️ Print / PDF
-                    </button>
-
-                    <button className="btn-download" onClick={() => navigate('/edit-timetable')}>
-                        ✏️ Edit Data
+                        🛠️ FORCE DUMMY DATA
                     </button>
                 </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    <div>
+                        <p style={{ margin: '2px 0' }}><strong>Selected Year:</strong> "{selectedYear}"</p>
+                        <p style={{ margin: '2px 0' }}><strong>Selected Division:</strong> "{selectedDivision}"</p>
+                        <p style={{ margin: '2px 0' }}><strong>Current Grid Keys:</strong> {Object.keys(currentGrid).join(', ')}</p>
+                    </div>
+                    <div>
+                        <p style={{ margin: '2px 0' }}><strong>Raw Keys:</strong> {rawTimetable ? Object.keys(rawTimetable || {}).length : 0}</p>
+                        <p style={{ margin: '2px 0' }}><strong>Grid Data Years:</strong> {Object.keys(gridData).join(', ')}</p>
+                        <p style={{ margin: '2px 0' }}><strong>Divs for "{selectedYear}":</strong> {gridData[selectedYear] ? Object.keys(gridData[selectedYear]).join(', ') : 'None'}</p>
+                    </div>
+                </div>
+                <details>
+                    <summary>Raw Data Sample</summary>
+                    <pre>{JSON.stringify((rawTimetable && (Array.isArray(rawTimetable) ? rawTimetable[0] : Object.values(rawTimetable)[0])) || {}, null, 2)}</pre>
+                </details>
             </div>
 
-            {/* Grid */}
-            <TimetableGrid
-                gridData={currentGrid}
-                year={selectedYear}
-                division={selectedDivision}
-                branchData={branchConfig}
-            />
-
+            {/* Main Content Rendered Below Debug Panel */}
+            <div style={{ marginTop: '160px' }}>
+                {renderMainContent()}
+            </div>
         </div>
     );
 };
