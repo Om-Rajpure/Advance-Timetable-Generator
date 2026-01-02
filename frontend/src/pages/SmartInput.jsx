@@ -143,34 +143,24 @@ function SmartInput() {
 
             let result;
             try {
-                const text = await response.text();
-                // Try parsing JSON
-                try {
-                    result = JSON.parse(text);
-                } catch (e) {
-                    // If response was not JSON (e.g. 500 HTML page)
-                    throw new Error(`Invalid Backend Response: ${text.substring(0, 100)}...`);
-                }
-            } catch (err) {
-                throw new Error('Failed to connect to backend or invalid response received.');
+                result = await response.json();
+            } catch (e) {
+                throw new Error("Backend returned invalid JSON");
             }
 
-            if (!response.ok) {
-                // If backend returned 400/500, throw the parsed result (which should be our structured error)
-                // or fall back to a generic error message if the structure isn't there
-                throw result || new Error(`Server returned ${response.status}`);
+            if (!response.ok || !result.success) {
+                throw new Error(
+                    result?.reason || "Generation failed on server"
+                );
             }
+
             // STRICT VALIDATION
-            if (!result.timetable || !Array.isArray(result.timetable) || result.timetable.length === 0) {
-                throw new Error("Backend returned success but Timetable data is missing!");
+            // STRICT VALIDATION
+            if (!result.timetable || (typeof result.timetable !== 'object') || Object.keys(result.timetable).length === 0) {
+                throw new Error("Timetable data missing or empty");
             }
 
             console.log('Generation Result:', result)
-
-            if (!result.success) {
-                // Handle business logic failure (feasibility etc)
-                throw result // rethrow as error to catch below
-            }
 
             setGenerationStatus('finalizing')
             await new Promise(r => setTimeout(r, 1500))

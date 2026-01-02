@@ -135,9 +135,9 @@ def test_generation():
     
     if result['success']:
         print(f"\n[STATISTICS]")
-        print(f"Total Slots Filled: {result['stats']['totalSlots']}")
+        print(f"Total Slots Filled: {result['stats']['slotsFilled']}")
         print(f"Iterations: {result['stats']['iterations']}")
-        print(f"Backtracks: {result['stats']['backtracks']}")
+        print(f"Backtracks: {result['stats'].get('backtracks', 'N/A')}")
         print(f"Quality Score: {result.get('qualityScore', 0)}/100")
         
         print(f"\n[VIOLATIONS]")
@@ -156,13 +156,27 @@ def test_generation():
         
         # Show sample slots
         print(f"\n[SAMPLE SLOTS]")
-        timetable = result.get('timetable', [])
-        for i, slot in enumerate(timetable[:5]):
-            print(f"{i+1}. {slot.get('day')} Slot {slot.get('slot')}: "
-                  f"{slot.get('subject')} - {slot.get('teacher')} - {slot.get('room')}")
+        timetable_dict = result.get('timetable', {})
         
-        if len(timetable) > 5:
-            print(f"... and {len(timetable) - 5} more slots")
+        # Flatten for display
+        slots_list = []
+        for class_id, schedule in timetable_dict.items():
+            for day, day_slots in schedule.items():
+                for slot in day_slots:
+                    slots_list.append(slot)
+                    
+        for i, slot in enumerate(slots_list[:5]):
+            print(f"{i+1}. {slot.get('day')} Slot {slot.get('slot')}: "
+                  f"{slot.get('subject')} - {slot.get('teacher')} - {slot.get('room')} [{slot.get('type')}]")
+        
+        if len(slots_list) > 5:
+            print(f"... and {len(slots_list) - 5} more slots")
+        
+        # Verify Dict Structure
+        assert isinstance(timetable_dict, dict), "Timetable must be a dict"
+        if slots_list:
+            first_key = list(timetable_dict.keys())[0]
+            assert "-" in first_key, "Class keys should be Year-Div (e.g., SE-A)"
     
     else:
         print(f"\n[FAILURE REASON]")
@@ -185,7 +199,9 @@ def test_generation():
     # Final Assertions for Pytest
     assert result['success'] is True, f"Generation failed: {result.get('message')}"
     assert result['valid'] is True, "Generated timetable is invalid"
-    assert result['stats']['totalSlots'] > 0, "No slots were filled"
+    assert result['stats']['slotsFilled'] > 0, "No slots were filled"
+    
+    return result
 
 
 

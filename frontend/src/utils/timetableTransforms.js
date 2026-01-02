@@ -1,32 +1,91 @@
 /**
- * Transforms flat timetable slots into a structured grid format
- * @param {Array} flatSlots - Array of slot objects from backend
+ * Transforms timetable slots into a structured grid format, handling both flat arrays and nested objects.
+ * @param {Array|Object} data - Array of slot objects (flat) or nested object { Year: { Div: { Day: [SlotObjects] } } }
  * @param {Object} branchData - Branch configuration (for Recess/Times)
  * @returns {Object} Structured data { [year]: { [division]: { [day]: { [slotIndex]: [entries] } } } }
  */
-export const transformToGrid = (flatSlots, branchData) => {
-    if (!flatSlots || !Array.isArray(flatSlots)) return {};
+export const transformToGrid = (data, branchData) => {
+    if (!data) return {};
 
     const grid = {};
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    // Sort slots by time to ensure order
-    const sortedSlots = [...flatSlots].sort((a, b) => a.slot - b.slot);
+    // Debug Incoming Data
+    // console.log("transformToGrid Input:", Object.keys(data));
 
-    sortedSlots.forEach(slot => {
-        const { year, division, day, slot: slotIndex } = slot;
+    // CASE 1: Flat List (Legacy / Initial Implementation)
+    if (Array.isArray(data)) {
+        // Sort slots by time to ensure order
+        const sortedSlots = [...data].sort((a, b) => a.slot - b.slot);
 
-        if (!grid[year]) grid[year] = {};
-        if (!grid[year][division]) grid[year][division] = {};
-        if (!grid[year][division][day]) grid[year][division][day] = {};
-        if (!grid[year][division][day][slotIndex]) grid[year][division][day][slotIndex] = [];
+        sortedSlots.forEach(slot => {
+            const { year, division, day, slot: slotIndex } = slot;
 
-        // Check for duplicates (e.g. same batch assigned twice? shouldn't happen but good to be safe)
-        const existing = grid[year][division][day][slotIndex];
-        const isDuplicate = existing.some(s => s.batch === slot.batch && s.id === slot.id);
+            if (!grid[year]) grid[year] = {};
+            if (!grid[year][division]) grid[year][division] = {};
+            if (!grid[year][division][day]) grid[year][division][day] = {};
+            if (!grid[year][division][day][slotIndex]) grid[year][division][day][slotIndex] = [];
 
-        if (!isDuplicate) {
-            grid[year][division][day][slotIndex].push(slot);
+            // Check for duplicates
+            const existing = grid[year][division][day][slotIndex];
+            const isDuplicate = existing.some(s => s.batch === slot.batch && s.id === slot.id);
+
+            if (!isDuplicate) {
+                grid[year][division][day][slotIndex].push(slot);
+            }
+        });
+        return grid;
+    }
+
+    // CASE 2 & 3: Nested Object (New Academic Engine or Canonical Format)
+    // Structure A: { Year: { Div: { Day: [SlotObjects] } } }
+    // Structure B: { "Year-Div": { Day: [SlotObjects] } } (Canonical)
+
+    Object.keys(data).forEach(key => {
+        // Check if key is "Year-Div"
+        if (key.includes('-')) {
+            const [year, div] = key.split('-');
+
+            if (!grid[year]) grid[year] = {};
+            if (!grid[year][div]) grid[year][div] = {};
+
+            const schedule = data[key]; // { Day: [Slots] }
+            Object.keys(schedule).forEach(day => {
+                if (!grid[year][div][day]) grid[year][div][day] = {};
+
+                const slotsList = schedule[day];
+                if (Array.isArray(slotsList)) {
+                    slotsList.forEach(slot => {
+                        const slotIdx = slot.slot;
+                        if (!grid[year][div][day][slotIdx]) grid[year][div][day][slotIdx] = [];
+                        grid[year][div][day][slotIdx].push(slot);
+                    });
+                }
+            });
+
+        } else {
+            // Assume Standard Nested { Year: { Div: ... } }
+            const year = key;
+            if (!grid[year]) grid[year] = {};
+
+            // Check if value is object (Divisions)
+            if (typeof data[year] === 'object') {
+                Object.keys(data[year]).forEach(div => {
+                    grid[year][div] = {};
+                    // ... rest of logic for deep nested (can reuse logic?)
+                    // For simplicity, inline standard nested logic
+                    Object.keys(data[year][div]).forEach(day => {
+                        grid[year][div][day] = {};
+                        const slotsList = data[year][div][day];
+                        if (Array.isArray(slotsList)) {
+                            slotsList.forEach(slot => {
+                                const slotIdx = slot.slot;
+                                if (!grid[year][div][day][slotIdx]) grid[year][div][day][slotIdx] = [];
+                                grid[year][div][day][slotIdx].push(slot);
+                            });
+                        }
+                    });
+                });
+            }
         }
     });
 

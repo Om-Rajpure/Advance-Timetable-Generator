@@ -49,104 +49,81 @@ class LabScheduler:
                     
         return mapping
 
-    def schedule_labs(self):
+    def schedule_class_labs(self, class_info):
         """
-        Main function to schedule all labs.
+        Schedule labs for a specific Class Object.
         Returns True if successful, False otherwise.
         """
-        years = self.branch_data.get('academicYears', [])
-        divisions_map = self.branch_data.get('divisions', {})
+        if not isinstance(class_info, dict):
+            raise TypeError(f"Expected class_info dict, got {type(class_info)}")
+            
+        year = class_info.get('year')
+        division = class_info.get('division')
+        num_batches = int(self.lab_batches_per_year.get(year, 3))
         
-        for year in years:
-            divisions = divisions_map.get(year, [])
-            num_batches = int(self.lab_batches_per_year.get(year, 3))
+        # Identify lab sessions needed
+        lab_sessions_to_schedule = []
+        
+        unique_lab_subjects = [
+            s for s in self.smart_input.get('subjects', []) 
+            if s.get('year') == year and (s.get('isPractical') or s.get('type') == 'Practical')
+        ]
+        
+        if not unique_lab_subjects:
+            print(f"  No verified lab subjects for {year}-{division}")
+            return True # Nothing to schedule is a success
             
-            # Identify lab sessions needed
-            # Expand based on lecturesPerWeek and sessionLength
-            lab_sessions_to_schedule = []
+        # Standardize duration
+        standard_duration = 2
+        if unique_lab_subjects:
+             standard_duration = int(unique_lab_subjects[0].get('sessionLength', 2))
+             if standard_duration <= 0: standard_duration = 2
+        
+        # Max sessions needed (Cycles)
+        max_sessions_needed = 0
+        for s in unique_lab_subjects:
+            weekly_slots = int(s.get('lecturesPerWeek', 2))
+            duration = int(s.get('sessionLength', 2))
+            if duration <= 0: duration = 2
+            needed = max(1, weekly_slots // duration)
+            if needed > max_sessions_needed: max_sessions_needed = needed
+
+        windows = self._get_valid_windows(year, division, duration=standard_duration)
+        
+        # Loop cycles
+        for cycle in range(max_sessions_needed):
+            # For each cycle, we rotate the subjects for batches
+            # Actually, simply placing a session rotates the batches internally in _assign_session
+            # But wait, _assign_session assigns ALL batches at once for that window.
+            # So we just need to schedule 'cycle' number of windows.
+            # HOWEVER: Different batches do DIFFERENT subjects in parallel.
+            # So 1 Window = 1 Session for ALL batches (where B1 does S1, B2 does S2...).
             
-            for s in self.smart_input.get('subjects', []):
-                if s.get('year') == year and (s.get('isPractical') or s.get('type') == 'Practical'):
-                    # Calculate sessions needed
-                    weekly_slots = int(s.get('lecturesPerWeek', 2))
-                    # Default to 2 if not specified, or user input 'slots'
-                    duration = int(s.get('sessionLength', 2))
-                    if duration <= 0: duration = 2
-                    
-                    sessions_count = max(1, weekly_slots // duration)
-                    
-                    for _ in range(sessions_count):
-                        lab_sessions_to_schedule.append(s)
+            # The rotation logic inside _assign_session (lines 276-279) handles "B1 gets S1, B2 gets S2".
+            # Does the next window handle "B1 gets S2, B2 gets S3"?
+            # _assign_session takes `session_index`.
+            # We must vary `session_index` across windows/cycles to ensure rotation.
             
-            if not lab_sessions_to_schedule:
-                continue
-            
-            unique_lab_subjects = [
-                s for s in self.smart_input.get('subjects', []) 
-                if s.get('year') == year and (s.get('isPractical') or s.get('type') == 'Practical')
-            ]
-            
-            # Max sessions needed per subject (to determine cycles)
-            max_sessions_needed = 0
-            if unique_lab_subjects:
-                for s in unique_lab_subjects:
-                    weekly_slots = int(s.get('lecturesPerWeek', 2))
-                    duration = int(s.get('sessionLength', 2))
-                    if duration <= 0: duration = 2
-                    
-                    needed = max(1, weekly_slots // duration)
-                    if needed > max_sessions_needed: max_sessions_needed = needed
-            
-            for division in divisions:
-                # We need to find valid windows based on duration?
-                # Currently _get_valid_windows HARDCODES 2 slots. 
-                # If we support variable duration, we need to pass duration to _get_valid_windows.
-                # BUT: Complex limitation - The whole engine might expect uniform slot sizes for labs per division?
-                # For this task, assuming standardized lab duration (e.g. all 2 hours) per year is safest, 
-                # OR we pick the max duration.
-                # Let's assume the user configures consistent slots for labs (usually 2).
-                # If one lab is 3 slots, we need 3-slot windows.
-                
-                # For now, let's look at the subject being scheduled in the loop.
-                # The loop iterates `max_sessions_needed`.
-                # But different subjects might have different durations?
-                # "Python Lab (2 slots)", "Workshop (3 slots)".
-                # This breaks the "Parallel Batch Rotation" if they have different durations!
-                # If B1 does Python (2h) and B2 does Workshop (3h)... synchronization fails.
-                
-                # Rule 11: "Each sub-batch must be assigned a different lab subject".
-                # Implication: They run in parallel.
-                # Parallel sessions MUST have the same start and end time to stay synchronized.
-                # Therefore, ALL LABS must have the SAME DURATION for a given Year/Division.
-                # I will use the duration of the first lab subject as the standard for this Division.
-                
-                standard_duration = 2
-                if unique_lab_subjects:
-                     standard_duration = int(unique_lab_subjects[0].get('sessionLength', 2))
-                     if standard_duration <= 0: standard_duration = 2
-                
-                windows = self._get_valid_windows(year, division, duration=standard_duration)
-                
-                # Loop structure:
-                for cycle in range(max_sessions_needed):
-                    for sub_idx_offset in range(len(unique_lab_subjects)):
-                         # This defines a window
-                         
-                         # Determine session_index for rotation
-                         session_index = sub_idx_offset
-                         
-                         # Try to find a window
-                         placed = False
-                         for window in windows:
-                             if self._can_schedule_session(window, num_batches, unique_lab_subjects, year, division):
-                                 # We assign using session_index to offset subjects
-                                 if self._assign_session(window, num_batches, unique_lab_subjects, year, division, session_index):
-                                     placed = True
-                                     break
-                         
-                         if not placed:
-                             print(f"Failed to place Lab Session Cycle {cycle}-{sub_idx_offset} for {year}-{division}")
-                             return False
+            # session_index should increment per cycle.
+             
+            session_index = cycle
+             
+            placed = False
+            for window in windows:
+                 # Check overlap with previous assignments (windows list is static?? No, _can_schedule checks state)
+                 if self._can_schedule_session(window, num_batches, unique_lab_subjects, year, division):
+                     if self._assign_session(window, num_batches, unique_lab_subjects, year, division, session_index):
+                         placed = True
+                         # Remove used window from candidates to avoid re-checking? 
+                         # Ideally _can_schedule handles it, but optimization:
+                         windows.remove(window) 
+                         break
+             
+            if not placed:
+                 print(f"Failed to place Lab Session Cycle {cycle} for {year}-{division}")
+                 # For academic engine, we might want to continue even if one fails?
+                 # But User said "Labs must occupy required count".
+                 return False
 
         return True
 

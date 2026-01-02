@@ -293,9 +293,47 @@ class TimetableState:
         for s in subjects:
             if (s.get('name') == subject and 
                 s.get('year') == year and 
-                s.get('division') == division):
-                required = s.get('lecturesPerWeek', 0)
+                # Division check: current logic is loose on division property in subjects
+                # Assuming subject def applies to all divisions unless specified
+                (s.get('division') == division or not s.get('division'))):
+                required = int(s.get('lecturesPerWeek', 0))
                 break
         
         current = self.get_subject_count(subject, year, division)
         return max(0, required - current)
+
+    def get_daily_load_for_class(self, year, division, day):
+        """
+        Returns number of lectures already scheduled for a given class on a given day.
+        Used for load balancing.
+        """
+        load = 0
+        
+        # Iterate slots for this day/class
+        # Since we don't store day-wise index efficiently, we scan slot_grid
+        # Optimization: Pre-calculate or use heuristics? 
+        # For now, scan total slots (e.g. 7).
+        
+        # Determine max slots
+        total_slots = 8 # Safety upper bound
+        
+        for slot_idx in range(total_slots):
+            key = (day, slot_idx, year, division)
+            if key in self.slot_grid:
+                 load += 1
+                 
+        return load
+
+    def get_daily_load_for_teacher(self, teacher, day):
+        """
+        Returns number of lectures assigned to a teacher on a specific day.
+        """
+        load = 0
+        total_slots = 8
+        
+        for slot_idx in range(total_slots):
+            key = (teacher, day, slot_idx)
+            if key in self.teacher_assignments:
+                load += 1
+        
+        return load

@@ -39,24 +39,55 @@ def generate_full_timetable():
     }
     """
     try:
-        data = request.get_json()
-        
-        if not data:
-            print("❌ [Generation] No data received in body")
-            return jsonify({"error": "No data provided"}), 400
-            
-        print(f"📥 [Generation] Received Payload Keys: {list(data.keys())}")
-        if 'branchData' in data:
-            print(f"   - branchData present (Type: {type(data['branchData'])})")
-        if 'smartInputData' in data:
-             print(f"   - smartInputData present (Type: {type(data['smartInputData'])})")
+        # Strict Request Parsing
+        try:
+            data = request.get_json(force=True)
+        except Exception as parse_err:
+             print(f"❌ [Generation] JSON Parse Error: {str(parse_err)}")
+             return jsonify({
+                 "success": False,
+                 "stage": "REQUEST_PROCESSING",
+                 "reason": "Invalid JSON payload",
+                 "details": str(parse_err)
+             }), 400
 
+        if not isinstance(data, dict):
+            print(f"❌ [Generation] Invalid Payload Type: {type(data)}")
+            return jsonify({
+                "success": False,
+                "stage": "REQUEST_PROCESSING",
+                "reason": "Invalid JSON payload structure",
+                "details": f"Expected dict, got {type(data).__name__}"
+            }), 400
+            
+        # PROACTIVE LOGGING
+        print("Payload received:", data)
+        print("BranchData:", data.get("branchData"))
+        print("SmartInputData:", data.get("smartInputData"))
+        print(f"📥 [Generation] Received Payload Keys: {list(data.keys())}")
         
+        # Extract and Validate Components
         branch_data = data.get('branchData')
         smart_input = data.get('smartInputData')
         
-        if not branch_data or not smart_input:
-            return jsonify({"error": "branchData and smartInputData are required"}), 400
+        print(f"DEBUG branchData type: {type(branch_data)}")
+        print(f"DEBUG smartInputData type: {type(smart_input)}")
+        
+        if not isinstance(branch_data, dict):
+             return jsonify({
+                 "success": False,
+                 "stage": "VALIDATION",
+                 "reason": "Invalid branchData",
+                 "details": f"Expected dict, got {type(branch_data).__name__}"
+             }), 400
+             
+        if not isinstance(smart_input, dict):
+             return jsonify({
+                 "success": False,
+                 "stage": "VALIDATION",
+                 "reason": "Invalid smartInputData",
+                 "details": f"Expected dict, got {type(smart_input).__name__}"
+             }), 400
         
         # Create context
         context = {
@@ -71,36 +102,78 @@ def generate_full_timetable():
         # Generate timetable
         result = scheduler.generate()
         
-        print(f"✅ [Generation] Generated timetable size: {len(result.get('timetable', []))}")
-        
-        # Optimize if successful
         if result['success'] and result['valid']:
-            optimizer = TimetableOptimizer(context)
-            optimized = optimizer.optimize(result['timetable'], max_iterations=100)
-            result['timetable'] = optimized
-            
-            # Recalculate quality score
-            from constraints.constraint_engine import ConstraintEngine
-            engine = ConstraintEngine()
-            result['qualityScore'] = engine.compute_quality_score(optimized, context)
-            
-            # Create version in history
+            raw_timetable = result.get('raw_timetable', [])
+            print(f"✅ [Generation] Generated timetable size: {len(raw_timetable)}")
+
             try:
+                optimizer = TimetableOptimizer(context)
+                # Optimize using raw list
+                optimized_raw = optimizer.optimize(raw_timetable, max_iterations=100)
+                
+                # Re-format to canonical structure
+                result['timetable'] = scheduler.format_to_canonical(optimized_raw)
+                
+                # Recalculate quality score
+                from constraints.constraint_engine import ConstraintEngine
+                engine = ConstraintEngine()
+                result['qualityScore'] = engine.compute_quality_score(optimized_raw, context)
+                
+                # Update stats with Theory/Lab counts
+                theory_count = sum(1 for s in optimized_raw if s.get('type') == 'THEORY')
+                lab_count = sum(1 for s in optimized_raw if s.get('type') == 'LAB')
+                
+                result['stats'].update({
+                    "theoryCount": theory_count,
+                    "labCount": lab_count,
+                    "totalClasses": len(result['timetable'])
+                })
+
+                # Create version in history
                 version = history_service.auto_create_version(
-                    timetable=optimized,
+                    timetable=optimized_raw, # Saving RAW list to history for now (consistency)
                     context=context,
                     action="Generation",
-                    description=f"Full timetable generated with {len(optimized)} slots"
+                    description=f"Full timetable generated with {len(optimized_raw)} slots"
                 )
                 result['versionId'] = version['versionId']
-            except Exception as e:
-                print(f"Failed to create version: {e}")
-                # Continue even if version creation fails
+            except Exception as opt_err:
+                import traceback
+                traceback.print_exc()
+                print(f"⚠️ [Generation] Optimization/History error: {opt_err}")
+                # Don't fail the whole request
         
+        # Step 2: GUARANTEE TIMETABLE EXISTS
+        if not result.get('timetable') or not isinstance(result['timetable'], dict):
+            return jsonify({
+                "success": False,
+                "stage": "POST_GENERATION_VALIDATION",
+                "reason": "Timetable generation returned empty or invalid structure"
+            }), 500
+
+        # Cleanup raw timetable from response to keep it clean (optional)
+        if 'raw_timetable' in result:
+             del result['raw_timetable']
+
         return jsonify(result), 200 if result['success'] else 400
         
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        import traceback
+        traceback.print_exc()
+        print("BACKEND ERROR:", str(e)) # IMPORTANT for debugging
+        return jsonify({
+            "success": False,
+            "stage": "BACKEND_EXCEPTION",
+            "reason": str(e),
+            "type": type(e).__name__,
+            "details": "Unexpected error in generation route."
+        }), 500
+
+    # Fallback for ANY execution path that escapes (should not happen with catch-all)
+    return jsonify({
+        "success": False,
+        "reason": "Unhandled execution path reached"
+    }), 500
 
 
 @generation_bp.route('/partial', methods=['POST'])

@@ -39,17 +39,46 @@ const TimetablePage = () => {
             }
 
 
-            if (loadedTimetable && Array.isArray(loadedTimetable) && loadedTimetable.length > 0) {
+            if (loadedTimetable && (Array.isArray(loadedTimetable) || typeof loadedTimetable === 'object')) {
                 setRawTimetable(loadedTimetable);
                 setBranchConfig(loadedContext || {});
 
                 // Initialize View Options
-                const years = [...new Set(loadedTimetable.map(item => item.year))].sort();
+                let years = [];
+                let isCanonical = false;
+
+                if (Array.isArray(loadedTimetable)) {
+                    years = [...new Set(loadedTimetable.map(item => item.year))].sort();
+                } else {
+                    const keys = Object.keys(loadedTimetable);
+                    // Check if keys are "Year-Div"
+                    if (keys.some(k => k.includes('-'))) {
+                        isCanonical = true;
+                        const uniqueYears = new Set(keys.map(k => k.split('-')[0]));
+                        years = [...uniqueYears].sort();
+                    } else {
+                        years = keys.sort();
+                    }
+                }
+
                 setAvailableYears(years);
                 if (years.length > 0) {
-                    setSelectedYear(years[0]);
+                    const firstYear = years[0];
+                    setSelectedYear(firstYear);
+
                     // Divisions for first year
-                    const divs = [...new Set(loadedTimetable.filter(t => t.year === years[0]).map(t => t.division))].sort();
+                    let divs = [];
+                    if (Array.isArray(loadedTimetable)) {
+                        divs = [...new Set(loadedTimetable.filter(t => t.year === firstYear).map(t => t.division))].sort();
+                    } else if (isCanonical) {
+                        // Filter keys starting with firstYear + "-"
+                        const keys = Object.keys(loadedTimetable);
+                        const relevantKeys = keys.filter(k => k.startsWith(firstYear + '-'));
+                        divs = relevantKeys.map(k => k.split('-')[1]).sort();
+                    } else {
+                        divs = Object.keys(loadedTimetable[firstYear] || {}).sort();
+                    }
+
                     setAvailableDivisions(divs);
                     if (divs.length > 0) setSelectedDivision(divs[0]);
                 }
@@ -66,7 +95,7 @@ const TimetablePage = () => {
 
     // 3. Transformation Effect
     useEffect(() => {
-        if (rawTimetable.length > 0) {
+        if (rawTimetable) { // Just check truthy, transform handles both
             const transformed = transformToGrid(rawTimetable, branchConfig);
             setGridData(transformed);
         }
@@ -74,8 +103,26 @@ const TimetablePage = () => {
 
     // 4. Update Divisions when Year changes
     const handleYearChange = (year) => {
+        console.log("Selected Year Changed:", year);
         setSelectedYear(year);
-        const divs = [...new Set(rawTimetable.filter(t => t.year === year).map(t => t.division))].sort();
+
+        let divs = [];
+
+        // Detect Canonical (Object with "Year-Div" keys)
+        const isCanonical = !Array.isArray(rawTimetable) && Object.keys(rawTimetable).some(k => k.includes('-'));
+
+        if (Array.isArray(rawTimetable)) {
+            divs = [...new Set(rawTimetable.filter(t => t.year === year).map(t => t.division))].sort();
+        } else if (isCanonical) {
+            const keys = Object.keys(rawTimetable);
+            const relevantKeys = keys.filter(k => k.startsWith(year + '-'));
+            divs = relevantKeys.map(k => k.split('-')[1]).sort();
+        } else {
+            // Legacy Nested Object
+            divs = Object.keys(rawTimetable[year] || {}).sort();
+        }
+
+        console.log("Available Divisions for Year:", divs);
         setAvailableDivisions(divs);
         if (divs.length > 0) setSelectedDivision(divs[0]);
         else setSelectedDivision('');
