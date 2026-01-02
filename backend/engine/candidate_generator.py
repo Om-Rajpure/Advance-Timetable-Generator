@@ -75,11 +75,26 @@ class CandidateGenerator:
         # Get subjects for this year/division
         subjects = self.smart_input.get('subjects', [])
         
+        # Get explicit teacher map
+        teacher_subject_map = self.smart_input.get('teacherSubjectMap', [])
+        # Map: subject -> [teacher_names]
+        tm_map = {}
+        for entry in teacher_subject_map:
+            s_name = entry.get('subjectName')
+            t_name = entry.get('teacherName')
+            if s_name and t_name:
+                if s_name not in tm_map: tm_map[s_name] = []
+                tm_map[s_name].append(t_name)
+        
         for subject_data in subjects:
             if (subject_data.get('year') != year or 
                 subject_data.get('division') != division):
                 continue
             
+            # Skip if practical
+            if subject_data.get('isPractical') or subject_data.get('type') == 'Practical':
+                continue
+                
             subject_name = subject_data.get('name')
             
             # Check if we need more lectures for this subject
@@ -90,24 +105,55 @@ class CandidateGenerator:
             # Find available teachers for this subject
             teachers = self.smart_input.get('teachers', [])
             
-            for teacher_data in teachers:
-                teacher_name = teacher_data.get('name')
-                
-                # Check if teacher teaches this subject  
-                teacher_subjects = teacher_data.get('subjects', [])
-                if subject_name not in teacher_subjects:
-                    # If no subjects specified, assume can teach any
-                    if teacher_subjects:
-                        continue
-                
+            # Filter valid teachers for this subject
+            valid_teacher_names = []
+            
+            # 1. Use explicit map if exists for this subject
+            if subject_name in tm_map:
+                valid_teacher_names = tm_map[subject_name]
+            else:
+                # 2. Use general competence list
+                for t in teachers:
+                    t_subs = t.get('subjects', [])
+                    if subject_name in t_subs:
+                        valid_teacher_names.append(t.get('name'))
+            
+            # If no teachers found for subject, we (strictly) cannot schedule. (Rule 5)
+            if not valid_teacher_names:
+                continue
+
+            for teacher_name in valid_teacher_names:
                 # Check if teacher is available
                 if not self.state.is_teacher_available(teacher_name, day, slot_index):
                     continue
                 
-                # Find available rooms
-                rooms = self.branch_data.get('rooms', [])
+                # Find valid CLASSROOMS (Rule 22: Classrooms only for theory)
+                # Ideally get from branch_data specific to year?
+                # branch_data['classrooms'] might be a Dict { "SE": ["Room1"] } or List.
+                # Let's handle both.
+                classrooms_config = self.branch_data.get('classrooms', {})
+                valid_rooms = []
                 
-                for room in rooms:
+                if isinstance(classrooms_config, dict):
+                     valid_rooms = classrooms_config.get(year, [])
+                     if not valid_rooms: 
+                         # Fallback to all values if year specific not found?
+                         # Or fallback to global 'rooms' list but exclude labs?
+                         pass
+                elif isinstance(classrooms_config, list):
+                     valid_rooms = classrooms_config
+                
+                # If no specific classrooms found, try `rooms` but filter against `labs`
+                if not valid_rooms:
+                    all_rooms = self.branch_data.get('rooms', [])
+                    # Exclude shared labs
+                    shared_labs = [l.get('name') for l in self.branch_data.get('sharedLabs', [])]
+                    legacy_labs = self.branch_data.get('labs', [])
+                    
+                    forbidden = set(shared_labs + legacy_labs)
+                    valid_rooms = [r for r in all_rooms if r not in forbidden]
+
+                for room in valid_rooms:
                     # Check if room is available
                     if not self.state.is_room_available(room, day, slot_index):
                         continue
@@ -133,129 +179,16 @@ class CandidateGenerator:
         return candidates
     
     def _generate_practical_candidates(self, slot_info):
-        """Generate practical candidates (all batches synchronized)"""
-        candidates = []
-        day = slot_info['day']
-        slot_index = slot_info['slot']
-        year = slot_info['year']
-        division = slot_info['division']
-        
-        # Get practical subjects
-        subjects = self.smart_input.get('subjects', [])
-        
-        for subject_data in subjects:
-            if (subject_data.get('year') != year or 
-                subject_data.get('division') != division or
-                subject_data.get('type') != 'Practical'):
-                continue
-            
-            subject_name = subject_data.get('name')
-            num_batches = subject_data.get('batches', 3)
-            
-            # Check if we need practicals for this subject
-            # (Practicals count towards lecturesPerWeek)
-            remaining = self.state.get_remaining_lectures(subject_name, year, division)
-            if remaining <= 0:
-                continue
-            
-            # Find teacher for practical
-            teachers = self.smart_input.get('teachers', [])
-            available_teachers = []
-            
-            for teacher_data in teachers:
-                teacher_name = teacher_data.get('name')
-                teacher_subjects = teacher_data.get('subjects', [])
-                
-                if not teacher_subjects or subject_name in teacher_subjects:
-                    if self.state.is_teacher_available(teacher_name, day, slot_index):
-                        available_teachers.append(teacher_name)
-            
-            if not available_teachers:
-                continue
-            
-            # Find enough available labs
-            labs = self.branch_data.get('labs', [])
-            
-            available_labs = []
-            
-            # Filter Labs
-            available_labs_for_slot = []
-            
-            for lab in labs:
-                # lab is a dictionary from sharedLabs
-                # Session Duration is now per-lab!
-                lab_duration = int(lab.get('requiredSlots', 2))
-                
-                if is_lab_available_for_session(lab, day, slot_index, lab_duration):
-                    # Store lab with its specific duration for assignment
-                    available_labs_for_slot.append({
-                        'name': lab['name'],
-                        'duration': lab_duration
-                    })
-            
-            if len(available_labs_for_slot) < num_batches:
-                continue  # Not enough labs
-            
-            # Create synchronized practical candidate
-            # We select the first N available labs (naive) or could optimize
-            # But we must ensure if we pick N labs, they are valid.
-            
-            # Optimization: Sort labs by duration? Or just pick first N.
-            selected_labs = available_labs_for_slot[:num_batches]
-            
-            for teacher_name in available_teachers:
-                # Check teacher availability for the MAX duration of selected labs
-                # Because teacher supervises the session?
-                # If teacher is assigned to specific batches, we check per batch.
-                # Current logic assigns SAME teacher to ALL batches in this candidate?
-                # "Teacher assignment is flexible; any available teacher can be used." from Step 56/User Objective.
-                # "Theory: 1 teacher. Lab: Flexible".
-                # The current code: `for teacher_name... batch_assignments.append(..., teacher: teacher_name)`.
-                # Use MAX duration to be safe for teacher availability check?
-                max_duration = max(l['duration'] for l in selected_labs)
-                
-                # Check teacher availability for max duration
-                is_teacher_avail = True
-                for s_offset in range(max_duration):
-                     if not self.state.is_teacher_available(teacher_name, day, slot_index + s_offset):
-                         is_teacher_avail = False
-                         break
-                
-                if not is_teacher_avail:
-                    continue
+        """
+        Generate practical candidates.
+        Use LabScheduler for practicals. This is just a fallback/empty.
+        """
+        return []
+    
+    # _generate_practical_candidates is now handled by LabScheduler (Hard Constraints)
+    # Keeping this simple strictly for safety, but it should return empty
+    # as we don't want backtracking to place random practicals.
 
-                # Assign labs to batches
-                batch_assignments = []
-                for i in range(num_batches):
-                    batch_name = f"B{i+1}"
-                    lab_info = selected_labs[i]
-                    
-                    batch_assignments.append({
-                        'day': day,
-                        'slot': slot_index,
-                        'duration': lab_info['duration'], # Store duration
-                        'year': year,
-                        'division': division,
-                        'subject': subject_name,
-                        'teacher': teacher_name,
-                        'room': lab_info['name'],
-                        'type': 'Practical',
-                        'batch': batch_name
-                    })
-                
-                # Calculate score for the entire practical
-                score = self._calculate_candidate_score(
-                    subject_name, teacher_name, day, slot_index, year, division
-                )
-                
-                # Return as single candidate
-                candidates.append({
-                    'practical_group': True,
-                    'assignments': batch_assignments,
-                    'score': score
-                })
-        
-        return candidates
     
     def _calculate_candidate_score(self, subject, teacher, day, slot_index, year, division):
         """

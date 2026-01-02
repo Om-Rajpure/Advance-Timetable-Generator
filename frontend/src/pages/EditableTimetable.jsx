@@ -11,8 +11,26 @@ function EditableTimetable() {
     const location = useLocation();
 
     // State from generation/validation
-    const initialTimetable = location.state?.timetable || [];
-    const initialContext = location.state?.context || {};
+    // State from generation/validation or localStorage
+    const getInitialTimetable = () => {
+        if (location.state?.timetable) return location.state.timetable;
+        const stored = localStorage.getItem('generatedTimetable');
+        return stored ? JSON.parse(stored) : [];
+    };
+
+    const getInitialContext = () => {
+        if (location.state?.context) return location.state.context;
+        // Ideally context should also be stored or rebuilt. 
+        // For now, let's assume we can survive without full context or load it if we had stored it.
+        // SmartInput saves payload parts? 
+        // Let's rely on stored 'branchConfig' for context reconstruction if needed.
+        const branchConfig = localStorage.getItem('branchConfig');
+        return branchConfig ? { branchData: JSON.parse(branchConfig) } : {};
+    };
+
+
+    const initialTimetable = getInitialTimetable();
+    const initialContext = getInitialContext();
     const initialScore = location.state?.qualityScore || null;
 
     // Timetable state
@@ -144,6 +162,11 @@ function EditableTimetable() {
                 <div className="empty-state">
                     <h2>No Timetable Loaded</h2>
                     <p>Please generate or upload a timetable first.</p>
+                    <div style={{ marginTop: '20px', padding: '10px', background: '#f5f5f5', borderRadius: '5px', fontSize: '12px', textAlign: 'left' }}>
+                        <strong>Debug Info:</strong><br />
+                        Location State: {location.state ? 'Present' : 'None'}<br />
+                        LocalStorage 'generatedTimetable': {localStorage.getItem('generatedTimetable') ? 'Found' : 'Empty'}
+                    </div>
                 </div>
             </div>
         );

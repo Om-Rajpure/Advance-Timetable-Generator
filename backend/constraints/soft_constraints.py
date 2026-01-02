@@ -9,6 +9,100 @@ from .base import Constraint, ConstraintViolation
 import statistics
 
 
+
+class ConsecutiveLectureConstraint(Constraint):
+    """SC_New1: A teacher should not have more than 2 consecutive lectures."""
+    def __init__(self):
+        super().__init__(
+            name="TEACHER_CONSECUTIVE_LIMIT",
+            description="A teacher should not have more than 2 consecutive lectures",
+            severity="SOFT"
+        )
+    
+    def check(self, timetable, context):
+        violations = []
+        teacher_slots = {}
+        for slot in timetable:
+            t = slot.get('teacher')
+            if not t or t == 'TBA': continue
+            if t not in teacher_slots: teacher_slots[t] = []
+            teacher_slots[t].append(slot)
+            
+        for teacher, slots in teacher_slots.items():
+            slots.sort(key=lambda x: (x['day'], x['slot']))
+            consecutive = 0
+            last_day = None
+            last_slot = -2
+            
+            for s in slots:
+                if s['day'] == last_day and s['slot'] == last_slot + 1:
+                    consecutive += 1
+                else:
+                    consecutive = 1
+                
+                last_day = s['day']
+                last_slot = s['slot']
+                
+                if consecutive > 2:
+                     violations.append(ConstraintViolation(
+                        message=f"Teacher '{teacher}' has >2 consecutive lectures",
+                        entities={"teacher": teacher},
+                        slot=f"{s['day']} Slot {s['slot']}",
+                        severity="SOFT"
+                    ))
+        
+        return {
+            "valid": True, 
+            "violations": [v.to_dict() for v in violations],
+            "score": max(0, 100 - (5 * len(violations))) # Simple score logic
+        }
+
+class StudentConsecutiveConstraint(Constraint):
+    """SC_New2: A division should not have more than 3 continuous lectures."""
+    def __init__(self):
+        super().__init__(
+            name="STUDENT_CONSECUTIVE_LIMIT",
+            description="A division should not have more than 3 continuous lectures",
+            severity="SOFT"
+        )
+    
+    def check(self, timetable, context):
+        violations = []
+        div_slots = {}
+        for slot in timetable:
+            key = (slot['year'], slot['division'])
+            if key not in div_slots: div_slots[key] = []
+            div_slots[key].append(slot)
+            
+        for (year, div), slots in div_slots.items():
+            slots.sort(key=lambda x: (x['day'], x['slot']))
+            consecutive = 0
+            last_day = None
+            last_slot = -2
+            
+            for s in slots:
+                if s['day'] == last_day and s['slot'] == last_slot + 1:
+                    consecutive += 1
+                else:
+                    consecutive = 1
+                
+                last_day = s['day']
+                last_slot = s['slot']
+                
+                if consecutive > 3:
+                     violations.append(ConstraintViolation(
+                        message=f"{year}-{div} has >3 continuous lectures",
+                        entities={"year": year, "division": div},
+                        slot=f"{s['day']} Slot {s['slot']}",
+                        severity="SOFT"
+                    ))
+        
+        return {
+            "valid": True,
+            "violations": [v.to_dict() for v in violations],
+            "score": max(0, 100 - (2 * len(violations)))
+        }
+
 class BalancedTeacherLoadConstraint(Constraint):
     """SC1: Distribute lectures evenly across teachers"""
     

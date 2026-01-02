@@ -39,71 +39,100 @@ class TimetableScheduler:
     
     def generate(self):
         """
-        Generate a complete timetable.
+        Generate a complete timetable with robust error handling.
         """
-        # Step 1: Feasibility Check
-        feasibility_result = self.feasibility.verify()
-        if not feasibility_result['valid']:
-            return {
-                "success": False,
-                "message": f"Feasibility Check Failed: {feasibility_result.get('reason')}",
-                "blockers": [{
-                    "issue": feasibility_result.get('reason'),
-                    "details": feasibility_result.get('details')
-                }]
-            }
+        self.current_stage = "INITIALIZATION"
+        
+        try:
+            # Step 1: Feasibility Check
+            self.current_stage = "FEASIBILITY_CHECK"
+            feasibility_result = self.feasibility.verify()
+            if not feasibility_result['valid']:
+                return {
+                    "success": False,
+                    "stage": self.current_stage,
+                    "message": f"Feasibility Check Failed: {feasibility_result.get('reason')}",
+                    "details": feasibility_result.get('details'),
+                    "blockers": [{
+                        "issue": feasibility_result.get('reason'),
+                        "details": feasibility_result.get('details')
+                    }]
+                }
 
-        # Step 2: Lab Scheduling (Hard Constraint)
-        print("Starting Lab Scheduling...")
-        if not self.lab_scheduler.schedule_labs():
-             return {
-                "success": False,
-                "message": "Lab Scheduling Failed",
-                "blockers": [{"issue": "Insufficient Lab Resources", "details": "Could not place all parallel lab sessions."}]
-            }
-        print("Lab Scheduling Complete.")
+            # Step 2: Lab Scheduling (Hard Constraint)
+            self.current_stage = "LAB_SCHEDULING"
+            print("Starting Lab Scheduling...")
+            if not self.lab_scheduler.schedule_labs():
+                 return {
+                    "success": False,
+                    "stage": self.current_stage,
+                    "message": "Lab Scheduling Failed",
+                    "details": "Insufficient lab resources or impossible parallel batch configuration.",
+                    "blockers": [{"issue": "Insufficient Lab Resources", "details": "Could not place all parallel lab sessions."}]
+                }
+            print("Lab Scheduling Complete.")
 
-        # Step 3: Theory Scheduling (Backtracking)
-        # Generate all possible slots
-        all_slots = self.state.generate_slot_grid()
-        
-        # Filter out slots already taken by Labs
-        available_slots = []
-        for slot in all_slots:
-            if self.state.is_slot_free(slot['day'], slot['slot'], slot['year'], slot['division']):
-                available_slots.append(slot)
-        
-        print(f"Scheduling {len(available_slots)} theory slots...")
-
-        # Order slots by difficulty
-        ordered_slots = self.heuristics.order_slots(available_slots)
-        
-        # Run backtracking
-        result = self._backtrack(ordered_slots, 0)
-        
-        if result:
-            # Validate final timetable
-            validation = self.constraint_engine.validate_timetable(
-                self.state.get_filled_slots(),
-                self.context
-            )
+            # Step 3: Theory Scheduling (Backtracking)
+            self.current_stage = "THEORY_SCHEDULING"
             
+            # Generate all possible slots
+            all_slots = self.state.generate_slot_grid()
+            
+            # Filter out slots already taken by Labs
+            available_slots = []
+            for slot in all_slots:
+                if self.state.is_slot_free(slot['day'], slot['slot'], slot['year'], slot['division']):
+                    available_slots.append(slot)
+            
+            print(f"Scheduling {len(available_slots)} theory slots...")
+
+            # Order slots by difficulty
+            ordered_slots = self.heuristics.order_slots(available_slots)
+            
+            # Run backtracking
+            result = self._backtrack(ordered_slots, 0)
+            
+            if result:
+                self.current_stage = "FINAL_VALIDATION"
+                # Validate final timetable
+                validation = self.constraint_engine.validate_timetable(
+                    self.state.get_filled_slots(),
+                    self.context
+                )
+                
+                return {
+                    "success": True,
+                    "stage": "COMPLETED",
+                    "timetable": self.state.get_filled_slots(),
+                    "valid": validation['valid'],
+                    "qualityScore": validation['qualityScore'],
+                    "violations": validation['hardViolations'] + validation['softViolations'],
+                    "message": "Timetable generated successfully",
+                    "stats": {
+                        "iterations": self.iterations,
+                        "backtracks": self.backtracks,
+                        "totalSlots": len(self.state.slots)
+                    }
+                }
+            else:
+                # Failed to generate
+                return self._generate_failure_report()
+                
+        except Exception as e:
+            # Capture unexpected errors with context
+            import traceback
+            traceback.print_exc()
             return {
-                "success": True,
-                "timetable": self.state.get_filled_slots(),
-                "valid": validation['valid'],
-                "qualityScore": validation['qualityScore'],
-                "violations": validation['hardViolations'] + validation['softViolations'],
-                "message": "Timetable generated successfully",
-                "stats": {
+                "success": False,
+                "stage": self.current_stage,
+                "errorType": type(e).__name__,
+                "message": str(e),
+                "details": "Unexpected error during generation engine execution.",
+                "debug": {
                     "iterations": self.iterations,
-                    "backtracks": self.backtracks,
-                    "totalSlots": len(self.state.slots)
+                    "last_stage_context": self.state.get_last_assignment() if hasattr(self.state, 'get_last_assignment') else "N/A"
                 }
             }
-        else:
-            # Failed to generate
-            return self._generate_failure_report()
     
     def _backtrack(self, remaining_slots, depth):
         """

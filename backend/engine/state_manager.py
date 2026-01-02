@@ -58,7 +58,14 @@ class TimetableState:
         """Generate all possible slots based on branch data"""
         slots = []
         days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-        slots_per_day = self.branch_data.get('slotsPerDay', 8)
+        
+        # Calculate slot configuration
+        from utils.time_utils import calculate_time_slots
+        time_config = calculate_time_slots(self.branch_data)
+        slots_per_day = time_config['total_slots']
+        recess_slot = time_config['recess_slot']
+        
+        self.recess_slot = recess_slot # Store for access by other components
         
         # Get all years and divisions
         years = self.branch_data.get('academicYears', [])
@@ -69,6 +76,10 @@ class TimetableState:
             for division in divisions:
                 for day in days:
                     for slot_index in range(slots_per_day):
+                        # Skip recess slot
+                        if recess_slot is not None and slot_index == recess_slot:
+                            continue
+                            
                         slot_key = (day, slot_index, year, division)
                         
                         # Check if already filled

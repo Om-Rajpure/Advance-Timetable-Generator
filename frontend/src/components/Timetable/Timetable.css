@@ -1,0 +1,292 @@
+/* Main Container */
+.tt-page-container {
+    padding: 24px;
+    background-color: #f8fafc;
+    min-height: 100vh;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+.tt-header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    background: white;
+    padding: 20px 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.tt-title h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.tt-subtitle {
+    color: #64748b;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.tt-controls {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.tt-select {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #334155;
+    background: white;
+    cursor: pointer;
+}
+
+.btn-download {
+    background: #0f172a;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn-download:hover {
+    background: #1e293b;
+}
+
+/* Validation Badge */
+.quality-badge {
+    background: #ecfdf5;
+    color: #059669;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Grid Container */
+.tt-grid-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    overflow-x: auto;
+    /* Horizontal scroll on small screens */
+    min-width: 900px;
+    /* Force minimum width to maintain layout */
+}
+
+.tt-header-row {
+    display: grid;
+    grid-template-columns: 100px repeat(6, 1fr);
+    background: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.tt-header-cell {
+    padding: 16px;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-align: center;
+}
+
+.tt-header-cell.time-col {
+    text-align: left;
+    border-right: 1px solid #e2e8f0;
+    position: sticky;
+    left: 0;
+    background: #f1f5f9;
+    z-index: 10;
+}
+
+/* Rows */
+.tt-row {
+    display: grid;
+    grid-template-columns: 100px repeat(6, 1fr);
+    border-bottom: 1px solid #f1f5f9;
+    min-height: 120px;
+    /* Standard cell height */
+}
+
+/* Time Cell */
+.tt-time-cell {
+    padding: 16px;
+    border-right: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #64748b;
+    font-size: 13px;
+    background: #fcfcfc;
+}
+
+.time-range {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #334155;
+}
+
+.slot-num {
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+/* Day Column (Intersection) */
+.tt-day-col {
+    padding: 8px;
+    border-right: 1px dashed #f1f5f9;
+    display: flex;
+    flex-direction: column;
+}
+
+.tt-day-col:last-child {
+    border-right: none;
+}
+
+/* Recess */
+.recess-row {
+    min-height: 50px;
+    background: #fffbeb;
+    align-items: center;
+}
+
+.tt-recess-full {
+    grid-column: 2 / -1;
+    text-align: center;
+    color: #b45309;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: repeating-linear-gradient(45deg,
+            #fffbeb,
+            #fffbeb 10px,
+            #fef3c7 10px,
+            #fef3c7 20px);
+}
+
+/* Cards */
+.tt-cell-theory-card {
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    height: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+}
+
+.tt-cell-theory-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+}
+
+.tt-subject-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: #1e293b;
+    margin-bottom: 6px;
+}
+
+.tt-teacher-name {
+    font-size: 13px;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tt-room-badge {
+    display: inline-block;
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 8px;
+    align-self: flex-start;
+}
+
+/* Lab Layout */
+.tt-cell-lab-container {
+    display: flex;
+    gap: 4px;
+    height: 100%;
+}
+
+.tt-sub-batch-card {
+    flex: 1;
+    border-radius: 6px;
+    padding: 8px;
+    border: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 11px;
+}
+
+.tt-batch-badge {
+    background: rgba(0, 0, 0, 0.1);
+    color: #334155;
+    font-weight: 700;
+    padding: 2px 4px;
+    border-radius: 4px;
+    display: inline-block;
+    align-self: flex-start;
+    margin-bottom: 4px;
+}
+
+.tt-subject-name.small {
+    font-size: 12px;
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
+
+.tt-room-name.small {
+    color: #555;
+}
+
+/* Empty state */
+.tt-cell-empty {
+    height: 100%;
+    border-radius: 8px;
+    border: 1px dashed #e2e8f0;
+    background: #fdfdfd;
+}
+
+.tt-loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    color: #64748b;
+}
+
+.tt-permission-denied {
+    text-align: center;
+    padding: 60px;
+}

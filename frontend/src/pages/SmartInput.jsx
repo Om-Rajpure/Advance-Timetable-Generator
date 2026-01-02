@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useState, useEffect } from 'react'
+import React, { lazy, Suspense, useState, useEffect, startTransition } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDashboardState } from '../hooks/useDashboardState'
 import LoadingState from '../components/LoadingState'
@@ -11,273 +11,207 @@ const CsvUploader = lazy(() => import('../components/CsvUploader'))
 const BulkTextInput = lazy(() => import('../components/BulkTextInput'))
 const PromptInput = lazy(() => import('../components/PromptInput'))
 const PreviewTable = lazy(() => import('../components/PreviewTable'))
+import GenerationLoading from '../components/GenerationLoading'
 
 
 function SmartInput() {
     const navigate = useNavigate()
-    const { completeSmartInput } = useDashboardState()
+    const { getBranchInfo, completeSmartInput } = useDashboardState()
 
-    // ✅ SIMPLIFIED WORKFLOW GUARD - Use selectedBranch as single source of truth
-    useEffect(() => {
-        const selectedBranch = localStorage.getItem('selectedBranch')
-
-        console.log('🔍 SmartInput Guard - selectedBranch:', selectedBranch ? 'EXISTS' : 'NULL')
-
-        if (!selectedBranch) {
-            console.log('❌ No branch - redirecting to Branch Setup')
-            alert('⚠️ Branch Setup Required\n\nPlease complete Branch Setup before accessing Smart Input.')
-            navigate('/branch-setup')
-            return
-        }
-
-        console.log('✅ Branch exists - Smart Input access granted')
-    }, [navigate])
-
-    // Tab Management
-    const [activeTab, setActiveTab] = useState('csv')
-    const [completedTabs, setCompletedTabs] = useState({
-        csv: false,
-        bulk: false,
-        prompt: false
+    // State Management
+    const [activeTab, setActiveTab] = useState('bulk') // Default to bulk for easier access
+    const [aggregatedData, setAggregatedData] = useState({
+        teachers: [],
+        subjects: [],
+        teacherSubjectMap: []
     })
+    const [inputStage, setInputStage] = useState('idle') // idle, extracted, editing, confirmed, added
+    const [uploadedFiles, setUploadedFiles] = useState({})
 
-    // State Management for Input Lifecycle
-    // Stages: 'idle' -> 'extracted' -> 'editing' -> 'confirmed' -> 'added'
-    const [inputStage, setInputStage] = useState(() => {
-        return localStorage.getItem('smartInputStage') || 'idle'
-    })
-
-    // Generation Loading State
+    // Generation State
     const [isGenerating, setIsGenerating] = useState(false)
-    const [generationStatus, setGenerationStatus] = useState('')
+    const [generationStatus, setGenerationStatus] = useState('initializing') // initializing, processing, optimizing, finalizing
 
-    // Track uploaded files metadata
-    const [uploadedFiles, setUploadedFiles] = useState(() => {
-        const saved = localStorage.getItem('smartInputFiles')
-        return saved ? JSON.parse(saved) : {
-            teachers: null,
-            subjects: null,
-            mapping: null
-        }
-    })
+    const branchInfo = getBranchInfo()
+    const academicYears = branchInfo.years || ['FE', 'SE', 'TE', 'BE']
 
-    // Data State - Initialize from LocalStorage if available
-    const [aggregatedData, setAggregatedData] = useState(() => {
-        const saved = localStorage.getItem('smartInputData')
-        return saved ? JSON.parse(saved) : {
-            teachers: [],
-            subjects: [],
-            teacherSubjectMap: []
-        }
-    })
-
-    // Persist state changes
-    useEffect(() => {
-        localStorage.setItem('smartInputStage', inputStage)
-        localStorage.setItem('smartInputFiles', JSON.stringify(uploadedFiles))
-        localStorage.setItem('smartInputData', JSON.stringify(aggregatedData))
-    }, [inputStage, uploadedFiles, aggregatedData])
-
-    // ... (imports and other setup)
-
-    // Academic context (could be passed from parent or fetched)
-    const [academicYears, setAcademicYears] = useState(['FE', 'SE', 'TE', 'BE'])
-
-    // Tab Configuration
     const tabs = [
-        { id: 'csv', label: 'File Upload', icon: '📊', completed: completedTabs.csv },
-        { id: 'bulk', label: 'Bulk Text', icon: '✍️', completed: completedTabs.bulk },
-        { id: 'prompt', label: 'Natural Language', icon: '🤖', completed: completedTabs.prompt }
+        { id: 'csv', label: 'File Upload', icon: '📂' },
+        { id: 'bulk', label: 'Bulk Text', icon: '📝' },
+        { id: 'prompt', label: 'AI Prompt', icon: '✨' }
     ]
 
-    // Handle CSV Data Upload
-    const handleCsvData = (data, uploadType) => {
-        console.log('CSV Data received:', uploadType, data)
-
-        setAggregatedData(prev => {
-            // Basic merge logic
-            const updated = { ...prev }
-
-            if (uploadType === 'teachers' && data.length > 0) {
-                const existingNames = new Set(prev.teachers.map(t => t.name.toLowerCase()))
-                const newTeachers = data.filter(t => !existingNames.has(t.name.toLowerCase()))
-                updated.teachers = [...prev.teachers, ...newTeachers]
-            }
-            else if (uploadType === 'subjects' && data.length > 0) {
-                const existingNames = new Set(prev.subjects.map(s => s.name.toLowerCase()))
-                const newSubjects = data.filter(s => !existingNames.has(s.name.toLowerCase()))
-                updated.subjects = [...prev.subjects, ...newSubjects]
-            }
-            else if (uploadType === 'teacher_subject_map') {
-                // Replace mapping significantly or append? Append is safer.
-                updated.teacherSubjectMap = [...prev.teacherSubjectMap, ...data]
-            }
-            else if (uploadType === 'lab_mapping') {
-                const existingNames = new Set(prev.labs.map(l => l.name.toLowerCase()))
-                const newLabs = data.filter(l => !existingNames.has(l.name.toLowerCase()))
-                updated.labs = [...(prev.labs || []), ...newLabs]
-            }
-
-
-            return updated
-        })
-
-        // Transition to 'extracted' if idle
-        if (inputStage === 'idle') {
-            setInputStage('extracted')
-        }
-
-        setCompletedTabs(prev => ({ ...prev, csv: true }))
-    }
-
-    // Handle Bulk/Prompt Data (Placeholder connections)
-    const handleBulkTextData = (data) => {
-        console.log('Bulk Data:', data)
-        // Implementation similar to CSV merge
-    }
-    const handlePromptData = (data) => {
-        console.log('Prompt Data:', data)
-    }
-    const handleDataUpdate = (type, newData) => {
-        setAggregatedData(prev => ({ ...prev, [type]: newData }))
-    }
-
-
-    // Handle Tab Change
+    // Handlers
     const handleTabChange = (tabId) => {
         setActiveTab(tabId)
     }
 
-    // Toggle Edit Mode
-    const toggleEditMode = () => {
-        if (inputStage === 'added') return // Locked
-
-        if (inputStage === 'editing') {
+    const mergeData = (newData) => {
+        console.log('Merging Data:', newData)
+        setAggregatedData(prev => ({
+            teachers: [...prev.teachers, ...(newData.teachers || [])],
+            subjects: [...prev.subjects, ...(newData.subjects || [])],
+            teacherSubjectMap: [...prev.teacherSubjectMap, ...(newData.teacherSubjectMap || [])]
+        }))
+        if (inputStage === 'idle') {
             setInputStage('extracted')
-        } else {
-            setInputStage('editing')
         }
     }
 
-    // Save Changes (End Edit Mode)
+    const handleCsvData = (data, type) => {
+        console.log(`Handling CSV Data for ${type}:`, data)
+        const keyMap = {
+            'teachers': 'teachers',
+            'subjects': 'subjects',
+            'teacher_subject_map': 'teacherSubjectMap'
+        }
+        const key = keyMap[type]
+        if (key) {
+            mergeData({ [key]: data })
+        } else {
+            console.error('Unknown CSV upload type:', type)
+        }
+    }
+    const handleBulkTextData = (data) => mergeData(data)
+    const handlePromptData = (data) => mergeData(data)
+
+    const handleFileRemove = (type) => {
+        setUploadedFiles(prev => {
+            const next = { ...prev }
+            delete next[type]
+            return next
+        })
+    }
+
+    const toggleEditMode = () => {
+        if (inputStage === 'editing') setInputStage('extracted')
+        else setInputStage('editing')
+    }
+
     const handleSaveChanges = () => {
         setInputStage('extracted')
     }
 
-    // Confirm (Lock Data)
     const handleConfirmData = () => {
-        // Validation Gate 1 & 2
-        if (aggregatedData.teachers.length === 0 || aggregatedData.subjects.length === 0) {
-            alert('❌ Cannot confirm empty data. Please upload Teachers and Subjects.')
-            return
-        }
-
-        // Removed Strict Mapping Check for now to allow partial progress per "No hard dependency" rule
-        // But warning is good.
-        if (aggregatedData.teacherSubjectMap.length === 0) {
-            if (!window.confirm('⚠️ No Teacher-Subject mappings found!\n\nTimetable generation requires mappings. Proceed anyway?')) {
-                return
-            }
-        }
-
         setInputStage('confirmed')
-        window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
-    // Add to System (Final Commit & Generate)
-    const triggerTimetableGeneration = async () => {
+    const handleEditAgain = () => {
+        setInputStage('editing')
+    }
+
+    const handleDataUpdate = (type, newData) => {
+        setAggregatedData(prev => ({
+            ...prev,
+            [type]: newData
+        }))
+    }
+
+    const handleAddToSystem = async () => {
         setIsGenerating(true)
-        setGenerationStatus('Preparing data...')
+        setGenerationStatus('initializing')
 
         try {
-            const branchConfig = JSON.parse(localStorage.getItem('branchConfig') || '{}')
+            // Simulate intialization delay for UX
+            await new Promise(r => setTimeout(r, 1000))
+            setGenerationStatus('processing')
 
-            // Payload
+            // 1. Retrieve FULL branch configuration
+            const branchConfigStr = localStorage.getItem('branchConfig')
+            if (!branchConfigStr) {
+                throw new Error('Branch configuration missing. Please complete Branch Setup.')
+            }
+            const fullBranchData = JSON.parse(branchConfigStr)
+
+            // 2. Construct Payload matching Backend Expectation
             const payload = {
-                branchData: branchConfig,
-                smartInputData: aggregatedData,
-                maxIterations: 5000
+                branchData: fullBranchData,
+                smartInputData: {
+                    teachers: aggregatedData.teachers,
+                    subjects: aggregatedData.subjects,
+                    teacherSubjectMap: aggregatedData.teacherSubjectMap
+                }
             }
 
-            setGenerationStatus('Generating initial schedule...')
-            // Call API
-            const response = await fetch('http://localhost:5000/api/generate/full', {
+            console.log('Sending Generation Payload:', payload)
+
+            const response = await fetch('/api/generate/full', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             })
 
-            if (!response.ok) {
-                const err = await response.json()
-                throw new Error(err.error || 'Generation failed')
+            let result;
+            try {
+                const text = await response.text();
+                // Try parsing JSON
+                try {
+                    result = JSON.parse(text);
+                } catch (e) {
+                    // If response was not JSON (e.g. 500 HTML page)
+                    throw new Error(`Invalid Backend Response: ${text.substring(0, 100)}...`);
+                }
+            } catch (err) {
+                throw new Error('Failed to connect to backend or invalid response received.');
             }
 
-            const result = await response.json()
+            if (!response.ok) {
+                // If backend returned 400/500, throw the parsed result (which should be our structured error)
+                // or fall back to a generic error message if the structure isn't there
+                throw result || new Error(`Server returned ${response.status}`);
+            }
+            // STRICT VALIDATION
+            if (!result.timetable || !Array.isArray(result.timetable) || result.timetable.length === 0) {
+                throw new Error("Backend returned success but Timetable data is missing!");
+            }
+
             console.log('Generation Result:', result)
 
-            if (result.success) {
-                setGenerationStatus('Finalizing timetable...')
-                // Save timetable to local storage or context for View Page
-                localStorage.setItem('generatedTimetable', JSON.stringify(result.timetable))
-
-                // Navigate
-                completeSmartInput()
-                navigate('/edit-timetable', {
-                    state: {
-                        timetable: result.timetable,
-                        context: {
-                            teachers: aggregatedData.teachers,
-                            subjects: aggregatedData.subjects
-                        }
-                    }
-                }) // Navigate to timetable view
-            } else {
-                alert('Generation failed: ' + result.message)
+            if (!result.success) {
+                // Handle business logic failure (feasibility etc)
+                throw result // rethrow as error to catch below
             }
+
+            setGenerationStatus('finalizing')
+            await new Promise(r => setTimeout(r, 1500))
+
+            // Save result for Timetable Page (Persistence)
+            localStorage.setItem('generatedTimetable', JSON.stringify(result.timetable))
+            localStorage.setItem('generationStats', JSON.stringify(result.stats || {}))
+
+            completeSmartInput()
+
+            // Pass data via State (Immediate) + Storage (Backup)
+            navigate('/timetable', {
+                state: {
+                    timetable: result.timetable,
+                    context: payload,
+                    qualityScore: result.qualityScore
+                }
+            })
 
         } catch (error) {
             console.error('Generation Error:', error)
-            alert('Simulation failed: ' + error.message)
-        } finally {
+            const stage = error.stage || 'UNKNOWN'
+            const message = error.message || 'Generation Failed'
+            const details = error.details || error.error || ''
+
+            alert(`
+❌ Generation Failed
+
+Stage: ${stage}
+Reason: ${message}
+Details: ${details}
+            `)
             setIsGenerating(false)
-        }
-    }
-
-    const handleAddToSystem = () => {
-        if (inputStage !== 'confirmed') return
-
-        const confirmMsg = '🎯 Finish & Generate?\n\nThis will lock your inputs and attempt to generate the timetable.'
-
-        if (window.confirm(confirmMsg)) {
-            setInputStage('added')
-            triggerTimetableGeneration()
-        }
-    }
-
-    // Edit Again (from Confirmed state)
-    const handleEditAgain = () => {
-        setInputStage('editing')
-    }
-
-    const handleFileRemove = (type) => {
-        if (inputStage === 'added') return
-
-        if (window.confirm(`🗑 Remove ${type} data?`)) {
-            setUploadedFiles(prev => ({ ...prev, [type]: null }))
-            setAggregatedData(prev => {
-                const updated = { ...prev }
-                if (type === 'teachers') { updated.teachers = []; } // Don't clear mappings aggressively
-                else if (type === 'subjects') { updated.subjects = []; }
-                else if (type === 'mapping') { updated.teacherSubjectMap = []; }
-                return updated
-            })
         }
     }
 
     if (isGenerating) {
         return (
             <div className="smart-input-page">
-                <LoadingState message={generationStatus} />
+                {/* Use the premium loading component */}
+                <GenerationLoading status={generationStatus} />
             </div>
         )
     }
@@ -316,7 +250,7 @@ function SmartInput() {
                                     ...prev,
                                     [type]: { name: file.name, timestamp: Date.now() }
                                 }))}
-                                isLocked={inputStage === 'added'}
+                                isLocked={inputStage === 'added' || inputStage === 'confirmed'}
                             />
                         )}
 

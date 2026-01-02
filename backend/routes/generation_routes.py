@@ -42,7 +42,15 @@ def generate_full_timetable():
         data = request.get_json()
         
         if not data:
+            print("❌ [Generation] No data received in body")
             return jsonify({"error": "No data provided"}), 400
+            
+        print(f"📥 [Generation] Received Payload Keys: {list(data.keys())}")
+        if 'branchData' in data:
+            print(f"   - branchData present (Type: {type(data['branchData'])})")
+        if 'smartInputData' in data:
+             print(f"   - smartInputData present (Type: {type(data['smartInputData'])})")
+
         
         branch_data = data.get('branchData')
         smart_input = data.get('smartInputData')
@@ -62,6 +70,8 @@ def generate_full_timetable():
         
         # Generate timetable
         result = scheduler.generate()
+        
+        print(f"✅ [Generation] Generated timetable size: {len(result.get('timetable', []))}")
         
         # Optimize if successful
         if result['success'] and result['valid']:

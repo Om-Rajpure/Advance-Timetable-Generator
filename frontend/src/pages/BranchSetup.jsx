@@ -202,11 +202,15 @@ function BranchSetup() {
 
             console.log('📥 Branch Setup: API response status:', response.status)
 
-            if (!response.ok) {
-                throw new Error('Failed to save branch configuration')
-            }
+            console.log('📥 Branch Setup: API response status:', response.status)
 
             const data = await response.json()
+
+            if (!response.ok) {
+                console.error('❌ Branch Setup: Backend Error:', data)
+                throw new Error(data.error || data.message || 'Failed to save branch configuration')
+            }
+
             console.log('✅ Branch Setup: API success', data)
 
             // Clear draft since submission was successful
@@ -248,7 +252,7 @@ function BranchSetup() {
 
         } catch (error) {
             console.error('💥 Branch Setup: Error saving branch:', error)
-            alert('Failed to save branch configuration. Please try again.')
+            alert(error.message || 'Failed to save branch configuration. Please try again.')
         } finally {
             setIsSubmitting(false)
         }

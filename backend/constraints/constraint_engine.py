@@ -16,7 +16,9 @@ from .soft_constraints import (
     BalancedTeacherLoadConstraint,
     BalancedDailyLoadConstraint,
     SubjectRepetitionConstraint,
-    PreferenceConstraint
+    PreferenceConstraint,
+    ConsecutiveLectureConstraint,
+    StudentConsecutiveConstraint
 )
 
 
@@ -43,7 +45,9 @@ class ConstraintEngine:
             BalancedTeacherLoadConstraint(),
             BalancedDailyLoadConstraint(),
             SubjectRepetitionConstraint(),
-            PreferenceConstraint()
+            PreferenceConstraint(),
+            ConsecutiveLectureConstraint(),
+            StudentConsecutiveConstraint()
         ]
     
     def validate_timetable(self, timetable, context):

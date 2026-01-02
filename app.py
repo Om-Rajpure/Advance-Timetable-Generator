@@ -94,11 +94,13 @@ def create_branch():
     """Create a new branch configuration"""
     try:
         data = request.get_json()
+        print(f"📥 [Branch Setup] Received payload: {json.dumps(data, indent=2)}")
         
         # Validate required fields
         required_fields = ['branchName', 'academicYears', 'divisions', 'workingDays']
         for field in required_fields:
             if field not in data:
+                print(f"❌ [Branch Setup] Missing field: {field}")
                 return jsonify({'error': f'Missing required field: {field}'}), 400
         
         # Load existing branches

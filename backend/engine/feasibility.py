@@ -55,9 +55,17 @@ class FeasibilityVerifier:
             
         return {"valid": True, "message": "Configuration looks feasible"}
 
+    def _normalize_int(self, value):
+        """Helper to ensure integer value."""
+        if isinstance(value, list):
+            return int(value[0])
+        return int(value)
+
     def _check_time_feasibility(self):
         """Check if there are enough slots for theory lectures."""
-        total_slots_available = self.working_days * self.effective_slots_per_day
+        # Fix: using len(working_days) instead of list itself
+        days_count = len(self.working_days) if isinstance(self.working_days, list) else int(self.working_days)
+        total_slots_available = days_count * self.effective_slots_per_day
         
         for year in self.years:
             year_divisions = self.divisions.get(year, [])
@@ -100,7 +108,26 @@ class FeasibilityVerifier:
                 return {
                     "valid": False,
                     "reason": f"Insufficient labs for {year}",
-                    "details": f"{year} has {num_batches} parallel batches but only {total_labs} shared labs available."
+                    "details": f"{year} has {num_batches} parallel batches but only {total_labs} shared labs available. Need at least {num_batches} labs."
+                }
+            
+            # Warn if fewer lab subjects than batches (Rule 11 implication)
+            # "Each sub-batch must be assigned a different lab subject"
+            # If 3 batches, need 3 distinct lab subjects to run perfectly without repeating subject.
+            lab_subjects = [s for s in self.subjects if s.get('year') == year and (s.get('isPractical', False) or s.get('type') == 'Practical')]
+            unique_lab_subjects = len(set(s.get('name') for s in lab_subjects))
+            
+            if unique_lab_subjects < num_batches:
+                # This is a soft fail / warning. The engine might duplicate a subject if allowed, 
+                # but it violates strict 'different subject' rule if they run simultaneously.
+                # However, we won't block generation, just warn or note it.
+                # Ideally, for "Production Grade", this should be highlighted.
+                # We'll allow it for now but maybe return a warning structure if we had one.
+                # For strict rule adherence, we could fail. Let's fail for now to enforce quality.
+                return {
+                    "valid": False,
+                    "reason": f"Insufficient Lab Subjects for {year}",
+                    "details": f"{year} has {num_batches} batches but only {unique_lab_subjects} lab subjects. Rule A-11 requires different subjects per batch."
                 }
                 
         return {"valid": True}
@@ -117,17 +144,25 @@ class FeasibilityVerifier:
             
             for subject in self.subjects:
                 if subject.get('year') == year:
-                    weekly = int(subject.get('weeklyLectures', 0))
-                    is_lab = subject.get('isPractical', False)
+                    weekly = int(subject.get('weeklyLectures', 0)) # Default 3/4
+                    
+                    is_lab = subject.get('isPractical', False) or subject.get('type') == 'Practical'
                     
                     if is_lab:
-                        # 1 Lab = 1 Teacher * 2 Slots * num_batches * num_divisions
-                        # Wait, load is measured in 'hours/periods'
-                        # Lab session = 2 periods. 
-                        # Total periods = 2 * num_divisions * num_batches
-                        total_teaching_load += (2 * num_divisions * num_batches)
+                        # Lab Load Calculation:
+                        # 1 Lab Session = Duration (e.g. 2) * num_divisions * num_batches
+                        # Wait, effectively each batch needs a teacher.
+                        # Total Teacher Hours = (LecturesPerWeek/Duration) * Duration * Batches * Divisions ??
+                        # Simplest: Total Teacher Slots needed = Total Student Slots * Batches
+                        
+                        # Use provided lecturesPerWeek (e.g. 2). This is student load.
+                        # Teacher load = Student Load * Batches.
+                        # If Python Lab is 2 hrs/week for student.
+                        # It is 2 * 3(batches) = 6 hrs/week for teachers per division.
+                        load = int(subject.get('lecturesPerWeek', 2)) * num_batches * num_divisions
+                        total_teaching_load += load
                     else:
-                        # Theory
+                        # Theory Load
                         total_teaching_load += (weekly * num_divisions)
                         
         # Calculate Capacity

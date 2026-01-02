@@ -158,12 +158,42 @@ class LabScheduler:
         """
         windows = []
         days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-        slots = self.state.branch_data.get('slotsPerDay', 6)
+        
+        # Get slot info from state (calculated in generate_slot_grid)
+        # Assuming generate_slot_grid has been called or we recalculate.
+        # Ideally state initializes this.
+        if hasattr(self.state, 'recess_slot'):
+             recess_slot = self.state.recess_slot
+             # How many slots total?
+             # State uses time_utils but doesn't store total_slots publicly except implicitly.
+             # Let's use time_utils here too to be safe.
+             from utils.time_utils import calculate_time_slots
+             time_config = calculate_time_slots(self.branch_data)
+             slots = time_config['total_slots']
+             recess_slot = time_config['recess_slot']
+        else:
+             # Fallback
+             from utils.time_utils import calculate_time_slots
+             time_config = calculate_time_slots(self.branch_data)
+             slots = time_config['total_slots']
+             recess_slot = time_config['recess_slot']
         
         # Candidate windows: (day, start_slot)
         for day in days:
             # Check all i to i + duration
             for i in range(slots - duration + 1):
+                # CHECK RECESS OVERLAP
+                # Window covers slots [i, i+1, ..., i+duration-1]
+                window_indices = range(i, i + duration)
+                
+                hits_recess = False
+                if recess_slot is not None:
+                     if recess_slot in window_indices:
+                         hits_recess = True
+                
+                if hits_recess:
+                     continue
+                
                 windows.append({'day': day, 'start_slot': i, 'duration': duration})
                 
         return windows
@@ -267,6 +297,7 @@ class LabScheduler:
                     "teacher": teacher['name'],
                     "room": lab['name'],
                     "type": "LAB",
+                    "isPractical": True,
                     "id": f"LAB_{year}_{division}_{day}_{start}_{b}_{slot_offset}"
                 }
                 self.state.assign_slot(assignment, lock=True)

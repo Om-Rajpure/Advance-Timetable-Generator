@@ -17,12 +17,13 @@ import Export from './pages/Export'
 import History from './pages/History'
 import TimetableUpload from './pages/TimetableUpload'
 import EditableTimetable from './pages/EditableTimetable'
+import TimetablePage from './components/Timetable/TimetablePage'
 import TestEditPage from './pages/TestEditPage'
 import WhatIfSimulation from './pages/WhatIfSimulation'
 
 function App() {
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true }}>
       <AuthProvider>
         <DevBanner />
         <MainNavbar />
@@ -95,6 +96,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <TimetableUpload />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/timetable"
+            element={
+              <ProtectedRoute>
+                <EditableTimetable />
               </ProtectedRoute>
             }
           />

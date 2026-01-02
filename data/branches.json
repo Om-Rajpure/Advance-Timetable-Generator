@@ -1749,6 +1749,585 @@
         "TE": 3,
         "BE": 3
       }
+    },
+    {
+      "id": "3e1ad41e-e028-4d3e-97b0-8928b658c435",
+      "createdAt": "2025-12-31T19:36:25.815242",
+      "branchName": "Computer Engineering",
+      "academicYears": [
+        "SE",
+        "TE",
+        "BE"
+      ],
+      "divisions": {
+        "SE": [
+          "A"
+        ],
+        "TE": [
+          "A"
+        ],
+        "BE": [
+          "A"
+        ]
+      },
+      "workingDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "startTime": "8:00 AM",
+      "endTime": "5:00 PM",
+      "lectureDuration": 60,
+      "recessEnabled": true,
+      "recessStart": "12:00 PM",
+      "recessDuration": 60,
+      "classrooms": {
+        "SE": [
+          "TE-1",
+          "TE-2",
+          "TE-3",
+          "BE-4",
+          "BE-5",
+          "BE-6"
+        ],
+        "TE": [
+          "TE-1",
+          "TE-2",
+          "TE-3",
+          "BE-4",
+          "BE-5",
+          "BE-6"
+        ],
+        "BE": [
+          "TE-1",
+          "TE-2",
+          "TE-3",
+          "BE-4",
+          "BE-5",
+          "BE-6"
+        ]
+      },
+      "sharedLabs": [
+        {
+          "name": "Computer Lab 1",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 30
+        },
+        {
+          "name": "Computer Lab 2",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 30
+        },
+        {
+          "name": "Electronics Lab",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 20
+        }
+      ],
+      "labBatchesPerYear": {
+        "SE": 1,
+        "TE": 1,
+        "BE": 1
+      }
+    },
+    {
+      "id": "f7b287c4-6d62-4fb2-b9a4-fe72d441e7b4",
+      "createdAt": "2026-01-02T11:52:17.449824",
+      "branchName": "Test Branch",
+      "academicYears": [
+        "SE",
+        "TE"
+      ],
+      "divisions": {
+        "SE": [
+          "A",
+          "B"
+        ],
+        "TE": [
+          "A"
+        ]
+      },
+      "workingDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday"
+      ],
+      "startTime": "8:00 AM",
+      "endTime": "5:00 PM",
+      "lectureDuration": 60,
+      "recessEnabled": true,
+      "recessStart": "12:00 PM",
+      "recessDuration": 60,
+      "classrooms": {
+        "SE": [
+          "Room 101"
+        ],
+        "TE": [
+          "Room 201"
+        ]
+      },
+      "sharedLabs": [
+        {
+          "name": "Computer Lab 1",
+          "capacity": 30,
+          "availableDays": [
+            "Monday",
+            "Tuesday"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4
+          ]
+        }
+      ],
+      "labBatchesPerYear": {
+        "SE": 3,
+        "TE": 3
+      }
+    },
+    {
+      "id": "c753ccff-4c7d-420c-881f-dc116ff9df30",
+      "createdAt": "2026-01-02T11:53:18.412195",
+      "branchName": "Test Empty Labs",
+      "academicYears": [
+        "Y1"
+      ],
+      "divisions": {
+        "Y1": [
+          "A"
+        ]
+      },
+      "workingDays": [
+        "Mon"
+      ],
+      "startTime": "9:00",
+      "endTime": "10:00",
+      "lectureDuration": 60,
+      "recessEnabled": false,
+      "classrooms": {
+        "Y1": [
+          "R1"
+        ]
+      },
+      "sharedLabs": [],
+      "labBatchesPerYear": {
+        "Y1": 1
+      }
+    },
+    {
+      "id": "cfabd25b-5e38-445c-b10b-902b6a19b594",
+      "createdAt": "2026-01-02T11:53:20.479530",
+      "branchName": "Test Missing Optionals",
+      "academicYears": [
+        "Y1"
+      ],
+      "divisions": {
+        "Y1": [
+          "A"
+        ]
+      },
+      "workingDays": [
+        "Mon"
+      ],
+      "startTime": "9:00",
+      "endTime": "10:00",
+      "lectureDuration": 60,
+      "classrooms": {
+        "Y1": [
+          "R1"
+        ]
+      },
+      "sharedLabs": [],
+      "labBatchesPerYear": {
+        "Y1": 1
+      }
+    },
+    {
+      "id": "28abe342-895d-4eda-9597-dd1db61451d0",
+      "createdAt": "2026-01-02T11:53:22.531344",
+      "branchName": "Test Invalid Lab",
+      "academicYears": [
+        "Y1"
+      ],
+      "divisions": {
+        "Y1": [
+          "A"
+        ]
+      },
+      "workingDays": [
+        "Mon"
+      ],
+      "startTime": "9:00",
+      "endTime": "10:00",
+      "lectureDuration": 60,
+      "recessEnabled": false,
+      "classrooms": {
+        "Y1": [
+          "R1"
+        ]
+      },
+      "sharedLabs": [
+        {
+          "name": "BadLab"
+        }
+      ],
+      "labBatchesPerYear": {
+        "Y1": 1
+      }
+    },
+    {
+      "id": "9699a082-4e85-46be-b8b9-38ed7f187afc",
+      "createdAt": "2026-01-02T11:53:24.607356",
+      "branchName": "Test Unicode \ud83c\udf93",
+      "academicYears": [
+        "Y1"
+      ],
+      "divisions": {
+        "Y1": [
+          "A"
+        ]
+      },
+      "workingDays": [
+        "Mon"
+      ],
+      "startTime": "9:00",
+      "endTime": "10:00",
+      "lectureDuration": 60,
+      "recessEnabled": false,
+      "classrooms": {
+        "Y1": [
+          "R1"
+        ]
+      },
+      "sharedLabs": [],
+      "labBatchesPerYear": {
+        "Y1": 1
+      }
+    },
+    {
+      "id": "025e54c3-e75d-48ef-abf0-3548c502348d",
+      "createdAt": "2026-01-02T11:54:41.998050",
+      "branchName": "Test Branch",
+      "academicYears": [
+        "SE",
+        "TE"
+      ],
+      "divisions": {
+        "SE": [
+          "A",
+          "B"
+        ],
+        "TE": [
+          "A"
+        ]
+      },
+      "workingDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday"
+      ],
+      "startTime": "8:00 AM",
+      "endTime": "5:00 PM",
+      "lectureDuration": 60,
+      "recessEnabled": true,
+      "recessStart": "12:00 PM",
+      "recessDuration": 60,
+      "classrooms": {
+        "SE": [
+          "Room 101"
+        ],
+        "TE": [
+          "Room 201"
+        ]
+      },
+      "sharedLabs": [
+        {
+          "name": "Computer Lab 1",
+          "capacity": 30,
+          "availableDays": [
+            "Monday",
+            "Tuesday"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4
+          ]
+        }
+      ],
+      "labBatchesPerYear": {
+        "SE": 3,
+        "TE": 3
+      }
+    },
+    {
+      "id": "2a60c33a-1466-4120-9ef8-52b5696fb4a9",
+      "createdAt": "2026-01-02T12:02:05.819207",
+      "branchName": "Artificial Intelligence",
+      "academicYears": [
+        "SE",
+        "TE",
+        "BE"
+      ],
+      "divisions": {
+        "SE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "TE": [
+          "A",
+          "B"
+        ],
+        "BE": [
+          "A",
+          "B"
+        ]
+      },
+      "workingDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "startTime": "9:00 AM",
+      "endTime": "5:00 PM",
+      "lectureDuration": 60,
+      "recessEnabled": true,
+      "recessStart": "1:00 PM",
+      "recessDuration": 45,
+      "classrooms": {
+        "SE": [
+          "SE-1",
+          "SE-2"
+        ],
+        "TE": [
+          "TE-1",
+          "TE-2"
+        ],
+        "BE": [
+          "BE-1"
+        ]
+      },
+      "sharedLabs": [
+        {
+          "name": "Computer Lab 1",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 30
+        },
+        {
+          "name": "Computer Lab 2",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 30
+        },
+        {
+          "name": "Electronics Lab",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 20
+        },
+        {
+          "name": "Lab 1",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        },
+        {
+          "name": "Lab 2",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        },
+        {
+          "name": "Lab 3",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        },
+        {
+          "name": "Lab 4",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        }
+      ],
+      "labBatchesPerYear": {
+        "SE": 3,
+        "TE": 3,
+        "BE": 3
+      }
     }
   ]
 }
