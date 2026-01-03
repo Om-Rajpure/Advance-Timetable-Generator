@@ -136,7 +136,7 @@ class TheoryScheduler:
                         'subject': subject,
                         'teacher': teacher,
                         'type': 'THEORY',
-                        'room': 'Classroom' # Could optimize room allocation
+                        # 'room': 'Classroom' # REMOVED: Managed by scheduler.py format_to_canonical
                     }
                     
                     self.state.assign_slot(assignment)

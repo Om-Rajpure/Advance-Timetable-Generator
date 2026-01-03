@@ -378,6 +378,50 @@ class TimetableScheduler:
                 
             # Filter keys for clean output
             clean_slot = {k: v for k, v in slot.items() if k not in ['id', 'isPractical']}
+            
+            # DEFAULT ROOM ASSIGNMENT FOR THEORY
+            # If no room assigned (theory), assign default class-level room
+            if 'room' not in clean_slot or not clean_slot['room']:
+                assigned_room = None
+                
+                # 1. Try to fetch from Branch Data (Real Rooms)
+                try:
+                    branch_data = self.context.get('branchData', {})
+                    all_classrooms = branch_data.get('classrooms', {})
+                    year = slot['year']
+                    division = slot['division']
+                    
+                    # Get rooms for this year (e.g., ["Room-101", "Room-102"])
+                    rooms_for_year = []
+                    if isinstance(all_classrooms, dict):
+                        rooms_for_year = all_classrooms.get(year, [])
+                    elif isinstance(all_classrooms, list):
+                        # Handle Legacy/Dummy Array Format: [ {name: "R1", ...}, ... ]
+                        rooms_for_year = [r.get('name') for r in all_classrooms if isinstance(r, dict)]
+                    
+                    if isinstance(rooms_for_year, list) and len(rooms_for_year) > 0:
+                        # Map Division to Room Index (A->0, B->1, etc.)
+                        # Use modulo if fewer rooms than divisions
+                        div_idx = 0
+                        if len(division) == 1 and 'A' <= division <= 'Z':
+                            div_idx = ord(division) - ord('A')
+                        
+                        room_idx = div_idx % len(rooms_for_year)
+                        assigned_room = rooms_for_year[room_idx]
+                        
+                except Exception as e:
+                    print(f"Warning: Failed to map real room: {e}")
+                        
+                except Exception as e:
+                    print(f"Warning: Failed to map real room: {e}")
+                
+                # 2. Assign or Fallback
+                if assigned_room:
+                    clean_slot['room'] = assigned_room
+                else:
+                    # Fallback to synthetic default
+                    clean_slot['room'] = f"Classroom-{slot['year']}-{slot['division']}"
+
             # Ensure critical keys exist
             if 'type' not in clean_slot:
                 clean_slot['type'] = 'THEORY' # Default

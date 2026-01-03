@@ -29,29 +29,49 @@ function BranchSetup() {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [showSuccess, setShowSuccess] = useState(false)
 
-    const [formData, setFormData] = useState({
-        branchName: '',
-        academicYears: ['SE', 'TE', 'BE'],
-        divisions: {
-            SE: ['A', 'B', 'C'],
-            TE: ['A', 'B', 'C'],
-            BE: ['A', 'B', 'C']
-        },
-        workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        startTime: '8:00 AM',
-        endTime: '5:00 PM',
-        lectureDuration: 60,
-        recessEnabled: true,
-        recessStart: '12:00 PM',
-        recessDuration: 60,
-        classrooms: {},
-        sharedLabs: [],
-        labBatchesPerYear: {
-            SE: 3,
-            TE: 3,
-            BE: 3
+    const [formData, setFormData] = useState(() => {
+        // Load existing config if available to prevent overwriting
+        const saved = localStorage.getItem('branchConfig');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                return {
+                    ...parsed,
+                    // Ensure defaults for any new fields
+                    academicYears: parsed.academicYears || ['SE', 'TE', 'BE'],
+                    divisions: parsed.divisions || { SE: ['A'], TE: ['A'], BE: ['A'] },
+                    classrooms: parsed.classrooms || {},
+                    sharedLabs: parsed.sharedLabs || []
+                };
+            } catch (e) {
+                console.error("Failed to parse branchConfig", e);
+            }
         }
-    })
+        // Fallback to defaults
+        return {
+            branchName: '',
+            academicYears: ['SE', 'TE', 'BE'],
+            divisions: {
+                SE: ['A', 'B', 'C'],
+                TE: ['A', 'B', 'C'],
+                BE: ['A', 'B', 'C']
+            },
+            workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            startTime: '8:00 AM',
+            endTime: '5:00 PM',
+            lectureDuration: 60,
+            recessEnabled: true,
+            recessStart: '12:00 PM',
+            recessDuration: 60,
+            classrooms: {},
+            sharedLabs: [],
+            labBatchesPerYear: {
+                SE: 3,
+                TE: 3,
+                BE: 3
+            }
+        };
+    });
 
     const [errors, setErrors] = useState({})
 
