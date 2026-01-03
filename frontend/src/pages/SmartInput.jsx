@@ -332,12 +332,27 @@ Details: ${details}
                     <p className="smart-input-subtitle">
                         Choose your preferred input method: File Upload (Excel/CSV), Bulk Text, or Prompt
                     </p>
+                    {/* 
                     <button
                         onClick={handleUseDummyData}
                         className="btn-secondary"
                         style={{ marginTop: '15px', background: '#6366f1', color: 'white', border: 'none' }}
                     >
                         🧪 Load Verified Dummy Data (Debug)
+                    </button> 
+                    */}
+                    <button
+                        onClick={() => {
+                            if (window.confirm("Are you sure? This will delete all entered data.")) {
+                                setAggregatedData({ teachers: [], subjects: [], teacherSubjectMap: [] });
+                                setInputStage('idle');
+                                localStorage.removeItem('smartInputData');
+                            }
+                        }}
+                        className="btn-secondary"
+                        style={{ marginTop: '15px', marginLeft: '10px', background: '#ef4444', color: 'white', border: 'none' }}
+                    >
+                        🗑️ Clear All Data
                     </button>
                 </div>
 

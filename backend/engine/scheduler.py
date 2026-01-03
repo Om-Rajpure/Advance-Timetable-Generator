@@ -414,6 +414,45 @@ class TimetableScheduler:
              if not isinstance(s, dict):
                  raise TypeError(f"Subject at index {idx} must be a dict, got {type(s)}: {s}")
                  
+        # DEDUPLICATION: Remove duplicates based on Name + Year
+        # (User might have uploaded same subject twice or mixed inputs)
+        unique_subjects = {}
+        cleaned_subjects = []
+        for s in subjects:
+            # Create a unique key. 
+            # Note: If batch-specific, include batch. If division-specific, include division.
+            # Currently inputs are mostly year-wise.
+            key = (s.get('name'), s.get('year'), s.get('division'), s.get('type'))
+            
+            if key not in unique_subjects:
+                unique_subjects[key] = s
+                cleaned_subjects.append(s)
+            else:
+                print(f"    ⚠️ Warning: Dropping duplicate subject input: {s.get('name')} ({s.get('year')})")
+        
+        smart_input['subjects'] = cleaned_subjects
+        subjects = cleaned_subjects # Update reference for further checks
+        
+        # VALIDATION: Check if Labs > Working Days
+        # If One-Lab-Per-Day rule is active, Labs > Days is IMPOSSIBLE.
+        daily_lab_limit = 1 # Rule #7
+        working_days = branch_data.get('workingDays', [])
+        num_days = len(working_days) if isinstance(working_days, list) else 5
+        
+        # Count labs per year
+        lab_counts = {}
+        for s in subjects:
+            if s.get('isPractical') or s.get('type') == 'Practical':
+                y = s.get('year')
+                lab_counts[y] = lab_counts.get(y, 0) + 1
+                
+        for year, count in lab_counts.items():
+            if count > num_days * daily_lab_limit:
+                msg = f"Year {year} has {count} labs but only {num_days} working days. Rule 'One Lab/Batch/Day' makes this impossible."
+                print(f"❌ CRITICAL CONFIG ERROR: {msg}")
+                # We raise error to stop generation immediately and inform user
+                raise ValueError(msg)
+                 
         # Validate Teachers
         teachers = smart_input.get('teachers', [])
         if not isinstance(teachers, list):

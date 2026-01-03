@@ -50,7 +50,7 @@ def run_repro():
         "endTime": "17:00",
         "lectureDuration": 60,
         "classrooms": [{"name": r, "capacity": 60} for r in raw_data["classrooms"]],
-        # "sharedLabs": [{"name": l, "capacity": 30} for l in raw_data["labs"]], # SIMULATE MISSING
+        "sharedLabs": [{"name": l, "capacity": 30} for l in raw_data["labs"]],
         "rooms": raw_data["classrooms"], # Legacy support
         "labs": raw_data["labs"], # Legacy support
         "labBatchesPerYear": { "SE": 3, "TE": 3, "BE": 3 } # Derived from batches A,B,C
