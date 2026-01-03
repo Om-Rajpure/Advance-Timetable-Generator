@@ -152,6 +152,11 @@ class LabScheduler:
                 failure_reasons.add(f"Batch {batch} busy")
                 continue
                 
+            # 1.5 RULE: One Lab Per Day Per Batch
+            if self._does_batch_have_lab_on_day(year, division, batch, day):
+                failure_reasons.add(f"Batch {batch} already has lab on {day}")
+                continue
+                
             # 2. Check Lab Room Availability
             lab_room = self._find_lab_room(subject, day, start_slot, duration)
             if not lab_room:
@@ -209,6 +214,21 @@ class LabScheduler:
             # If we pass all checks, the slot is free for THIS batch
             # (even if other batches are present)
         return True
+
+    def _does_batch_have_lab_on_day(self, year, division, batch, day):
+        """Check if this batch already has a lab scheduled on this day."""
+        from utils.time_utils import calculate_time_slots
+        time_config = calculate_time_slots(self.branch_data)
+        total_slots = time_config['total_slots']
+        
+        for slot in range(1, total_slots + 1):
+             assignments = self.state.get_slot_assignment(day, slot, year, division)
+             if assignments:
+                 slot_assignments = assignments if isinstance(assignments, list) else [assignments]
+                 for a in slot_assignments:
+                     if a.get('batch') == batch and a.get('type') == 'LAB':
+                         return True
+        return False
 
     def _find_lab_room(self, subject, day, start_slot, duration):
         """Find a lab room available for the entire duration."""

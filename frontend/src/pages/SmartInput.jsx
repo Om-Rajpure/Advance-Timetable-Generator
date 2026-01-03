@@ -20,11 +20,20 @@ function SmartInput() {
 
     // State Management
     const [activeTab, setActiveTab] = useState('bulk') // Default to bulk for easier access
-    const [aggregatedData, setAggregatedData] = useState({
-        teachers: [],
-        subjects: [],
-        teacherSubjectMap: []
-    })
+    const [aggregatedData, setAggregatedData] = useState(() => {
+        // Load from storage if available
+        const saved = localStorage.getItem('smartInputData');
+        return saved ? JSON.parse(saved) : {
+            teachers: [],
+            subjects: [],
+            teacherSubjectMap: []
+        };
+    });
+
+    // Auto-save effect
+    useEffect(() => {
+        localStorage.setItem('smartInputData', JSON.stringify(aggregatedData));
+    }, [aggregatedData]);
     const [inputStage, setInputStage] = useState('idle') // idle, extracted, editing, confirmed, added
     const [uploadedFiles, setUploadedFiles] = useState({})
 
@@ -155,7 +164,20 @@ function SmartInput() {
             workingDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
             lectureDuration: 60,
             startTime: "09:00 AM",
-            slotsPerDay: 6
+            slotsPerDay: 6,
+            labs: ["Lab_1", "Lab_2", "Lab_3"],
+            rooms: ["Room_101", "Room_102", "Room_103", "Room_104"],
+            classrooms: [
+                { name: "Room_101", capacity: 60 },
+                { name: "Room_102", capacity: 60 },
+                { name: "Room_103", capacity: 60 },
+                { name: "Room_104", capacity: 60 }
+            ],
+            sharedLabs: [
+                { name: "Lab_1", capacity: 30 },
+                { name: "Lab_2", capacity: 30 },
+                { name: "Lab_3", capacity: 30 }
+            ]
         };
         localStorage.setItem('branchConfig', JSON.stringify(dummyBranch));
 

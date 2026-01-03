@@ -1,0 +1,18 @@
+Success: True
+
+--- LAB DISTRIBUTION FOR SE-A ---
+
+Batch B1:
+  Monday: ['SE_L1']
+  Tuesday: ['SE_L2']
+  Wednesday: ['SE_L3']
+
+Batch B2:
+  Monday: ['SE_L2']
+  Tuesday: ['SE_L3']
+  Wednesday: ['SE_L1']
+
+Batch B3:
+  Monday: ['SE_L3']
+  Tuesday: ['SE_L1']
+  Wednesday: ['SE_L2']
