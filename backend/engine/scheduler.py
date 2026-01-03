@@ -411,9 +411,6 @@ class TimetableScheduler:
                         
                 except Exception as e:
                     print(f"Warning: Failed to map real room: {e}")
-                        
-                except Exception as e:
-                    print(f"Warning: Failed to map real room: {e}")
                 
                 # 2. Assign or Fallback
                 if assigned_room:

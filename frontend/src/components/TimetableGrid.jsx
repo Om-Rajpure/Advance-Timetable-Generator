@@ -110,7 +110,7 @@ function TimetableGrid({ gridData = {}, conflictingSlots = [], onSlotClick }) {
                                                     >
                                                         <div className="slot-subject">{slot.subject}</div>
                                                         <div className="slot-teacher">{slot.teacher}</div>
-                                                        <div className="slot-room">{slot.room}</div>
+                                                        <div className="slot-room">📍 {slot.room || 'CR'}</div>
                                                         {slot.batch && (
                                                             <div className="slot-batch">{slot.batch}</div>
                                                         )}
