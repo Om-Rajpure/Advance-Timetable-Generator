@@ -84,18 +84,19 @@ class TimetableScheduler:
             print("GENERATION LOOP STARTED")
             print("Starting Multi-Class Generation Loop...")
             
+            # --- GLOBAL STATE (Shared across classes) ---
+            global_state = TimetableState(self.context)
+            
             # 3. Main Generation Loop
             expected_class_count = len(self.normalized_classes)
-            classes_debug = [c['id'] for c in self.normalized_classes]
-            print(f"DEBUG: Normalized Classes to Generate: {classes_debug}")
+            # ... debug prints ...
+            
+            # We want to iterate AND use the same state
+            total_slots_filled = 0
             
             with open('backend_debug_inputs.json', 'w') as f:
-                import json
-                json.dump({
-                    "normalized_classes": self.normalized_classes,
-                    "branch_data_keys": list(bd.keys()) if isinstance(bd, dict) else str(type(bd)),
-                    "smart_input_keys": list(si.keys()) if isinstance(si, dict) else str(type(si))
-                }, f, default=str)
+                 import json
+                 json.dump({ "normalized_classes": self.normalized_classes }, f, default=str)
             
             for class_obj in self.normalized_classes:
                 class_key = class_obj['id']
@@ -106,12 +107,9 @@ class TimetableScheduler:
                 print(f"🚀 Generating Timetable for: {class_key}")
                 print(f"==========================================")
                 
-                with open('backend_generation_progress.log', 'a') as f:
-                    f.write(f"STARTING {class_key}\n")
-                
                 try:
-                    # FIREWALL: Generate independent timetable for this class
-                    class_result = self.generate_single_class_timetable(class_obj)
+                    # FIREWALL: Pass global_state
+                    class_result = self.generate_single_class_timetable(class_obj, global_state)
                     
                     # HIERARCHICAL STORAGE
                     if year not in all_timetables:
@@ -221,21 +219,21 @@ class TimetableScheduler:
                 "traceback": tb
             }
 
-    def generate_single_class_timetable(self, class_obj):
+    def generate_single_class_timetable(self, class_obj, global_state=None):
         """
-        Generate timetable for a Single Class (Year + Division) independently.
+        Generate timetable for a Single Class (Year + Division).
+        Accepts optional global_state for shared constraints.
         """
         from .theory_scheduler import TheoryScheduler
         
-        # 1. Initialize FRESH State (Critical: No shared timeline between classes)
-        # We pass context, but we must ensure we don't accidentally pull global junk if not needed.
-        # TimetableState re-reads 'uploadedTimetable' from context. 
-        # If we want truly empty, we might mask that in context if needed. 
-        # For now, assuming standard generation context (no partial upload interference for new gen).
+        # 1. Initialize State (Shared or Fresh)
+        if global_state:
+            class_state = global_state
+        else:
+            # Fallback for individual testing
+            class_state = TimetableState(self.context)
         
-        class_state = TimetableState(self.context)
-        
-        # 2. Initialize Schedulers with this fresh state
+        # 2. Initialize Schedulers with this state (shared or fresh)
         lab_scheduler = LabScheduler(class_state, self.context)
         theory_scheduler = TheoryScheduler(class_state, self.context)
         

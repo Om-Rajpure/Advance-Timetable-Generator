@@ -8,6 +8,7 @@ import { saveTimetable } from '../utils/editValidator';
 import './EditableTimetable.css';
 
 import { transformToGrid } from '../utils/timetableTransforms';
+import { generateFullTimetablePDF } from '../utils/pdfGenerator';
 
 // --- DEBUG DATA REMOVED ---
 
@@ -215,6 +216,21 @@ function EditableTimetable() {
                         >
                             {availableDivs.map(d => <option key={d} value={d}>Division {d}</option>)}
                         </select>
+
+                        <button
+                            onClick={() => generateFullTimetablePDF(fullGrid, context.branchData)}
+                            style={{
+                                padding: '8px 16px',
+                                background: '#2563eb',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                fontWeight: 'bold'
+                            }}
+                        >
+                            📥 Download All PDF
+                        </button>
                     </div>
                 </div>
                 {qualityScore !== null && (
