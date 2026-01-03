@@ -115,11 +115,16 @@ export const transformToGrid = (data, branchData) => {
             if (typeof data[year] === 'object') {
                 Object.keys(data[year]).forEach(div => {
                     grid[year][div] = {};
-                    // ... rest of logic for deep nested (can reuse logic?)
-                    // For simplicity, inline standard nested logic
-                    Object.keys(data[year][div]).forEach(day => {
+
+                    // UNWRAP WRAPPER if present (Backend change)
+                    let scheduleSource = data[year][div];
+                    if (scheduleSource.timetable) {
+                        scheduleSource = scheduleSource.timetable;
+                    }
+
+                    Object.keys(scheduleSource).forEach(day => {
                         grid[year][div][day] = {};
-                        const slotsList = data[year][div][day];
+                        const slotsList = scheduleSource[day];
                         if (Array.isArray(slotsList)) {
                             slotsList.forEach(slot => {
                                 const slotIdx = slot.slot;

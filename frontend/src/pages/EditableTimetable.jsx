@@ -162,64 +162,60 @@ function EditableTimetable() {
         }
     };
 
-    // --- TRANSFORMATION FOR VIEW ---
+    // --- VIEW STATE ---
+    const [selectedYear, setSelectedYear] = useState(null);
+    const [selectedDiv, setSelectedDiv] = useState(null);
+
     // 1. Convert State (Flat or Canonical) -> Full Grid Object
     const fullGrid = transformToGrid(timetable, context.branchData || {});
 
-    // 2. Select First Year/Division (MVP View Strategy)
-    // TODO: Add Year/Div selectors in UI if handling multiple divisions
-    const years = Object.keys(fullGrid);
-    const selectedYear = years.length > 0 ? years[0] : null;
-    const divs = selectedYear ? Object.keys(fullGrid[selectedYear]) : [];
-    const selectedDiv = divs.length > 0 ? divs[0] : null;
+    // Effect: Auto-select first available on load
+    useEffect(() => {
+        const years = Object.keys(fullGrid);
+        if (years.length > 0 && (!selectedYear || !years.includes(selectedYear))) {
+            const firstYear = years[0];
+            setSelectedYear(firstYear);
+            const divs = Object.keys(fullGrid[firstYear]);
+            if (divs.length > 0) setSelectedDiv(divs[0]);
+        } else if (selectedYear && fullGrid[selectedYear]) {
+            // If year selected, ensure div is valid
+            const divs = Object.keys(fullGrid[selectedYear]);
+            if (divs.length > 0 && (!selectedDiv || !divs.includes(selectedDiv))) {
+                setSelectedDiv(divs[0]);
+            }
+        }
+    }, [fullGrid, selectedYear]);
 
     // 3. Extract Grid Data for View
-    const viewData = (selectedYear && selectedDiv)
+    const viewData = (selectedYear && selectedDiv && fullGrid[selectedYear] && fullGrid[selectedYear][selectedDiv])
         ? fullGrid[selectedYear][selectedDiv]
         : {};
 
-    // DEBUG: Logs
-    // console.log("EditableTimetable Render. View keys:", Object.keys(viewData));
-
-
-    // NOTE: We REMOVED the early return for empty state to ensure Debug Panel is visible.
-    // Instead, we let TimetableGrid handle empty data (it shows empty slots).
+    const availableYears = Object.keys(fullGrid);
+    const availableDivs = selectedYear && fullGrid[selectedYear] ? Object.keys(fullGrid[selectedYear]) : [];
 
     return (
         <div className="editable-timetable">
-            {/* DEBUG PANEL - ALWAYS VISIBLE */}
-            {/* DEBUG PANEL - COMMENTED OUT FOR PRODUCTION
-            <div style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                width: '100%',
-                zIndex: 99999,
-                background: '#fffcd7',
-                borderBottom: '2px solid #e6b800',
-                padding: '10px',
-                fontSize: '12px',
-                fontFamily: 'monospace',
-                maxHeight: '200px',
-                overflowY: 'auto',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.2)'
-            }}>
-                <div style={{ marginBottom: '5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h3 style={{ margin: '0' }}>🔍 Debug Info</h3>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                    <div>
-                        <p style={{ margin: '2px 0' }}>Data Type: {Array.isArray(timetable) ? "Flat Array" : "Object"}</p>
-                        <p style={{ margin: '2px 0' }}>Selected Year/Div: {selectedYear} - {selectedDiv}</p>
-                    </div>
-                </div>
-            </div>
-            */}
-
             <div className="page-header" style={{ marginTop: '140px' }}>
                 <div>
                     <h1>Edit Timetable</h1>
-                    <p>Click any slot to edit. Changes are validated in real-time.</p>
+                    <div className="view-controls" style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
+                        <select
+                            value={selectedYear || ''}
+                            onChange={(e) => setSelectedYear(e.target.value)}
+                            style={{ padding: '8px', borderRadius: '6px', border: '1px solid #ccc' }}
+                        >
+                            {availableYears.map(y => <option key={y} value={y}>{y}</option>)}
+                        </select>
+
+                        <select
+                            value={selectedDiv || ''}
+                            onChange={(e) => setSelectedDiv(e.target.value)}
+                            style={{ padding: '8px', borderRadius: '6px', border: '1px solid #ccc' }}
+                        >
+                            {availableDivs.map(d => <option key={d} value={d}>Division {d}</option>)}
+                        </select>
+                    </div>
                 </div>
                 {qualityScore !== null && (
                     <QualityBadge score={qualityScore} delta={scoreDelta} />

@@ -19,3 +19,69 @@ STARTING BE-A
 FAILED BE-A: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.
 STARTING BE-B
 FAILED BE-B: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.
+STARTING SE-A
+FAILED SE-A: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.
+STARTING SE-B
+FAILED SE-B: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.
+STARTING SE-C
+FAILED SE-C: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.
+STARTING TE-A
+FAILED TE-A: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.
+STARTING TE-B
+FAILED TE-B: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.
+STARTING BE-A
+FAILED BE-A: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.
+STARTING BE-B
+FAILED BE-B: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.
+STARTING SE-A
+SUCCESS SE-A
+STARTING SE-B
+SUCCESS SE-B
+STARTING SE-C
+SUCCESS SE-C
+STARTING TE-A
+SUCCESS TE-A
+STARTING TE-B
+SUCCESS TE-B
+STARTING BE-A
+SUCCESS BE-A
+STARTING BE-B
+SUCCESS BE-B
+STARTING SE-A
+SUCCESS SE-A
+STARTING SE-B
+SUCCESS SE-B
+STARTING SE-C
+SUCCESS SE-C
+STARTING TE-A
+SUCCESS TE-A
+STARTING TE-B
+SUCCESS TE-B
+STARTING BE-A
+SUCCESS BE-A
+STARTING BE-B
+SUCCESS BE-B
+STARTING SE-A
+SUCCESS SE-A
+STARTING SE-B
+SUCCESS SE-B
+STARTING TE-A
+SUCCESS TE-A
+STARTING TE-B
+SUCCESS TE-B
+STARTING BE-A
+SUCCESS BE-A
+STARTING BE-B
+SUCCESS BE-B
+STARTING SE-A
+SUCCESS SE-A
+STARTING SE-B
+SUCCESS SE-B
+STARTING TE-A
+SUCCESS TE-A
+STARTING TE-B
+SUCCESS TE-B
+STARTING BE-A
+SUCCESS BE-A
+STARTING BE-B
+SUCCESS BE-B

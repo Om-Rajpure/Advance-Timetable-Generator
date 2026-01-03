@@ -107,6 +107,62 @@ function SmartInput() {
         }))
     }
 
+    const handleUseDummyData = () => {
+        // Transformations matching user's provided structure
+        const raw = {
+            "years": ["SE", "TE", "BE"],
+            "divisions": { "SE": ["A", "B"], "TE": ["A", "B"], "BE": ["A", "B"] },
+            "subjects": {
+                "SE": { "theory": ["SE_T1", "SE_T2", "SE_T3", "SE_T4", "SE_T5"], "labs": ["SE_L1", "SE_L2", "SE_L3"] },
+                "TE": { "theory": ["TE_T1", "TE_T2", "TE_T3", "TE_T4", "TE_T5"], "labs": ["TE_L1", "TE_L2", "TE_L3"] },
+                "BE": { "theory": ["BE_T1", "BE_T2", "BE_T3", "BE_T4", "BE_T5"], "labs": ["BE_L1", "BE_L2", "BE_L3"] }
+            },
+            "teachers": {
+                "SE_T1": "Teacher_1", "SE_T2": "Teacher_2", "SE_T3": "Teacher_3", "SE_T4": "Teacher_4", "SE_T5": "Teacher_5",
+                "SE_L1": "Teacher_6", "SE_L2": "Teacher_7", "SE_L3": "Teacher_8",
+                "TE_T1": "Teacher_9", "TE_T2": "Teacher_10", "TE_T3": "Teacher_11", "TE_T4": "Teacher_12", "TE_T5": "Teacher_13",
+                "TE_L1": "Teacher_14", "TE_L2": "Teacher_15", "TE_L3": "Teacher_16",
+                "BE_T1": "Teacher_17", "BE_T2": "Teacher_18", "BE_T3": "Teacher_19", "BE_T4": "Teacher_20", "BE_T5": "Teacher_21",
+                "BE_L1": "Teacher_22", "BE_L2": "Teacher_23", "BE_L3": "Teacher_24"
+            }
+        };
+
+        const teachers = Object.entries(raw.teachers).map(([id, name]) => ({ name, maxLecturesPerDay: 4 }));
+        const subjects = [];
+        const mapping = [];
+
+        Object.entries(raw.subjects).forEach(([year, types]) => {
+            types.theory.forEach(sub => {
+                subjects.push({ name: sub, year, isPractical: false, sessionLength: 1, weeklyLectures: 3 });
+                if (raw.teachers[sub]) mapping.push({ teacherName: raw.teachers[sub], subjectName: sub });
+            });
+            types.labs.forEach(sub => {
+                subjects.push({ name: sub, year, isPractical: true, sessionLength: 2, weeklyLectures: 4 });
+                if (raw.teachers[sub]) mapping.push({ teacherName: raw.teachers[sub], subjectName: sub });
+            });
+        });
+
+        setAggregatedData({
+            teachers,
+            subjects,
+            teacherSubjectMap: mapping
+        });
+
+        // Auto-configure Branch Info in LocalStorage to match
+        const dummyBranch = {
+            academicYears: ["SE", "TE", "BE"],
+            divisions: { "SE": ["A", "B"], "TE": ["A", "B"], "BE": ["A", "B"] },
+            workingDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            lectureDuration: 60,
+            startTime: "09:00 AM",
+            slotsPerDay: 6
+        };
+        localStorage.setItem('branchConfig', JSON.stringify(dummyBranch));
+
+        setInputStage('confirmed');
+        alert("✅ Dummy Data Loaded! Click 'Finish & Generate' now.");
+    };
+
     const handleAddToSystem = async () => {
         setIsGenerating(true)
         setGenerationStatus('initializing')
@@ -254,6 +310,13 @@ Details: ${details}
                     <p className="smart-input-subtitle">
                         Choose your preferred input method: File Upload (Excel/CSV), Bulk Text, or Prompt
                     </p>
+                    <button
+                        onClick={handleUseDummyData}
+                        className="btn-secondary"
+                        style={{ marginTop: '15px', background: '#6366f1', color: 'white', border: 'none' }}
+                    >
+                        🧪 Load Verified Dummy Data (Debug)
+                    </button>
                 </div>
 
                 {/* Suspense Wrapper - Load components dynamically */}

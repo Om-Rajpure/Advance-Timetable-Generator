@@ -47,6 +47,13 @@ class LabScheduler:
                 if t_name not in mapping[sub]:
                     mapping[sub].append(t_name)
                     
+                    mapping[sub].append(t_name)
+        
+        # DEBUG MAPPING
+        with open('backend_debug_lab_mapping.json', 'w') as f:
+            import json
+            json.dump(mapping, f, default=str)
+            
         return mapping
 
     def schedule_class_labs(self, class_info):
@@ -164,6 +171,8 @@ class LabScheduler:
             
         # Log failure details if not assigned
         print(f"    ❌ Failed to schedule {subject['name']} for {batch}. Reasons: {list(failure_reasons)[:3]}")
+        with open('backend_debug_lab_failure.log', 'a') as f:
+             f.write(f"FAILED {subject['name']} @ {year}-{division}-{batch}: {list(failure_reasons)}\n")
         return False
 
     def _is_batch_free(self, day, start_slot, duration, year, division, batch):
@@ -233,9 +242,21 @@ class LabScheduler:
             if available:
                 return t_name
                 
-        # Fallback? Strict mode says we might fail. 
-        # But let's try ANY teacher if none mapped (unless strict subject specialist required)
-        # For labs, usually strict.
+        # Fallback: Relaxed Constraints if no specialist found
+        # This prevents failure when mapping is incomplete
+        if not mapped_teachers:
+            print(f"    ⚠️ No strict teacher found for {subject['name']}, trying any available teacher.")
+            all_teachers = self.smart_input.get('teachers', [])
+            for teacher in all_teachers:
+                t_name = teacher['name']
+                available = True
+                for offset in range(duration):
+                    if not self.state.is_teacher_available(t_name, day, start_slot + offset):
+                        available = False
+                        break
+                if available:
+                    return t_name
+                    
         return None
 
     def _commit_assignment(self, year, division, batch, subject, teacher, room, day, start, duration):
