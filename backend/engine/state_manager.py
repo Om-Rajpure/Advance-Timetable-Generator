@@ -119,12 +119,17 @@ class TimetableState:
         
         existing = self.slot_grid.get(slot_key)
         if existing:
+            # If entry exists, convert to list if not already
             if isinstance(existing, list):
                 existing.append(assignment)
                 self.slot_grid[slot_key] = existing
             else:
                 self.slot_grid[slot_key] = [existing, assignment]
         else:
+            # First assignment -> Store as single object (or list? List is safer for consistency)
+            # Keeping single object for backward compat with checks like 'if val.get(...)'
+            # But wait, my fix in lab_scheduler checks `isinstance(assignments, list)`.
+            # So I can keep single object for primary case, and promote to list on collision.
             self.slot_grid[slot_key] = assignment
 
         self.slots.append(assignment)

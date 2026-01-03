@@ -5,6 +5,7 @@ Flask routes for timetable generation operations.
 """
 
 from flask import Blueprint, request, jsonify
+import json
 from engine.scheduler import TimetableScheduler
 from engine.optimizer import TimetableOptimizer
 from history.history_service import HistoryService
@@ -20,160 +21,126 @@ history_service = HistoryService()
 def generate_full_timetable():
     """
     Generate a complete timetable from scratch.
-    
-    Request body:
-    {
-        "branchData": {...},
-        "smartInputData": {...},
-        "maxIterations": 10000 (optional)
-    }
-    
-    Response:
-    {
-        "success": bool,
-        "timetable": [...],
-        "valid": bool,
-        "qualityScore": float,
-        "message": str,
-        "stats": {...}
-    }
+    Safe execution wrapper ensures no crashes.
     """
+    print("GENERATION STARTED") # Trace marker
+    
     try:
-        # Strict Request Parsing
+        # 1. Safe Payload Extraction
         try:
             data = request.get_json(force=True)
-        except Exception as parse_err:
-             print(f"❌ [Generation] JSON Parse Error: {str(parse_err)}")
-             return jsonify({
-                 "success": False,
-                 "stage": "REQUEST_PROCESSING",
-                 "reason": "Invalid JSON payload",
-                 "details": str(parse_err)
-             }), 400
+        except Exception as e:
+            err = {"success": False, "reason": "INVALID_JSON", "details": str(e)}
+            with open('backend_last_error.json', 'w') as f: json.dump(err, f)
+            print(f"❌ JSON Parse Error: {e}")
+            return jsonify(err), 400
 
-        if not isinstance(data, dict):
-            print(f"❌ [Generation] Invalid Payload Type: {type(data)}")
-            return jsonify({
-                "success": False,
-                "stage": "REQUEST_PROCESSING",
-                "reason": "Invalid JSON payload structure",
-                "details": f"Expected dict, got {type(data).__name__}"
-            }), 400
+        if not data or 'branchData' not in data or 'smartInputData' not in data:
+            err = {"success": False, "reason": "INVALID_PAYLOAD", "details": "Missing required data fields (branchData or smartInputData)"}
+            with open('backend_last_error.json', 'w') as f: json.dump(err, f)
+            print("❌ Missing branchData or smartInputData")
+            return jsonify(err), 400
             
-        # PROACTIVE LOGGING
-        print("Payload received:", data)
-        print("BranchData:", data.get("branchData"))
-        print("SmartInputData:", data.get("smartInputData"))
-        print(f"📥 [Generation] Received Payload Keys: {list(data.keys())}")
+        # STRICT Deep Validation
+        bd = data['branchData']
+        si = data['smartInputData']
         
-        # Extract and Validate Components
-        branch_data = data.get('branchData')
-        smart_input = data.get('smartInputData')
-        
-        print(f"DEBUG branchData type: {type(branch_data)}")
-        print(f"DEBUG smartInputData type: {type(smart_input)}")
-        
-        if not isinstance(branch_data, dict):
-             return jsonify({
-                 "success": False,
-                 "stage": "VALIDATION",
-                 "reason": "Invalid branchData",
-                 "details": f"Expected dict, got {type(branch_data).__name__}"
-             }), 400
+        if not bd.get('academicYears') or not isinstance(bd['academicYears'], list):
+             err = {"success": False, "reason": "INVALID_CONFIG", "details": f"academicYears must be a non-empty list. Got: {type(bd.get('academicYears'))} - {bd.get('academicYears')}"}
+             with open('backend_last_error.json', 'w') as f: json.dump(err, f)
+             return jsonify(err), 400
              
-        if not isinstance(smart_input, dict):
-             return jsonify({
-                 "success": False,
-                 "stage": "VALIDATION",
-                 "reason": "Invalid smartInputData",
-                 "details": f"Expected dict, got {type(smart_input).__name__}"
-             }), 400
+        if not si.get('subjects') or not si.get('teachers'):
+             err = {"success": False, "reason": "NO_DATA", "details": "Subjects and Teachers lists cannot be empty"}
+             with open('backend_last_error.json', 'w') as f: json.dump(err, f)
+             return jsonify(err), 400
+
+        print(f"RAW PAYLOAD KEYS: {list(data.keys())}")
+        print(f"Deep Validation: {len(bd.get('academicYears', []))} Years, {len(si.get('subjects', []))} Subjects")
         
-        # Create context
+        # 3. Execution
         context = {
-            "branchData": branch_data,
-            "smartInputData": smart_input
+            "branchData": data['branchData'],
+            "smartInputData": data['smartInputData']
         }
         
-        # Initialize scheduler
-        max_iterations = data.get('maxIterations', 10000)
-        scheduler = TimetableScheduler(context, max_iterations=max_iterations)
+        # Initialize Scheduler (Fresh Instance)
+        scheduler = TimetableScheduler(context, max_iterations=data.get('maxIterations', 10000))
         
-        # Generate timetable
+        # Run Generation
         result = scheduler.generate()
         
-        if result['success'] and result['valid']:
-            raw_timetable = result.get('raw_timetable', [])
-            print(f"✅ [Generation] Generated timetable size: {len(raw_timetable)}")
-
+        # 4. Strict Response Contract
+        
+        # 4. Response Guarantee
+        # Even if success=False from global setup, we might want to return that as 400.
+        # But partial success (success=True with failures) is 200.
+        
+        if not result.get('success'):
+            print(f"❌ Generation Global Failure: {result.get('message')}")
+            with open('backend_last_error.json', 'w') as f: json.dump(result, f, default=str)
+            return jsonify(result), 400 
+            
+        all_timetables = result.get('timetables', {})
+        failures = result.get('failures', {})
+        
+        # Verify if we have ANYTHING to show
+        if not all_timetables and not failures:
+             err = {"success": False, "reason": "NO_DATA_GENERATED", "details": "Scheduler returned success but no data."}
+             with open('backend_last_error.json', 'w') as f: json.dump(err, f)
+             print("❌ No timetables AND no failures recorded?")
+             return jsonify(err), 400
+             
+        # 5. Soft Post-Gen Validation
+        from engine.validator import TimetableValidator, ValidationError
+        validator = TimetableValidator(context)
+        validation_errors = []
+        
+        # Validate PER DIVISION that succeeded
+        for div_key, timetable in all_timetables.items():
             try:
-                optimizer = TimetableOptimizer(context)
-                # Optimize using raw list
-                optimized_raw = optimizer.optimize(raw_timetable, max_iterations=100)
-                
-                # Re-format to canonical structure
-                result['timetable'] = scheduler.format_to_canonical(optimized_raw)
-                
-                # Recalculate quality score
-                from constraints.constraint_engine import ConstraintEngine
-                engine = ConstraintEngine()
-                result['qualityScore'] = engine.compute_quality_score(optimized_raw, context)
-                
-                # Update stats with Theory/Lab counts
-                theory_count = sum(1 for s in optimized_raw if s.get('type') == 'THEORY')
-                lab_count = sum(1 for s in optimized_raw if s.get('type') == 'LAB')
-                
-                result['stats'].update({
-                    "theoryCount": theory_count,
-                    "labCount": lab_count,
-                    "totalClasses": len(result['timetable'])
+                validator._validate_division(div_key, timetable)
+            except ValidationError as ve:
+                print(f"⚠️ Validation Warning for {div_key}: {ve.reason}")
+                # SOFT FAIL: Add to errors but keep timetable
+                validation_errors.append({
+                    "division": div_key,
+                    "reason": ve.reason,
+                    "details": ve.details
                 })
-
-                # Create version in history
-                version = history_service.auto_create_version(
-                    timetable=optimized_raw, # Saving RAW list to history for now (consistency)
-                    context=context,
-                    action="Generation",
-                    description=f"Full timetable generated with {len(optimized_raw)} slots"
-                )
-                result['versionId'] = version['versionId']
-            except Exception as opt_err:
-                import traceback
-                traceback.print_exc()
-                print(f"⚠️ [Generation] Optimization/History error: {opt_err}")
-                # Don't fail the whole request
+                # We do NOT remove the timetable. User wants to see what was generated.
         
-        # Step 2: GUARANTEE TIMETABLE EXISTS
-        if not result.get('timetable') or not isinstance(result['timetable'], dict):
-            return jsonify({
-                "success": False,
-                "stage": "POST_GENERATION_VALIDATION",
-                "reason": "Timetable generation returned empty or invalid structure"
-            }), 500
-
-        # Cleanup raw timetable from response to keep it clean (optional)
-        if 'raw_timetable' in result:
-             del result['raw_timetable']
-
-        return jsonify(result), 200 if result['success'] else 400
+        # Add global validation errors to result
+        result['validationErrors'] = validation_errors
         
+        if validation_errors:
+            print(f"⚠️ Completing with {len(validation_errors)} validation warnings.")
+        else:
+            print("✅ Generation & Validation Clean.")
+            
+        # ALWAYS RETURN 200 for partial/full success
+        return jsonify(result), 200
+
     except Exception as e:
         import traceback
-        traceback.print_exc()
-        print("BACKEND ERROR:", str(e)) # IMPORTANT for debugging
-        return jsonify({
+        tb = traceback.format_exc()
+        print("❌ CRITICAL SERVER CRASH TRACEBACK:")
+        print(tb)
+        print(f"❌ CRITICAL SERVER CRASH MESSAGE: {str(e)}")
+        
+        crash_info = {
             "success": False,
-            "stage": "BACKEND_EXCEPTION",
-            "reason": str(e),
-            "type": type(e).__name__,
-            "details": "Unexpected error in generation route."
-        }), 500
-
-    # Fallback for ANY execution path that escapes (should not happen with catch-all)
-    return jsonify({
-        "success": False,
-        "reason": "Unhandled execution path reached"
-    }), 500
+            "stage": "SERVER_CRASH",
+            "reason": "INTERNAL_SERVER_ERROR",
+            "details": str(e),
+            "traceback": tb
+        }
+        try:
+            with open('backend_last_crash.json', 'w') as f: json.dump(crash_info, f, default=str)
+        except:
+            pass 
+            
+        return jsonify(crash_info), 500
 
 
 @generation_bp.route('/partial', methods=['POST'])

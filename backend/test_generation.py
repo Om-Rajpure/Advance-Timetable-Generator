@@ -20,10 +20,10 @@ test_context = {
     "branchData": {
         "academicYears": ["SE"],
         "divisions": {
-            "SE": ["A"]
+            "SE": ["A", "B"]
         },
         "slotsPerDay": 6,  # Increased slots per day
-        "rooms": ["Room-1", "Room-2"],
+        "rooms": ["Room-1", "Room-2", "Room-3"],
         "sharedLabs": [
             {"name": "Lab-1", "capacity": 30},
             {"name": "Lab-2", "capacity": 30},
@@ -98,6 +98,100 @@ test_context = {
                 "name": "Amit",
                 "subjects": ["Data Lab", "AI Lab"] 
             }
+        ],
+        "subjects": [
+            # SE-A
+            {
+                "name": "Machine Learning",
+                "year": "SE",
+                "division": "A",
+                "lecturesPerWeek": 2,
+                "type": "Lecture",
+                "isPractical": False,
+                "subjects": ["Machine Learning"]
+            },
+            {
+                "name": "AI",
+                "year": "SE",
+                "division": "A",
+                "lecturesPerWeek": 2,
+                "type": "Lecture",
+                "isPractical": False,
+                "subjects": ["AI"]
+            },
+            {
+                "name": "Python Lab",
+                "year": "SE",
+                "division": "A",
+                "lecturesPerWeek": 4, 
+                "type": "Practical",
+                "isPractical": True,
+                "subjects": ["Python Lab"]
+            },
+            {
+                "name": "AI Lab",
+                "year": "SE",
+                "division": "A",
+                "lecturesPerWeek": 4,
+                "type": "Practical",
+                "isPractical": True,
+                "subjects": ["AI Lab"]
+            },
+             {
+                "name": "Data Lab",
+                "year": "SE",
+                "division": "A",
+                "lecturesPerWeek": 4,
+                "type": "Practical",
+                "isPractical": True,
+                "subjects": ["Data Lab"]
+            },
+            # SE-B (Copy of A)
+            {
+                "name": "Machine Learning",
+                "year": "SE",
+                "division": "B",
+                "lecturesPerWeek": 2,
+                "type": "Lecture",
+                "isPractical": False,
+                "subjects": ["Machine Learning"]
+            },
+            {
+                "name": "AI",
+                "year": "SE",
+                "division": "B",
+                "lecturesPerWeek": 2,
+                "type": "Lecture",
+                "isPractical": False,
+                "subjects": ["AI"]
+            },
+            {
+                "name": "Python Lab",
+                "year": "SE",
+                "division": "B",
+                "lecturesPerWeek": 4, 
+                "type": "Practical",
+                "isPractical": True,
+                "subjects": ["Python Lab"]
+            },
+            {
+                "name": "AI Lab",
+                "year": "SE",
+                "division": "B",
+                "lecturesPerWeek": 4,
+                "type": "Practical",
+                "isPractical": True,
+                "subjects": ["AI Lab"]
+            },
+             {
+                "name": "Data Lab",
+                "year": "SE",
+                "division": "B",
+                "lecturesPerWeek": 4,
+                "type": "Practical",
+                "isPractical": True,
+                "subjects": ["Data Lab"]
+            }
         ]
     }
 }
@@ -156,14 +250,17 @@ def test_generation():
         
         # Show sample slots
         print(f"\n[SAMPLE SLOTS]")
-        timetable_dict = result.get('timetable', {})
+        timetable_dict = result.get('timetables', {})
         
         # Flatten for display
+        # Flatten for display
         slots_list = []
-        for class_id, schedule in timetable_dict.items():
-            for day, day_slots in schedule.items():
-                for slot in day_slots:
-                    slots_list.append(slot)
+        for year, divs in timetable_dict.items():
+            for div, data in divs.items():
+                class_schedule = data.get('timetable', {})
+                for day, day_slots in class_schedule.items():
+                    for slot in day_slots:
+                        slots_list.append(slot)
                     
         for i, slot in enumerate(slots_list[:5]):
             print(f"{i+1}. {slot.get('day')} Slot {slot.get('slot')}: "
@@ -175,8 +272,11 @@ def test_generation():
         # Verify Dict Structure
         assert isinstance(timetable_dict, dict), "Timetable must be a dict"
         if slots_list:
-            first_key = list(timetable_dict.keys())[0]
-            assert "-" in first_key, "Class keys should be Year-Div (e.g., SE-A)"
+            first_year = list(timetable_dict.keys())[0]
+            assert "-" not in first_year, "Top keys should be Year (e.g., SE)"
+            
+            first_div = list(timetable_dict[first_year].keys())[0]
+            assert "timetable" in timetable_dict[first_year][first_div], "Nested object must contain 'timetable' key"
     
     else:
         print(f"\n[FAILURE REASON]")

@@ -144,19 +144,41 @@ const TimetablePage = () => {
     // 3. Transformation Effect
     useEffect(() => {
         console.log("🧩 [TimetablePage] Transformation Effect Triggered");
-        console.log("  > rawTimetable type:", typeof rawTimetable, Array.isArray(rawTimetable) ? "Array" : "Object");
         if (rawTimetable && Object.keys(rawTimetable).length > 0) {
-            console.log("  > Transforming data...");
-            const transformed = transformToGrid(rawTimetable, branchConfig);
-            console.log("  > Transformed Grid Data Keys:", Object.keys(transformed));
-            if (Object.keys(transformed).length > 0) {
-                console.log("  > First Year Keys:", Object.keys(transformed[Object.keys(transformed)[0]] || {}));
-            }
-            setGridData(transformed);
-        } else {
-            console.log("  > rawTimetable is empty, skipping transform.");
+
+            // NORMALIZE DATA STRUCTURE
+            // Backend now sends: { Year: { Division: { timetable: { Day: [...] } } } }
+            // Expected Grid: { Year: { Division: { Day: [...] } } }
+
+            const normalized = {};
+
+            Object.keys(rawTimetable).forEach(yearKey => {
+                // If value is object and has divisions
+                if (typeof rawTimetable[yearKey] === 'object' && !Array.isArray(rawTimetable[yearKey])) {
+                    normalized[yearKey] = {};
+
+                    Object.keys(rawTimetable[yearKey]).forEach(divKey => {
+                        const divData = rawTimetable[yearKey][divKey];
+
+                        // Unwrap 'timetable' key if present
+                        if (divData && divData.timetable) {
+                            normalized[yearKey][divKey] = divData.timetable;
+                        } else {
+                            // Already in correct format or raw array?
+                            normalized[yearKey][divKey] = divData;
+                        }
+                    });
+                } else {
+                    // Fallback for flat structure or array
+                    // Use transformToGrid for legacy support if needed, but for now assuming new structure
+                    normalized[yearKey] = rawTimetable[yearKey];
+                }
+            });
+
+            console.log("  > Normalized Grid Data:", Object.keys(normalized));
+            setGridData(normalized);
         }
-    }, [rawTimetable, branchConfig]);
+    }, [rawTimetable]);
 
     // 4. Update Divisions when Year changes
     const handleYearChange = (year) => {
@@ -247,6 +269,56 @@ const TimetablePage = () => {
                         </button>
                     </div>
                 </div>
+
+                {/* ⚠️ SYSTEM NOTIFICATION BANNER ⚠️ */}
+                {/* Display if there are structural failures or validation warnings passed from generator */}
+                {(location.state?.failures || (location.state?.validationErrors && location.state.validationErrors.length > 0)) && (
+                    <div className="tt-warning-banner" style={{
+                        background: '#fff3cd',
+                        color: '#856404',
+                        border: '1px solid #ffeeba',
+                        padding: '15px',
+                        margin: '20px 40px',
+                        borderRadius: '8px',
+                        fontSize: '14px'
+                    }}>
+                        <h4 style={{ margin: '0 0 10px 0', display: 'flex', alignItems: 'center' }}>
+                            ⚠️ Generation Completeness Report
+                        </h4>
+
+                        {/* 1. Structural Failures (Missing Divisions) */}
+                        {location.state.failures && Object.keys(location.state.failures).length > 0 && (
+                            <div style={{ marginBottom: '10px' }}>
+                                <strong>❌ Failed to Generate:</strong>
+                                <ul style={{ margin: '5px 0', paddingLeft: '20px' }}>
+                                    {Object.entries(location.state.failures).map(([cls, reason]) => (
+                                        <li key={cls}>
+                                            <b>{cls}</b>: {reason}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        {/* 2. Validation Warnings (Soft Errors) */}
+                        {location.state.validationErrors && location.state.validationErrors.length > 0 && (
+                            <div>
+                                <strong>🔸 Validation Issues (Timetable Generated with Warnings):</strong>
+                                <ul style={{ margin: '5px 0', paddingLeft: '20px' }}>
+                                    {location.state.validationErrors.map((err, idx) => (
+                                        <li key={idx}>
+                                            <b>{err.division}</b>: {err.reason} {err.details ? `- ${err.details}` : ''}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        <div style={{ marginTop: '10px', fontSize: '12px', opacity: 0.8 }}>
+                            Tip: You can manually fix these issues in the "Edit Data" mode.
+                        </div>
+                    </div>
+                )}
 
                 {/* Grid */}
                 <TimetableGrid

@@ -121,7 +121,29 @@ function SmartInput() {
             if (!branchConfigStr) {
                 throw new Error('Branch configuration missing. Please complete Branch Setup.')
             }
-            const fullBranchData = JSON.parse(branchConfigStr)
+            let fullBranchData = JSON.parse(branchConfigStr)
+
+            // 🛡️ SANITIZATION: Ensure correct types to prevent 400 Bad Request
+            if (fullBranchData.academicYears && typeof fullBranchData.academicYears === 'string') {
+                fullBranchData.academicYears = fullBranchData.academicYears.split(',').map(y => y.trim()).filter(Boolean);
+            }
+            if (!Array.isArray(fullBranchData.academicYears)) {
+                // Fallback if missing
+                fullBranchData.academicYears = ['SE', 'TE', 'BE'];
+            }
+
+            // Ensure divisions is a Dict, not array (common legacy issue)
+            if (Array.isArray(fullBranchData.divisions)) {
+                console.warn("Fixing malformed divisions (array -> dict)");
+                const divMap = {};
+                if (fullBranchData.divisions.length > 0) {
+                    // Assume identical divisions for all years if stored as list ["A", "B"]
+                    fullBranchData.academicYears.forEach(y => {
+                        divMap[y] = fullBranchData.divisions;
+                    });
+                }
+                fullBranchData.divisions = divMap;
+            }
 
             // 2. Construct Payload matching Backend Expectation
             const payload = {
@@ -158,17 +180,20 @@ function SmartInput() {
             await new Promise(r => setTimeout(r, 500))
 
             // Save result for Timetable Page (Persistence)
-            localStorage.setItem('generatedTimetable', JSON.stringify(result.timetable))
+            localStorage.setItem('generatedTimetable', JSON.stringify(result.timetables))
             localStorage.setItem('generationStats', JSON.stringify(result.stats || {}))
 
             completeSmartInput()
 
             // Pass data via State (Immediate) + Storage (Backup)
+            // INCLUDE WARNINGS for Timetable Page to display
             navigate('/timetable', {
                 state: {
-                    timetable: result.timetable,
+                    timetable: result.timetables, // Keeping prop name 'timetable' for compatibility
                     context: payload, // Valid Payload context
-                    qualityScore: result.qualityScore
+                    qualityScore: result.qualityScore,
+                    failures: result.failures || {}, // NEW: Backend failures
+                    validationErrors: result.validationErrors || [] // NEW: Soft validation errors
                 }
             })
 
@@ -178,15 +203,33 @@ function SmartInput() {
 
         } catch (error) {
             console.error('Generation Error:', error)
+
+            // Network Error Handling
+            if (error instanceof TypeError && error.message === "Failed to fetch") {
+                alert(`
+❌ Backend Unreachable
+The server is not responding at http://localhost:5000.
+
+Please ensure:
+1. The backend server is running (python app.py)
+2. You are using the correct port (5000)
+                 `)
+                setIsGenerating(false)
+                return
+            }
+
             const stage = error.stage || 'UNKNOWN'
             const message = error.message || 'Generation Failed'
             const details = error.details || error.error || ''
+            const division = error.division ? `Division: ${error.division}` : ''
+            const reason = error.reason ? `Reason: ${error.reason}` : ''
 
             alert(`
 ❌ Generation Failed
 
+${division}
+${reason}
 Stage: ${stage}
-Reason: ${message}
 Details: ${details}
             `)
             setIsGenerating(false)

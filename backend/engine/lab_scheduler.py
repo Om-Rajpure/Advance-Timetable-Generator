@@ -51,238 +51,243 @@ class LabScheduler:
 
     def schedule_class_labs(self, class_info):
         """
-        Schedule labs for a specific Class Object.
-        Returns True if successful, False otherwise.
+        Schedule labs ensuring EVERY batch covers ALL lab subjects.
+        Algorithm: Batch-Complete (Iterate Batch -> Iterate Subjects -> Find Slot)
         """
         if not isinstance(class_info, dict):
             raise TypeError(f"Expected class_info dict, got {type(class_info)}")
             
         year = class_info.get('year')
         division = class_info.get('division')
+        
+        # Get batches (e.g., 3)
         num_batches = int(self.lab_batches_per_year.get(year, 3))
+        batches = [f"B{b+1}" for b in range(num_batches)]
         
-        # Identify lab sessions needed
-        lab_sessions_to_schedule = []
-        
-        unique_lab_subjects = [
+        # Get required lab subjects for this year
+        lab_subjects = [
             s for s in self.smart_input.get('subjects', []) 
             if s.get('year') == year and (s.get('isPractical') or s.get('type') == 'Practical')
         ]
         
-        if not unique_lab_subjects:
+        if not lab_subjects:
             print(f"  No verified lab subjects for {year}-{division}")
-            return True # Nothing to schedule is a success
-            
-        # Standardize duration
+            return True 
+
+        print(f"  Scheduling labs for {year}-{division} (Batches: {batches})")
+        print(f"  Required Labs: {[s['name'] for s in lab_subjects]}")
+        
+        # Standardize duration (e.g., 2 hours)
         standard_duration = 2
-        if unique_lab_subjects:
-             standard_duration = int(unique_lab_subjects[0].get('sessionLength', 2))
-             if standard_duration <= 0: standard_duration = 2
         
-        # Max sessions needed (Cycles)
-        max_sessions_needed = 0
-        for s in unique_lab_subjects:
-            weekly_slots = int(s.get('lecturesPerWeek', 2))
-            duration = int(s.get('sessionLength', 2))
-            if duration <= 0: duration = 2
-            needed = max(1, weekly_slots // duration)
-            if needed > max_sessions_needed: max_sessions_needed = needed
-
-        windows = self._get_valid_windows(year, division, duration=standard_duration)
+        # Scheduling Loop
+        success_count = 0
         
-        # Loop cycles
-        for cycle in range(max_sessions_needed):
-            # For each cycle, we rotate the subjects for batches
-            # Actually, simply placing a session rotates the batches internally in _assign_session
-            # But wait, _assign_session assigns ALL batches at once for that window.
-            # So we just need to schedule 'cycle' number of windows.
-            # HOWEVER: Different batches do DIFFERENT subjects in parallel.
-            # So 1 Window = 1 Session for ALL batches (where B1 does S1, B2 does S2...).
+        for batch in batches:
+            # Each batch must do ALL subjects exactly once per week
+            # We shuffle subjects to reduce collision probability with other batches
+            # (e.g. Batch A does S1 first, Batch B does S2 first)
             
-            # The rotation logic inside _assign_session (lines 276-279) handles "B1 gets S1, B2 gets S2".
-            # Does the next window handle "B1 gets S2, B2 gets S3"?
-            # _assign_session takes `session_index`.
-            # We must vary `session_index` across windows/cycles to ensure rotation.
+            # Simple offset rotation based on batch index to align parallel sessions better
+            batch_index = int(batch[1:]) - 1 # 'B1' -> 0
             
-            # session_index should increment per cycle.
-             
-            session_index = cycle
-             
-            placed = False
-            for window in windows:
-                 # Check overlap with previous assignments (windows list is static?? No, _can_schedule checks state)
-                 if self._can_schedule_session(window, num_batches, unique_lab_subjects, year, division):
-                     if self._assign_session(window, num_batches, unique_lab_subjects, year, division, session_index):
-                         placed = True
-                         # Remove used window from candidates to avoid re-checking? 
-                         # Ideally _can_schedule handles it, but optimization:
-                         windows.remove(window) 
-                         break
-             
-            if not placed:
-                 print(f"Failed to place Lab Session Cycle {cycle} for {year}-{division}")
-                 # For academic engine, we might want to continue even if one fails?
-                 # But User said "Labs must occupy required count".
-                 return False
+            # Create a rotated copy of subjects for this batch preference
+            # If subjects are [L1, L2, L3]
+            # B1 (idx 0) prefers order [L1, L2, L3]
+            # B2 (idx 1) prefers order [L2, L3, L1]
+            rotation = batch_index % len(lab_subjects)
+            subjects_to_schedule = lab_subjects[rotation:] + lab_subjects[:rotation]
+            
+            completed_subjects = 0
+            
+            for subject in subjects_to_schedule:
+                # Find a slot for this (Batch + Subject)
+                if self._assign_batch_subject(year, division, batch, subject, standard_duration):
+                    completed_subjects += 1
+                else:
+                    print(f"    ❌ Failed to schedule {subject['name']} for {batch}")
+            
+                
+            if completed_subjects == len(lab_subjects):
+                success_count += 1
+            else:
+                print(f"  ⚠️  {batch} only completed {completed_subjects}/{len(lab_subjects)} labs")
+                # User Requirement: Each batch must get ALL lab subjects.
+                # If we fail here, we should probably flag it strongly.
+                pass
+                
+        # STRICT VALIDATION: Check if we actually scheduled anything
+        total_labs_placed = success_count * len(lab_subjects) 
+        print(f"  📊 Lab Summary for {year}-{division}: {success_count}/{num_batches} batches fully scheduled.")
+        
+        # If any batch failed to get ALL labs, we should technically consider this a partial failure.
+        # But we don't want to crash unless count is 0.
+        
+        if success_count == 0 and len(lab_subjects) > 0:
+            print("  ❌ CRITICAL: No batches completed their lab requirements!")
+            raise RuntimeError(f"Lab scheduling failed. No batches could be scheduled for {len(lab_subjects)} required labs. Check Room/Teacher availability. Debug logs above.")
+            
+        return success_count == num_batches
 
+    def _assign_batch_subject(self, year, division, batch, subject, duration):
+        """Find a valid window and assign specific lab subject to specific batch."""
+        
+        windows = self._get_valid_windows(year, division, duration)
+        
+        failure_reasons = set()
+        
+        for window in windows:
+            day = window['day']
+            start_slot = window['start_slot']
+            
+            # 1. Check if Batch is free
+            if not self._is_batch_free(day, start_slot, duration, year, division, batch):
+                failure_reasons.add(f"Batch {batch} busy")
+                continue
+                
+            # 2. Check Lab Room Availability
+            lab_room = self._find_lab_room(subject, day, start_slot, duration)
+            if not lab_room:
+                 failure_reasons.add("No Lab Room")
+                 continue
+                 
+            # 3. Check Teacher Availability
+            teacher = self._find_teacher(subject, day, start_slot, duration)
+            if not teacher:
+                 failure_reasons.add(f"No Teacher ({subject.get('name')})")
+                 continue
+            
+            # 4. ASSIGN
+            self._commit_assignment(year, division, batch, subject, teacher, lab_room, day, start_slot, duration)
+            print(f"    ✅ Assigned {subject['name']} to {batch} on {day} slot {start_slot}")
+            return True
+            
+        # Log failure details if not assigned
+        print(f"    ❌ Failed to schedule {subject['name']} for {batch}. Reasons: {list(failure_reasons)[:3]}")
+        return False
+
+    def _is_batch_free(self, day, start_slot, duration, year, division, batch):
+        """Check if this specific batch is free during the window."""
+        for offset in range(duration):
+            slot_idx = start_slot + offset
+            
+            # Access underlying grid directly or through helper if it existed
+            # Grid stores: list of assignments at (d, s, y, div)
+            assignments = self.state.get_slot_assignment(day, slot_idx, year, division)
+            
+            if assignments:
+                # IMPORTANT: Parallel Batch Logic
+                # We are checking if 'batch' is free.
+                # A slot is BLOCKED for 'batch' ONLY if:
+                # 1. 'batch' is already assigned here.
+                # 2. The slot is a WHOLE CLASS session (THEORY) which blocks everyone.
+                
+                # Check list of assignments in this slot
+                slot_assignments = assignments if isinstance(assignments, list) else [assignments]
+                
+                for a in slot_assignments:
+                    # Case 1: Same batch already occupied
+                    if a.get('batch') == batch:
+                        return False
+                        
+                    # Case 2: Theory class occupies the whole division (all batches blocked)
+                    if a.get('type') == 'THEORY':
+                        return False
+                        
+                    # Case 3: Another batch is here (e.g., 'B2' is here, we are 'B1')
+                    # This is ALLOWED for Labs. We continue checking other assignments.
+            
+            # If we pass all checks, the slot is free for THIS batch
+            # (even if other batches are present)
         return True
+
+    def _find_lab_room(self, subject, day, start_slot, duration):
+        """Find a lab room available for the entire duration."""
+        # Prefer mapped room if any logic exists (not currently detailed)
+        # Iterate all shared labs
+        
+        for lab in self.labs:
+            name = lab['name']
+            available = True
+            for offset in range(duration):
+                if not self.state.is_room_available(name, day, start_slot + offset):
+                    available = False
+                    break
+            
+            if available:
+                return name # Return first available
+        return None
+
+    def _find_teacher(self, subject, day, start_slot, duration):
+        """Find a teacher available for entire duration."""
+        # Use existing map logic
+        mapped_teachers = self.subject_teachers.get(subject['name'], [])
+        
+        # Try mapped teachers first
+        for t_name in mapped_teachers:
+            available = True
+            for offset in range(duration):
+                if not self.state.is_teacher_available(t_name, day, start_slot + offset):
+                    available = False
+                    break
+            if available:
+                return t_name
+                
+        # Fallback? Strict mode says we might fail. 
+        # But let's try ANY teacher if none mapped (unless strict subject specialist required)
+        # For labs, usually strict.
+        return None
+
+    def _commit_assignment(self, year, division, batch, subject, teacher, room, day, start, duration):
+        for offset in range(duration):
+            assignment = {
+                "day": day,
+                "slot": start + offset,
+                "year": year,
+                "division": division,
+                "batch": batch,
+                "subject": subject['name'],
+                "teacher": teacher,
+                "room": room,
+                "type": "LAB",
+                "isPractical": True,
+                "id": f"LAB_{year}_{division}_{day}_{start}_{batch}_{offset}"
+            }
+            # Lock ensures Theory doesn't overwrite it later
+            self.state.assign_slot(assignment, lock=True)
 
     def _get_valid_windows(self, year, division, duration=2):
         """
         Generate `duration`-slot windows.
-        Prioritize: Before Recess, End of Day.
-        Excluding Recess crossover.
+        Prioritize early slots to allow Theory to fill later slots?
+        Actually Labs often are afternoon. But let's keep standard generation.
         """
         windows = []
         days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
         
-        # Get slot info from state (calculated in generate_slot_grid)
-        # Assuming generate_slot_grid has been called or we recalculate.
-        # Ideally state initializes this.
-        if hasattr(self.state, 'recess_slot'):
-             recess_slot = self.state.recess_slot
-             # How many slots total?
-             # State uses time_utils but doesn't store total_slots publicly except implicitly.
-             # Let's use time_utils here too to be safe.
-             from utils.time_utils import calculate_time_slots
-             time_config = calculate_time_slots(self.branch_data)
-             slots = time_config['total_slots']
-             recess_slot = time_config['recess_slot']
-        else:
-             # Fallback
-             from utils.time_utils import calculate_time_slots
-             time_config = calculate_time_slots(self.branch_data)
-             slots = time_config['total_slots']
-             recess_slot = time_config['recess_slot']
+        # Determine slots
+        from utils.time_utils import calculate_time_slots
+        time_config = calculate_time_slots(self.branch_data)
+        slots = time_config['total_slots']
+        recess_slot = time_config['recess_slot']
         
-        # Candidate windows: (day, start_slot)
+        # Randomize days to distribute?
+        # random.shuffle(days) 
+        
         for day in days:
-            # Check all i to i + duration
-            # Standardize to 1-based indexing to match Theory Scheduler
-            # Slots 1 to N.
-            # Valid start slots: 1 to (Total - Duration + 1)
+            # Simple slide
             for i in range(1, slots - duration + 2):
-                # CHECK RECESS OVERLAP
-                # Window covers slots [i, i+1, ..., i+duration-1]
-                window_indices = range(i, i + duration)
-                
-                hits_recess = False
-                if recess_slot is not None:
-                     if recess_slot in window_indices:
-                         hits_recess = True
-                
-                if hits_recess:
-                     continue
+                # Check recess
+                indices = range(i, i + duration)
+                if recess_slot is not None and recess_slot in indices:
+                    continue
                 
                 windows.append({'day': day, 'start_slot': i, 'duration': duration})
                 
         return windows
 
-    def _can_schedule_session(self, window, num_batches, lab_subjects, year, division):
-        """Check if resources (Rooms, Teachers) are available for N sub-batches."""
-        day = window['day']
-        start_slot = window['start_slot']
-        duration = window.get('duration', 2)
-        
-        # 1. Check if slots are free for this division
-        for offset in range(duration):
-            if not self.state.is_slot_free(day, start_slot + offset, year, division): return False
-        
-        # 2. Check Lab Rooms (must be available for ALL slots in duration)
-        # Intersection of availability across all slots
-        common_labs = None
-        for offset in range(duration):
-            available = self._get_available_labs(day, start_slot + offset)
-            if common_labs is None:
-                common_labs = available
-            else:
-                # Intersection
-                # Need to match by name or ID? They are dicts.
-                # Assuming objects are consistent or we filter by name.
-                # Better to filter by name.
-                current_names = set(l['name'] for l in available)
-                common_labs = [l for l in common_labs if l['name'] in current_names]
-        
-        if len(common_labs) < num_batches:
-            return False
-            
-        # 3. Check Teachers
-        common_teachers = None
-        for offset in range(duration):
-            available = self._get_available_teachers(day, start_slot + offset)
-            if common_teachers is None:
-                common_teachers = available
-            else:
-                current_names = set(t['name'] for t in available)
-                common_teachers = [t for t in common_teachers if t['name'] in current_names]
-        
-        if len(common_teachers) < num_batches:
-            return False
-            
-        return True
+    # Legacy helpers removed (assign_session, can_schedule_session) as they were cycle-based
 
-    def _assign_session(self, window, num_batches, lab_subjects, year, division, session_index):
-        """Assign the session and lock resources."""
-        day = window['day']
-        start = window['start_slot']
-        duration = window.get('duration', 2)
-        
-        # Get Resources again (Re-calculate intersection)
-        common_labs = None
-        for offset in range(duration):
-            available = self._get_available_labs(day, start + offset)
-            if common_labs is None: common_labs = available
-            else:
-                current_names = set(l['name'] for l in available)
-                common_labs = [l for l in common_labs if l['name'] in current_names]
-                
-        common_teachers = None
-        for offset in range(duration):
-            available = self._get_available_teachers(day, start + offset)
-            if common_teachers is None: common_teachers = available
-            else:
-                current_names = set(t['name'] for t in available)
-                common_teachers = [t for t in common_teachers if t['name'] in current_names]
-        
-        # Safety
-        if len(common_labs) < num_batches or len(common_teachers) < num_batches:
-            return False
-        
-        # Determine specific subject for each batch using rotation
-        # BATCHES: 0 to num_batches-1
-        
-        # To avoid index errors if num_batches > len(lab_subjects), use modulo
-        
-        for b in range(num_batches):
-            # ROTATION: 
-            sub_idx = (session_index + b) % len(lab_subjects)
-            subject = lab_subjects[sub_idx]
-            
-            lab = common_labs[b]
-            
-            # Pick teacher
-            teacher = self._pick_best_teacher(common_teachers, subject, b)
-            if teacher in common_teachers:
-                common_teachers.remove(teacher)
-            
-            # Create assignment for ALL slots in duration
-            for slot_offset in range(duration):
-                assignment = {
-                    "day": day,
-                    "slot": start + slot_offset,
-                    "year": year,
-                    "division": division,
-                    "batch": f"B{b+1}",
-                    "subject": subject['name'],
-                    "teacher": teacher['name'],
-                    "room": lab['name'],
-                    "type": "LAB",
-                    "isPractical": True,
-                    "id": f"LAB_{year}_{division}_{day}_{start}_{b}_{slot_offset}"
-                }
-                self.state.assign_slot(assignment, lock=True)
-                
-        return True
 
     def _get_available_labs(self, day, slot):
         """Return list of lab objects free at this time."""

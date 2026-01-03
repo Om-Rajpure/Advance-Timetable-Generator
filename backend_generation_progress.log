@@ -1,0 +1,21 @@
+STARTING SE-A
+STARTING SE-B
+STARTING SE-C
+STARTING TE-A
+STARTING TE-B
+STARTING BE-A
+STARTING BE-B
+STARTING SE-A
+FAILED SE-A: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.
+STARTING SE-B
+FAILED SE-B: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.
+STARTING SE-C
+FAILED SE-C: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.
+STARTING TE-A
+FAILED TE-A: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.
+STARTING TE-B
+FAILED TE-B: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.
+STARTING BE-A
+FAILED BE-A: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.
+STARTING BE-B
+FAILED BE-B: Lab scheduling failed. No batches could be scheduled for 3 required labs. Check Room/Teacher availability. Debug logs above.

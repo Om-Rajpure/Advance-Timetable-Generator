@@ -21,7 +21,10 @@ from routes.analytics_routes import analytics_bp
 from routes.history_routes import history_bp
 
 app = Flask(__name__, static_folder='static', static_url_path='')
-CORS(app)
+# Allow CORS for all domains for development simplicity
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+print("Server running on http://localhost:5000")
 
 # Register blueprints
 app.register_blueprint(constraint_bp)
