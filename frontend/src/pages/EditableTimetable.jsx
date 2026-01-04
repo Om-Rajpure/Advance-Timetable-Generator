@@ -2,270 +2,223 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import TimetableGrid from '../components/TimetableGrid';
 import EditSlotModal from '../components/EditSlotModal';
-import QualityBadge from '../components/QualityBadge';
 import UndoControls from '../components/UndoControls';
-import { saveTimetable } from '../utils/editValidator';
-import './EditableTimetable.css';
-
+import { detectAllConflicts } from '../utils/conflictDetector';
 import { transformToGrid } from '../utils/timetableTransforms';
 import { generateFullTimetablePDF } from '../utils/pdfGenerator';
-
-// --- DEBUG DATA REMOVED ---
+import './EditableTimetable.css';
 
 function EditableTimetable() {
     const location = useLocation();
 
-    // State from generation/validation
-    // State from generation/validation or localStorage
-    const getInitialTimetable = () => {
-        if (location.state?.timetable) return location.state.timetable;
-        const stored = localStorage.getItem('generatedTimetable');
-        return stored ? JSON.parse(stored) : [];
-    };
-    // ... (rest of code)
+    // 1. Initialize State
+    const [timetable, setTimetable] = useState(location.state?.timetable || []);
+    const [conflicts, setConflicts] = useState(location.state?.conflicts || []);
+    const [context, setContext] = useState(location.state?.context || {});
 
-
-    const getInitialContext = () => {
-        if (location.state?.context) return location.state.context;
-        // Ideally context should also be stored or rebuilt. 
-        // For now, let's assume we can survive without full context or load it if we had stored it.
-        // SmartInput saves payload parts? 
-        // Let's rely on stored 'branchConfig' for context reconstruction if needed.
-        const branchConfig = localStorage.getItem('branchConfig');
-        return branchConfig ? { branchData: JSON.parse(branchConfig) } : {};
-    };
-
-
-    const initialTimetable = getInitialTimetable();
-    const initialContext = getInitialContext();
-    const initialScore = location.state?.qualityScore || null;
-
-    // Timetable state
-    const [timetable, setTimetable] = useState(initialTimetable);
-    const [savedTimetable, setSavedTimetable] = useState(initialTimetable);
+    // Undo/Redo
     const [undoStack, setUndoStack] = useState([]);
     const [redoStack, setRedoStack] = useState([]);
 
-    // UI state
+    // UI State
     const [editingSlot, setEditingSlot] = useState(null);
-    const [conflictingSlots, setConflictingSlots] = useState([]);
-    const [qualityScore, setQualityScore] = useState(initialScore);
-    const [scoreDelta, setScoreDelta] = useState(0);
-    const [isSaving, setIsSaving] = useState(false);
+    const [selectedYear, setSelectedYear] = useState(null);
+    const [selectedDiv, setSelectedDiv] = useState(null);
 
-    const context = initialContext;
-    const hasChanges = JSON.stringify(timetable) !== JSON.stringify(savedTimetable);
-    const canUndo = undoStack.length > 0;
-    const canRedo = redoStack.length > 0;
-
+    // 2. Build Inferred Context (if missing)
     useEffect(() => {
-        // Compute initial quality score if not provided
-        if (!qualityScore && timetable.length > 0) {
-            computeQualityScore(timetable);
-        }
-    }, []);
+        if (!context.inferred && (context.smartInputData || context.branchData)) return;
 
-    const computeQualityScore = async (tt) => {
-        try {
-            const response = await fetch('http://localhost:5000/api/validate/quick', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    timetable: tt,
-                    ...context
-                })
-            });
+        // Extract unique resources from timetable for dropdowns
+        const uniqueTeachers = new Set();
+        const uniqueSubjects = new Set();
+        const uniqueRooms = new Set();
+        const uniqueLabs = new Set();
 
-            if (response.ok) {
-                const result = await response.json();
-                const newScore = result.score || 0;
-                const oldScore = qualityScore || newScore;
-                setQualityScore(newScore);
-                setScoreDelta(newScore - oldScore);
+        timetable.forEach(slot => {
+            if (slot.teacher) uniqueTeachers.add(slot.teacher);
+            if (slot.subject) uniqueSubjects.add(slot.subject);
+            if (slot.room) uniqueRooms.add(slot.room);
+            if (slot.type === 'Practical' && slot.room) uniqueLabs.add(slot.room);
+        });
+
+        const newContext = {
+            inferred: true,
+            smartInputData: {
+                teachers: Array.from(uniqueTeachers).map(name => ({ name, subjects: [] })),
+                subjects: Array.from(uniqueSubjects).map(name => ({ name, lecturesPerWeek: 3 })) // Dummy
+            },
+            branchData: {
+                rooms: Array.from(uniqueRooms),
+                labs: Array.from(uniqueLabs),
+                years: [], // Will get from grid
+                divisions: [] // Will get from grid
             }
-        } catch (error) {
-            console.error('Failed to compute quality score:', error);
-        }
-    };
+        };
+        setContext(newContext);
+    }, []); // Run once on mount if needed
 
+    // 3. Transform to View Grid
+    const fullGrid = transformToGrid(timetable, context.branchData || {});
+    const availableYears = Object.keys(fullGrid);
+
+    // Auto-select view
+    useEffect(() => {
+        if (availableYears.length > 0 && !selectedYear) {
+            setSelectedYear(availableYears[0]);
+        }
+        if (selectedYear && fullGrid[selectedYear]) {
+            const divs = Object.keys(fullGrid[selectedYear]);
+            if (divs.length > 0 && !selectedDiv) {
+                setSelectedDiv(divs[0]);
+            }
+        }
+    }, [fullGrid, selectedYear, selectedDiv]);
+
+    // 4. Handle Edit
     const handleSlotClick = (slot) => {
         setEditingSlot(slot);
     };
 
     const handleSlotSave = (modifiedSlot) => {
-        // Add current state to undo stack
-        setUndoStack(prev => [...prev, timetable]);
+        // Validation check (Real-time in Modal already, but double check)
 
-        // Clear redo stack when new edit is made
+        // Save for Undo
+        setUndoStack(prev => [...prev, timetable]);
         setRedoStack([]);
 
-        // Update timetable
+        // Update Timetable
         const updatedTimetable = timetable.map(s =>
             s.id === modifiedSlot.id ? modifiedSlot : s
         );
 
-        setTimetable(updatedTimetable);
+        // Run Real-time Conflict Detection
+        const conflictResult = detectAllConflicts(updatedTimetable, context.branchData, context.smartInputData);
 
-        // Recompute quality score
-        computeQualityScore(updatedTimetable);
+        setTimetable(updatedTimetable);
+        setConflicts(conflictResult.conflicts);
+        setEditingSlot(null); // Close modal
     };
 
     const handleUndo = () => {
-        if (canUndo) {
-            const previousState = undoStack[undoStack.length - 1];
+        if (undoStack.length === 0) return;
+        const prev = undoStack[undoStack.length - 1];
+        setRedoStack(prevStack => [...prevStack, timetable]);
+        setTimetable(prev);
+        setUndoStack(prevStack => prevStack.slice(0, -1));
 
-            // Add current state to redo stack
-            setRedoStack(prev => [...prev, timetable]);
-
-            setTimetable(previousState);
-            setUndoStack(prev => prev.slice(0, -1));
-            computeQualityScore(previousState);
-        }
+        // Re-detect conflicts for restored state
+        const conflictResult = detectAllConflicts(prev, context.branchData, context.smartInputData);
+        setConflicts(conflictResult.conflicts);
     };
 
     const handleRedo = () => {
-        if (canRedo) {
-            const nextState = redoStack[redoStack.length - 1];
+        if (redoStack.length === 0) return;
+        const next = redoStack[redoStack.length - 1];
+        setUndoStack(prevStack => [...prevStack, timetable]);
+        setTimetable(next);
+        setRedoStack(prevStack => prevStack.slice(0, -1));
 
-            // Add current state to undo stack
-            setUndoStack(prev => [...prev, timetable]);
-
-            setTimetable(nextState);
-            setRedoStack(prev => prev.slice(0, -1));
-            computeQualityScore(nextState);
-        }
+        // Re-detect conflicts
+        const conflictResult = detectAllConflicts(next, context.branchData, context.smartInputData);
+        setConflicts(conflictResult.conflicts);
     };
 
-    const handleReset = () => {
-        if (window.confirm('Reset to last saved version? All unsaved changes will be lost.')) {
-            setTimetable(savedTimetable);
-            setUndoStack([]);
-            setRedoStack([]);
-            computeQualityScore(savedTimetable);
-        }
-    };
+    // Filter conflicts for simple ID list for the grid
+    const conflictingSlotIds = conflicts.map(c => c.affectedSlots).flat();
 
-    const handleSave = async () => {
-        setIsSaving(true);
-        try {
-            const result = await saveTimetable(timetable, context);
-            if (result.success) {
-                setSavedTimetable(timetable);
-                setUndoStack([]);
-                alert('✅ Timetable saved successfully!');
-            } else {
-                alert('❌ Failed to save: ' + result.message);
-            }
-        } catch (error) {
-            alert('❌ Error saving timetable: ' + error.message);
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
-    // --- VIEW STATE ---
-    const [selectedYear, setSelectedYear] = useState(null);
-    const [selectedDiv, setSelectedDiv] = useState(null);
-
-    // 1. Convert State (Flat or Canonical) -> Full Grid Object
-    const fullGrid = transformToGrid(timetable, context.branchData || {});
-
-    // Effect: Auto-select first available on load
-    useEffect(() => {
-        const years = Object.keys(fullGrid);
-        if (years.length > 0 && (!selectedYear || !years.includes(selectedYear))) {
-            const firstYear = years[0];
-            setSelectedYear(firstYear);
-            const divs = Object.keys(fullGrid[firstYear]);
-            if (divs.length > 0) setSelectedDiv(divs[0]);
-        } else if (selectedYear && fullGrid[selectedYear]) {
-            // If year selected, ensure div is valid
-            const divs = Object.keys(fullGrid[selectedYear]);
-            if (divs.length > 0 && (!selectedDiv || !divs.includes(selectedDiv))) {
-                setSelectedDiv(divs[0]);
-            }
-        }
-    }, [fullGrid, selectedYear]);
-
-    // 3. Extract Grid Data for View
-    const viewData = (selectedYear && selectedDiv && fullGrid[selectedYear] && fullGrid[selectedYear][selectedDiv])
+    // Get current view data
+    const viewData = (selectedYear && selectedDiv && fullGrid[selectedYear])
         ? fullGrid[selectedYear][selectedDiv]
         : {};
 
-    const availableYears = Object.keys(fullGrid);
     const availableDivs = selectedYear && fullGrid[selectedYear] ? Object.keys(fullGrid[selectedYear]) : [];
 
     return (
         <div className="editable-timetable">
-            <div className="page-header" style={{ marginTop: '140px' }}>
-                <div>
-                    <h1>Edit Timetable</h1>
-                    <div className="view-controls" style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
-                        <select
-                            value={selectedYear || ''}
-                            onChange={(e) => setSelectedYear(e.target.value)}
-                            style={{ padding: '8px', borderRadius: '6px', border: '1px solid #ccc' }}
-                        >
-                            {availableYears.map(y => <option key={y} value={y}>{y}</option>)}
-                        </select>
-
-                        <select
-                            value={selectedDiv || ''}
-                            onChange={(e) => setSelectedDiv(e.target.value)}
-                            style={{ padding: '8px', borderRadius: '6px', border: '1px solid #ccc' }}
-                        >
-                            {availableDivs.map(d => <option key={d} value={d}>Division {d}</option>)}
-                        </select>
-
-                        <button
-                            onClick={() => generateFullTimetablePDF(fullGrid, context.branchData)}
-                            style={{
-                                padding: '8px 16px',
-                                background: '#2563eb',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '6px',
-                                cursor: 'pointer',
-                                fontWeight: 'bold'
-                            }}
-                        >
-                            📥 Download All PDF
-                        </button>
-                    </div>
+            {/* SIDEBAR NAVIGATION */}
+            <div className="sidebar">
+                <div className="sidebar-header">
+                    <div className="sidebar-brand">SmartTimetable</div>
                 </div>
-                {qualityScore !== null && (
-                    <QualityBadge score={qualityScore} delta={scoreDelta} />
-                )}
+
+                <div className="class-list">
+                    {availableYears.map(year => (
+                        <div key={year} className="year-group">
+                            <div className="year-label">{year} Engineering</div>
+                            <div className="division-list">
+                                {fullGrid[year] && Object.keys(fullGrid[year]).map(div => (
+                                    <div
+                                        key={div}
+                                        className={`nav-item ${selectedYear === year && selectedDiv === div ? 'active' : ''}`}
+                                        onClick={() => {
+                                            setSelectedYear(year);
+                                            setSelectedDiv(div);
+                                        }}
+                                    >
+                                        <span className="nav-icon">📅</span>
+                                        Division {div}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
 
-            <UndoControls
-                canUndo={canUndo}
-                canRedo={canRedo}
-                onUndo={handleUndo}
-                onRedo={handleRedo}
-                onReset={handleReset}
-                onSave={handleSave}
-                hasChanges={hasChanges}
-                isValid={conflictingSlots.length === 0}
-                isSaving={isSaving}
-            />
+            {/* MAIN CONTENT AREA */}
+            <div className="main-content">
+                <div className="page-header sticky-header">
+                    <div className="header-content">
+                        <h1>{selectedYear} - Division {selectedDiv}</h1>
+                        {/* Dropdowns Removed */}
+                    </div>
 
-            {/* ERROR: TimetableGrid expects 'gridData' prop, was passed 'timetable' */}
-            <TimetableGrid
-                gridData={viewData}
-                conflictingSlots={conflictingSlots}
-                onSlotClick={handleSlotClick}
-            />
+                    <div className="status-bar">
+                        <div className="left-controls">
+                            <div className={`status-indicator ${conflicts.length === 0 ? 'status-green' : 'status-red'}`}>
+                                {conflicts.length === 0
+                                    ? '✅ All Clear'
+                                    : `🔴 ${conflicts.length} Conflicts Detected`
+                                }
+                            </div>
+                            <div className="history-controls">
+                                <button onClick={handleUndo} disabled={undoStack.length === 0} className="icon-btn" title="Undo">↩</button>
+                                <button onClick={handleRedo} disabled={redoStack.length === 0} className="icon-btn" title="Redo">↪</button>
+                            </div>
+                        </div>
 
-            {editingSlot && (
-                <EditSlotModal
-                    slot={editingSlot}
-                    timetable={timetable}
-                    context={context}
-                    onSave={handleSlotSave}
-                    onClose={() => setEditingSlot(null)}
-                />
-            )}
+                        <div className="right-controls">
+                            <button
+                                onClick={() => generateFullTimetablePDF(transformToGrid(timetable, context.branchData), context.branchData)}
+                                className="download-btn"
+                                title="Download All Timetables"
+                            >
+                                📥 PDF
+                            </button>
+                            <button onClick={() => alert("Saved!")} className="save-btn">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid-container">
+                    <TimetableGrid
+                        gridData={viewData}
+                        conflictingSlots={conflictingSlotIds}
+                        onSlotClick={handleSlotClick}
+                    />
+                </div>
+
+                {editingSlot && (
+                    <EditSlotModal
+                        slot={editingSlot}
+                        timetable={timetable}
+                        context={context}
+                        onSave={handleSlotSave}
+                        onClose={() => setEditingSlot(null)}
+                    />
+                )}
+            </div>
         </div>
     );
 }

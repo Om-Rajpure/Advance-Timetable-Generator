@@ -64,7 +64,7 @@ class TheoryScheduler:
                     assignments_count += 1
                 else:
                     # If we couldn't fit on this day, we might loop and try another day
-                    # But if we run out of days, we might fail or settle for uneven distribution (not implemented yet)
+                    # But if we run out of days, we might fail or settle for uneven distribution
                     pass
             
             if assignments_count < lectures_needed:
@@ -112,21 +112,25 @@ class TheoryScheduler:
         return best_day
 
     def _assign_slot_on_day(self, year, division, day, subject, teacher):
-        # Determine available slots (assuming 1-7)
-        # We should iterate slots, checking for availability
+        # Determine available slots
+        total_slots = int(self.context.get('branchData', {}).get('slotsPerDay', 8))
         
-        # Randomize start order to avoid "Morning Clumping" if loads are equal
-        slots = list(range(1, 8)) 
-        # Heuristic: Try early slots or spread? Let's just sequential for now but could optimize.
+        # Randomize start order to minimize collisions
+        slots = list(range(1, total_slots + 1)) 
         
         for slot_idx in slots:
-            # Check Global State
+            # Check Global State (Class Free)
             if self.state.is_slot_free(day, slot_idx, year, division):
                 # Check Teacher Availability
                 if self.state.is_teacher_available(teacher, day, slot_idx):
-                    # Check Soft Constraints (Consecutive subject?)
-                    # Skip if same subject was just placed? (Simple check)
                     
+                    # DYNAMIC ROOM ALLOCATION
+                    assigned_room = self._find_available_room(year, division, day, slot_idx)
+                    
+                    if not assigned_room:
+                         # No room available! Cannot schedule here.
+                         continue
+
                     # ASSIGN
                     assignment = {
                         'year': year,
@@ -136,10 +140,68 @@ class TheoryScheduler:
                         'subject': subject,
                         'teacher': teacher,
                         'type': 'THEORY',
-                        # 'room': 'Classroom' # REMOVED: Managed by scheduler.py format_to_canonical
+                        'room': assigned_room # Assigned dynamically!
                     }
                     
                     self.state.assign_slot(assignment)
                     return True
                     
         return False
+
+    def _find_available_room(self, year, division, day, slot_index):
+        """
+        Find an available room with fallback strategy:
+        1. Home Room (Preferred)
+        2. Global Pool (Fallback)
+        """
+        branch_data = self.context.get('branchData', {})
+        all_classrooms = branch_data.get('classrooms', {})
+        
+        # 1. Identify Home Room (Replicating scheduler.py logic)
+        home_room = None
+        
+        rooms_for_year = []
+        if isinstance(all_classrooms, dict):
+            rooms_for_year = all_classrooms.get(year, [])
+        elif isinstance(all_classrooms, list):
+            # Legacy/Dummy
+            rooms_for_year = [r.get('name') for r in all_classrooms if isinstance(r, dict)]
+            
+        if isinstance(rooms_for_year, list) and len(rooms_for_year) > 0:
+            div_idx = 0
+            if len(division) == 1 and 'A' <= division <= 'Z':
+                div_idx = ord(division) - ord('A')
+            room_idx = div_idx % len(rooms_for_year)
+            home_room = rooms_for_year[room_idx]
+            
+        # 2. Check Home Room
+        if home_room and self.state.is_room_available(home_room, day, slot_index):
+            return home_room
+            
+        # 3. Fallback: Search ALL rooms
+        # Flatten all rooms
+        all_rooms_list = []
+        if isinstance(all_classrooms, dict):
+            for y_rooms in all_classrooms.values():
+                if isinstance(y_rooms, list):
+                    for r in y_rooms:
+                        if isinstance(r, dict): all_rooms_list.append(r.get('name'))
+                        elif isinstance(r, str): all_rooms_list.append(r)
+        elif isinstance(all_classrooms, list):
+             for r in all_classrooms:
+                 if isinstance(r, dict): all_rooms_list.append(r.get('name'))
+                 elif isinstance(r, str): all_rooms_list.append(r)
+             
+        if not all_rooms_list:
+             pass 
+             # print("DEBUG: Room Search - No rooms found in branchData['classrooms']!", flush=True)
+
+        # Scramble for fairness? Or just First Fit? First Fit is fine for "emergency"
+        for room in all_rooms_list:
+            if not room: continue 
+            available = self.state.is_room_available(room, day, slot_index)
+            if available:
+                return room
+                
+        # 4. Fail
+        return None

@@ -378,7 +378,8 @@ class TimetableScheduler:
             clean_slot = {k: v for k, v in slot.items() if k not in ['id', 'isPractical']}
             
             # DEFAULT ROOM ASSIGNMENT FOR THEORY
-            # If no room assigned (theory), assign default class-level room
+            # If room is ALREADY assigned (by Dynamic Scheduler), keep it.
+            # If NOT assigned (fallback/legacy), try to assign default.
             if 'room' not in clean_slot or not clean_slot['room']:
                 assigned_room = None
                 

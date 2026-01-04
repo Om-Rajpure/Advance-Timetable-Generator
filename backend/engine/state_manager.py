@@ -125,12 +125,12 @@ class TimetableState:
                 self.slot_grid[slot_key] = existing
             else:
                 self.slot_grid[slot_key] = [existing, assignment]
+            print(f"DEBUG: Slot Collision or Multi-Assign at {slot_key}! Exist: {type(existing)}", flush=True)
         else:
-            # First assignment -> Store as single object (or list? List is safer for consistency)
-            # Keeping single object for backward compat with checks like 'if val.get(...)'
-            # But wait, my fix in lab_scheduler checks `isinstance(assignments, list)`.
-            # So I can keep single object for primary case, and promote to list on collision.
+            # First assignment -> Store as single object
             self.slot_grid[slot_key] = assignment
+            
+        # print(f"DEBUG: Assigned Key: {slot_key}, Types: {[type(x) for x in slot_key]}", flush=True)
 
         self.slots.append(assignment)
         

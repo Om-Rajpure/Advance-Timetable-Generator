@@ -3,7 +3,6 @@ import { AuthProvider } from './auth/AuthContext'
 import ProtectedRoute from './auth/ProtectedRoute'
 import WorkflowGuard from './components/WorkflowGuard'
 import MainNavbar from './components/MainNavbar'
-import DevBanner from './components/DevBanner'
 
 // Pages
 import LandingPage from './pages/LandingPage'
@@ -25,7 +24,6 @@ function App() {
   return (
     <Router future={{ v7_startTransition: true }}>
       <AuthProvider>
-        <DevBanner />
         <MainNavbar />
 
         <Routes>

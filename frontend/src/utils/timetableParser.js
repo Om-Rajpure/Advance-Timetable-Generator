@@ -19,7 +19,7 @@ function generateId() {
 function normalizeDay(dayString) {
     if (!dayString) return null
 
-    const normalized = dayString.trim().toLowerCase()
+    const normalized = String(dayString).trim().toLowerCase()
     const dayMap = {
         'mon': 'Monday', 'monday': 'Monday', 'm': 'Monday',
         'tue': 'Tuesday', 'tuesday': 'Tuesday', 'tu': 'Tuesday',
@@ -30,24 +30,45 @@ function normalizeDay(dayString) {
         'sun': 'Sunday', 'sunday': 'Sunday', 'su': 'Sunday'
     }
 
-    return dayMap[normalized] || dayString
+    return dayMap[normalized] || null // Return null if not a day
 }
 
 /**
- * Normalize time slot to slot index (0-based)
- * Handles various formats: 9-10, 09:00-10:00, 9 AM - 10 AM, etc.
+ * Parse Header to Slot Index
+ * Handles "Slot 1", "Period 1", "9:00-10:00"
+ */
+function parseHeaderToSlot(header) {
+    if (!header) return null
+    const text = String(header).trim().toLowerCase()
+
+    // Case 1: Explicit "Slot N" or "Period N"
+    const slotMatch = text.match(/(?:slot|period)\s*(\d+)/)
+    if (slotMatch) {
+        // Return 1-based index (e.g. Slot 1 -> 1)
+        // Our Grid expects 1-based usually
+        return parseInt(slotMatch[1])
+    }
+
+    // Case 2: Time-based "9-10"
+    return normalizeTimeSlot(text)
+}
+
+/**
+ * Normalize time slot string to a number index
+ * 9am -> 1 (if 1-based) or based on start time. 
+ * This app seems to treat 'slot' as an index ID often.
  */
 function normalizeTimeSlot(timeString) {
     if (!timeString) return null
 
-    const cleaned = timeString.trim().toLowerCase()
+    const cleaned = String(timeString).trim().toLowerCase()
 
-    // Extract start hour from various formats
+    // Extract start hour
     const patterns = [
-        /(\d{1,2})\s*-\s*\d{1,2}/, // 9-10, 09-10
-        /(\d{1,2}):(\d{2})\s*-/, // 09:00-10:00
-        /(\d{1,2})\s*am|pm/, // 9 AM, 10 PM
-        /(\d{1,2})/ // Just a number
+        /(\d{1,2})\s*-\s*\d{1,2}/, // 9-10
+        /(\d{1,2}):(\d{2})\s*-/, // 09:00-
+        /(\d{1,2})\s*am|pm/, // 9 AM
+        /(\d{1,2})/ // Just a number (fallback)
     ]
 
     for (const pattern of patterns) {
@@ -55,19 +76,19 @@ function normalizeTimeSlot(timeString) {
         if (match) {
             let hour = parseInt(match[1])
 
-            // Handle PM times
-            if (cleaned.includes('pm') && hour < 12) {
-                hour += 12
-            }
+            // Handle PM
+            if (cleaned.includes('pm') && hour < 12) hour += 12
+            if (cleaned.includes('12') && cleaned.includes('pm')) hour = 12
+            if (cleaned.includes('12') && (cleaned.includes('noon') || !cleaned.includes('am'))) hour = 12
 
-            // Convert to slot index (assuming slots start at 9 AM)
-            // Slot 0 = 9-10, Slot 1 = 10-11, etc.
-            const slotIndex = hour - 9
+            // If it's a small number < 8, assume it's NOT an hour but a Slot Number already
+            if (hour < 7) return hour
 
-            return slotIndex >= 0 ? slotIndex : null
+            // Convert hour to slot index (Assuming 9am = 1, 8am = 0?)
+            // Let's standardize: 9am = Slot 1.
+            return (hour - 9) + 1
         }
     }
-
     return null
 }
 
@@ -82,96 +103,73 @@ export async function parseFile(file) {
     } else if (fileExtension === 'xlsx' || fileExtension === 'xls') {
         return parseExcelFile(file)
     } else {
-        throw new Error('Unsupported file format. Please upload CSV or Excel (.xlsx) files.')
+        throw new Error('Unsupported file format. Use CSV or Excel.')
     }
 }
 
-/**
- * Parse CSV file
- */
 function parseCSVFile(file) {
     return new Promise((resolve, reject) => {
         Papa.parse(file, {
             header: true,
-            skipEmptyLines: true,
-            complete: (results) => {
-                resolve({
-                    data: results.data,
-                    meta: results.meta
-                })
-            },
-            error: (error) => {
-                reject(new Error(`CSV parsing failed: ${error.message}`))
-            }
+            skipEmptyLines: 'greedy', // Better for messy files
+            complete: (results) => resolve({ data: results.data, meta: results.meta }),
+            error: (err) => reject(new Error(`CSV Error: ${err.message}`))
         })
     })
 }
 
-/**
- * Parse Excel file
- */
 async function parseExcelFile(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
-
         reader.onload = (e) => {
             try {
                 const data = new Uint8Array(e.target.result)
                 const workbook = XLSX.read(data, { type: 'array' })
+                if (!workbook.SheetNames.length) throw new Error("Excel file empty")
 
-                // Use first sheet
-                const sheetName = workbook.SheetNames[0]
-                const worksheet = workbook.Sheets[sheetName]
+                const sheet = workbook.Sheets[workbook.SheetNames[0]]
+                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' })
 
-                // Convert to JSON with header row
-                const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-                    header: 1,
-                    defval: ''
-                })
+                if (jsonData.length === 0) throw new Error("Sheet empty")
 
-                if (jsonData.length === 0) {
-                    reject(new Error('Excel file is empty'))
-                    return
+                // Find header row (first non-empty row)
+                let headerRowIdx = 0
+                let headers = []
+                for (let i = 0; i < jsonData.length; i++) {
+                    if (jsonData[i].some(cell => cell && String(cell).trim().length > 0)) {
+                        headerRowIdx = i
+                        headers = jsonData[i]
+                        break
+                    }
                 }
 
-                // Convert array format to object format with headers
-                const headers = jsonData[0]
-                const rows = jsonData.slice(1).map(row => {
+                const rows = jsonData.slice(headerRowIdx + 1).map(row => {
                     const obj = {}
-                    headers.forEach((header, index) => {
-                        obj[header] = row[index] || ''
-                    })
+                    headers.forEach((h, i) => { if (h) obj[h] = row[i] })
                     return obj
-                }).filter(row => Object.values(row).some(val => val !== ''))
+                }).filter(row => Object.keys(row).length > 0) // Remove empty object rows
 
-                resolve({
-                    data: rows,
-                    meta: { fields: headers }
-                })
-            } catch (error) {
-                reject(new Error(`Excel parsing failed: ${error.message}`))
+                resolve({ data: rows, meta: { fields: headers } })
+            } catch (err) {
+                reject(err)
             }
         }
-
-        reader.onerror = () => {
-            reject(new Error('Failed to read file'))
-        }
-
+        reader.onerror = () => reject(new Error("Read failed"))
         reader.readAsArrayBuffer(file)
     })
 }
 
 /**
- * Detect structure of timetable data
- * Returns suggested column mappings with confidence scores
+ * Detect structure
  */
 export function detectStructure(data) {
-    if (!data || data.length === 0) {
-        throw new Error('No data to analyze')
-    }
+    if (!data || data.length === 0) throw new Error('No data')
 
     const columns = Object.keys(data[0])
+
+    // Default mapping
     const mapping = {
+        type: 'flat',
         dayColumn: null,
         timeColumn: null,
         subjectColumn: null,
@@ -179,228 +177,224 @@ export function detectStructure(data) {
         roomColumn: null,
         yearColumn: null,
         divisionColumn: null,
-        batchColumn: null
+        batchColumn: null,
+        matrixDayColumn: null,
+        matrixTimeColumns: []
     }
 
-    const confidence = {
-        dayColumn: 0,
-        timeColumn: 0,
-        subjectColumn: 0,
-        teacherColumn: 0,
-        roomColumn: 0,
-        yearColumn: 0,
-        divisionColumn: 0,
-        batchColumn: 0
-    }
+    const confidence = { day: 0, time: 0, subject: 0 }
 
-    // Detect each field
+    // 1. Analyze Columns
     columns.forEach(col => {
         const colLower = col.toLowerCase().trim()
-        const sampleValues = data.slice(0, 5).map(row => row[col]).filter(v => v)
 
-        // Day detection
-        if (colLower.includes('day')) {
+        // Day
+        if (colLower.includes('day') || data.some(r => normalizeDay(r[col]))) {
             mapping.dayColumn = col
-            confidence.dayColumn = 0.9
-        } else if (sampleValues.some(v => normalizeDay(v))) {
-            if (!mapping.dayColumn || confidence.dayColumn < 0.7) {
-                mapping.dayColumn = col
-                confidence.dayColumn = 0.7
-            }
+            confidence.day = 1
         }
 
-        // Time detection
+        // Time / Slot
         if (colLower.includes('time') || colLower.includes('slot') || colLower.includes('period')) {
             mapping.timeColumn = col
-            confidence.timeColumn = 0.9
-        } else if (sampleValues.some(v => normalizeTimeSlot(v) !== null)) {
-            if (!mapping.timeColumn || confidence.timeColumn < 0.7) {
-                mapping.timeColumn = col
-                confidence.timeColumn = 0.7
-            }
+            confidence.time = 0.8
         }
 
-        // Subject detection
+        // Subject
         if (colLower.includes('subject') || colLower.includes('course')) {
             mapping.subjectColumn = col
-            confidence.subjectColumn = 0.9
+            confidence.subject = 1
         }
 
-        // Teacher detection
-        if (colLower.includes('teacher') || colLower.includes('faculty') || colLower.includes('instructor')) {
-            mapping.teacherColumn = col
-            confidence.teacherColumn = 0.9
-        }
+        // Teacher
+        if (colLower.includes('teacher') || colLower.includes('faculty')) mapping.teacherColumn = col
 
-        // Room detection
-        if (colLower.includes('room') || colLower.includes('lab') || colLower.includes('venue')) {
-            mapping.roomColumn = col
-            confidence.roomColumn = 0.8
-        }
+        // Room
+        if (colLower.includes('room') || colLower.includes('venue')) mapping.roomColumn = col
 
-        // Year detection
-        if (colLower.includes('year') || colLower === 'yr') {
-            mapping.yearColumn = col
-            confidence.yearColumn = 0.9
-        } else if (sampleValues.some(v => /^(FE|SE|TE|BE)$/i.test(v))) {
-            if (!mapping.yearColumn || confidence.yearColumn < 0.7) {
-                mapping.yearColumn = col
-                confidence.yearColumn = 0.7
+        // Year/Div
+        if (colLower.includes('year') || colLower === 'yr') mapping.yearColumn = col
+        if (colLower.includes('div') || colLower.includes('sect')) mapping.divisionColumn = col
+    })
+
+
+    // 2. CHECK FOR MATRIX STRUCTURE (Priority)
+    // Criteria: Found a Day column AND multiple columns that look like Slots/Times
+    let potentialDayCol = mapping.dayColumn
+    const potentialTimeCols = []
+
+    // If no explicit 'Day' column found yet, search deeper
+    if (!potentialDayCol) {
+        for (const col of columns) {
+            const sample = data.slice(0, 10).map(r => r[col])
+            if (sample.some(v => normalizeDay(v))) {
+                potentialDayCol = col
+                break
             }
         }
+    }
 
-        // Division detection
-        if (colLower.includes('div') || colLower === 'section' || colLower.includes('section')) {
-            mapping.divisionColumn = col
-            confidence.divisionColumn = 0.9
-        } else if (sampleValues.some(v => /^[A-Z]$/.test(v))) {
-            if (!mapping.divisionColumn || confidence.divisionColumn < 0.6) {
-                mapping.divisionColumn = col
-                confidence.divisionColumn = 0.6
-            }
-        }
-
-        // Batch detection (for practicals)
-        if (colLower.includes('batch') || colLower.includes('group')) {
-            mapping.batchColumn = col
-            confidence.batchColumn = 0.8
+    // Identify Matrix Columns (Slot 1, 9:00, etc.)
+    columns.forEach(col => {
+        if (col === potentialDayCol) return
+        const slotIdx = parseHeaderToSlot(col)
+        if (slotIdx !== null) {
+            potentialTimeCols.push(col)
         }
     })
 
-    return {
-        mapping,
-        confidence,
-        columns,
-        preview: data.slice(0, 5)
+    // Decision: If we have >= 3 time-like columns and a day column/row structure, it's Matrix
+    if (potentialTimeCols.length >= 3 && potentialDayCol) {
+        mapping.type = 'matrix'
+        mapping.matrixDayColumn = potentialDayCol
+        mapping.matrixTimeColumns = potentialTimeCols
+        console.log("✅ Matrix Structure Detected", { day: potentialDayCol, slots: potentialTimeCols })
     }
+
+    return { mapping, confidence, columns }
 }
 
 /**
- * Parse timetable data with confirmed mapping
+ * Parse parsed data content (cell text)
  */
+function parseCellContent(content) {
+    if (!content) return null
+    const text = String(content).trim()
+    if (!text) return null
+    if (text === '-') return null
+
+    // Split by newlines (common in PDF exports)
+    // Format: "Subject (Batch)\nTeacher Name [Room]"
+    const lines = text.split(/[\n\r]+/).map(l => l.trim()).filter(l => l)
+
+    if (lines.length === 0) return null
+
+    let subject = lines[0]
+    let teacher = 'TBA'
+    let room = 'TBA'
+    let batch = null
+
+    // Extract Batch from Subject: "Maths (B1)" or "B1: Maths"
+    const batchParen = subject.match(/\(([^)]+)\)$/)
+    if (batchParen) {
+        batch = batchParen[1]
+        subject = subject.replace(batchParen[0], '').trim()
+    }
+    const batchPrefix = subject.match(/^([A-Z0-9]+):\s*(.+)/)
+    if (batchPrefix) {
+        batch = batchPrefix[1]
+        subject = batchPrefix[2]
+    }
+
+    // Line 2 often contains Teacher and Room
+    if (lines.length > 1) {
+        let details = lines[1] // "Mrs. Smith [C-101]"
+
+        // Extract Room [C-101]
+        const roomMatch = details.match(/\[([^\]]+)\]$/)
+        if (roomMatch) {
+            room = roomMatch[1]
+            details = details.replace(roomMatch[0], '').trim()
+        }
+
+        if (details) teacher = details
+    }
+    // Fallback: If single line has multiple info "Maths (B1) - Smith"
+    else {
+        if (subject.includes(' - ')) {
+            const parts = subject.split(' - ')
+            subject = parts[0]
+            teacher = parts[1]
+        }
+    }
+
+    return { subject, teacher, room, batch }
+}
+
 export function parseWithMapping(data, mapping) {
     const slots = []
     const errors = []
-    const warnings = []
 
-    data.forEach((row, index) => {
-        try {
-            // Extract fields based on mapping
-            const day = mapping.dayColumn ? normalizeDay(row[mapping.dayColumn]) : null
-            const timeSlot = mapping.timeColumn ? normalizeTimeSlot(row[mapping.timeColumn]) : null
-            const subject = mapping.subjectColumn ? row[mapping.subjectColumn]?.trim() : null
-            const teacher = mapping.teacherColumn ? row[mapping.teacherColumn]?.trim() : null
-            const room = mapping.roomColumn ? row[mapping.roomColumn]?.trim() : null
-            const year = mapping.yearColumn ? row[mapping.yearColumn]?.trim().toUpperCase() : null
-            const division = mapping.divisionColumn ? row[mapping.divisionColumn]?.trim().toUpperCase() : null
-            const batch = mapping.batchColumn ? row[mapping.batchColumn]?.trim() : null
+    // --- MATRIX PARSING ---
+    if (mapping.type === 'matrix') {
+        let lastDay = 'Monday' // Fallback start
 
-            // Skip completely empty rows
-            if (!day && !timeSlot && !subject && !teacher) {
-                return
+        data.forEach((row, idx) => {
+            // Day Carry-Forward (for merged cells in Excel)
+            let rawDay = row[mapping.matrixDayColumn]
+            let day = normalizeDay(rawDay)
+
+            if (day) {
+                lastDay = day
+            } else {
+                // Heuristic: If row has data but no day, use lastDay
+                // Only if previous row was same block? safest is to assume consecutive
+                if (Object.values(row).some(v => v)) day = lastDay
             }
 
-            // Validate required fields
-            if (!day) {
-                errors.push({
-                    row: index + 1,
-                    message: 'Missing day',
-                    data: row
-                })
-                return
-            }
+            if (!day) return
 
-            if (timeSlot === null) {
-                errors.push({
-                    row: index + 1,
-                    message: 'Invalid or missing time slot',
-                    data: row
-                })
-                return
-            }
+            mapping.matrixTimeColumns.forEach(col => {
+                const cellVal = row[col]
+                if (!cellVal) return
 
-            if (!subject) {
-                warnings.push({
-                    row: index + 1,
-                    message: 'Missing subject',
-                    severity: 'warning'
-                })
-            }
-
-            // Determine type based on keywords
-            const subjectLower = (subject || '').toLowerCase()
-            const isPractical = subjectLower.includes('lab') ||
-                subjectLower.includes('practical') ||
-                !!batch
-
-            // Create slot object
-            const slot = {
-                id: generateId(),
-                day,
-                slot: timeSlot,
-                subject: subject || 'Unassigned',
-                teacher: teacher || 'TBA',
-                room: room || 'TBA',
-                year: year || 'Unknown',
-                division: division || 'A',
-                type: isPractical ? 'Practical' : 'Lecture',
-                batch: batch || null,
-                rawRow: index + 1
-            }
-
-            slots.push(slot)
-        } catch (error) {
-            errors.push({
-                row: index + 1,
-                message: `Parsing error: ${error.message}`,
-                data: row
+                const slotInfo = parseCellContent(cellVal)
+                if (slotInfo) {
+                    slots.push({
+                        id: generateId(),
+                        day: day,
+                        slot: parseHeaderToSlot(col), // uses header "Slot 1" -> 1
+                        subject: slotInfo.subject,
+                        teacher: slotInfo.teacher,
+                        room: slotInfo.room,
+                        batch: slotInfo.batch,
+                        type: slotInfo.batch ? 'Practical' : 'Lecture',
+                        year: 'Unknown',
+                        division: 'A',
+                        rawRow: idx + 1
+                    })
+                }
             })
-        }
-    })
+        })
+    }
+    // --- FLAT PARSING (Legacy) ---
+    else {
+        data.forEach((row, idx) => {
+            // Re-implement flat logic cleanly
+            const day = mapping.dayColumn ? normalizeDay(row[mapping.dayColumn]) : null
+            const slotNum = mapping.timeColumn ? normalizeTimeSlot(row[mapping.timeColumn]) : null
+            const subject = mapping.subjectColumn ? row[mapping.subjectColumn] : null
+
+            if (day && slotNum !== null && subject) {
+                slots.push({
+                    id: generateId(),
+                    day,
+                    slot: slotNum,
+                    subject: subject,
+                    teacher: (mapping.teacherColumn && row[mapping.teacherColumn]) || 'TBA',
+                    room: (mapping.roomColumn && row[mapping.roomColumn]) || 'TBA',
+                    room: (mapping.roomColumn && row[mapping.roomColumn]) || 'TBA',
+                    type: 'Lecture',
+                    year: (mapping.yearColumn && row[mapping.yearColumn]) || 'Unknown',
+                    division: (mapping.divisionColumn && row[mapping.divisionColumn]) || 'A'
+                })
+            }
+        })
+    }
 
     return {
         slots,
+        summary: { parsed: slots.length },
         errors,
-        warnings,
-        summary: {
-            total: data.length,
-            parsed: slots.length,
-            failed: errors.length,
-            warnings: warnings.length
-        }
+        warnings: []
     }
 }
 
-/**
- * Validate file before processing
- */
 export function validateFile(file) {
+    // ... basic check
     const errors = []
-
-    // Check file size (max 10MB)
-    const maxSize = 10 * 1024 * 1024
-    if (file.size > maxSize) {
-        errors.push('File size exceeds 10MB limit')
-    }
-
-    // Check file type
-    const validExtensions = ['csv', 'xlsx', 'xls']
-    const extension = file.name.split('.').pop().toLowerCase()
-    if (!validExtensions.includes(extension)) {
-        errors.push('Invalid file type. Please upload CSV or Excel files.')
-    }
-
-    return {
-        isValid: errors.length === 0,
-        errors
-    }
+    if (file.size > 10 * 1024 * 1024) errors.push('Max sizes 10MB')
+    return { isValid: errors.length === 0, errors }
 }
 
-export default {
-    parseFile,
-    detectStructure,
-    parseWithMapping,
-    validateFile,
-    normalizeDay,
-    normalizeTimeSlot
-}
+export default { parseFile, detectStructure, parseWithMapping, validateFile, normalizeDay }
