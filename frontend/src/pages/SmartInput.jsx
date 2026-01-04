@@ -159,6 +159,8 @@ function SmartInput() {
 
         // Auto-configure Branch Info in LocalStorage to match
         const dummyBranch = {
+            id: "dummy-branch-123", // Fixed ID for history consistency
+            branchName: "Computer Engineering (Demo)",
             academicYears: ["SE", "TE", "BE"],
             divisions: { "SE": ["A", "B"], "TE": ["A", "B"], "BE": ["A", "B"] },
             workingDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
@@ -180,6 +182,7 @@ function SmartInput() {
             ]
         };
         localStorage.setItem('branchConfig', JSON.stringify(dummyBranch));
+        localStorage.setItem('currentBranchId', dummyBranch.id); // Ensure ID is tracking
 
         setInputStage('confirmed');
         alert("✅ Dummy Data Loaded! Click 'Finish & Generate' now.");
@@ -196,10 +199,26 @@ function SmartInput() {
 
             // 1. Retrieve FULL branch configuration
             const branchConfigStr = localStorage.getItem('branchConfig')
+            const currentBranchId = localStorage.getItem('currentBranchId')
+            // ^ CRITICAL: Fetch the actual ID used by the app
+
             if (!branchConfigStr) {
                 throw new Error('Branch configuration missing. Please complete Branch Setup.')
             }
             let fullBranchData = JSON.parse(branchConfigStr)
+
+            // Ensure ID is present for History Service
+            if (!fullBranchData.id) {
+                if (currentBranchId) {
+                    fullBranchData.id = currentBranchId;
+                } else {
+                    console.warn("⚠️ Branch ID missing in config and storage. Generating temp ID.");
+                    // This is a last resort fallback, but ideally we should have the real ID.
+                    // For Dummy Data, we should probably set a stable ID.
+                    fullBranchData.id = "temp-branch-id-" + Date.now();
+                    localStorage.setItem('currentBranchId', fullBranchData.id);
+                }
+            }
 
             // 🛡️ SANITIZATION: Ensure correct types to prevent 400 Bad Request
             if (fullBranchData.academicYears && typeof fullBranchData.academicYears === 'string') {

@@ -37,28 +37,57 @@ def compute_teacher_workload(timetable, context):
     working_days = branch_data.get('workingDays', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'])
     
     # Track lectures per teacher per day
-    teacher_daily_lectures = defaultdict(lambda: defaultdict(int))
-    teacher_total_lectures = defaultdict(int)
+    # Key: Normalized Name (lowercase, stripped) -> Day -> Count
+    teacher_daily_lectures_norm = defaultdict(lambda: defaultdict(int))
+    teacher_total_lectures_norm = defaultdict(int)
+    
+    # Also track original name for display if needed, but we rely on 'teachers' list for display names
+    
+    print(f"DEBUG: Computing Workload for {len(timetable)} slots")
     
     for slot in timetable:
-        teacher = slot.get('teacher')
+        raw_teacher = slot.get('teacher')
         day = slot.get('day')
         
-        if teacher and teacher != 'TBA' and day:
-            teacher_daily_lectures[teacher][day] += 1
-            teacher_total_lectures[teacher] += 1
-    
+        # Normalize: Strip & Lowercase
+        if raw_teacher and raw_teacher != 'TBA' and day:
+            norm_name = raw_teacher.strip().lower()
+            teacher_daily_lectures_norm[norm_name][day] += 1
+            teacher_total_lectures_norm[norm_name] += 1
+            
     # Calculate metrics for each teacher
     per_teacher_metrics = {}
     total_lectures_all = 0
     teacher_count = len(teachers)
     
+    print(f"DEBUG: Found {len(teacher_total_lectures_norm)} teachers in timetable.")
+    
     for teacher_data in teachers:
-        teacher_name = teacher_data.get('name')
-        total = teacher_total_lectures.get(teacher_name, 0)
+        raw_name = teacher_data.get('name')
+        if not raw_name: continue
+        
+        # Display Name (Original)
+        display_name = raw_name.strip()
+        teacher_name = display_name # Alias for compatibility
+        
+        # Lookup Key (Normalized)
+        norm_key = display_name.lower()
+        
+        total = teacher_total_lectures_norm.get(norm_key, 0)
+        
+        if total == 0 and teacher_total_lectures_norm:
+             # Debugging mismatch - check if this teacher exists in map with slightly different chars?
+             # For now just log
+             # print(f"DEBUG: Teacher {display_name} has 0 lectures. (Key: {norm_key})")
+             pass
+             
         total_lectures_all += total
         
-        daily_lectures = dict(teacher_daily_lectures.get(teacher_name, {}))
+        daily_lectures = dict(teacher_daily_lectures_norm.get(norm_key, {}))
+        
+        # Re-map daily lectures to Capitalized Days if needed? 
+        # The days come from timetable, so they should be "Monday", etc.
+        # But let's trust the keys from timetable.
         
         # Find peak day
         peak_day = None

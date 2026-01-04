@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import VersionList from '../components/VersionList';
-import RestoreDialog from '../components/RestoreDialog';
+import HistoryEmptyState from '../components/HistoryEmptyState';
 import './ModulePage.css';
 
 function History() {
+    const navigate = useNavigate();
     const [versions, setVersions] = useState([]);
-    const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [selectedVersion, setSelectedVersion] = useState(null);
-    const [restoreVersion, setRestoreVersion] = useState(null);
-    const [actionFilter, setActionFilter] = useState('');
+    const [branchName, setBranchName] = useState('');
 
-    // Get current branch and context from localStorage or state management
+    // Get current branch from localStorage
     const branchId = localStorage.getItem('currentBranchId');
-    const context = {
-        branchData: JSON.parse(localStorage.getItem('currentBranchData') || '{}'),
-        smartInputData: JSON.parse(localStorage.getItem('currentSmartInputData') || '{}')
-    };
+    const branchData = JSON.parse(localStorage.getItem('currentBranchData') || '{}');
+
+    useEffect(() => {
+        if (branchData && branchData.branchName) {
+            setBranchName(branchData.branchName);
+        }
+    }, [branchData]);
 
     useEffect(() => {
         if (branchId) {
@@ -24,23 +26,18 @@ function History() {
         } else {
             setLoading(false);
         }
-    }, [branchId, actionFilter]);
+    }, [branchId]);
 
     const fetchVersions = async () => {
         setLoading(true);
         try {
             const url = new URL('http://localhost:5000/api/history/versions');
             url.searchParams.append('branchId', branchId);
-            if (actionFilter) {
-                url.searchParams.append('action', actionFilter);
-            }
-
             const response = await fetch(url);
             const data = await response.json();
 
             if (data.success) {
                 setVersions(data.versions || []);
-                setStats(data.stats || null);
             } else {
                 console.error('Failed to fetch versions:', data.error);
             }
@@ -51,45 +48,74 @@ function History() {
         }
     };
 
-    const handleVersionSelect = (version) => {
-        setSelectedVersion(version);
+    const fetchFullVersion = async (versionId) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/history/version/${versionId}?branchId=${branchId}`);
+            const data = await response.json();
+            if (data.success) {
+                return data.version;
+            } else {
+                alert('Failed to load version details.');
+                return null;
+            }
+        } catch (error) {
+            console.error('Error fetching full version:', error);
+            alert('Error loading version.');
+            return null;
+        }
     };
 
-    const handleRestoreClick = (version) => {
-        setRestoreVersion(version);
+    const handleView = async (version) => {
+        const fullVersion = await fetchFullVersion(version.versionId);
+        if (fullVersion) {
+            navigate('/timetable', {
+                state: {
+                    timetable: fullVersion.timetableSnapshot,
+                    readOnly: true,
+                    context: { branchData } // Pass basic context
+                }
+            });
+        }
     };
 
-    const handleRestoreConfirm = async (timetable) => {
-        // In a real implementation, you would:
-        // 1. Update the timetable state in your app
-        // 2. Navigate to the editable timetable page
-        // 3. Show success message
-
-        alert('Timetable restored successfully! Navigate to Edit Timetable to view.');
-        setRestoreVersion(null);
-
-        // Refresh versions list
-        fetchVersions();
+    const handleEdit = async (version) => {
+        const fullVersion = await fetchFullVersion(version.versionId);
+        if (fullVersion) {
+            navigate('/timetable', {
+                state: {
+                    timetable: fullVersion.timetableSnapshot,
+                    readOnly: false,
+                    context: { branchData } // Context needed for editing
+                }
+            });
+        }
     };
 
-    const handleRestoreCancel = () => {
-        setRestoreVersion(null);
+    const handleDuplicate = async (version) => {
+        const fullVersion = await fetchFullVersion(version.versionId);
+        if (fullVersion) {
+            navigate('/timetable', {
+                state: {
+                    timetable: fullVersion.timetableSnapshot,
+                    readOnly: false,
+                    isDuplicate: true, // Marker for potential UI logic
+                    context: { branchData }
+                }
+            });
+        }
     };
 
     if (!branchId) {
         return (
             <div className="module-page">
                 <div className="module-header">
-                    <h1 className="module-title">📜 Timetable History</h1>
-                    <p className="module-description">
-                        View, restore, and compare previous timetable versions
-                    </p>
+                    <h1 className="module-title">History</h1>
+                    <p className="module-description">Your previously generated timetables</p>
                 </div>
-
                 <div className="module-content">
                     <div className="info-card">
                         <h3>No Branch Selected</h3>
-                        <p>Please select or create a branch first to view version history.</p>
+                        <p>Please select a branch from the Dashboard.</p>
                     </div>
                 </div>
             </div>
@@ -99,76 +125,30 @@ function History() {
     return (
         <div className="module-page">
             <div className="module-header">
-                <h1 className="module-title">📜 Timetable History</h1>
+                <h1 className="module-title">History</h1>
                 <p className="module-description">
-                    View, restore, and compare previous timetable versions
+                    Your previously generated timetables
                 </p>
             </div>
 
             <div className="module-content">
-                <div style={{ marginBottom: '20px', display: 'flex', gap: '15px', alignItems: 'center' }}>
-                    <label style={{ fontSize: '14px', fontWeight: '500' }}>
-                        Filter by Action:
-                    </label>
-                    <select
-                        value={actionFilter}
-                        onChange={(e) => setActionFilter(e.target.value)}
-                        style={{
-                            padding: '8px 12px',
-                            border: '1px solid #d1d5db',
-                            borderRadius: '6px',
-                            fontSize: '14px'
-                        }}
-                    >
-                        <option value="">All Actions</option>
-                        <option value="Generation">Generation</option>
-                        <option value="Optimization">Optimization</option>
-                        <option value="Manual Edit">Manual Edit</option>
-                        <option value="Simulation Applied">Simulation Applied</option>
-                        <option value="Restore">Restore</option>
-                    </select>
-                    <button
-                        onClick={fetchVersions}
-                        style={{
-                            padding: '8px 16px',
-                            background: '#6366f1',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            fontSize: '14px',
-                            fontWeight: '500'
-                        }}
-                    >
-                        🔄 Refresh
-                    </button>
-                </div>
-
                 {loading ? (
                     <div style={{ textAlign: 'center', padding: '60px', color: '#6b7280' }}>
-                        <div style={{ fontSize: '48px', marginBottom: '16px' }}>⏳</div>
-                        <div>Loading version history...</div>
+                        <div style={{ fontSize: '48px', marginBottom: '16px', animation: 'pulse 2s infinite' }}>⏳</div>
+                        <div>Loading your history...</div>
                     </div>
-                ) : (
+                ) : versions.length > 0 ? (
                     <VersionList
                         versions={versions}
-                        stats={stats}
-                        onVersionSelect={handleVersionSelect}
-                        onRestore={handleRestoreClick}
-                        selectedVersionId={selectedVersion?.versionId}
+                        branchName={branchName}
+                        onView={handleView}
+                        onEdit={handleEdit}
+                        onDuplicate={handleDuplicate}
                     />
+                ) : (
+                    <HistoryEmptyState />
                 )}
             </div>
-
-            {restoreVersion && (
-                <RestoreDialog
-                    version={restoreVersion}
-                    branchId={branchId}
-                    context={context}
-                    onConfirm={handleRestoreConfirm}
-                    onCancel={handleRestoreCancel}
-                />
-            )}
         </div>
     );
 }

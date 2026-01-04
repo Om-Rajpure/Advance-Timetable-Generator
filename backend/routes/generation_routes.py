@@ -118,6 +118,45 @@ def generate_full_timetable():
         else:
             print("✅ Generation & Validation Clean.")
             
+        # 6. Auto-Save to History
+        # 6. Auto-Save to History
+        try:
+            # Flatten all division timetables into one master list
+            full_timetable_list = []
+            
+            # Structure is: Year -> Division -> { "timetable": { "Monday": [slots], ... } }
+            for year, divisions_data in all_timetables.items():
+                if not isinstance(divisions_data, dict):
+                    continue
+                    
+                for div, div_wrapper in divisions_data.items():
+                    if not isinstance(div_wrapper, dict):
+                        continue
+                        
+                    # Extract Day-wise schedule
+                    day_schedule_map = div_wrapper.get('timetable', {})
+                    if not isinstance(day_schedule_map, dict):
+                        continue
+                        
+                    # Flatten days
+                    for day, slots in day_schedule_map.items():
+                        if isinstance(slots, list):
+                            full_timetable_list.extend(slots)
+            
+            # Create version
+            version = history_service.auto_create_version(
+                timetable=full_timetable_list,
+                context=context,
+                action="Generation",
+                description=f"Full timetable generated with {len(full_timetable_list)} slots"
+            )
+            print(f"✅ History Version Created: {version['versionId']}")
+            result['versionId'] = version['versionId']
+            
+        except Exception as h_err:
+             print(f"⚠️ History Save Failed: {h_err}")
+             # Do not fail generation if history fails, just log it
+            
         # ALWAYS RETURN 200 for partial/full success
         return jsonify(result), 200
 
@@ -197,6 +236,36 @@ def generate_partial_timetable():
         scheduler = TimetableScheduler(context)
         result = scheduler.generate()
         
+        if result['success']:
+            try:
+                # Merge new slots with existing ones for history
+                new_slots = []
+                
+                # Extract hierarchical slots (same logic as full gen)
+                generated_timetables = result.get('timetables', {})
+                for y_key, divisions_data in generated_timetables.items():
+                    if isinstance(divisions_data, dict):
+                         for d_key, div_wrapper in divisions_data.items():
+                             if isinstance(div_wrapper, dict):
+                                 day_schedule_map = div_wrapper.get('timetable', {})
+                                 if isinstance(day_schedule_map, dict):
+                                     for day, slots in day_schedule_map.items():
+                                         if isinstance(slots, list):
+                                             new_slots.extend(slots)
+                
+                # Combine locked (existing) slots + new slots
+                full_timetable_snapshot = other_slots + new_slots
+                
+                version = history_service.auto_create_version(
+                    timetable=full_timetable_snapshot,
+                    context=context,
+                    action="Partial Generation",
+                    description=f"Regenerated {year} {division}"
+                )
+                result['versionId'] = version['versionId']
+            except Exception as h_err:
+                print(f"⚠️ History Save Failed for Partial Gen: {h_err}")
+
         return jsonify(result), 200 if result['success'] else 400
         
     except Exception as e:

@@ -309,7 +309,9 @@ export function parseBulkText(text, academicYears = ['SE', 'TE', 'BE']) {
             if (!mapping.find(m => m.teacherId === teacher.id && m.subjectId === subject.id)) {
                 mapping.push({
                     teacherId: teacher.id,
-                    subjectId: subject.id
+                    subjectId: subject.id,
+                    teacherName: teacher.name,
+                    subjectName: subject.name
                 })
             }
         })
@@ -376,7 +378,9 @@ export function parseNaturalLanguage(prompt) {
             if (!mapping.find(m => m.teacherId === teacher.id && m.subjectId === subject.id)) {
                 mapping.push({
                     teacherId: teacher.id,
-                    subjectId: subject.id
+                    subjectId: subject.id,
+                    teacherName: teacher.name,
+                    subjectName: subject.name
                 })
             }
         })

@@ -22,16 +22,76 @@ function Analytics() {
         setError(null)
 
         try {
-            // Try to load timetable data from session storage or generate sample
-            const sampleTimetable = getSampleTimetable()
-            const sampleBranchData = getSampleBranchData()
-            const sampleSmartInput = getSampleSmartInput()
+            // Priority: Load real generated data from LocalStorage
+            let realTimetable = null
+            let realBranchData = null
+            let realSmartInput = null
 
-            if (!sampleTimetable || sampleTimetable.length === 0) {
+            const storedTimetable = localStorage.getItem('generatedTimetable')
+            const storedBranch = localStorage.getItem('branchConfig')
+            const storedSmartInput = localStorage.getItem('smartInputData')
+
+            if (storedTimetable) {
+                try {
+                    const parsed = JSON.parse(storedTimetable)
+                    console.log("📊 Analytics: Loaded Timetable from Storage", typeof parsed)
+
+                    // FLATTEN RECURSIVELY (Handle Year -> Division -> Timetable -> Day -> Slots)
+                    if (parsed && typeof parsed === 'object') {
+                        console.log("📊 Analytics: Flattening Nested Timetable Object recursively...")
+
+                        // Recursive helper to extract all arrays (slots)
+                        const extractSlots = (obj) => {
+                            if (!obj) return []
+                            if (Array.isArray(obj)) return obj
+
+                            // If it has 'timetable' key (Division level), dive into that
+                            if (obj.timetable && typeof obj.timetable === 'object') {
+                                return extractSlots(obj.timetable)
+                            }
+
+                            return Object.values(obj).flatMap(val => {
+                                if (Array.isArray(val)) return val
+                                if (typeof val === 'object' && val !== null) return extractSlots(val)
+                                return []
+                            })
+                        }
+
+                        realTimetable = extractSlots(parsed)
+                    } else {
+                        realTimetable = parsed || []
+                    }
+                    console.log("📊 Analytics: Final Flat Slots Count:", realTimetable ? realTimetable.length : 0)
+
+                } catch (e) {
+                    console.error("Analytics JSON Parse Error (Timetable)", e)
+                }
+            }
+
+            if (storedBranch) {
+                try {
+                    realBranchData = JSON.parse(storedBranch)
+                } catch (e) { console.error("Analytics Branch Parse Error", e) }
+            }
+
+            if (storedSmartInput) {
+                try {
+                    realSmartInput = JSON.parse(storedSmartInput)
+                } catch (e) { console.error("Analytics SmartInput Parse Error", e) }
+            }
+
+            // Fallback to samples only if NO real data exists
+            const TimetableToAnalyze = realTimetable || getSampleTimetable()
+            const BranchToAnalyze = realBranchData || getSampleBranchData()
+            const SmartInputToAnalyze = realSmartInput || getSampleSmartInput()
+
+            if (!TimetableToAnalyze || TimetableToAnalyze.length === 0) {
                 // No timetable available
                 setLoading(false)
                 return
             }
+
+            console.log("📊 Sending payload with slots:", TimetableToAnalyze.length)
 
             // Call analytics API
             const response = await fetch('http://localhost:5000/api/analytics/full-report', {
@@ -40,14 +100,15 @@ function Analytics() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    timetable: sampleTimetable,
-                    branchData: sampleBranchData,
-                    smartInputData: sampleSmartInput
+                    timetable: TimetableToAnalyze,
+                    branchData: BranchToAnalyze,
+                    smartInputData: SmartInputToAnalyze
                 })
             })
 
             if (!response.ok) {
-                throw new Error('Failed to fetch analytics')
+                const errData = await response.json()
+                throw new Error(errData.error || 'Failed to fetch analytics')
             }
 
             const data = await response.json()
