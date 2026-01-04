@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './LabUsageHeatmap.css'
 
-function LabUsageHeatmap({ labUsage }) {
+function LabUsageHeatmap({ labUsage, title = "🔬 Lab Usage Heatmap", type = "lab", metricKey = "perLab" }) {
     const [selectedLab, setSelectedLab] = useState(null)
 
     if (!labUsage || !labUsage.metrics) {
@@ -9,15 +9,39 @@ function LabUsageHeatmap({ labUsage }) {
     }
 
     const { metrics, insights } = labUsage
-    const { perLab } = metrics
+    // Dynamically access the correct dictionary (perLab / perClassroom)
+    const perRoomData = metrics[metricKey] || metrics.perLab || metrics.perClassroom
 
-    const labNames = Object.keys(perLab)
+    if (!perRoomData) return null;
+
+    const allLabNames = Object.keys(perRoomData)
+
+    // HARD FILTER: Remove Ghost Rooms (SE, TE, BE, etc)
+    // Regex matches: FE, SE, TE, BE, LY, Year X, Part X, Div A...
+    // STRICTER PATTERN: Match exact year names or names starting with them
+    const ghostPattern = /^(FE|SE|TE|BE|B\.E\.|LY|Year|Part|Div\s)/i;
+
+    // Filter out bad names AND ensure we don't accidentally hide "Room SE" if that was the fix
+    // "Room SE" does NOT match ^(SE|TE...) so it should pass.
+    const labNames = allLabNames.filter(name => {
+        const clean = name.trim();
+        if (clean.length < 2) return false; // Ignore "A", "B"
+
+        // If it starts with "Room", it's valid (our fix)
+        if (clean.toLowerCase().startsWith("room")) return true;
+
+        // Otherwise, block if it looks like a Year/Div
+        if (ghostPattern.test(clean)) return false;
+
+        return true;
+    });
+
     if (labNames.length === 0) {
         return (
             <div className="lab-usage-heatmap">
-                <h3>🔬 Lab Usage Heatmap</h3>
+                <h3>{title}</h3>
                 <p style={{ color: '#6b7280', textAlign: 'center', padding: '40px' }}>
-                    No lab data available
+                    No {type} data available
                 </p>
             </div>
         )
@@ -25,7 +49,9 @@ function LabUsageHeatmap({ labUsage }) {
 
     // Select first lab if none selected
     const currentLab = selectedLab || labNames[0]
-    const labData = perLab[currentLab]
+    const labData = perRoomData[currentLab]
+
+    if (!labData) return null;
 
     const days = Object.keys(labData.heatmap)
     const timeSlots = Object.keys(labData.heatmap[days[0]] || {})
@@ -39,7 +65,7 @@ function LabUsageHeatmap({ labUsage }) {
 
     return (
         <div className="lab-usage-heatmap">
-            <h3>🔬 Lab Usage Heatmap</h3>
+            <h3>{title}</h3>
 
             <div className="lab-tabs">
                 {labNames.map(lab => (
@@ -107,20 +133,11 @@ function LabUsageHeatmap({ labUsage }) {
                 </div>
                 <div className="legend-item">
                     <div className="legend-color occupied"></div>
-                    <span>Occupied (Practical Scheduled)</span>
+                    <span>Occupied ({type === 'lab' ? 'Practical' : 'Lecture'} Scheduled)</span>
                 </div>
             </div>
 
-            {insights && insights.length > 0 && (
-                <div style={{ marginTop: '20px' }}>
-                    <div className="chart-subtitle">Insights</div>
-                    <ul className="insights-list">
-                        {insights.map((insight, idx) => (
-                            <li key={idx}>{insight}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+            
         </div>
     )
 }

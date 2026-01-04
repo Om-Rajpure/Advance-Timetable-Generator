@@ -5,7 +5,7 @@ Main orchestrator for all analytics modules and quality scoring.
 """
 
 from .workload_analysis import compute_teacher_workload, generate_workload_insights
-from .lab_usage import compute_lab_heatmap, analyze_lab_efficiency
+from .lab_usage import compute_lab_heatmap, analyze_lab_efficiency, compute_classroom_heatmap, analyze_classroom_efficiency
 from .free_slots import find_free_slots, analyze_free_capacity
 from .bottleneck_detector import detect_bottlenecks, prioritize_bottlenecks
 
@@ -13,34 +13,51 @@ from .bottleneck_detector import detect_bottlenecks, prioritize_bottlenecks
 def generate_full_analytics(timetable, context):
     """
     Generate complete analytics report for a timetable.
-    
-    Args:
-        timetable: List of slot dictionaries
-        context: Dictionary with branchData and smartInputData
-    
-    Returns:
-        {
-            "workload": {...},
-            "labUsage": {...},
-            "freeSlots": {...},
-            "bottlenecks": {...},
-            "summary": {
-                "qualityScore": int,
-                "grade": str,
-                "topIssues": [str],
-                "topStrengths": [str]
-            }
-        }
     """
     # Compute all metrics
+    
+    # --- SANITIZATION STEP ---
+    # Strip out ghost rooms (academic years) before processing
+    if context and 'branchData' in context:
+        academic_years = context['branchData'].get('academicYears', [])
+        
+        # Build set of invalid names
+        bad_names = set([y.upper().strip() for y in academic_years])
+        bad_names.update(["YEAR", "PART", "DIV"])
+        
+        # Also handle "SE A", "TE-B" via prefix check (simple heuristic)
+        
+        # Iterate and clean IN-PLACE
+        cleaned_count = 0
+        for slot in timetable:
+            r_name = slot.get('room')
+            if r_name:
+                clean_r = str(r_name).strip().upper()
+                is_ghost = clean_r in bad_names
+                
+                # Prefix heuristic (len < 5 to avoid killing "Seminar Hall")
+                if len(clean_r) < 5 and any(clean_r.startswith(y) for y in bad_names):
+                    is_ghost = True
+                    
+                if is_ghost:
+                    # RENAME the ghost room to make it distinct (e.g., "Room SE")
+                    # instead of deleting it, which causes empty data.
+                    slot['room'] = f"Room {r_name}"
+                    cleaned_count += 1
+                    
+        if cleaned_count > 0:
+            print(f"DEBUG: Renamed {cleaned_count} ghost room names (prefixed with 'Room ').")
+
     workload = compute_teacher_workload(timetable, context)
     lab_usage = compute_lab_heatmap(timetable, context)
+    classroom_usage = compute_classroom_heatmap(timetable, context) # NEW
     free_slots = find_free_slots(timetable, context)
     bottlenecks = detect_bottlenecks(timetable, context)
     
     # Generate insights
     workload_insights = generate_workload_insights(workload)
     lab_insights = analyze_lab_efficiency(lab_usage)
+    classroom_insights = analyze_classroom_efficiency(classroom_usage) # NEW
     free_insights = analyze_free_capacity(free_slots)
     prioritized_bottlenecks = prioritize_bottlenecks(bottlenecks)
     
@@ -55,8 +72,8 @@ def generate_full_analytics(timetable, context):
     # Extract top insights
     top_issues, top_strengths = extract_top_insights({
         "workload_insights": workload_insights,
-        "lab_insights": lab_insights,
-        "free_insights": free_insights,
+        "lab_insights": lab_insights + classroom_insights, # Merge
+        "free_insights": [], # User requested removal of free slot insights
         "bottlenecks": prioritized_bottlenecks,
         "quality_score": quality_score
     })
@@ -69,6 +86,10 @@ def generate_full_analytics(timetable, context):
         "labUsage": {
             "metrics": lab_usage,
             "insights": lab_insights
+        },
+        "classroomUsage": {  # NEW Section
+            "metrics": classroom_usage,
+            "insights": classroom_insights
         },
         "freeSlots": {
             "metrics": free_slots,

@@ -32,7 +32,25 @@ def find_free_slots(timetable, context):
     time_slots = branch_data.get('timeSlots', [])
     divisions = branch_data.get('divisions', {})
     labs = branch_data.get('labs', [])
-    rooms = branch_data.get('rooms', [])
+    rooms = branch_data.get('rooms', []) or []
+    if not isinstance(rooms, list): rooms = []
+    
+    # DYNAMIC DISCOVERY: Add rooms found in timetable but missing from config
+    # This ensures renamed ghost rooms (Room SE-1) are counted.
+    found_rooms = set()
+    for s in timetable:
+        if s.get('type') == 'THEORY' and s.get('room'):
+            found_rooms.add(s.get('room'))
+    
+    # Normalize current rooms list
+    current_room_names = set()
+    for r in rooms:
+        current_room_names.add(r if isinstance(r, str) else r.get('name', str(r)))
+        
+    for r_name in found_rooms:
+        if r_name not in current_room_names:
+            rooms.append(r_name)
+            current_room_names.add(r_name)
     
     if not time_slots:
         time_slots = [
@@ -65,9 +83,9 @@ def find_free_slots(timetable, context):
             occupied_division_slots.add((div_key, day, time))
         
         if day and time:
-            if slot_type == 'Practical' and (lab or room):
+            if slot_type in ['Practical', 'LAB', 'PRACTICAL'] and (lab or room):
                 occupied_labs[(day, time)].add(lab or room)
-            elif slot_type == 'Lecture' and room:
+            elif slot_type in ['Lecture', 'THEORY', 'LECTURE'] and room:
                 occupied_rooms[(day, time)].add(room)
     
     # Calculate free slots per day
@@ -116,6 +134,26 @@ def find_free_slots(timetable, context):
     total_free = total_possible_slots - total_occupied
     free_percentage = (total_free / total_possible_slots * 100) if total_possible_slots > 0 else 0
     
+    # Calculate free rooms per day
+    free_rooms_per_day = {}
+    total_room_slots_possible = len(rooms) * len(working_days) * len(time_slots) if rooms else 0
+    total_room_slots_free = 0
+    
+    for day in working_days:
+        free_count = 0
+        for time_slot in time_slots:
+            available = len(available_rooms[day][time_slot])
+            free_count += available
+        free_rooms_per_day[day] = free_count
+        total_room_slots_free += free_count
+
+    room_utilization = {
+        "totalSlots": total_room_slots_possible,
+        "freeSlots": total_room_slots_free,
+        "occupiedSlots": total_room_slots_possible - total_room_slots_free,
+        "utilizationPercentage": round(((total_room_slots_possible - total_room_slots_free) / total_room_slots_possible * 100), 1) if total_room_slots_possible > 0 else 0
+    }
+
     # Best days for additions (sorted by free slots)
     best_days = sorted(
         [{"day": day, "freeSlots": count} for day, count in free_slots_per_day.items()],
@@ -126,6 +164,8 @@ def find_free_slots(timetable, context):
     return {
         "freeSlotsPerDay": free_slots_per_day,
         "freeSlotsPerDivision": free_slots_per_division,
+        "freeRoomsPerDay": free_rooms_per_day, # NEW
+        "roomUtilization": room_utilization,    # NEW
         "availableLabs": {day: dict(times) for day, times in available_labs.items()},
         "availableRooms": {day: dict(times) for day, times in available_rooms.items()},
         "totalFreeSlots": total_free,

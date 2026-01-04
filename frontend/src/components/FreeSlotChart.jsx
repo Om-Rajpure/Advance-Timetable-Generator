@@ -102,14 +102,63 @@ function FreeSlotChart({ freeSlots }) {
                 </div>
             )}
 
-            {insights && insights.length > 0 && (
-                <div className="chart-section" style={{ marginTop: '24px' }}>
-                    <div className="chart-subtitle">Insights</div>
-                    <ul className="insights-list">
-                        {insights.map((insight, idx) => (
-                            <li key={idx}>{insight}</li>
-                        ))}
-                    </ul>
+            <div className="chart-section" style={{ marginTop: '24px' }}>
+                <div className="chart-subtitle">Insights</div>
+                <ul className="insights-list">
+                    {insights.map((insight, idx) => (
+                        <li key={idx}>{insight}</li>
+                    ))}
+                </ul>
+            </div>
+
+
+            {/* NEW: Classroom Availability Section */}
+            {metrics.roomUtilization ? (
+                <div className="chart-section" style={{ marginTop: '30px', borderTop: '1px solid #e5e7eb', paddingTop: '20px' }}>
+                    <div className="chart-subtitle">🏫 Classroom Availability</div>
+
+                    <div className="capacity-overview">
+                        <div className="capacity-card">
+                            <div className="capacity-number">{metrics.roomUtilization.occupiedSlots}</div>
+                            <div className="capacity-label">Occupied Rooms</div>
+                        </div>
+                        <div className="capacity-card primary">
+                            <div className="capacity-number">{metrics.roomUtilization.freeSlots}</div>
+                            <div className="capacity-label">Free Rooms</div>
+                        </div>
+                        <div className="capacity-card">
+                            <div className="capacity-number">{metrics.roomUtilization.utilizationPercentage}%</div>
+                            <div className="capacity-label">Utilization</div>
+                        </div>
+                    </div>
+
+                    {metrics.freeRoomsPerDay && (
+                        <div className="day-bars" style={{ marginTop: '15px' }}>
+                            {Object.entries(metrics.freeRoomsPerDay).map(([day, count]) => {
+                                const maxRooms = Math.max(...Object.values(metrics.freeRoomsPerDay), 1);
+                                const width = (count / maxRooms) * 100
+                                return (
+                                    <div key={day} className="day-bar-row">
+                                        <div className="day-label">{day}</div>
+                                        <div className="day-bar-container">
+                                            <div
+                                                className="day-bar-fill"
+                                                style={{ width: `${Math.max(width, 10)}%`, background: '#8b5cf6' }}
+                                            >
+                                                {count} rooms free
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    )}
+                </div>
+            ) : (
+                /* DEBUG FALLBACK IF DATA MISSING */
+                <div style={{ marginTop: '20px', padding: '10px', background: '#f3f4f6', fontSize: '10px', color: '#666' }}>
+                    <p>Debug provided: Room Utilization Data Missing</p>
+                    <p>Available Metrics: {Object.keys(metrics).join(', ')}</p>
                 </div>
             )}
         </div>
@@ -117,3 +166,4 @@ function FreeSlotChart({ freeSlots }) {
 }
 
 export default FreeSlotChart
+

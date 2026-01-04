@@ -384,9 +384,15 @@ class TimetableScheduler:
                 assigned_room = None
                 
                 # 1. Try to fetch from Branch Data (Real Rooms)
+                # 1. Try to fetch from Branch Data (Real Rooms)
                 try:
                     branch_data = self.context.get('branchData', {})
                     all_classrooms = branch_data.get('classrooms', {})
+                    
+                    # Fallback: check 'rooms' if 'classrooms' is empty
+                    if not all_classrooms:
+                        all_classrooms = branch_data.get('rooms', [])
+                    
                     year = slot['year']
                     division = slot['division']
                     
@@ -396,7 +402,7 @@ class TimetableScheduler:
                         rooms_for_year = all_classrooms.get(year, [])
                     elif isinstance(all_classrooms, list):
                         # Handle Legacy/Dummy Array Format: [ {name: "R1", ...}, ... ]
-                        rooms_for_year = [r.get('name') for r in all_classrooms if isinstance(r, dict)]
+                        rooms_for_year = [r if isinstance(r, str) else r.get('name') for r in all_classrooms]
                     
                     if isinstance(rooms_for_year, list) and len(rooms_for_year) > 0:
                         # Map Division to Room Index (A->0, B->1, etc.)

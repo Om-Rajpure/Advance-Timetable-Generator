@@ -187,14 +187,28 @@ function Analytics() {
             <div className="analytics-content">
                 <SummaryInsights summary={analyticsData.summary} />
 
-                <BottleneckAlerts bottlenecks={analyticsData.bottlenecks} />
-
                 <div className="analytics-grid">
                     <TeacherWorkloadChart workload={analyticsData.workload} />
-                    <LabUsageHeatmap labUsage={analyticsData.labUsage} />
+                    <LabUsageHeatmap
+                        labUsage={analyticsData.labUsage}
+                        title="🔬 Lab Usage Heatmap"
+                        type="lab"
+                    />
                 </div>
 
-                <FreeSlotChart freeSlots={analyticsData.freeSlots} />
+                {/* NEW: Classroom Usage Section */}
+                <div style={{ marginTop: '20px' }}>
+                    <LabUsageHeatmap
+                        labUsage={analyticsData.classroomUsage}
+                        title="🏫 Classroom Usage Heatmap"
+                        type="classroom"
+                        metricKey="perClassroom"
+                    />
+                </div>
+
+
+
+                <BottleneckAlerts bottlenecks={analyticsData.bottlenecks} />
             </div>
         </div>
     )

@@ -46,6 +46,23 @@ def get_full_report():
         branch_data = data.get('branchData')
         smart_input = data.get('smartInputData')
         
+        # --- DEBUG LOGGING ---
+        try:
+            with open('debug_rooms.txt', 'w') as f:
+                f.write(f"Timetable entries: {len(timetable)}\n")
+                unique_rooms = set()
+                for slot in timetable:
+                    r = slot.get('room')
+                    if r: unique_rooms.add(str(r))
+                f.write(f"Unique Rooms: {sorted(list(unique_rooms))}\n")
+                f.write("Sample Slot:\n")
+                if len(timetable) > 0:
+                    import json
+                    f.write(json.dumps(timetable[0], indent=2))
+        except Exception as log_err:
+            print(f"Logging failed: {log_err}")
+        # ---------------------
+        
         if not all([timetable, branch_data, smart_input]):
             return jsonify({"error": "Missing required fields: timetable, branchData, or smartInputData"}), 400
         
