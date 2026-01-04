@@ -25,6 +25,37 @@ function EditableTimetable() {
     const [selectedYear, setSelectedYear] = useState(null);
     const [selectedDiv, setSelectedDiv] = useState(null);
 
+    // 1.5 Load from Storage if missing (Persistence Fix)
+    useEffect(() => {
+        if (timetable.length === 0) {
+            const storedTimetable = localStorage.getItem('generatedTimetable');
+            const storedStats = localStorage.getItem('generationStats'); // Optional stats
+
+            if (storedTimetable) {
+                try {
+                    const parsedData = JSON.parse(storedTimetable);
+                    console.log("🔄 Loaded Timetable from LocalStorage:", parsedData.length, "slots");
+                    setTimetable(parsedData);
+
+                    // Also try to restore context
+                    if (!context.branchData) {
+                        const savedBranch = localStorage.getItem('branchConfig');
+                        const savedSmartInput = localStorage.getItem('smartInputData');
+                        if (savedBranch || savedSmartInput) {
+                            setContext(prev => ({
+                                ...prev,
+                                branchData: savedBranch ? JSON.parse(savedBranch) : {},
+                                smartInputData: savedSmartInput ? JSON.parse(savedSmartInput) : {}
+                            }));
+                        }
+                    }
+                } catch (e) {
+                    console.error("Failed to load timetable from storage", e);
+                }
+            }
+        }
+    }, []); // Run once on mount
+
     // 2. Build Inferred Context (if missing)
     useEffect(() => {
         if (!context.inferred && (context.smartInputData || context.branchData)) return;

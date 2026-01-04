@@ -127,29 +127,49 @@ async function parseExcelFile(file) {
                 const workbook = XLSX.read(data, { type: 'array' })
                 if (!workbook.SheetNames.length) throw new Error("Excel file empty")
 
-                const sheet = workbook.Sheets[workbook.SheetNames[0]]
-                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' })
+                let allRows = [];
+                let headers = [];
+                let firstSheetFound = false;
 
-                if (jsonData.length === 0) throw new Error("Sheet empty")
+                // Iterate through ALL sheets
+                workbook.SheetNames.forEach(sheetName => {
+                    const sheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
 
-                // Find header row (first non-empty row)
-                let headerRowIdx = 0
-                let headers = []
-                for (let i = 0; i < jsonData.length; i++) {
-                    if (jsonData[i].some(cell => cell && String(cell).trim().length > 0)) {
-                        headerRowIdx = i
-                        headers = jsonData[i]
-                        break
+                    if (jsonData.length === 0) return;
+
+                    // Find header row (first non-empty row)
+                    let headerRowIdx = 0;
+                    let currentHeaders = [];
+                    for (let i = 0; i < jsonData.length; i++) {
+                        if (jsonData[i].some(cell => cell && String(cell).trim().length > 0)) {
+                            headerRowIdx = i;
+                            currentHeaders = jsonData[i];
+                            break;
+                        }
                     }
-                }
 
-                const rows = jsonData.slice(headerRowIdx + 1).map(row => {
-                    const obj = {}
-                    headers.forEach((h, i) => { if (h) obj[h] = row[i] })
-                    return obj
-                }).filter(row => Object.keys(row).length > 0) // Remove empty object rows
+                    if (!firstSheetFound) {
+                        headers = currentHeaders;
+                        firstSheetFound = true;
+                    }
 
-                resolve({ data: rows, meta: { fields: headers } })
+                    // Extract rows
+                    const sheetRows = jsonData.slice(headerRowIdx + 1).map(row => {
+                        const obj = {};
+                        // Add Sheet Name as "Class" or "Year" context if needed
+                        // But mostly we just want to merge them and let structure detection find columns
+                        // OR inject the sheet name as a column?
+                        obj['_SHEET_NAME_'] = sheetName;
+
+                        currentHeaders.forEach((h, i) => { if (h) obj[h] = row[i] });
+                        return obj;
+                    }).filter(row => Object.keys(row).length > 1); // >1 because we added _SHEET_NAME_
+
+                    allRows = [...allRows, ...sheetRows];
+                });
+
+                resolve({ data: allRows, meta: { fields: headers } })
             } catch (err) {
                 reject(err)
             }
@@ -349,8 +369,8 @@ export function parseWithMapping(data, mapping) {
                         room: slotInfo.room,
                         batch: slotInfo.batch,
                         type: slotInfo.batch ? 'Practical' : 'Lecture',
-                        year: 'Unknown',
-                        division: 'A',
+                        year: (mapping.yearColumn && row[mapping.yearColumn]) || row['_SHEET_NAME_'] || 'Unknown',
+                        division: (mapping.divisionColumn && row[mapping.divisionColumn]) || (row['_SHEET_NAME_'] ? 'Main' : 'A'),
                         rawRow: idx + 1
                     })
                 }
@@ -373,10 +393,9 @@ export function parseWithMapping(data, mapping) {
                     subject: subject,
                     teacher: (mapping.teacherColumn && row[mapping.teacherColumn]) || 'TBA',
                     room: (mapping.roomColumn && row[mapping.roomColumn]) || 'TBA',
-                    room: (mapping.roomColumn && row[mapping.roomColumn]) || 'TBA',
                     type: 'Lecture',
-                    year: (mapping.yearColumn && row[mapping.yearColumn]) || 'Unknown',
-                    division: (mapping.divisionColumn && row[mapping.divisionColumn]) || 'A'
+                    year: (mapping.yearColumn && row[mapping.yearColumn]) || row['_SHEET_NAME_'] || 'Unknown',
+                    division: (mapping.divisionColumn && row[mapping.divisionColumn]) || (row['_SHEET_NAME_'] ? 'Main' : 'A')
                 })
             }
         })

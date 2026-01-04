@@ -66,6 +66,9 @@ def extract_from_text_pdf(pdf_path):
                                     clean_header = str(header).strip() if header else f'Column{i+1}'
                                     clean_value = str(row[i]).strip() if row[i] is not None else ''
                                     row_dict[clean_header] = clean_value
+                                
+                                # Inject Page Context for Frontend Separation
+                                row_dict['_SHEET_NAME_'] = f"Page {page_num + 1}"
                             
                             if row_dict:
                                 all_rows.append(row_dict)
@@ -125,7 +128,10 @@ def extract_from_scanned_pdf(pdf_path):
                     parts = [p.strip() for p in line.split('  ') if p.strip()]
                     if len(parts) > 1:
                         # Create a generic row structure
+                        # Create a generic row structure
                         row_dict = {f'Column{i+1}': part for i, part in enumerate(parts)}
+                        # Inject Page Context
+                        row_dict['_SHEET_NAME_'] = f"Page {page_num + 1}"
                         all_rows.append(row_dict)
         
         return all_rows

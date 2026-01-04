@@ -16,7 +16,7 @@ import GenerationLoading from '../components/GenerationLoading'
 
 function SmartInput() {
     const navigate = useNavigate()
-    const { getBranchInfo, completeSmartInput } = useDashboardState()
+    const { getBranchInfo, completeSmartInput, completeTimetableGeneration, updateHasTimetable, updateTimetableStatus } = useDashboardState()
 
     // State Management
     const [activeTab, setActiveTab] = useState('bulk') // Default to bulk for easier access
@@ -262,6 +262,10 @@ function SmartInput() {
             localStorage.setItem('generationStats', JSON.stringify(result.stats || {}))
 
             completeSmartInput()
+            // Update Dashboard State
+            completeTimetableGeneration()
+            updateHasTimetable(true)
+            updateTimetableStatus('generated')
 
             // Pass data via State (Immediate) + Storage (Backup)
             // INCLUDE WARNINGS for Timetable Page to display

@@ -791,7 +791,38 @@
         flex-direction: column;
     }
 
-    .btn-lg {
-        width: 100%;
+
+    /* ========================================
+   SIMPLIFIED UPLOAD PAGE STYLES
+   ======================================== */
+    .centered-layout {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        min-height: 100vh;
     }
-}
+
+    .upload-container {
+        width: 100%;
+        max-width: 600px;
+        text-align: center;
+    }
+
+    .simple-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 32px;
+    }
+
+    .upload-box-wrapper {
+        margin-bottom: 16px;
+    }
+
+    .upload-instruction {
+        margin-top: 16px;
+        color: #6b7280;
+        font-size: 15px;
+        font-weight: 500;
+    }

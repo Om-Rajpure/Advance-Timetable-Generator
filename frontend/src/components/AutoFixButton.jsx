@@ -1,26 +1,34 @@
 import React, { useState } from 'react';
-import { getSuggestedFix } from '../utils/autoFixer';
+import { findAutoFix } from '../utils/autoFixer';
 import './AutoFixButton.css';
 
 function AutoFixButton({ slot, conflicts, timetable, context, onFixApplied }) {
     const [loading, setLoading] = useState(false);
     const [suggestion, setSuggestion] = useState(null);
+    const [error, setError] = useState(null);
 
-    const handleAutoFix = async () => {
+    const handleAutoFix = () => {
         setLoading(true);
-        try {
-            const fix = await getSuggestedFix(slot, conflicts, timetable, context);
-            setSuggestion(fix);
-        } catch (error) {
-            console.error('Auto-fix failed:', error);
-        } finally {
+        setSuggestion(null);
+        setError(null);
+
+        // Small delay to show "Finding..." state
+        setTimeout(() => {
+            const fix = findAutoFix(slot, timetable, context?.branchData);
+
+            if (fix) {
+                setSuggestion(fix);
+            } else {
+                setError("No available slot found. Please adjust manually.");
+            }
             setLoading(false);
-        }
+        }, 600);
     };
 
     const applyFix = () => {
-        if (suggestion && suggestion.fix) {
-            onFixApplied(suggestion.fix);
+        if (suggestion) {
+            const fixedSlot = { ...slot, day: suggestion.day, slot: suggestion.slot };
+            onFixApplied(fixedSlot);
             setSuggestion(null);
         }
     };
@@ -32,23 +40,21 @@ function AutoFixButton({ slot, conflicts, timetable, context, onFixApplied }) {
                 onClick={handleAutoFix}
                 disabled={loading || !conflicts || conflicts.length === 0}
             >
-                {loading ? '🔄 Finding Fix...' : '🔧 Auto-Fix'}
+                {loading ? '🔄 Finding Fix...' : '🔧 Fix Automatically'}
             </button>
 
             {suggestion && (
                 <div className="fix-suggestion">
-                    <div className="fix-explanation">
-                        {suggestion.fix ? (
-                            <>
-                                <p>✅ {suggestion.explanation}</p>
-                                <button className="apply-fix-button" onClick={applyFix}>
-                                    Apply Fix
-                                </button>
-                            </>
-                        ) : (
-                            <p>❌ {suggestion.explanation}</p>
-                        )}
-                    </div>
+                    <p className="success-msg">✅ Moved to {suggestion.day} Slot {suggestion.slot}. No clashes.</p>
+                    <button className="apply-fix-button" onClick={applyFix}>
+                        Apply Fix
+                    </button>
+                </div>
+            )}
+
+            {error && (
+                <div className="fix-suggestion">
+                    <p className="error-msg">❌ {error}</p>
                 </div>
             )}
         </div>

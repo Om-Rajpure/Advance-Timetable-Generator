@@ -89,24 +89,18 @@ function TimetableUpload() {
     }
 
     return (
-        <div className="timetable-upload-page">
-            <div className="upload-header">
-                <div className="container">
-                    <h1 className="upload-title">Edit Existing Timetable</h1>
-                </div>
-            </div>
+        <div className="timetable-upload-page centered-layout">
+            <div className="upload-container">
+                <h1 className="simple-title">Edit Existing Timetable</h1>
 
-            <div className="upload-content">
-                <div className="container">
-                    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-                        <UploadZone
-                            onFileSelect={handleFileSelect}
-                            accept=".csv,.xlsx,.xls,.pdf"
-                        />
-                        <p style={{ textAlign: 'center', marginTop: '1rem', color: '#666' }}>
-                            Upload your timetable (PDF / Excel / CSV) to start editing immediately.
-                        </p>
-                    </div>
+                <div className="upload-box-wrapper">
+                    <UploadZone
+                        onFileSelect={handleFileSelect}
+                        accept=".csv,.xlsx,.xls,.pdf"
+                    />
+                    <p className="upload-instruction">
+                        Upload your timetable (PDF / Excel / CSV)
+                    </p>
                 </div>
             </div>
         </div>

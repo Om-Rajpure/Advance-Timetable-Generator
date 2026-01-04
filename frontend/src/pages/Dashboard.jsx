@@ -39,7 +39,7 @@ function Dashboard() {
 
     const handleEdit = () => {
         if (canEdit) {
-            navigate('/edit')
+            navigate('/edit-timetable')
         }
     }
 
