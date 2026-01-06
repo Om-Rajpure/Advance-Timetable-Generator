@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import SummaryInsights from '../components/SummaryInsights'
-import BottleneckAlerts from '../components/BottleneckAlerts'
 import TeacherWorkloadChart from '../components/TeacherWorkloadChart'
 import LabUsageHeatmap from '../components/LabUsageHeatmap'
 import FreeSlotChart from '../components/FreeSlotChart'
@@ -185,8 +183,6 @@ function Analytics() {
             </div>
 
             <div className="analytics-content">
-                <SummaryInsights summary={analyticsData.summary} />
-
                 <div className="analytics-grid">
                     <TeacherWorkloadChart workload={analyticsData.workload} />
                     <LabUsageHeatmap
@@ -205,14 +201,11 @@ function Analytics() {
                         metricKey="perClassroom"
                     />
                 </div>
-
-
-
-                <BottleneckAlerts bottlenecks={analyticsData.bottlenecks} />
             </div>
         </div>
     )
 }
+
 
 // Helper function to get sample timetable (replace with actual data loading)
 function getSampleTimetable() {

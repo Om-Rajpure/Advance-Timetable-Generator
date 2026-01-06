@@ -5,7 +5,7 @@
 .smart-input-page {
     min-height: 100vh;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    padding: var(--spacing-8) var(--spacing-4);
+    padding: 120px var(--spacing-4) var(--spacing-8);
 }
 
 .smart-input-container {

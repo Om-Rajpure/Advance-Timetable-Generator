@@ -1,6 +1,10 @@
 .editable-timetable {
     display: flex;
     height: 100vh;
+    padding-top: 110px;
+    /* Clear the fixed navbar */
+    box-sizing: border-box;
+    /* Ensure padding is included in height */
     background: #f8f9fa;
     overflow: hidden;
 }
