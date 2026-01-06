@@ -155,8 +155,10 @@ function processParsedData(data, fileType) {
                 const teacherName = row.teacher_name || row.name || row.teacher || row.full_name
 
                 if (!teacherName) {
-                    // Skip empty rows silently or log?
-                    // processed.errors.push({ row: index + 1, message: 'Missing teacher name' })
+                    processed.errors.push({
+                        row: index + 1,
+                        message: 'Skipped: Missing teacher name'
+                    })
                     return
                 }
 
@@ -177,6 +179,10 @@ function processParsedData(data, fileType) {
                 const year = row.year || row.academic_year || row.class
 
                 if (!subjectName) {
+                    processed.errors.push({
+                        row: index + 1,
+                        message: 'Skipped: Missing subject name'
+                    })
                     return
                 }
 

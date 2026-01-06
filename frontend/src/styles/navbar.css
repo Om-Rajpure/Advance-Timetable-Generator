@@ -1,172 +1,346 @@
 /* Main Navigation Bar for Authenticated Pages */
 
+/* =========================================
+   MODERN NAVBAR STYLES - SAAS THEME
+   ========================================= */
+
+:root {
+    --nav-height: 70px;
+    /* Sky Blue Glassy Background */
+    --nav-bg: rgba(224, 242, 254, 0.65);
+    --nav-backdrop: blur(16px) saturate(180%);
+    --nav-border: 1px solid rgba(255, 255, 255, 0.3);
+    --nav-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+
+    --col-primary: #0284c7;
+    /* Sky 600 */
+    --col-text: #0c4a6e;
+    /* Sky 900 (High contrast) */
+    --col-text-light: #0369a1;
+    /* Sky 700 */
+    --col-bg-hover: rgba(255, 255, 255, 0.5);
+    --col-danger: #EF4444;
+
+    --anim-speed: 0.3s;
+    --anim-curve: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* -----------------------------------------
+   Container & Layout
+   ----------------------------------------- */
 .main-navbar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 60px;
-    background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    height: var(--nav-height);
+    background: var(--nav-bg);
+    backdrop-filter: var(--nav-backdrop);
+    border-bottom: var(--nav-border);
     z-index: 1000;
+    transition: all var(--anim-speed) var(--anim-curve);
     display: flex;
     align-items: center;
+}
+
+.main-navbar.scrolled {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: var(--nav-shadow);
 }
 
 .navbar-container {
-    width: 100%;
     max-width: 1400px;
+    width: 100%;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 2rem;
 }
 
-/* Brand Section */
+/* -----------------------------------------
+   Brand
+   ----------------------------------------- */
 .navbar-brand {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    color: white;
-    font-weight: 700;
+    gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+}
+
+.brand-logo {
+    font-size: 1.6rem;
+}
+
+.brand-name {
     font-size: 1.25rem;
-    white-space: nowrap;
-    flex-shrink: 0;
+    font-weight: 700;
+    color: var(--col-text);
+    letter-spacing: -0.02em;
 }
 
-.brand-icon {
-    font-size: 1.5rem;
-}
-
-.brand-text {
-    font-size: 1.1rem;
-    letter-spacing: -0.5px;
-}
-
-/* Navigation Links */
-.navbar-links {
+/* -----------------------------------------
+   Desktop Navigation
+   ----------------------------------------- */
+.desktop-nav {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
-    flex: 1;
-    justify-content: center;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 0.5rem 0;
-    scrollbar-width: none;
-    /* Firefox */
-}
-
-.navbar-links::-webkit-scrollbar {
-    display: none;
-    /* Chrome, Safari */
+    gap: 8px;
 }
 
 .nav-link {
-    color: rgba(255, 255, 255, 0.85);
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    white-space: nowrap;
-    transition: all 0.3s ease;
     position: relative;
-    border-bottom: 2px solid transparent;
+    padding: 8px 16px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--col-text-light);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: color 0.2s ease;
 }
 
 .nav-link:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    transform: translateY(-1px);
+    color: var(--col-primary);
+    background: rgba(37, 99, 235, 0.05);
 }
 
 .nav-link.active {
-    color: white;
+    color: var(--col-primary);
     font-weight: 600;
-    background: rgba(255, 255, 255, 0.15);
-    border-bottom-color: #60a5fa;
 }
 
-/* Actions Section */
-.navbar-actions {
+/* Sliding Underline Animation for Active State */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 80%;
+    height: 2px;
+    background-color: var(--col-primary);
+    transition: transform var(--anim-speed) var(--anim-curve);
+    border-radius: 2px;
+}
+
+.nav-link.active::after {
+    transform: translateX(-50%) scaleX(1);
+}
+
+/* -----------------------------------------
+   Desktop Actions
+   ----------------------------------------- */
+.btn-logout {
+    padding: 8px 16px;
+    border: 1px solid #E5E7EB;
+    background: transparent;
+    color: var(--col-text-light);
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    margin-left: 16px;
+}
+
+.btn-logout:hover {
+    border-color: var(--col-danger);
+    color: var(--col-danger);
+    background: rgba(239, 68, 68, 0.05);
+}
+
+/* -----------------------------------------
+   Mobile Toggle (Hamburger)
+   ----------------------------------------- */
+.mobile-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1100;
+}
+
+.bar {
+    width: 100%;
+    height: 3px;
+    /* Slightly thicker for better visibility */
+    background: var(--col-text);
+    border-radius: 4px;
+    transition: all var(--anim-speed) var(--anim-curve);
+    transform-origin: left center;
+    box-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+    /* Subtle highlight */
+}
+
+/* Hamburger Animation to X */
+.mobile-toggle.open .top {
+    transform: rotate(45deg) translate(0px, -2px);
+}
+
+.mobile-toggle.open .middle {
+    opacity: 0;
+    transform: translateX(-10px);
+}
+
+.mobile-toggle.open .bottom {
+    transform: rotate(-45deg) translate(0px, 2px);
+}
+
+/* -----------------------------------------
+   Mobile Drawer
+   ----------------------------------------- */
+.mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1050;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--anim-speed) ease;
+    backdrop-filter: blur(2px);
+}
+
+.mobile-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.mobile-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100vh;
+    background: white;
+    z-index: 1100;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+    transform: translateX(100%);
+    transition: transform 0.4s var(--anim-curve);
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-drawer.open {
+    transform: translateX(0);
+}
+
+.drawer-header {
+    height: var(--nav-height);
     display: flex;
     align-items: center;
-    gap: 1rem;
-    flex-shrink: 0;
+    justify-content: space-between;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--col-bg-hover);
 }
 
-.user-info {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.9rem;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    white-space: nowrap;
+.drawer-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--col-text);
 }
 
-.logout-button {
-    background: rgba(239, 68, 68, 0.9);
-    color: white;
+.drawer-close {
+    background: none;
     border: none;
-    padding: 0.5rem 1.25rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--col-text-light);
     cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
 }
 
-.logout-button:hover {
-    background: #dc2626;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+.drawer-items {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
 }
 
-.logout-button:active {
+.drawer-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: var(--col-text);
+    font-weight: 500;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+
+    /* Stagger Animation Setup */
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+}
+
+.mobile-drawer.open .drawer-link {
+    opacity: 1;
     transform: translateY(0);
 }
 
-/* Responsive Design */
-@media (max-width: 1200px) {
-    .navbar-container {
-        padding: 0 1rem;
-    }
-
-    .nav-link {
-        font-size: 0.85rem;
-        padding: 0.5rem 0.75rem;
-    }
-
-    .brand-text {
-        display: none;
-    }
+.drawer-link:hover,
+.drawer-link.active {
+    background: var(--col-bg-hover);
+    color: var(--col-primary);
 }
 
-@media (max-width: 768px) {
-    .main-navbar {
-        height: 50px;
-    }
+.drawer-link.active {
+    background: rgba(37, 99, 235, 0.1);
+    font-weight: 600;
+}
 
-    .navbar-links {
-        gap: 0;
-    }
+.drawer-icon {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+}
 
-    .nav-link {
-        font-size: 0.8rem;
-        padding: 0.4rem 0.6rem;
-    }
+.drawer-divider {
+    height: 1px;
+    background: var(--col-bg-hover);
+    margin: 12px 0;
+}
 
-    .user-info {
+.drawer-logout {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    color: var(--col-danger);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.drawer-logout:hover {
+    background: #FEF2F2;
+}
+
+/* -----------------------------------------
+   Responsive Switch
+   ----------------------------------------- */
+@media (max-width: 1024px) {
+
+    .desktop-nav,
+    .desktop-actions {
         display: none;
     }
 
-    .logout-button {
-        padding: 0.4rem 1rem;
-        font-size: 0.85rem;
+    .mobile-toggle {
+        display: flex;
     }
 }

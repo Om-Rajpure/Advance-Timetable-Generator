@@ -12,6 +12,7 @@ const BulkTextInput = lazy(() => import('../components/BulkTextInput'))
 const PromptInput = lazy(() => import('../components/PromptInput'))
 const PreviewTable = lazy(() => import('../components/PreviewTable'))
 import GenerationLoading from '../components/GenerationLoading'
+import ValidationBanner from '../components/ValidationBanner'
 
 
 function SmartInput() {
@@ -40,6 +41,9 @@ function SmartInput() {
     // Generation State
     const [isGenerating, setIsGenerating] = useState(false)
     const [generationStatus, setGenerationStatus] = useState('initializing') // initializing, processing, optimizing, finalizing
+
+    // Validation State
+    const [validationErrors, setValidationErrors] = useState([])
 
     const branchInfo = getBranchInfo()
     const academicYears = branchInfo.years || ['FE', 'SE', 'TE', 'BE']
@@ -191,6 +195,24 @@ function SmartInput() {
     const handleAddToSystem = async () => {
         setIsGenerating(true)
         setGenerationStatus('initializing')
+        setValidationErrors([])
+
+        // 🔍 PRE-FLIGHT CHECK: Ensure Data Completeness
+        const newErrors = []
+        if (aggregatedData.teachers.length === 0) {
+            newErrors.push({ message: "You must import at least one Teacher.", field: "Teachers" })
+        }
+        if (aggregatedData.subjects.length === 0) {
+            newErrors.push({ message: "You must import at least one Subject.", field: "Subjects" })
+        }
+
+        if (newErrors.length > 0) {
+            setIsGenerating(false)
+            setValidationErrors(newErrors)
+            // Scroll to top to see error
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+            return
+        }
 
         try {
             // Simulate intialization delay for UX
@@ -378,6 +400,15 @@ Details: ${details}
                         🗑️ Clear All Data
                     </button>
                 </div>
+
+                {/* Validation Error Banner */}
+                {validationErrors.length > 0 && (
+                    <div className="validation-banner-wrapper" style={{ marginBottom: '20px' }}>
+                        <ValidationBanner
+                            errors={validationErrors}
+                        />
+                    </div>
+                )}
 
                 {/* Suspense Wrapper - Load components dynamically */}
                 <Suspense fallback={<LoadingState message="Loading Smart Input..." />}>

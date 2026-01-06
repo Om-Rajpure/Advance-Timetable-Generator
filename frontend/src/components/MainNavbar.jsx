@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useAuth, isAuthEnabled } from '../auth/AuthContext'
 import '../styles/navbar.css'
@@ -5,9 +6,24 @@ import '../styles/navbar.css'
 function MainNavbar() {
     const { logout, user } = useAuth()
     const location = useLocation()
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    const [isScrolled, setIsScrolled] = useState(false)
 
-    // AUTH BYPASS: When auth is disabled, only hide on landing page
-    // When auth is enabled, hide on all public pages
+    // Handle Scroll Effect
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 20)
+        }
+        window.addEventListener('scroll', handleScroll)
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [])
+
+    // Close mobile menu on route change
+    useEffect(() => {
+        setIsMobileMenuOpen(false)
+    }, [location.pathname])
+
+    // AUTH BYPASS: Hide on landing page if auth disabled
     const publicPaths = !isAuthEnabled ? ['/'] : ['/', '/login', '/signup']
     if (publicPaths.includes(location.pathname)) {
         return null
@@ -15,81 +31,104 @@ function MainNavbar() {
 
     const handleLogout = () => {
         logout()
+        setIsMobileMenuOpen(false)
     }
 
+    const toggleMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen)
+    }
+
+    // Nav Items Configuration
+    const navItems = [
+        { path: '/dashboard', label: 'Dashboard', icon: '📊' },
+        { path: '/branch-setup', label: 'Branch Setup', icon: '⚙️' },
+        { path: '/smart-input', label: 'Smart Input', icon: '🧠' }, // Assuming this is "Generate Timetable" flow
+        { path: '/upload', label: 'Upload Timetable', icon: '📤' },
+        { path: '/analytics', label: 'Analytics', icon: '📈' },
+        { path: '/history', label: 'History', icon: 'clock' }, // treating 'clock' as placeholder if no emoji fits perfectly, standardizing on emojis for now as per existing style or generic icons. Let's use 🕰️
+    ]
+
     return (
-        <nav className="main-navbar">
-            <div className="navbar-container">
-                {/* Left: Logo/Brand */}
-                <div className="navbar-brand">
-                    <span className="brand-icon">🗓️</span>
-                    <span className="brand-text">Smart Timetable</span>
-                </div>
+        <>
+            <nav className={`main-navbar ${isScrolled ? 'scrolled' : ''}`}>
+                <div className="navbar-container">
+                    {/* Brand */}
+                    <div className="navbar-brand">
+                        <span className="brand-logo">🗓️</span>
+                        <span className="brand-name">Smart Timetable</span>
+                    </div>
 
-                {/* Center: Navigation Links */}
-                <div className="navbar-links">
-                    <NavLink
-                        to="/dashboard"
-                        className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                    >
-                        Dashboard
-                    </NavLink>
-                    <NavLink
-                        to="/branch-setup"
-                        className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                    >
-                        Branch Setup
-                    </NavLink>
-                    <NavLink
-                        to="/generate"
-                        className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                    >
-                        Generate Timetable
-                    </NavLink>
-                    <NavLink
-                        to="/upload"
-                        className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                    >
-                        Upload Timetable
-                    </NavLink>
-                    <NavLink
-                        to="/test-edit"
-                        className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                    >
-                        Edit Timetable
-                    </NavLink>
-                    <NavLink
-                        to="/analytics"
-                        className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                    >
-                        Analytics
-                    </NavLink>
-                    <NavLink
-                        to="/history"
-                        className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                    >
-                        History
-                    </NavLink>
-                    <NavLink
-                        to="/export"
-                        className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-                    >
-                        Export
-                    </NavLink>
-                </div>
+                    {/* Desktop Navigation */}
+                    <div className="desktop-nav">
+                        {navItems.map((item) => (
+                            <NavLink
+                                key={item.path}
+                                to={item.path}
+                                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                            >
+                                {item.label}
+                            </NavLink>
+                        ))}
+                    </div>
 
-                {/* Right: User Info & Logout */}
-                <div className="navbar-actions">
-                    <span className="user-info">👤 {user?.name || 'User'}</span>
-                    {/* AUTH BYPASS: Hide logout button when auth is disabled */}
+                    {/* Desktop Actions */}
+                    <div className="desktop-actions">
+                        {isAuthEnabled && (
+                            <button onClick={handleLogout} className="btn-logout">
+                                Logout
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Mobile Toggle */}
+                    <button
+                        className={`mobile-toggle ${isMobileMenuOpen ? 'open' : ''}`}
+                        onClick={toggleMenu}
+                        aria-label="Toggle menu"
+                    >
+                        <span className="bar top"></span>
+                        <span className="bar middle"></span>
+                        <span className="bar bottom"></span>
+                    </button>
+                </div>
+            </nav>
+
+            {/* Mobile Drawer Overlay */}
+            <div
+                className={`mobile-overlay ${isMobileMenuOpen ? 'visible' : ''}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+            />
+
+            {/* Mobile Drawer */}
+            <div className={`mobile-drawer ${isMobileMenuOpen ? 'open' : ''}`}>
+                <div className="drawer-header">
+                    <span className="drawer-title">Menu</span>
+                    <button className="drawer-close" onClick={() => setIsMobileMenuOpen(false)}>×</button>
+                </div>
+                <div className="drawer-items">
+                    {navItems.map((item, index) => (
+                        <NavLink
+                            key={item.path}
+                            to={item.path}
+                            className={({ isActive }) => `drawer-link ${isActive ? 'active' : ''}`}
+                            style={{ animationDelay: `${index * 0.05}s` }} // Stagger animation
+                        >
+                            <span className="drawer-icon">{item.icon === 'clock' ? '🕰️' : item.icon}</span>
+                            {item.label}
+                        </NavLink>
+                    ))}
+
+                    <div className="drawer-divider" />
+
                     {isAuthEnabled && (
-                        <button onClick={handleLogout} className="logout-button">
+                        <button onClick={handleLogout} className="drawer-logout">
+                            <span className="drawer-icon">🚪</span>
                             Logout
                         </button>
                     )}
                 </div>
             </div>
-        </nav>
+        </>
     )
 }
 
