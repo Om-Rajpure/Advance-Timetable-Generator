@@ -142,6 +142,144 @@ export const transformToGrid = (data, branchData) => {
 };
 
 /**
+ * Calculates the total expected number of lecture slots per day based on branch config.
+ * @param {Object} branchData - Branch configuration with startTime, endTime, etc.
+ * @returns {Number} Total number of lecture slots
+ */
+export const calculateTotalSlots = (branchData) => {
+    if (!branchData) return 8; // Default fallback
+
+    const { startTime, endTime, lectureDuration = 60, recessStart, recessDuration = 60, recessEnabled } = branchData;
+
+    // Helper to convert "HH:MM AM/PM" to minutes from midnight
+    const timeToMinutes = (timeStr) => {
+        if (!timeStr) return 0;
+        const [time, period] = timeStr.split(' ');
+        let [hours, minutes] = time.split(':').map(Number);
+        if (period === 'PM' && hours !== 12) hours += 12;
+        if (period === 'AM' && hours === 12) hours = 0;
+        return hours * 60 + minutes;
+    };
+
+    const startMinutes = timeToMinutes(startTime || "9:00 AM");
+    const endMinutes = timeToMinutes(endTime || "5:00 PM");
+    const recessStartMins = recessEnabled ? timeToMinutes(recessStart) : -1;
+    const recessDur = recessEnabled ? (parseInt(recessDuration) || 0) : 0;
+    const lecDur = parseInt(lectureDuration) || 60;
+
+    let totalSlots = 0;
+    let currentTime = startMinutes;
+
+    // Simulate the day and count valid lecture slots
+    while (currentTime + lecDur <= endMinutes) {
+        // Check if current time is recess intersection
+        const isRecess = recessEnabled &&
+            currentTime >= recessStartMins &&
+            currentTime < (recessStartMins + recessDur);
+
+        if (isRecess) {
+            // Skip recess duration
+            // If we land exactly on recess start, we jump.
+            // If we overlap, simplified logic: if we are AT recess start, skip.
+            if (currentTime === recessStartMins) {
+                currentTime += recessDur;
+                continue; // Don't count as lecture slot
+            }
+        }
+
+        // It's a valid lecture slot
+        totalSlots++;
+        currentTime += lecDur;
+    }
+
+    return totalSlots > 0 ? totalSlots : 8; // Fallback to 8 if calc fails or return 0
+};
+
+/**
+ * Generates a layout structure for the day, including lectures and recess.
+ * @param {Object} branchData - Branch configuration
+ * @returns {Array} Array of objects: { type: 'lecture'|'recess', index?: Number, label: String, duration: Number }
+ */
+export const generateDayLayout = (branchData) => {
+    if (!branchData) {
+        // Fallback for no data
+        return Array.from({ length: 8 }, (_, i) => ({
+            type: 'lecture',
+            index: i + 1,
+            label: `Slot ${i + 1}`,
+            duration: 60
+        }));
+    }
+
+    const { startTime, endTime, lectureDuration = 60, recessStart, recessDuration = 60, recessEnabled } = branchData;
+
+    // Helper to convert "HH:MM AM/PM" to minutes from midnight
+    const timeToMinutes = (timeStr) => {
+        if (!timeStr) return 0;
+        const [time, period] = timeStr.split(' ');
+        let [hours, minutes] = time.split(':').map(Number);
+        if (period === 'PM' && hours !== 12) hours += 12;
+        if (period === 'AM' && hours === 12) hours = 0;
+        return hours * 60 + minutes;
+    };
+
+    const startMinutes = timeToMinutes(startTime || "9:00 AM");
+    const endMinutes = timeToMinutes(endTime || "5:00 PM");
+    const recessStartMins = recessEnabled ? timeToMinutes(recessStart) : -1;
+    const recessDur = recessEnabled ? (parseInt(recessDuration) || 0) : 0;
+    const lecDur = parseInt(lectureDuration) || 60;
+
+    const layout = [];
+    let currentTime = startMinutes;
+    let slotCounter = 1;
+
+    while (currentTime + lecDur <= endMinutes) {
+        // Check for Recess
+        const isRecess = recessEnabled &&
+            currentTime >= recessStartMins &&
+            currentTime < (recessStartMins + recessDur);
+
+        // Exact match or within range (simplified for strict blocks)
+        if (isRecess || (recessEnabled && Math.abs(currentTime - recessStartMins) < 5)) {
+            // It's recess time!
+            // Avoid duplicate recess entries if loop steps are small or logic overlaps
+            // Only add if last item wasn't recess? 
+            // Strictly: IF currentTime matches recessStart
+            // Logic in TimeSlotPreview was: if (currentTime == recessMinutes)
+
+            // Let's use strict match if aligned, or range.
+            // Best bet: If the GAP between now and next lecture is the recess.
+
+            layout.push({
+                type: 'recess',
+                label: 'Recess',
+                duration: recessDur,
+                startStr: recessStart
+            });
+            currentTime += recessDur;
+            continue;
+        }
+
+        // Lecture Slot
+        layout.push({
+            type: 'lecture',
+            index: slotCounter,
+            label: `Slot ${slotCounter}`,
+            duration: lecDur
+        });
+        slotCounter++;
+        currentTime += lecDur;
+    }
+
+    // Safety: if empty layout (bad times), fallback
+    if (layout.length === 0) {
+        return Array.from({ length: 8 }, (_, i) => ({ type: 'lecture', index: i + 1, label: `Slot ${i + 1}` }));
+    }
+
+    return layout;
+};
+
+/**
  * Calculates time range string for a slot index
  * @param {Number} slotIndex - 0-based slot index
  * @param {Object} branchData - Branch config with startTime, duration

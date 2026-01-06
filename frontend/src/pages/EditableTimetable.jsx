@@ -4,7 +4,7 @@ import TimetableGrid from '../components/TimetableGrid';
 import EditSlotModal from '../components/EditSlotModal';
 import UndoControls from '../components/UndoControls';
 import { detectAllConflicts } from '../utils/conflictDetector';
-import { transformToGrid } from '../utils/timetableTransforms';
+import { transformToGrid, calculateTotalSlots, generateDayLayout } from '../utils/timetableTransforms';
 import { generateFullTimetablePDF } from '../utils/pdfGenerator';
 import './EditableTimetable.css';
 
@@ -165,6 +165,10 @@ function EditableTimetable() {
 
     const availableDivs = selectedYear && fullGrid[selectedYear] ? Object.keys(fullGrid[selectedYear]) : [];
 
+    // Calculate fixed slots from branch config
+    const fixedSlots = calculateTotalSlots(context.branchData);
+    const dayLayout = generateDayLayout(context.branchData);
+
     return (
         <div className="editable-timetable">
             {/* SIDEBAR NAVIGATION */}
@@ -237,6 +241,8 @@ function EditableTimetable() {
                         gridData={viewData}
                         conflictingSlots={conflictingSlotIds}
                         onSlotClick={handleSlotClick}
+                        totalSlots={fixedSlots}
+                        dayLayout={dayLayout}
                     />
                 </div>
 

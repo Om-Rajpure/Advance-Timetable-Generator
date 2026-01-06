@@ -1,7 +1,8 @@
 .timetable-grid {
     width: 100%;
     overflow-x: auto;
-    margin: 20px 0;
+    margin-top: 20px;
+    margin-bottom: 0;
 }
 
 .grid-table {
@@ -40,6 +41,7 @@
     min-width: 150px;
     vertical-align: top;
     padding: 8px;
+    min-height: fit-content     ;
 }
 
 .slot-content {
@@ -105,4 +107,33 @@
     color: #adb5bd;
     font-size: 18px;
     padding: 20px;
+}
+
+/* Recess Styles */
+.recess-header {
+    background: #6c757d;
+    color: #fff;
+}
+
+.recess-cell {
+    background: #e9ecef url('data:image/svg+xml;utf8,<svg width="4" height="4" viewBox="0 0 4 4" xmlns="http://www.w3.org/2000/svg"><path d="M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2" style="stroke:%23dee2e6;stroke-width:1" /></svg>');
+    vertical-align: middle;
+    padding: 0;
+}
+
+.recess-content {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    margin: 0 auto;
+    font-weight: 700;
+    color: #adb5bd;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 6px;
 }
