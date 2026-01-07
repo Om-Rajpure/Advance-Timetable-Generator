@@ -18,6 +18,11 @@ export function detectAllConflicts(slots, branchData = null, smartInputData = nu
     // Practical violations
     conflicts.push(...validatePracticals(slots))
 
+    // Gap Detection (Compaction Rule)
+    if (branchData) {
+        conflicts.push(...findGapConflicts(slots, branchData))
+    }
+
     // Structural validation (if data provided)
     if (branchData || smartInputData) {
         conflicts.push(...validateStructure(slots, branchData, smartInputData))
@@ -350,12 +355,80 @@ export function generateConflictReport(conflicts) {
     }
 }
 
+/**
+ * Find internal gaps in the schedule (Daily Compaction Rule)
+ */
+export function findGapConflicts(slots, branchData) {
+    const conflicts = []
+    const schedules = {}
+
+    // Group by Year-Div-Day
+    slots.forEach(slot => {
+        const key = `${slot.year}-${slot.division}-${slot.day}`
+        if (!schedules[key]) schedules[key] = []
+        schedules[key].push(slot)
+    })
+
+    // Determine Recess logic
+    // Usually slot 4 (index 4) or config specific. 
+    // Assuming branchData.recessSlot exists (1-based or 0-based?). 
+    // Typically our slot indices are 1-based in UI? 
+    // Let's assume strict contiguity UNLESS it's the recess.
+
+    // Heuristic: If branchData has recess, e.g. "12:00 PM".
+    // Better: Just flag gaps. If users put Recess as a gap, it is technically a gap in *lectures*.
+    // But usually Recess is implicitly skipped. 
+    // If indices are 1, 2, 4 (missing 3).
+
+    Object.entries(schedules).forEach(([key, daySlots]) => {
+        if (daySlots.length < 2) return
+
+        // Sort by slot index
+        daySlots.sort((a, b) => parseInt(a.slot) - parseInt(b.slot))
+
+        const indices = daySlots.map(s => parseInt(s.slot))
+        const min = indices[0]
+        const max = indices[indices.length - 1]
+
+        for (let i = min; i < max; i++) {
+            if (!indices.includes(i)) {
+                // Check if this is a Recess Slot?
+                // If simpler: Any gap is a warning.
+                // User can ignore if it's intentional recess, but usually recess is universal.
+
+                const [year, div, day] = key.split('-')
+
+                // Find the lectures surrounding the gap for context
+                const prev = daySlots.find(s => parseInt(s.slot) === indices.filter(x => x < i).pop())
+                const next = daySlots.find(s => parseInt(s.slot) === indices.filter(x => x > i).shift())
+
+                conflicts.push({
+                    type: 'gap',
+                    severity: 'warning',
+                    message: `Gap detected on ${day} at Slot ${i} (between ${prev?.subject} and ${next?.subject})`,
+                    details: {
+                        day,
+                        slot: i,
+                        year,
+                        division: div,
+                        suggestion: "Shift classes to remove empty slots."
+                    },
+                    affectedSlots: [prev?.id, next?.id].filter(Boolean)
+                })
+            }
+        }
+    })
+
+    return conflicts
+}
+
 export default {
     detectAllConflicts,
     findTeacherConflicts,
     findRoomConflicts,
     validatePracticals,
     validateStructure,
+    findGapConflicts, // Added
     getConflictColor,
     groupConflictsByType,
     filterConflictsBySeverity,

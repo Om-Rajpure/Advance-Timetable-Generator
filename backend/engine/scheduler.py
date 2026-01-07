@@ -151,6 +151,31 @@ class TimetableScheduler:
                     all_timetables[year][division] = { "timetable": [], "error": error_msg }
 
 
+
+            # --- PHASE 4: POST-PROCESSING & COMPACTION ---
+            print("\n--- Starting Daily Compaction (No Gaps) ---")
+            try:
+                from engine.schedule_optimizer import ScheduleOptimizer
+                optimizer = ScheduleOptimizer(global_state)
+                
+                years = self.context.get('branchData', {}).get('academicYears', [])
+                divisions_map = self.context.get('branchData', {}).get('divisions', {})
+                # Safely get working days
+                bd_days = self.context.get('branchData', {}).get('workingDays', [])
+                days = bd_days if isinstance(bd_days, list) and bd_days else ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+                
+                for year in years:
+                    divisions = divisions_map.get(year, [])
+                    for division in divisions:
+                        for day in days:
+                            try:
+                                optimizer.compact_daily_schedule(year, division, day)
+                            except Exception as e:
+                                print(f"Error compacting {year}-{division} on {day}: {e}")
+                                # Don't crash global gen
+            except Exception as e:
+                print(f"Warning: Compaction failed or module missing: {e}")
+
             # 4. Final Validation / Partial Success
             # SAFE GUARD: unexpected structure
             if isinstance(all_timetables, dict):
