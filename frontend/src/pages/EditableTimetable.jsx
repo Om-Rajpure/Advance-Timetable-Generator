@@ -80,8 +80,8 @@ function EditableTimetable() {
                 subjects: Array.from(uniqueSubjects).map(name => ({ name, lecturesPerWeek: 3 })) // Dummy
             },
             branchData: {
-                rooms: Array.from(uniqueRooms),
-                labs: Array.from(uniqueLabs),
+                rooms: context.branchData?.classrooms || Array.from(uniqueRooms),
+                labs: context.branchData?.sharedLabs || Array.from(uniqueLabs),
                 years: [], // Will get from grid
                 divisions: [] // Will get from grid
             }

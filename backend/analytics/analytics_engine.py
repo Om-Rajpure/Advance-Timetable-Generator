@@ -20,12 +20,18 @@ def generate_full_analytics(timetable, context):
     # Strip out ghost rooms (academic years) before processing
     if context and 'branchData' in context:
         academic_years = context['branchData'].get('academicYears', [])
+        valid_rooms = set()
+        
+        # Load configured rooms to whitelist them
+        raw_rooms = context['branchData'].get('classrooms', [])
+        if isinstance(raw_rooms, list):
+             for r in raw_rooms:
+                 if isinstance(r, str): valid_rooms.add(r.upper())
+                 elif isinstance(r, dict): valid_rooms.add(r.get('name', '').upper())
         
         # Build set of invalid names
         bad_names = set([y.upper().strip() for y in academic_years])
         bad_names.update(["YEAR", "PART", "DIV"])
-        
-        # Also handle "SE A", "TE-B" via prefix check (simple heuristic)
         
         # Iterate and clean IN-PLACE
         cleaned_count = 0
@@ -33,6 +39,11 @@ def generate_full_analytics(timetable, context):
             r_name = slot.get('room')
             if r_name:
                 clean_r = str(r_name).strip().upper()
+                
+                # WHITELIST CHECK: If it's a configured room, respect it!
+                if clean_r in valid_rooms:
+                    continue
+
                 is_ghost = clean_r in bad_names
                 
                 # Prefix heuristic (len < 5 to avoid killing "Seminar Hall")
@@ -40,8 +51,7 @@ def generate_full_analytics(timetable, context):
                     is_ghost = True
                     
                 if is_ghost:
-                    # RENAME the ghost room to make it distinct (e.g., "Room SE")
-                    # instead of deleting it, which causes empty data.
+                    # RENAME the ghost room to make it distinct
                     slot['room'] = f"Room {r_name}"
                     cleaned_count += 1
                     

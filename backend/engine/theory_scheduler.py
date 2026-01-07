@@ -150,58 +150,28 @@ class TheoryScheduler:
 
     def _find_available_room(self, year, division, day, slot_index):
         """
-        Find an available room with fallback strategy:
-        1. Home Room (Preferred)
-        2. Global Pool (Fallback)
+        Find an available room from the Global Branch Pool.
         """
         branch_data = self.context.get('branchData', {})
-        all_classrooms = branch_data.get('classrooms', {})
+        all_classrooms = branch_data.get('classrooms', [])
         
-        # 1. Identify Home Room (Replicating scheduler.py logic)
-        home_room = None
-        
-        rooms_for_year = []
+        # Normalize to list if strict dict (legacy) was somehow passed
         if isinstance(all_classrooms, dict):
-            rooms_for_year = all_classrooms.get(year, [])
-        elif isinstance(all_classrooms, list):
-            # Legacy/Dummy
-            rooms_for_year = [r.get('name') for r in all_classrooms if isinstance(r, dict)]
+            # Fallback for Mixed/Legacy Data: Flatten values
+            temp_list = []
+            for r_list in all_classrooms.values():
+                if isinstance(r_list, list): temp_list.extend(r_list)
+            all_classrooms = list(set(temp_list)) # dedupe
             
-        if isinstance(rooms_for_year, list) and len(rooms_for_year) > 0:
-            div_idx = 0
-            if len(division) == 1 and 'A' <= division <= 'Z':
-                div_idx = ord(division) - ord('A')
-            room_idx = div_idx % len(rooms_for_year)
-            home_room = rooms_for_year[room_idx]
+        if not isinstance(all_classrooms, list):
+            # Fallback to 'rooms' key if present
+            all_classrooms = branch_data.get('rooms', [])
             
-        # 2. Check Home Room
-        if home_room and self.state.is_room_available(home_room, day, slot_index):
-            return home_room
+        # Iterate and Find First Free
+        for room in all_classrooms:
+            room_name = room.get('name') if isinstance(room, dict) else room
             
-        # 3. Fallback: Search ALL rooms
-        # Flatten all rooms
-        all_rooms_list = []
-        if isinstance(all_classrooms, dict):
-            for y_rooms in all_classrooms.values():
-                if isinstance(y_rooms, list):
-                    for r in y_rooms:
-                        if isinstance(r, dict): all_rooms_list.append(r.get('name'))
-                        elif isinstance(r, str): all_rooms_list.append(r)
-        elif isinstance(all_classrooms, list):
-             for r in all_classrooms:
-                 if isinstance(r, dict): all_rooms_list.append(r.get('name'))
-                 elif isinstance(r, str): all_rooms_list.append(r)
-             
-        if not all_rooms_list:
-             pass 
-             # print("DEBUG: Room Search - No rooms found in branchData['classrooms']!", flush=True)
-
-        # Scramble for fairness? Or just First Fit? First Fit is fine for "emergency"
-        for room in all_rooms_list:
-            if not room: continue 
-            available = self.state.is_room_available(room, day, slot_index)
-            if available:
-                return room
+            if self.state.is_room_available(room_name, day, slot_index):
+                return room_name
                 
-        # 4. Fail
         return None

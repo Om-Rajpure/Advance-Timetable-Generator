@@ -387,32 +387,27 @@ class TimetableScheduler:
                 # 1. Try to fetch from Branch Data (Real Rooms)
                 try:
                     branch_data = self.context.get('branchData', {})
-                    all_classrooms = branch_data.get('classrooms', {})
+                    all_classrooms = branch_data.get('classrooms', [])
                     
-                    # Fallback: check 'rooms' if 'classrooms' is empty
-                    if not all_classrooms:
-                        all_classrooms = branch_data.get('rooms', [])
-                    
-                    year = slot['year']
-                    division = slot['division']
-                    
-                    # Get rooms for this year (e.g., ["Room-101", "Room-102"])
-                    rooms_for_year = []
                     if isinstance(all_classrooms, dict):
-                        rooms_for_year = all_classrooms.get(year, [])
-                    elif isinstance(all_classrooms, list):
-                        # Handle Legacy/Dummy Array Format: [ {name: "R1", ...}, ... ]
-                        rooms_for_year = [r if isinstance(r, str) else r.get('name') for r in all_classrooms]
+                         # Legacy conversion
+                         temp = []
+                         for v in all_classrooms.values():
+                             if isinstance(v, list): temp.extend(v)
+                         all_classrooms = list(set(temp))
                     
-                    if isinstance(rooms_for_year, list) and len(rooms_for_year) > 0:
-                        # Map Division to Room Index (A->0, B->1, etc.)
-                        # Use modulo if fewer rooms than divisions
-                        div_idx = 0
-                        if len(division) == 1 and 'A' <= division <= 'Z':
-                            div_idx = ord(division) - ord('A')
+                    if not all_classrooms:
+                        # Try 'rooms' key
+                        all_classrooms = branch_data.get('rooms', [])
+
+                    if isinstance(all_classrooms, list) and len(all_classrooms) > 0:
+                        # Deterministic Fallback: Hash Class ID -> Index
+                        # This avoids random changes on re-renders but doesn't guarantee valid schedule (it's a fallback)
+                        class_hash = sum(ord(c) for c in class_id)
+                        rooms_list = [r.get('name') if isinstance(r, dict) else r for r in all_classrooms]
                         
-                        room_idx = div_idx % len(rooms_for_year)
-                        assigned_room = rooms_for_year[room_idx]
+                        if rooms_list:
+                             assigned_room = rooms_list[class_hash % len(rooms_list)]
                         
                 except Exception as e:
                     print(f"Warning: Failed to map real room: {e}")

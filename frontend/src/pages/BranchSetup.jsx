@@ -40,7 +40,7 @@ function BranchSetup() {
                     // Ensure defaults for any new fields
                     academicYears: parsed.academicYears || ['SE', 'TE', 'BE'],
                     divisions: parsed.divisions || { SE: ['A'], TE: ['A'], BE: ['A'] },
-                    classrooms: parsed.classrooms || {},
+                    classrooms: parsed.classrooms || [],
                     sharedLabs: parsed.sharedLabs || []
                 };
             } catch (e) {
@@ -63,7 +63,7 @@ function BranchSetup() {
             recessEnabled: true,
             recessStart: '12:00 PM',
             recessDuration: 60,
-            classrooms: {},
+            classrooms: [],
             sharedLabs: [],
             labBatchesPerYear: {
                 SE: 3,
@@ -142,11 +142,9 @@ function BranchSetup() {
                 return true // Recess is optional
 
             case 5: // Rooms
-                // Check that all years have at least one classroom
-                for (const year of formData.academicYears) {
-                    if (!formData.classrooms[year] || formData.classrooms[year].length === 0) {
-                        return false
-                    }
+                // Check that at least one classroom exists
+                if (!formData.classrooms || formData.classrooms.length === 0) {
+                    return false
                 }
                 return true
 
