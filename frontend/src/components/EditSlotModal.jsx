@@ -22,8 +22,65 @@ function EditSlotModal({ slot, timetable, context, onSave, onClose }) {
         handleValidation(modifiedSlot);
     }, []);
 
+    // Computed: Filter teachers based on subject
+    const filteredTeachers = React.useMemo(() => {
+        if (!modifiedSlot.subject) return []; // No subject selected -> No teachers
+
+        const mapping = context?.smartInputData?.teacherSubjectMap || [];
+
+        // CHECK: Do we have ANY mapping data?
+        // If inferred context (Edit Existing), mapping might be empty and teacher.subjects empty.
+        // In that case, we MUST fallback to showing ALL teachers.
+        const hasMappingData = mapping.length > 0 || teachers.some(t => t.subjects && t.subjects.length > 0);
+
+        if (!hasMappingData) {
+            return teachers; // Fallback: No filter
+        }
+
+        // 1. Find valid teacher names from Map (Normalize for safety)
+        const targetSubject = modifiedSlot.subject.trim().toLowerCase();
+
+        const validFromMap = new Set(
+            mapping
+                .filter(m => (m.subjectName || '').trim().toLowerCase() === targetSubject)
+                .map(m => m.teacherName)
+        );
+
+        return teachers.filter(t => {
+            // Check Map OR Embedded subjects
+            const hasSubject = t.subjects?.some(s => s.trim().toLowerCase() === targetSubject);
+            return validFromMap.has(t.name) || hasSubject;
+        });
+    }, [modifiedSlot.subject, teachers, context]);
+
     const handleFieldChange = async (field, value) => {
-        const updated = { ...modifiedSlot, [field]: value };
+        let updated = { ...modifiedSlot, [field]: value };
+
+        // AUTO-RESET: specialized logic for subject change
+        if (field === 'subject') {
+            const newSubject = value;
+            if (newSubject) {
+                // Re-calculate valid teachers for this NEW subject
+                const mapping = context?.smartInputData?.teacherSubjectMap || [];
+                const validFromMap = new Set(
+                    mapping.filter(m => m.subjectName === newSubject).map(m => m.teacherName)
+                );
+
+                // If current teacher is not valid for new subject, clear it
+                // We check against the full list of teachers to satisfy the condition
+                const isCurrentValid = teachers.some(t =>
+                    t.name === modifiedSlot.teacher &&
+                    (validFromMap.has(t.name) || t.subjects?.includes(newSubject))
+                );
+
+                if (!isCurrentValid) {
+                    updated.teacher = '';
+                }
+            } else {
+                updated.teacher = '';
+            }
+        }
+
         setModifiedSlot(updated);
         await handleValidation(updated);
     };
@@ -92,9 +149,16 @@ function EditSlotModal({ slot, timetable, context, onSave, onClose }) {
                         <select
                             value={modifiedSlot.teacher || ''}
                             onChange={(e) => handleFieldChange('teacher', e.target.value)}
+                            disabled={!modifiedSlot.subject || filteredTeachers.length === 0}
                         >
-                            <option value="">Select teacher...</option>
-                            {teachers.map(teacher => (
+                            <option value="">
+                                {!modifiedSlot.subject
+                                    ? "Select a subject first"
+                                    : filteredTeachers.length === 0
+                                        ? "No teachers available for this subject"
+                                        : "Select teacher..."}
+                            </option>
+                            {filteredTeachers.map(teacher => (
                                 <option key={teacher.name} value={teacher.name}>
                                     {teacher.name}
                                 </option>

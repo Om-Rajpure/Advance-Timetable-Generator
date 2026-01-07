@@ -65,9 +65,22 @@ function EditableTimetable() {
         const uniqueSubjects = new Set();
         const uniqueRooms = new Set();
         const uniqueLabs = new Set();
+        const inferredMap = [];
+        const seenPairs = new Set();
 
         timetable.forEach(slot => {
-            if (slot.teacher) uniqueTeachers.add(slot.teacher);
+            if (slot.teacher) {
+                uniqueTeachers.add(slot.teacher);
+
+                // Infer Mapping
+                if (slot.subject) {
+                    const pairKey = `${slot.teacher}|${slot.subject}`;
+                    if (!seenPairs.has(pairKey)) {
+                        seenPairs.add(pairKey);
+                        inferredMap.push({ teacherName: slot.teacher, subjectName: slot.subject });
+                    }
+                }
+            }
             if (slot.subject) uniqueSubjects.add(slot.subject);
             if (slot.room) uniqueRooms.add(slot.room);
             if (slot.type === 'Practical' && slot.room) uniqueLabs.add(slot.room);
@@ -77,7 +90,8 @@ function EditableTimetable() {
             inferred: true,
             smartInputData: {
                 teachers: Array.from(uniqueTeachers).map(name => ({ name, subjects: [] })),
-                subjects: Array.from(uniqueSubjects).map(name => ({ name, lecturesPerWeek: 3 })) // Dummy
+                subjects: Array.from(uniqueSubjects).map(name => ({ name, lecturesPerWeek: 3 })),
+                teacherSubjectMap: inferredMap // Added for filtering
             },
             branchData: {
                 rooms: context.branchData?.classrooms || Array.from(uniqueRooms),
