@@ -1,8 +1,11 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import DeveloperProfile from './DeveloperProfile'
 import './Footer.css'
 
 function Footer() {
     const currentYear = new Date().getFullYear()
+    const [showDevProfile, setShowDevProfile] = useState(false)
 
     return (
         <footer className="footer">
@@ -32,6 +35,14 @@ function Footer() {
                         <ul>
                             <li><Link to="/login">Login</Link></li>
                             <li><Link to="/signup">Signup</Link></li>
+                            <li>
+                                <button
+                                    onClick={() => setShowDevProfile(true)}
+                                    className="footer-dev-link"
+                                >
+                                    Developer
+                                </button>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -42,6 +53,12 @@ function Footer() {
                     <p>© {currentYear} Smart Timetable Generator. Built with ❤️ for better education.</p>
                 </div>
             </div>
+
+            {/* Developer Profile Modal */}
+            <DeveloperProfile
+                isOpen={showDevProfile}
+                onClose={() => setShowDevProfile(false)}
+            />
         </footer>
     )
 }

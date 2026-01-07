@@ -373,7 +373,21 @@
         display: none;
     }
 
-    .mobile-toggle {
-        display: flex;
-    }
+}
+}
+
+/* -----------------------------------------
+   Landing Navbar Specifics
+   ----------------------------------------- */
+.landing-navbar .navbar-container {
+    position: relative;
+    /* Context for absolute centering */
+}
+
+.landing-navbar .desktop-nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    justify-content: center;
+    width: auto;
 }

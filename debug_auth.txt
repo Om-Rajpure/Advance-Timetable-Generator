@@ -53,3 +53,37 @@ Username: om
 Loaded 4 users
 Found user: om
 Password valid: True
+
+[2026-01-07 19:46:55.347478] Login attempt:
+Received data: {"username": "Om", "password": "om@123"}
+Username: Om
+Loaded 4 users
+User Om not found
+
+[2026-01-07 20:12:54.847406] Login attempt:
+Received data: {"username": "om", "password": "omm@123"}
+Username: om
+Loaded 4 users
+Found user: om
+Password valid: False
+
+[2026-01-07 20:13:12.732298] Login attempt:
+Received data: {"username": "om", "password": "omm@123"}
+Username: om
+Loaded 4 users
+Found user: om
+Password valid: False
+
+[2026-01-07 20:13:22.751522] Login attempt:
+Received data: {"username": "om", "password": "omm@123"}
+Username: om
+Loaded 4 users
+Found user: om
+Password valid: False
+
+[2026-01-07 20:13:40.572803] Login attempt:
+Received data: {"username": "om", "password": "om@123"}
+Username: om
+Loaded 4 users
+Found user: om
+Password valid: True

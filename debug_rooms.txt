@@ -1,10 +1,10 @@
 Timetable entries: 231
-Unique Rooms: ['BE-1', 'Computer Lab 1', 'Computer Lab 2', 'Electronics Lab', 'SE-1', 'SE-2', 'TE-1', 'TE-2', 'an7', 'lab4', 'lab5']
+Unique Rooms: ['Computer Lab 1', 'Computer Lab 2', 'Electronics Lab', 'Room-101', 'Room-102', 'Room-103', 'Room-104', 'Room-105', 'lab4', 'lab5', 'lab6']
 Sample Slot:
 {
   "day": "Friday",
   "division": "A",
-  "room": "BE-1",
+  "room": "Room-103",
   "slot": 4,
   "subject": "Be Theory Subject 1",
   "teacher": "Teacher 11",

@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
-import '../styles/navbar.css' // Using the shared modern styles
+import '../styles/navbar.css'
+import DeveloperProfile from './DeveloperProfile'
 
 function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    const [showDevProfile, setShowDevProfile] = useState(false)
     const { user } = useAuth()
     const location = useLocation()
 
@@ -44,7 +46,7 @@ function Navbar() {
 
     return (
         <>
-            <nav className={`main-navbar ${isScrolled ? 'scrolled' : ''}`}>
+            <nav className={`main-navbar landing-navbar ${isScrolled ? 'scrolled' : ''}`}>
                 <div className="navbar-container">
                     {/* Brand */}
                     <Link to="/" className="navbar-brand">
@@ -66,28 +68,49 @@ function Navbar() {
                         ))}
                     </div>
 
-                    {/* Desktop Actions */}
-                    <div className="desktop-actions">
-                        {!user && (
-                            <Link to="/login" className="btn-login">
-                                Login
-                            </Link>
-                        )}
-                        {/* Removed Signup button as requested */}
-                    </div>
+                    <div className="navbar-right-side" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginLeft: 'auto' }}>
+                        {/* Desktop Actions */}
+                        <div className="desktop-actions" style={{ marginLeft: 0 }}>
+                            {!user && (
+                                <Link to="/login" className="btn-login">
+                                    Login
+                                </Link>
+                            )}
+                        </div>
 
-                    {/* Mobile Toggle */}
-                    <button
-                        className={`mobile-toggle ${isMobileMenuOpen ? 'open' : ''}`}
-                        onClick={toggleMenu}
-                        aria-label="Toggle menu"
-                    >
-                        <span className="bar top"></span>
-                        <span className="bar middle"></span>
-                        <span className="bar bottom"></span>
-                    </button>
+                        {/* Developer Avatar (Visible on Desktop & Mobile) */}
+                        <div
+                            className="nav-dev-trigger"
+                            onClick={() => setShowDevProfile(true)}
+                            title="Developer Info"
+                        >
+                            <img
+                                src="https://github.com/Om-Rajpure.png"
+                                alt="Dev"
+                                className="nav-dev-img"
+                                onError={(e) => { e.target.src = "https://ui-avatars.com/api/?name=Om+Rajpure&background=6366f1&color=fff"; }}
+                            />
+                        </div>
+
+                        {/* Mobile Toggle */}
+                        <button
+                            className={`mobile-toggle ${isMobileMenuOpen ? 'open' : ''}`}
+                            onClick={toggleMenu}
+                            aria-label="Toggle menu"
+                        >
+                            <span className="bar top"></span>
+                            <span className="bar middle"></span>
+                            <span className="bar bottom"></span>
+                        </button>
+                    </div>
                 </div>
             </nav>
+
+            {/* Developer Profile Modal */}
+            <DeveloperProfile
+                isOpen={showDevProfile}
+                onClose={() => setShowDevProfile(false)}
+            />
 
             {/* Mobile Drawer Overlay */}
             <div
