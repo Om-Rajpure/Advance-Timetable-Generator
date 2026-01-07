@@ -1,13 +1,12 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthContext'
-import ProtectedRoute from './auth/ProtectedRoute'
+import ProtectedRoute from './components/ProtectedRoute'
 import WorkflowGuard from './components/WorkflowGuard'
 import MainNavbar from './components/MainNavbar'
 
 // Pages
 import LandingPage from './pages/LandingPage'
-import Login from './pages/Login'
-import Signup from './pages/Signup'
+import LoginPage from './pages/Login' // Renamed from LoginPage to Login if filename matches
 import Dashboard from './pages/Dashboard'
 import BranchSetup from './pages/BranchSetup'
 import SmartInput from './pages/SmartInput'
@@ -16,7 +15,6 @@ import Export from './pages/Export'
 import History from './pages/History'
 import TimetableUpload from './pages/TimetableUpload'
 import EditableTimetable from './pages/EditableTimetable'
-import TimetablePage from './components/Timetable/TimetablePage'
 import TestEditPage from './pages/TestEditPage'
 import WhatIfSimulation from './pages/WhatIfSimulation'
 
@@ -29,8 +27,7 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<LoginPage />} />
 
           {/* Protected Routes */}
           <Route

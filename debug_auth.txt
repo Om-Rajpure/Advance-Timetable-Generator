@@ -1,0 +1,41 @@
+
+[2026-01-07 06:42:04.331586] Login attempt:
+Received data: {"username": "admin", "password": "admin123"}
+Username: admin
+Loaded 2 users
+Found user: admin
+Password valid: True
+
+[2026-01-07 06:42:33.236908] Login attempt:
+Received data: {"username": "admin", "password": "admin123"}
+Username: admin
+Loaded 2 users
+Found user: admin
+Password valid: True
+
+[2026-01-07 06:43:49.448829] Login attempt:
+Received data: {"username": "admin", "password": "admin123"}
+Username: admin
+Loaded 2 users
+Found user: admin
+Password valid: True
+
+[2026-01-07 07:10:42.042364] Login attempt:
+Received data: {"username": "redirect_test_7788", "password": "Password123!"}
+Username: redirect_test_7788
+Loaded 3 users
+Found user: redirect_test_7788
+Password valid: True
+
+[2026-01-07 07:12:20.977931] Login attempt:
+Received data: {"username": "om", "password": "om@123"}
+Username: om
+Loaded 3 users
+User om not found
+
+[2026-01-07 07:20:36.542443] Login attempt:
+Received data: {"username": "om", "password": "om@123"}
+Username: om
+Loaded 4 users
+Found user: om
+Password valid: True

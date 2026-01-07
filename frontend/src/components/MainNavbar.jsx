@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { useAuth, isAuthEnabled } from '../auth/AuthContext'
+import { useAuth } from '../auth/AuthContext'
 import '../styles/navbar.css'
 
 function MainNavbar() {
@@ -24,7 +24,8 @@ function MainNavbar() {
     }, [location.pathname])
 
     // AUTH BYPASS: Hide on landing page if auth disabled
-    const publicPaths = !isAuthEnabled ? ['/'] : ['/', '/login', '/signup']
+    const isAuthEnabled = true;
+    const publicPaths = ['/', '/login', '/signup']
     if (publicPaths.includes(location.pathname)) {
         return null
     }

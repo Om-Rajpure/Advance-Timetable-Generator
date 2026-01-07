@@ -154,7 +154,8 @@
 /* -----------------------------------------
    Desktop Actions
    ----------------------------------------- */
-.btn-logout {
+.btn-logout,
+.btn-login {
     padding: 8px 16px;
     border: 1px solid #E5E7EB;
     background: transparent;
@@ -165,12 +166,22 @@
     transition: all 0.2s ease;
     font-size: 0.9rem;
     margin-left: 16px;
+    text-decoration: none;
+    /* For Link components */
+    display: inline-block;
+    /* For Link components */
 }
 
 .btn-logout:hover {
     border-color: var(--col-danger);
     color: var(--col-danger);
     background: rgba(239, 68, 68, 0.05);
+}
+
+.btn-login:hover {
+    border-color: var(--col-primary);
+    color: var(--col-primary);
+    background: rgba(2, 132, 199, 0.05);
 }
 
 /* -----------------------------------------

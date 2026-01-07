@@ -1,0 +1,11 @@
+{
+  "users": [
+    {
+      "id": "admin-user",
+      "username": "admin",
+      "password": "scrypt:32768:8:1$9rqOxuagZDIhKZb2$dceb5740ce1dd01bb449e2801bd01fb7203072bcac3993a0029ea12aa409fb4754342223994162aa99bf9457c239cc226998efe55bcffcd6130e57cd6d938db7",
+      "role": "admin",
+      "createdAt": "2024-01-01T00:00:00.000000"
+    }
+  ]
+}

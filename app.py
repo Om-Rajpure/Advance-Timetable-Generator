@@ -27,12 +27,23 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 print("Server running on http://localhost:5000")
 
 # Register blueprints
+# Config
+app.config['SECRET_KEY'] = 'dev-secret-key-change-in-prod'  # TODO: Move to env var
+
+# Register blueprints
+from routes.auth_routes import auth_bp
 app.register_blueprint(constraint_bp)
 app.register_blueprint(generation_bp)
 app.register_blueprint(validation_bp)
 app.register_blueprint(edit_bp)
 app.register_blueprint(analytics_bp)
 app.register_blueprint(history_bp)
+app.register_blueprint(auth_bp)
+
+@app.route('/api/health', methods=['GET'])
+def health():
+    """Health check endpoint"""
+    return jsonify({'status': 'ok', 'message': 'Flask server is running'}), 200
 
 # Data directory setup
 DATA_DIR = 'data'
@@ -72,24 +83,6 @@ def save_branches(data):
     """Save branches to JSON file"""
     with open(BRANCHES_FILE, 'w') as f:
         json.dump(data, f, indent=2)
-
-# API Routes (placeholders for authentication)
-@app.route('/api/auth/login', methods=['POST'])
-def login():
-    """Handle user login"""
-    # TODO: Implement actual authentication logic
-    return jsonify({'message': 'Login endpoint - to be implemented'}), 200
-
-@app.route('/api/auth/signup', methods=['POST'])
-def signup():
-    """Handle user signup"""
-    # TODO: Implement actual authentication logic
-    return jsonify({'message': 'Signup endpoint - to be implemented'}), 200
-
-@app.route('/api/health', methods=['GET'])
-def health():
-    """Health check endpoint"""
-    return jsonify({'status': 'ok', 'message': 'Flask server is running'}), 200
 
 # Branch Setup API Endpoints
 @app.route('/api/branch/setup', methods=['POST'])

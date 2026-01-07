@@ -1,19 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-// ========================================
-// 🚧 AUTH BYPASS FOR DEVELOPMENT MODE 🚧
-// ========================================
-// Set to false to bypass authentication during core feature development
-// Set to true when ready to implement real authentication
-// This allows direct access to all routes without login
-export const isAuthEnabled = false
-// ========================================
-
-// TODO: Replace with real backend authentication
-// This is a DUMMY authentication system for UI flow only
-// No actual validation, no backend calls, no database
-
+// Real auth logic
 const AuthContext = createContext(null)
 
 export const useAuth = () => {
@@ -25,84 +13,125 @@ export const useAuth = () => {
 }
 
 export const AuthProvider = ({ children }) => {
-    // AUTH BYPASS: When disabled, always treat user as authenticated
-    const [isAuthenticated, setIsAuthenticated] = useState(!isAuthEnabled ? true : false)
-    const [user, setUser] = useState(!isAuthEnabled ? { name: 'Dev User', email: 'dev@timetable.com' } : null)
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const [user, setUser] = useState(null)
+    const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
 
-    // Load auth state from localStorage on mount
+    const API_URL = 'http://localhost:5000/api/auth'
+
+    // Load auth state from localStorage on mount and verify token
     useEffect(() => {
-        // AUTH BYPASS: Skip localStorage check when auth is disabled
-        if (!isAuthEnabled) {
-            setIsAuthenticated(true)
-            setUser({ name: 'Dev User', email: 'dev@timetable.com' })
-            return
+        const verifyToken = async () => {
+            const token = localStorage.getItem('token')
+            if (!token) {
+                setLoading(false)
+                return
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/verify`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+
+                if (response.ok) {
+                    const data = await response.json()
+                    setIsAuthenticated(true)
+                    setUser(data.user)
+                } else {
+                    // Invalid token
+                    logout()
+                }
+            } catch (error) {
+                console.error('Auth verification failed:', error)
+                logout()
+            } finally {
+                setLoading(false)
+            }
         }
 
-        // Real auth logic (when isAuthEnabled = true)
-        const storedAuth = localStorage.getItem('isAuthenticated')
-        const storedUser = localStorage.getItem('user')
-
-        if (storedAuth === 'true' && storedUser) {
-            setIsAuthenticated(true)
-            setUser(JSON.parse(storedUser))
-        }
+        verifyToken()
     }, [])
 
-    // TODO: Replace with real backend login API call
-    const login = (email, password) => {
-        // DUMMY LOGIN - No validation, just set state
-        const dummyUser = {
-            name: email.split('@')[0], // Extract name from email
-            email: email
+    const login = async (username, password) => {
+        try {
+            const response = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            })
+
+            const data = await response.json()
+
+            if (response.ok) {
+                setIsAuthenticated(true)
+                setUser(data.user)
+                localStorage.setItem('token', data.token)
+                // navigate('/dashboard') // Handled by component
+                return { success: true }
+            } else {
+                return { success: false, error: data.error || 'Login failed' }
+            }
+        } catch (error) {
+            console.error('Login error:', error)
+            return { success: false, error: 'Network error. Please try again.' }
         }
-
-        setIsAuthenticated(true)
-        setUser(dummyUser)
-
-        // Persist to localStorage
-        localStorage.setItem('isAuthenticated', 'true')
-        localStorage.setItem('user', JSON.stringify(dummyUser))
-
-        // Redirect to dashboard
-        navigate('/dashboard')
     }
 
-    // TODO: Replace with real backend signup API call
-    const signup = (name, email, password) => {
-        // DUMMY SIGNUP - Just store user info temporarily
-        const dummyUser = {
-            name: name,
-            email: email
+    const signup = async (name, email, password) => {
+        try {
+            const response = await fetch(`${API_URL}/signup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: email, // Use email as username
+                    password,
+                    role: 'user' // Default role
+                })
+            })
+
+            const data = await response.json()
+
+            if (response.ok) {
+                // Auto login after signup
+                if (data.token) {
+                    setIsAuthenticated(true)
+                    setUser(data.user)
+                    localStorage.setItem('token', data.token)
+                }
+
+                // navigate('/login') // Handled by component
+                return { success: true }
+            } else {
+                return { success: false, error: data.error || 'Signup failed' }
+            }
+        } catch (error) {
+            console.error('Signup error:', error)
+            return { success: false, error: 'Network error. Please try again.' }
         }
-
-        // For now, just show a success message and redirect to login
-        // In real implementation, this would create user in database
-        console.log('Dummy signup:', dummyUser)
-
-        // Redirect to login page
-        navigate('/login')
     }
 
     const logout = () => {
         setIsAuthenticated(false)
         setUser(null)
-
-        // Clear localStorage
-        localStorage.removeItem('isAuthenticated')
-        localStorage.removeItem('user')
-
-        // Redirect to landing page
+        localStorage.removeItem('token')
         navigate('/')
     }
 
     const value = {
         isAuthenticated,
         user,
+        loading,
         login,
         signup,
         logout
     }
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>
 }
