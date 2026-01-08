@@ -526,6 +526,13 @@ class TimetableScheduler:
         for idx, t in enumerate(teachers):
              if not isinstance(t, dict):
                  raise TypeError(f"Teacher at index {idx} must be a dict, got {type(t)}: {t}")
+             
+             # Validate Login Time format if present
+             if t.get('loginTime'):
+                 lt = t.get('loginTime')
+                 import re
+                 if not re.match(r'^\d{1,2}:\d{2}(?:\s?[AaPp][Mm])?$', str(lt)):
+                     print(f"    ⚠️ Warning: Invalid loginTime format '{lt}' for teacher {t.get('name')}. Expected HH:MM or HH:MM AM/PM.")
                  
     def _generate_slot_id(self, slot):
         """Generate unique ID for a slot"""

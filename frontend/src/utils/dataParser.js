@@ -163,11 +163,13 @@ function processParsedData(data, fileType) {
                 }
 
                 const maxLectures = parseInt(row.max_lectures_per_day || row.max_lectures || row.max_load || '6')
+                const loginTime = row.login_time || row.start_time || row.login || '09:00'
 
                 processed.data.push({
                     id: generateId(),
                     name: normalizeTeacherName(teacherName),
                     maxLecturesPerDay: isNaN(maxLectures) ? 6 : maxLectures,
+                    loginTime: loginTime,
                     subjects: []
                 })
             })
@@ -469,7 +471,7 @@ export function mergeData(existingData, newData) {
 export function createCSVTemplate(type) {
     switch (type) {
         case 'teachers':
-            return 'teacher_name,max_lectures_per_day\nAjay,4\nNeha,3\nRamesh,5'
+            return 'teacher_name,max_lectures_per_day,login_time\nAjay,4,09:00\nNeha,3,10:00\nRamesh,5,09:00'
 
         case 'subjects':
             return 'subject_name,year,weekly_lectures,type,slots\nMathematics,SE,4,Theory,1\nAI,TE,3,Theory,1\nML Lab,TE,2,Lab,2'

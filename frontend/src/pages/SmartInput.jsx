@@ -140,7 +140,11 @@ function SmartInput() {
             }
         };
 
-        const teachers = Object.entries(raw.teachers).map(([id, name]) => ({ name, maxLecturesPerDay: 4 }));
+        const teachers = Object.entries(raw.teachers).map(([id, name]) => ({
+            name,
+            maxLecturesPerDay: 4,
+            loginTime: "09:00" // Default login time
+        }));
         const subjects = [];
         const mapping = [];
 
@@ -546,6 +550,7 @@ Details: ${details}
                                         data={aggregatedData.teachers}
                                         columns={[
                                             { key: 'name', label: 'Teacher Name', editable: true },
+                                            { key: 'loginTime', label: 'Login Time', editable: true, placeholder: '09:00' },
                                             { key: 'maxLecturesPerDay', label: 'Max Lectures/Day', editable: true, type: 'number' }
                                         ]}
                                         title="Teachers"

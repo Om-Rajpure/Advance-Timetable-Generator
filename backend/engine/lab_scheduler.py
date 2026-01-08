@@ -74,8 +74,12 @@ class LabScheduler:
         # Get required lab subjects for this year
         lab_subjects = [
             s for s in self.smart_input.get('subjects', []) 
-            if s.get('year') == year and (s.get('isPractical') or s.get('type') == 'Practical')
+            if s.get('year') == year 
+            and (s.get('isPractical') or s.get('type') == 'Practical')
+            and (not s.get('division') or s.get('division') == division)
         ]
+
+
         
         if not lab_subjects:
             print(f"  No verified lab subjects for {year}-{division}")
@@ -221,7 +225,8 @@ class LabScheduler:
         time_config = calculate_time_slots(self.branch_data)
         total_slots = time_config['total_slots']
         
-        for slot in range(1, total_slots + 1):
+        # FIX: 0-based indexing
+        for slot in range(total_slots):
              assignments = self.state.get_slot_assignment(day, slot, year, division)
              if assignments:
                  slot_assignments = assignments if isinstance(assignments, list) else [assignments]
@@ -316,8 +321,9 @@ class LabScheduler:
         # random.shuffle(days) 
         
         for day in days:
-            # Simple slide
-            for i in range(1, slots - duration + 2):
+            # FIX: 0-based indexing window generation
+            # Range: 0 to (Total - Duration)
+            for i in range(slots - duration + 1):
                 # Check recess
                 indices = range(i, i + duration)
                 if recess_slot is not None and recess_slot in indices:

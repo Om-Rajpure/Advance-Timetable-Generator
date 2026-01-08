@@ -53,3 +53,78 @@ def calculate_time_slots(branch_data):
         'recess_slot': recess_slot,
         'slots_per_day': total_slots
     }
+
+def get_slot_time(slot_index, branch_data):
+    """
+    Get the start time of a specific slot index.
+    
+    Args:
+        slot_index: 0-based index of the slot
+        branch_data: Dict with 'startTime', 'lectureDuration', 'recessEnabled', 'recessStart'
+        
+    Returns:
+        datetime object representing start of the slot
+    """
+    start_str = branch_data.get('startTime', '9:00 AM')
+    duration = int(branch_data.get('lectureDuration', 60))
+    start_time = parse_time(start_str)
+    
+    # Recess handling
+    recess_enabled = branch_data.get('recessEnabled', False)
+    if recess_enabled:
+        recess_start_str = branch_data.get('recessStart', '1:00 PM')
+        recess_start = parse_time(recess_start_str)
+        
+        # Calculate recess slot index
+        minutes_to_recess = (recess_start - start_time).seconds // 60
+        recess_slot_idx = minutes_to_recess // duration
+        
+        # If the requested slot is AFTER recess, add recess duration (usually 1 slot or custom?)
+        # For simplicity, assuming recess is ONE slot duration gap
+        if slot_index > recess_slot_idx:
+            # We skip the recess slot visually, so effectively we add 1 * duration
+            # But wait, slot_index IS the visual index. 
+            # If slot_index 4 is post-recess, its time is start + 4*dur + recess_dur.
+            # Assuming recess takes 1 slot width.
+            start_time += timedelta(minutes=duration) 
+            
+    # Calculate offset
+    slot_offset = slot_index * duration
+    return start_time + timedelta(minutes=slot_offset)
+
+def is_time_in_window(slot_start_time, login_time_str, working_hours=8):
+    """
+    Check if a slot start time falls within [login_time, login_time + working_hours]
+    
+    Args:
+        slot_start_time: datetime object
+        login_time_str: string "HH:MM" or "HH:MM AM/PM"
+        working_hours: int, default 8
+        
+    Returns:
+        bool: True if inside window
+    """
+    if not login_time_str or not slot_start_time:
+        return True # Fail open if data missing
+        
+    login_time = parse_time(login_time_str)
+    if not login_time:
+        return True # Fail open
+        
+    # Normalize dates to compare only times
+    base_date = slot_start_time.date()
+    login_dt = datetime.combine(base_date, login_time.time())
+    
+    # End of working window
+    end_dt = login_dt + timedelta(hours=working_hours)
+    
+    # We check if the slot START time is within the window.
+    # We strictly don't want to start AFTER window ends.
+    # We strictly don't want to start BEFORE window starts.
+    
+    # Note: A lecture starting at 4:00 PM for 1 hour (ends 5:00 PM).
+    # If window is 9-5, is 4:00 PM valid? Yes.
+    # So slot_start < end_dt.
+    
+    return login_dt <= slot_start_time < end_dt
+

@@ -95,6 +95,7 @@ function CsvUploader({ onDataParsed, existingData = {}, uploadedFiles = {}, onFi
             case 'teachers':
                 return [
                     { key: 'name', label: 'Teacher Name' },
+                    { key: 'loginTime', label: 'Login Time' },
                     { key: 'maxLecturesPerDay', label: 'Max Lectures/Day' }
                 ]
             case 'subjects':

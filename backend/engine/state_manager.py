@@ -47,7 +47,17 @@ class TimetableState:
         locked = context.get('lockedSlots', [])
         for slot_id in locked:
             self.locked_slots.add(slot_id)
-    
+            
+        # Teacher Metadata (for fast lookup of login times)
+        self.teacher_metadata = {}
+        teachers = self.smart_input.get('teachers', [])
+        for t in teachers:
+            if t.get('name'):
+                self.teacher_metadata[t['name']] = {
+                    'loginTime': t.get('loginTime'), # e.g. "09:00"
+                    'workingHours': t.get('workingHours', 8)
+                }
+
     def _load_uploaded_timetable(self, uploaded_timetable):
         """Load an uploaded timetable and mark valid slots as locked"""
         for slot in uploaded_timetable:
@@ -275,9 +285,30 @@ class TimetableState:
         return True
     
     def is_teacher_available(self, teacher, day, slot_index):
-        """Check if teacher is available at given time"""
+        """Check if teacher is available at given time (not assigned AND within working hours)"""
+        # 1. Assignment Check
         teacher_key = (teacher, day, slot_index)
-        return teacher_key not in self.teacher_assignments
+        if teacher_key in self.teacher_assignments:
+            return False
+            
+        # 2. Availability Window Check
+        meta = self.teacher_metadata.get(teacher, {})
+        if not meta:
+            return True # No constraints
+            
+        login_time = meta.get('loginTime')
+        if not login_time:
+            return True # Default to available
+            
+        from utils.time_utils import get_slot_time, is_time_in_window
+        
+        # Calculate real time of slot
+        slot_time = get_slot_time(slot_index, self.branch_data)
+        
+        # Check window
+        is_available = is_time_in_window(slot_time, login_time, meta.get('workingHours', 8))
+        return is_available
+
     
     def is_room_available(self, room, day, slot_index):
         """Check if room is available at given time"""

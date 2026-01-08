@@ -26,7 +26,7 @@ class TheoryScheduler:
         print(f"  > Scheduling Theory for {year}-{division}...")
         
         # 1. Get Theory Subjects for this class
-        subjects = self._get_class_subjects(year)
+        subjects = self._get_class_subjects(year, division)
         theory_subjects = [s for s in subjects if not s.get('isPractical', False) and s.get('type') != 'Practical']
         
         print(f"    found {len(subjects)} subjects for year '{year}', {len(theory_subjects)} are Theory.")
@@ -62,7 +62,7 @@ class TheoryScheduler:
                 
                 if slot_assigned:
                     assignments_count += 1
-                else:
+                else: 
                     # If we couldn't fit on this day, we might loop and try another day
                     # But if we run out of days, we might fail or settle for uneven distribution
                     pass
@@ -72,9 +72,13 @@ class TheoryScheduler:
 
         return True
 
-    def _get_class_subjects(self, year: str) -> List[Dict]:
+    def _get_class_subjects(self, year: str, division: str = None) -> List[Dict]:
         all_subjects = self.context.get('smartInputData', {}).get('subjects', [])
-        return [s for s in all_subjects if s.get('year') == year]
+        return [
+            s for s in all_subjects 
+            if s.get('year') == year 
+            and (not s.get('division') or s.get('division') == division)
+        ]
 
     def _get_teacher_for_subject(self, subject: str, division: str) -> str:
         # Check mapping
@@ -116,13 +120,18 @@ class TheoryScheduler:
         total_slots = int(self.context.get('branchData', {}).get('slotsPerDay', 8))
         
         # Randomize start order to minimize collisions
-        slots = list(range(1, total_slots + 1)) 
+        # FIX: Use 0-based indexing to match StateManager and TimeUtils
+        slots = list(range(total_slots)) 
         
         for slot_idx in slots:
             # Check Global State (Class Free)
             if self.state.is_slot_free(day, slot_idx, year, division):
-                # Check Teacher Availability
-                if self.state.is_teacher_available(teacher, day, slot_idx):
+                is_avail = self.state.is_teacher_available(teacher, day, slot_idx)
+                if not is_avail:
+                     print(f"DEBUG: {teacher} unavailable at {day} slot {slot_idx}")
+                     pass
+                     
+                if is_avail:
                     
                     # DYNAMIC ROOM ALLOCATION
                     assigned_room = self._find_available_room(year, division, day, slot_idx)
@@ -163,8 +172,8 @@ class TheoryScheduler:
                 if isinstance(r_list, list): temp_list.extend(r_list)
             all_classrooms = list(set(temp_list)) # dedupe
             
-        if not isinstance(all_classrooms, list):
-            # Fallback to 'rooms' key if present
+        if not all_classrooms:
+            # Fallback to 'rooms' key if 'classrooms' is empty/missing
             all_classrooms = branch_data.get('rooms', [])
             
         # Iterate and Find First Free
