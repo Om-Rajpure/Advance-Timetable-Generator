@@ -40,7 +40,7 @@ class TheoryScheduler:
         for subject in theory_subjects:
             lectures_needed = int(subject.get('weeklyLectures', 3))
             subject_name = subject.get('name')
-            teacher_name = self._get_teacher_for_subject(subject_name, division)
+            teacher_name = self._get_teacher_for_subject(subject_name, division, year=year)
             
             assignments_count = 0
             
@@ -80,12 +80,13 @@ class TheoryScheduler:
             and (not s.get('division') or s.get('division') == division)
         ]
 
-    def _get_teacher_for_subject(self, subject: str, division: str) -> str:
-        # Check mapping
+    def _get_teacher_for_subject(self, subject: str, division: str, year: str = None) -> str:
+        # DELEGATE TO LOAD MANAGER
+        if hasattr(self.state, 'load_manager') and self.state.load_manager:
+            return self.state.load_manager.get_or_select_theory_teacher(subject, year, division)
+        
+        # Fallback (Legacy) if no manager
         mappings = self.context.get('smartInputData', {}).get('teacherSubjectMap', [])
-        # Strict mapping logic: Subject + Division specific? 
-        # Typically mapping is Subject -> Teacher. For now assuming simple mapping.
-        # Ideally we'd pass Division to mapping if data supported it.
         for m in mappings:
             if m.get('subjectName') == subject:
                 return m.get('teacherName')

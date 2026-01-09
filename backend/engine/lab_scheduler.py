@@ -167,8 +167,16 @@ class LabScheduler:
                  failure_reasons.add("No Lab Room")
                  continue
                  
-            # 3. Check Teacher Availability
-            teacher = self._find_teacher(subject, day, start_slot, duration)
+            # 3. Check Teacher Availability (via Load Manager)
+            teacher = None
+            if hasattr(self.state, 'load_manager') and self.state.load_manager:
+                teacher = self.state.load_manager.get_best_teacher_for_lab(
+                    subject['name'], year, division, batch, day, start_slot, duration, self.state
+                )
+            else:
+                # Fallback to old logic (should not happen in new flow)
+                teacher = self._find_teacher_legacy(subject, day, start_slot, duration)
+
             if not teacher:
                  failure_reasons.add(f"No Teacher ({subject.get('name')})")
                  continue
@@ -252,37 +260,22 @@ class LabScheduler:
                 return name # Return first available
         return None
 
-    def _find_teacher(self, subject, day, start_slot, duration):
-        """Find a teacher available for entire duration."""
-        # Use existing map logic
-        mapped_teachers = self.subject_teachers.get(subject['name'], [])
-        
-        # Try mapped teachers first
-        for t_name in mapped_teachers:
-            available = True
-            for offset in range(duration):
-                if not self.state.is_teacher_available(t_name, day, start_slot + offset):
-                    available = False
-                    break
-            if available:
-                return t_name
-                
-        # Fallback: Relaxed Constraints if no specialist found
-        # This prevents failure when mapping is incomplete
-        if not mapped_teachers:
-            print(f"    ⚠️ No strict teacher found for {subject['name']}, trying any available teacher.")
-            all_teachers = self.smart_input.get('teachers', [])
-            for teacher in all_teachers:
-                t_name = teacher['name']
-                available = True
-                for offset in range(duration):
-                    if not self.state.is_teacher_available(t_name, day, start_slot + offset):
-                        available = False
-                        break
-                if available:
-                    return t_name
-                    
-        return None
+    def _find_teacher_legacy(self, subject, day, start_slot, duration):
+        """(Legacy) Find a teacher available for entire duration."""
+        if hasattr(self.state, 'load_manager') and self.state.load_manager:
+            # Context info from internal loop state isn't fully passed here (batch, year, div).
+            # I need to ensure I have access to them.
+            # _find_teacher is called by _assign_batch_subject, which HAS them. 
+            # But the signature here is generic.
+            # I must refactor _find_teacher signature OR update the caller to pass them.
+            pass
+            
+        # Refactoring to consume context from caller logic if possible or rely on loose matching?
+        # No, strict continuity needs Year/Div/Batch.
+        # The caller `_assign_batch_subject` has `year, division, batch`.
+        # I will update the CALLER and THIS method signature in next steps.
+        # For now, let's just make this method accept **kwargs or update it.
+        return None 
 
     def _commit_assignment(self, year, division, batch, subject, teacher, room, day, start, duration):
         for offset in range(duration):

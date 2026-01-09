@@ -592,3 +592,10 @@ SUCCESS TE-A
 SUCCESS TE-B
 SUCCESS BE-A
 SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+FAILED BE-B: Lab scheduling failed. No batches could be scheduled for 4 required labs. Check Room/Teacher availability. Debug logs above.

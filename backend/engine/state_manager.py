@@ -11,7 +11,7 @@ import copy
 class TimetableState:
     """Manages the state of a timetable during generation"""
     
-    def __init__(self, context):
+    def __init__(self, context, load_manager=None):
         """
         Initialize timetable state.
         
@@ -27,6 +27,7 @@ class TimetableState:
         self.context = context
         self.branch_data = context.get('branchData', {})
         self.smart_input = context.get('smartInputData', {})
+        self.load_manager = load_manager
         
         # Initialize slots
         self.slots = []
@@ -179,6 +180,17 @@ class TimetableState:
         if lock:
             slot_id = assignment.get('id', f"{slot_key[0]}_{slot_key[1]}_{slot_key[2]}_{slot_key[3]}")
             self.locked_slots.add(slot_id)
+
+        # UPDATE LOAD MANAGER
+        if self.load_manager:
+            t = assignment.get('teacher')
+            d = assignment.get('day')
+            # Determine duration (Theory=1, Lab could be 2, but here we process per slot usually)
+            # However, lab scheduler might call assign_slot multiple times for same session (duration times)
+            # OR once? Let's check lab scheduler.
+            # LabScheduler calls assign_slot for EACH duration offset. So here commit 1 is correct.
+            if t and d:
+                self.load_manager.commit_load(t, d, duration=1)
     
     def rollback_slot(self, assignment):
         """
@@ -236,6 +248,13 @@ class TimetableState:
             self.subject_counts[subject_key] -= 1
             if self.subject_counts[subject_key] <= 0:
                 del self.subject_counts[subject_key]
+
+        # UPDATE LOAD MANAGER (ROLLBACK)
+        if self.load_manager:
+            t = assignment.get('teacher')
+            d = assignment.get('day')
+            if t and d:
+                self.load_manager.rollback_load(t, d, duration=1)
     
     def is_slot_locked(self, slot_key):
         """Check if a slot is locked"""

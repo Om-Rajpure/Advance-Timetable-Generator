@@ -26,7 +26,10 @@ class TimetableScheduler:
         self.max_iterations = max_iterations
         
         # Initialize components
-        self.state = TimetableState(context)
+        from .load_manager import TeacherLoadManager
+        self.load_manager = TeacherLoadManager(context)
+        
+        self.state = TimetableState(context, self.load_manager) # Pass manager to state
         self.candidate_gen = CandidateGenerator(self.state, context)
         self.heuristics = SlotHeuristics(self.state, context)
         self.constraint_engine = ConstraintEngine()
@@ -85,7 +88,7 @@ class TimetableScheduler:
             print("Starting Multi-Class Generation Loop...")
             
             # --- GLOBAL STATE (Shared across classes) ---
-            global_state = TimetableState(self.context)
+            global_state = TimetableState(self.context, self.load_manager)
             
             # 3. Main Generation Loop
             expected_class_count = len(self.normalized_classes)
@@ -256,7 +259,7 @@ class TimetableScheduler:
             class_state = global_state
         else:
             # Fallback for individual testing
-            class_state = TimetableState(self.context)
+            class_state = TimetableState(self.context, self.load_manager)
         
         # 2. Initialize Schedulers with this state (shared or fresh)
         lab_scheduler = LabScheduler(class_state, self.context)
