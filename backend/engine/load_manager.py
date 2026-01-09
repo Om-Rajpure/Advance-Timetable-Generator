@@ -17,8 +17,8 @@ class TeacherLoadManager:
         self.smart_input = context.get('smartInputData', {})
         
         # Load Limits (Configurable?)
-        self.MAX_DAILY_LOAD = 4
-        self.MAX_WEEKLY_LOAD = 20 # Soft limit, can be higher if needed
+        self.MAX_DAILY_LOAD = 8 # Increased from 6
+        self.MAX_WEEKLY_LOAD = 40 # Reverted to 40 per user request
         
         # --- STATE ---
         # 1. Load Tracking
@@ -160,7 +160,20 @@ class TeacherLoadManager:
             valid_candidates.append(t_name)
             
         if not valid_candidates:
-            return None
+            # PANIC MODE: Everyone is busy or overloaded.
+            # We must return SOMEONE or generation fails.
+            # Relax availability check? No, physical clash is impossible.
+            # Relax LOAD limits? Yes.
+            
+            print(f"      [LoadManager] Panic: No teachers valid for {subject} Batch {batch} on {day}. Relaxing Load Limits.")
+            
+            # Re-scan candidates, checking ONLY availability
+            for t_name in candidates:
+                if self._is_available_window(t_name, day, start_slot, duration, state_manager):
+                    valid_candidates.append(t_name)
+                    
+            if not valid_candidates:
+                return None # Truly impossible (Physical availability)
             
         # 3. Sort by Load + Preference
         def sort_key(t_name):

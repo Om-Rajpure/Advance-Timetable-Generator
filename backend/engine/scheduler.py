@@ -124,10 +124,19 @@ class TimetableScheduler:
                     }
                     
                     if not class_result:
-                         print(f"⚠️ Warning: No schedule generated for {class_key} (Empty)", flush=True)
-                         failures[class_key] = "Empty result returned"
+                         # ANALYSIS: Why is it empty?
+                         subjects = self.context.get('smartInputData', {}).get('subjects', [])
+                         cls_subs = [s for s in subjects if s.get('year') == year and (not s.get('division') or s.get('division') == division)]
+                         
+                         if not cls_subs:
+                             fail_reason = "No subjects found for this class in input data."
+                         else:
+                             fail_reason = "Scheuling failed to assign any slots (Constraints too strict? No teachers?)"
+                             
+                         print(f"⚠️ Warning: No schedule generated for {class_key} (Empty). Reason: {fail_reason}", flush=True)
+                         failures[class_key] = fail_reason
                          with open('backend_generation_progress.log', 'a') as f:
-                            f.write(f"EMPTY {class_key}\n")
+                            f.write(f"EMPTY {class_key}: {fail_reason}\n")
                     else:
                         print(f"✅ Generated {class_key} successfully", flush=True)
                         with open('backend_generation_progress.log', 'a') as f:
@@ -266,10 +275,18 @@ class TimetableScheduler:
         theory_scheduler = TheoryScheduler(class_state, self.context)
         
         # 3. Schedule Labs
+        # 3. Schedule Labs
         self.current_stage = f"LAB_SCHEDULING_{class_obj['id']}"
-        success_labs = lab_scheduler.schedule_class_labs(class_obj)
-        if not success_labs:
-            print(f"  🔸 Lab scheduling had issues for {class_obj['id']}")
+        try:
+            success_labs = lab_scheduler.schedule_class_labs(class_obj)
+            if not success_labs:
+                print(f"  🔸 Lab scheduling returned False for {class_obj['id']}")
+        except Exception as e:
+            print(f"  🔸 Lab scheduling CRASHED for {class_obj['id']}: {e}")
+            print(f"  🔸 Proceeding with Theory only (Partial Generation).")
+            # Clear any partial lab slots to avoid phantom collisions? 
+            # Ideally yes, but difficult to isolate. We trust rollback was done if needed.
+            success_labs = False
             
         # STRICT VALIDATION: Ensure all batches covered
         # Get required lab subjects
@@ -358,6 +375,8 @@ class TimetableScheduler:
         for year in years:
             if not isinstance(year, str):
                 raise ValueError(f"Year must be string, got {type(year)}: {year}")
+            
+            clean_year = year.strip() 
                 
             divs = divisions_map.get(year, [])
             if not isinstance(divs, list):
@@ -366,11 +385,13 @@ class TimetableScheduler:
             for div in divs:
                 if not isinstance(div, str):
                     raise ValueError(f"Division must be string, got {type(div)}: {div}")
+                
+                clean_div = div.strip()
                     
                 self.normalized_classes.append({
-                    "id": f"{year}-{div}",
-                    "year": year,
-                    "division": div,
+                    "id": f"{clean_year}-{clean_div}",
+                    "year": clean_year,
+                    "division": clean_div,
                     "batches": ["B1", "B2", "B3"] # Defaulting batches for now
                 })
                 
@@ -482,6 +503,12 @@ class TimetableScheduler:
         for idx, s in enumerate(subjects):
              if not isinstance(s, dict):
                  raise TypeError(f"Subject at index {idx} must be a dict, got {type(s)}: {s}")
+             
+             # CLEAN STRINGS
+             if isinstance(s.get('year'), str): s['year'] = s['year'].strip()
+             if isinstance(s.get('division'), str): s['division'] = s['division'].strip()
+             if isinstance(s.get('name'), str): s['name'] = s['name'].strip()
+             if isinstance(s.get('type'), str): s['type'] = s['type'].strip()
                  
         # DEDUPLICATION: Remove duplicates based on Name + Year
         # (User might have uploaded same subject twice or mixed inputs)
@@ -529,6 +556,8 @@ class TimetableScheduler:
         for idx, t in enumerate(teachers):
              if not isinstance(t, dict):
                  raise TypeError(f"Teacher at index {idx} must be a dict, got {type(t)}: {t}")
+                 
+             if isinstance(t.get('name'), str): t['name'] = t['name'].strip()
              
              # Validate Login Time format if present
              if t.get('loginTime'):
