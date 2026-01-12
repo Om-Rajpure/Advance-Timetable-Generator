@@ -2,14 +2,24 @@ from datetime import datetime, timedelta
 
 def parse_time(time_str):
     """Parse time string (e.g., '9:00 AM') into datetime object."""
-    try:
-        return datetime.strptime(time_str, "%I:%M %p")
-    except ValueError:
-        # Try simplified formats
+    if not time_str:
+        return None
+    
+    time_str = time_str.strip().upper()
+    formats = [
+        "%I:%M %p", # 09:00 AM
+        "%H:%M",    # 14:00
+        "%I %p",    # 9 AM
+        "%H"        # 14
+    ]
+    
+    for fmt in formats:
         try:
-             return datetime.strptime(time_str, "%H:%M")
-        except:
-             return None
+            return datetime.strptime(time_str, fmt)
+        except ValueError:
+            continue
+            
+    return None
 
 def calculate_time_slots(branch_data):
     """
@@ -92,14 +102,15 @@ def get_slot_time(slot_index, branch_data):
     slot_offset = slot_index * duration
     return start_time + timedelta(minutes=slot_offset)
 
-def is_time_in_window(slot_start_time, login_time_str, working_hours=8):
+def is_time_in_window(slot_start_time, login_time_str, working_hours=8, slot_duration_minutes=60):
     """
-    Check if a slot start time falls within [login_time, login_time + working_hours]
+    Check if a slot (start to start+duration) falls STRICTLY within [login_time, login_time + working_hours].
     
     Args:
         slot_start_time: datetime object
         login_time_str: string "HH:MM" or "HH:MM AM/PM"
         working_hours: int, default 8
+        slot_duration_minutes: int, duration of the slot/lecture in minutes
         
     Returns:
         bool: True if inside window
@@ -112,19 +123,27 @@ def is_time_in_window(slot_start_time, login_time_str, working_hours=8):
         return True # Fail open
         
     # Normalize dates to compare only times
-    base_date = slot_start_time.date()
-    login_dt = datetime.combine(base_date, login_time.time())
+    # We use a dummy date for comparison to avoid date rollover issues (e.g. overnight shifts - not supported yet)
+    base_date = datetime(2000, 1, 1).date()
     
-    # End of working window
-    end_dt = login_dt + timedelta(hours=working_hours)
+    # Construct datetimes on the same base date
+    # Handle slot_start_time which might have random date component
+    slot_start = datetime.combine(base_date, slot_start_time.time())
     
-    # We check if the slot START time is within the window.
-    # We strictly don't want to start AFTER window ends.
-    # We strictly don't want to start BEFORE window starts.
+    # Login Time
+    window_start = datetime.combine(base_date, login_time.time())
     
-    # Note: A lecture starting at 4:00 PM for 1 hour (ends 5:00 PM).
-    # If window is 9-5, is 4:00 PM valid? Yes.
-    # So slot_start < end_dt.
+    # Window End
+    window_end = window_start + timedelta(hours=working_hours)
     
-    return login_dt <= slot_start_time < end_dt
+    # Slot End
+    slot_end = slot_start + timedelta(minutes=slot_duration_minutes)
+    
+    # STRICT CHECK:
+    # 1. Slot Start >= Window Start
+    # 2. Slot End <= Window End
+    
+    in_window = (slot_start >= window_start) and (slot_end <= window_end)
+    
+    return in_window
 

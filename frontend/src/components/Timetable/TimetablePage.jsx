@@ -38,6 +38,7 @@ const TimetablePage = () => {
     const [selectedYear, setSelectedYear] = useState('');
     const [selectedDivision, setSelectedDivision] = useState('');
     const [gridData, setGridData] = useState({});
+    const [dayLayout, setDayLayout] = useState([]); // <--- NEW STATE
     const [availableYears, setAvailableYears] = useState([]);
     const [availableDivisions, setAvailableDivisions] = useState([]);
 
@@ -57,6 +58,7 @@ const TimetablePage = () => {
                 // Priority 1: Navigation State (Fastest)
                 let loadedTimetable = location.state?.timetable;
                 let loadedContext = location.state?.context;
+                let loadedLayout = location.state?.dayLayout; // <--- READ LAYOUT
 
                 // Priority 2: LocalStorage (Persistence)
                 if (!loadedTimetable) {
@@ -64,11 +66,16 @@ const TimetablePage = () => {
                     if (storedTimetable) {
                         try {
                             loadedTimetable = JSON.parse(storedTimetable);
-                            console.log("🧩 [TimetablePage] Loaded from Storage");
+                            // Also try to load layout if stored separately? 
+                            // Usually strict logic re-generates it, but let's assume nav state has it first.
                         } catch (e) {
                             console.error("Storage Parse Error", e);
                         }
                     }
+                }
+
+                if (loadedLayout) {
+                    setDayLayout(loadedLayout);
                 }
 
                 if (!loadedContext) {

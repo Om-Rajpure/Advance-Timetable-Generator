@@ -317,6 +317,7 @@ function SmartInput() {
             navigate('/timetable', {
                 state: {
                     timetable: result.timetables, // Keeping prop name 'timetable' for compatibility
+                    dayLayout: result.dayLayout, // <--- CRITICAL FIX: Pass the Time layout
                     context: payload, // Valid Payload context
                     qualityScore: result.qualityScore,
                     failures: result.failures || {}, // NEW: Backend failures
@@ -390,6 +391,17 @@ Details: ${details}
                         🧪 Load Verified Dummy Data (Debug)
                     </button> 
                     */}
+                    {/* Quick Generate Button (If Data Exists) */}
+                    {aggregatedData.teachers.length > 0 && aggregatedData.subjects.length > 0 && (
+                        <button
+                            onClick={handleAddToSystem}
+                            className="btn-primary"
+                            style={{ marginTop: '15px', marginRight: '10px', background: '#10b981', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+                        >
+                            ⚡ Generate Timetable
+                        </button>
+                    )}
+
                     <button
                         onClick={() => {
                             if (window.confirm("Are you sure? This will delete all entered data.")) {
@@ -399,7 +411,7 @@ Details: ${details}
                             }
                         }}
                         className="btn-secondary"
-                        style={{ marginTop: '15px', marginLeft: '10px', background: '#ef4444', color: 'white', border: 'none' }}
+                        style={{ marginTop: '15px', background: '#ef4444', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer' }}
                     >
                         🗑️ Clear All Data
                     </button>

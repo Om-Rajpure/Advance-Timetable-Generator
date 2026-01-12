@@ -88,8 +88,10 @@ class LabScheduler:
         print(f"  Scheduling labs for {year}-{division} (Batches: {batches})")
         print(f"  Required Labs: {[s['name'] for s in lab_subjects]}")
         
-        # Standardize duration (e.g., 2 hours)
-        standard_duration = 2
+        # Standardize duration (Default 2, but respect subject config)
+        # We will determine duration PER SUBJECT inside the loop now.
+        standard_duration = 2 
+
         
         # Scheduling Loop
         success_count = 0
@@ -112,11 +114,23 @@ class LabScheduler:
             completed_subjects = 0
             
             for subject in subjects_to_schedule:
+                # Determine duration for THIS subject
+                # Frontend sends 'sessionLength' or 'slots'
+                duration = int(subject.get('sessionLength') or subject.get('slots') or standard_duration)
+                
                 # Find a slot for this (Batch + Subject)
-                if self._assign_batch_subject(year, division, batch, subject, standard_duration):
+                if self._assign_batch_subject(year, division, batch, subject, duration):
                     completed_subjects += 1
                 else:
+                    # DIAGNOSTIC: Why failed?
                     print(f"    ❌ Failed to schedule {subject['name']} for {batch}")
+                    if year == 'SE': # Specialized debug for the issue
+                         print(f"    🔍 DEBUG SE FAIL: Duration={duration}, Type={subject.get('type')}, IsPractical={subject.get('isPractical')}")
+                         # Check basic availability
+                         t_name = self._find_teacher_legacy(subject, 'Monday', 0, duration) # Mock check
+                         # Check at least one day
+                         print(f"      Valid windows: {len(self._get_valid_windows(year, division, duration))}")
+
             
                 
             if completed_subjects == len(lab_subjects):
@@ -183,7 +197,12 @@ class LabScheduler:
             
             # 4. ASSIGN
             self._commit_assignment(year, division, batch, subject, teacher, lab_room, day, start_slot, duration)
-            print(f"    ✅ Assigned {subject['name']} to {batch} on {day} slot {start_slot}")
+            print(f"    ✅ Assigned {subject['name']} to {batch} on {day} slot {start_slot} (Duration: {duration})")
+            
+            # LOG SUCCESS to file for tracing
+            with open('backend_lab_trace.log', 'a') as f:
+                f.write(f"SUCCESS: {subject['name']} | {year}-{division}-{batch} | Duration: {duration} | Slot: {start_slot}\n")
+                
             return True
             
         # Log failure details if not assigned
@@ -290,6 +309,7 @@ class LabScheduler:
                 "room": room,
                 "type": "LAB",
                 "isPractical": True,
+                "sessionLength": duration, # HELPFUL FOR FRONTEND / DEBUG
                 "id": f"LAB_{year}_{division}_{day}_{start}_{batch}_{offset}"
             }
             # Lock ensures Theory doesn't overwrite it later
@@ -305,7 +325,15 @@ class LabScheduler:
         days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
         
         # Determine slots
-        from utils.time_utils import calculate_time_slots
+        try:
+            from utils.time_utils import calculate_time_slots
+        except ImportError:
+            try:
+                from backend.utils.time_utils import calculate_time_slots
+            except ImportError:
+                print("CRITICAL: LabScheduler could not import calculate_time_slots")
+                return []
+                
         time_config = calculate_time_slots(self.branch_data)
         slots = time_config['total_slots']
         recess_slot = time_config['recess_slot']

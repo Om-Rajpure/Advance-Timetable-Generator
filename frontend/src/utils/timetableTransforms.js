@@ -195,6 +195,16 @@ export const calculateTotalSlots = (branchData) => {
     return totalSlots > 0 ? totalSlots : 8; // Fallback to 8 if calc fails or return 0
 };
 
+// Helper to format minutes to HH:MM AM/PM
+const formatMinutesToTime = (totalMins) => {
+    let h = Math.floor(totalMins / 60);
+    let m = totalMins % 60;
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    if (h > 12) h -= 12;
+    if (h === 0) h = 12;
+    return `${h}:${m.toString().padStart(2, '0')} ${ampm}`;
+};
+
 /**
  * Generates a layout structure for the day, including lectures and recess.
  * @param {Object} branchData - Branch configuration
@@ -241,15 +251,6 @@ export const generateDayLayout = (branchData) => {
 
         // Exact match or within range (simplified for strict blocks)
         if (isRecess || (recessEnabled && Math.abs(currentTime - recessStartMins) < 5)) {
-            // It's recess time!
-            // Avoid duplicate recess entries if loop steps are small or logic overlaps
-            // Only add if last item wasn't recess? 
-            // Strictly: IF currentTime matches recessStart
-            // Logic in TimeSlotPreview was: if (currentTime == recessMinutes)
-
-            // Let's use strict match if aligned, or range.
-            // Best bet: If the GAP between now and next lecture is the recess.
-
             layout.push({
                 type: 'recess',
                 label: 'Recess',
@@ -261,10 +262,15 @@ export const generateDayLayout = (branchData) => {
         }
 
         // Lecture Slot
+        const startTimeStr = formatMinutesToTime(currentTime);
+        const endTimeStr = formatMinutesToTime(currentTime + lecDur);
+
         layout.push({
             type: 'lecture',
             index: slotCounter,
-            label: `Slot ${slotCounter}`,
+            label: `${startTimeStr} – ${endTimeStr}`,
+            startTime: startTimeStr,
+            endTime: endTimeStr,
             duration: lecDur
         });
         slotCounter++;
@@ -298,14 +304,5 @@ export const getSlotTimeRange = (slotIndex, branchData) => {
     const totalStartMinutes = (hours * 60) + minutes + (slotIndex * duration);
     const totalEndMinutes = totalStartMinutes + duration;
 
-    const formatTime = (totalMins) => {
-        let h = Math.floor(totalMins / 60);
-        let m = totalMins % 60;
-        const ampm = h >= 12 ? 'PM' : 'AM';
-        if (h > 12) h -= 12;
-        if (h === 0) h = 12;
-        return `${h}:${m.toString().padStart(2, '0')} ${ampm}`;
-    };
-
-    return `${formatTime(totalStartMinutes)} - ${formatTime(totalEndMinutes)}`;
+    return `${formatMinutesToTime(totalStartMinutes)} - ${formatMinutesToTime(totalEndMinutes)}`;
 };

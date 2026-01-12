@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { validateEdit } from '../utils/editValidator';
 import ConflictPanel from './ConflictPanel';
 import AutoFixButton from './AutoFixButton';
@@ -10,75 +10,83 @@ function EditSlotModal({ slot, timetable, context, onSave, onClose }) {
     const [validating, setValidating] = useState(false);
     const [isValid, setIsValid] = useState(true);
 
-    // Available options
-    const subjects = context?.smartInputData?.subjects || [];
-    const teachers = context?.smartInputData?.teachers || [];
-    const rooms = slot?.type === 'Practical'
+    // Context Extraction
+    const allSubjects = context?.smartInputData?.subjects || [];
+    const allTeachers = context?.smartInputData?.teachers || [];
+
+    // --- 1. SUBJECT FILTERING (Context-Aware: By Year/Div) ---
+    const filteredSubjects = useMemo(() => {
+        if (!slot || !slot.year) return allSubjects;
+
+        const targetYear = slot.year.trim().toLowerCase();
+
+        return allSubjects.filter(sub => {
+            // Strict match: Year must match
+            // Loose match: If subject has NO year, maybe show it? (Safer to be strict)
+            const sYear = sub.year ? sub.year.trim().toLowerCase() : '';
+            return sYear === targetYear;
+        });
+    }, [allSubjects, slot]);
+
+    // --- 2. TEACHER FILTERING (Context-Aware: By Subject) ---
+    const filteredTeachers = useMemo(() => {
+        // If no subject selected in the modal yet
+        if (!modifiedSlot.subject) return [];
+
+        const targetSubjectName = modifiedSlot.subject.trim().toLowerCase();
+        const mapping = context?.smartInputData?.teacherSubjectMap || [];
+
+        // Strategy: 
+        // 1. Look in Map (Input Phase Mapping)
+        // 2. Look in Teacher Objects (if they have 'subjects' array)
+
+        // A. From Map
+        const mappedTeacherNames = new Set();
+        mapping.forEach(m => {
+            if (m.subjectName && m.subjectName.trim().toLowerCase() === targetSubjectName) {
+                mappedTeacherNames.add(m.teacherName);
+            }
+        });
+
+        // B. From Teacher Object
+        // (Sometimes mapping is inferred or stored directly on teacher)
+        allTeachers.forEach(t => {
+            if (t.subjects && Array.isArray(t.subjects)) {
+                if (t.subjects.some(s => s.trim().toLowerCase() === targetSubjectName)) {
+                    mappedTeacherNames.add(t.name);
+                }
+            }
+        });
+
+        const allowedTeachers = allTeachers.filter(t => mappedTeacherNames.has(t.name));
+
+        // Fallback: If NO teachers mapped at all for this subject, 
+        // should we show ALL teachers? (Maybe it's a new subject).
+        // Decision: Show ALL with a visual warning -> or just Disable?
+        // User requested: "Disable teacher dropdown... Show message"
+        return allowedTeachers;
+
+    }, [modifiedSlot.subject, allTeachers, context]);
+
+    const rooms = slot?.type === 'Practical' || slot?.isPractical
         ? context?.branchData?.labs || []
         : context?.branchData?.rooms || [];
 
+    // --- 3. HANDLERS ---
+
     useEffect(() => {
-        // Validate on mount
         handleValidation(modifiedSlot);
-    }, []);
-
-    // Computed: Filter teachers based on subject
-    const filteredTeachers = React.useMemo(() => {
-        if (!modifiedSlot.subject) return []; // No subject selected -> No teachers
-
-        const mapping = context?.smartInputData?.teacherSubjectMap || [];
-
-        // CHECK: Do we have ANY mapping data?
-        // If inferred context (Edit Existing), mapping might be empty and teacher.subjects empty.
-        // In that case, we MUST fallback to showing ALL teachers.
-        const hasMappingData = mapping.length > 0 || teachers.some(t => t.subjects && t.subjects.length > 0);
-
-        if (!hasMappingData) {
-            return teachers; // Fallback: No filter
-        }
-
-        // 1. Find valid teacher names from Map (Normalize for safety)
-        const targetSubject = modifiedSlot.subject.trim().toLowerCase();
-
-        const validFromMap = new Set(
-            mapping
-                .filter(m => (m.subjectName || '').trim().toLowerCase() === targetSubject)
-                .map(m => m.teacherName)
-        );
-
-        return teachers.filter(t => {
-            // Check Map OR Embedded subjects
-            const hasSubject = t.subjects?.some(s => s.trim().toLowerCase() === targetSubject);
-            return validFromMap.has(t.name) || hasSubject;
-        });
-    }, [modifiedSlot.subject, teachers, context]);
+    }, []); // Check initial state
 
     const handleFieldChange = async (field, value) => {
         let updated = { ...modifiedSlot, [field]: value };
 
-        // AUTO-RESET: specialized logic for subject change
+        // Specialized Logic when changing Subject
         if (field === 'subject') {
-            const newSubject = value;
-            if (newSubject) {
-                // Re-calculate valid teachers for this NEW subject
-                const mapping = context?.smartInputData?.teacherSubjectMap || [];
-                const validFromMap = new Set(
-                    mapping.filter(m => m.subjectName === newSubject).map(m => m.teacherName)
-                );
-
-                // If current teacher is not valid for new subject, clear it
-                // We check against the full list of teachers to satisfy the condition
-                const isCurrentValid = teachers.some(t =>
-                    t.name === modifiedSlot.teacher &&
-                    (validFromMap.has(t.name) || t.subjects?.includes(newSubject))
-                );
-
-                if (!isCurrentValid) {
-                    updated.teacher = '';
-                }
-            } else {
-                updated.teacher = '';
-            }
+            // Reset Teacher if current teacher doesn't teach valid subject
+            // Or just reset always to force user to pick valid one? 
+            // Better UX: Reset always to avoid invalid ghost state.
+            updated.teacher = '';
         }
 
         setModifiedSlot(updated);
@@ -110,105 +118,135 @@ function EditSlotModal({ slot, timetable, context, onSave, onClose }) {
         handleValidation(fixedSlot);
     };
 
-    const isPractical = slot?.type === 'Practical';
+    // --- 4. UI HELPERS ---
+    const isPractical = slot?.type === 'Practical' || slot?.isPractical;
+    const hasTeachers = filteredTeachers.length > 0;
+    const subjectSelected = !!modifiedSlot.subject;
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                    <h2>Edit Slot</h2>
-                    <p className="slot-info">
-                        {slot?.day} - Slot {(slot?.slot || 0) + 1} - {slot?.year}-{slot?.division}
-                    </p>
+            <div className="edit-slot-card" onClick={(e) => e.stopPropagation()}>
+
+                {/* HEADER */}
+                <div className="card-header">
+                    <div className="header-icon">✏️</div>
+                    <div className="header-info">
+                        <h2>Edit Slot</h2>
+                        <span className="slot-meta">
+                            {slot?.day} • Slot {(slot?.slot || 0) + 1} • {slot?.year} - {slot?.division}
+                        </span>
+                    </div>
+                    <button className="close-btn" onClick={onClose}>×</button>
                 </div>
 
-                <div className="modal-body">
+                {/* BODY */}
+                <div className="card-body">
+
+                    {/* Practical Warning */}
                     {isPractical && (
-                        <div className="practical-warning">
-                            ⚠️ This is a practical slot. Changes affect all batches.
+                        <div className="notice-box warning">
+                            <span className="icon">⚠️</span>
+                            <div className="text">
+                                <strong>Practical Slot</strong><br />
+                                Changes here apply to the entire batch block.
+                            </div>
                         </div>
                     )}
 
-                    <div className="form-group">
-                        <label>Subject</label>
-                        <select
-                            value={modifiedSlot.subject || ''}
-                            onChange={(e) => handleFieldChange('subject', e.target.value)}
-                        >
-                            <option value="">Select subject...</option>
-                            {subjects.map(sub => (
-                                <option key={sub.name} value={sub.name}>
-                                    {sub.name}
+                    <div className="input-grid">
+                        {/* SUBJECT */}
+                        <div className="form-group">
+                            <label>Subject</label>
+                            <select
+                                value={modifiedSlot.subject || ''}
+                                onChange={(e) => handleFieldChange('subject', e.target.value)}
+                                className={!modifiedSlot.subject ? 'empty' : ''}
+                            >
+                                <option value="">Select a Subject...</option>
+                                {filteredSubjects.map(sub => (
+                                    <option key={sub.name} value={sub.name}>{sub.name}</option>
+                                ))}
+                            </select>
+                            <div className="field-hint">{filteredSubjects.length} subjects found for {slot?.year}</div>
+                        </div>
+
+                        {/* TEACHER */}
+                        <div className="form-group">
+                            <label>Teacher</label>
+                            <select
+                                value={modifiedSlot.teacher || ''}
+                                onChange={(e) => handleFieldChange('teacher', e.target.value)}
+                                disabled={!subjectSelected || !hasTeachers}
+                                className={!modifiedSlot.teacher ? 'empty' : ''}
+                            >
+                                <option value="">
+                                    {!subjectSelected ? "First select a subject" :
+                                        !hasTeachers ? "No teachers found" :
+                                            "Select a Teacher..."}
                                 </option>
-                            ))}
-                        </select>
+                                {filteredTeachers.map(t => (
+                                    <option key={t.name} value={t.name}>{t.name}</option>
+                                ))}
+                            </select>
+                            {!hasTeachers && subjectSelected && (
+                                <div className="error-text">No teachers available for this subject.</div>
+                            )}
+                        </div>
+
+                        {/* ROOM */}
+                        <div className="form-group">
+                            <label>{isPractical ? "Lab Room" : "Classroom"}</label>
+                            <select
+                                value={modifiedSlot.room || ''}
+                                onChange={(e) => handleFieldChange('room', e.target.value)}
+                            >
+                                <option value="">Select Room...</option>
+                                {/* Combine simple strings or object names if robust */}
+                                {rooms.map(r => {
+                                    const rName = typeof r === 'string' ? r : r.name;
+                                    return <option key={rName} value={rName}>{rName}</option>;
+                                })}
+                            </select>
+                        </div>
                     </div>
 
-                    <div className="form-group">
-                        <label>Teacher</label>
-                        <select
-                            value={modifiedSlot.teacher || ''}
-                            onChange={(e) => handleFieldChange('teacher', e.target.value)}
-                            disabled={!modifiedSlot.subject || filteredTeachers.length === 0}
-                        >
-                            <option value="">
-                                {!modifiedSlot.subject
-                                    ? "Select a subject first"
-                                    : filteredTeachers.length === 0
-                                        ? "No teachers available for this subject"
-                                        : "Select teacher..."}
-                            </option>
-                            {filteredTeachers.map(teacher => (
-                                <option key={teacher.name} value={teacher.name}>
-                                    {teacher.name}
-                                </option>
-                            ))}
-                        </select>
+                    {/* CONFLICTS */}
+                    <div className="validation-section">
+                        {validating && <div className="spinner-mini"></div>}
+                        <ConflictPanel conflicts={conflicts} />
+
+                        {conflicts.length > 0 && (
+                            <div className="autofix-wrapper">
+                                <AutoFixButton
+                                    slot={modifiedSlot}
+                                    conflicts={conflicts}
+                                    timetable={timetable}
+                                    context={context}
+                                    onFixApplied={handleAutoFixApplied}
+                                />
+                            </div>
+                        )}
                     </div>
-
-                    <div className="form-group">
-                        <label>{isPractical ? 'Lab' : 'Room'}</label>
-                        <select
-                            value={modifiedSlot.room || ''}
-                            onChange={(e) => handleFieldChange('room', e.target.value)}
-                        >
-                            <option value="">Select {isPractical ? 'lab' : 'room'}...</option>
-                            {rooms.map(room => (
-                                <option key={room} value={room}>
-                                    {room}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {validating && (
-                        <div className="validating">🔄 Validating...</div>
-                    )}
-
-                    <ConflictPanel conflicts={conflicts} />
-
-                    {conflicts.length > 0 && (
-                        <AutoFixButton
-                            slot={modifiedSlot}
-                            conflicts={conflicts}
-                            timetable={timetable}
-                            context={context}
-                            onFixApplied={handleAutoFixApplied}
-                        />
-                    )}
                 </div>
 
-                <div className="modal-footer">
-                    <button className="btn-cancel" onClick={onClose}>
-                        Cancel
-                    </button>
-                    <button
-                        className="btn-save"
-                        onClick={handleSave}
-                        disabled={!isValid || validating}
-                    >
-                        Save Changes
-                    </button>
+                {/* FOOTER */}
+                <div className="card-footer">
+                    <div className="status-indicator">
+                        {isValid ?
+                            <span className="status-valid">✔ Valid</span> :
+                            <span className="status-invalid">Invalid Configuration</span>
+                        }
+                    </div>
+                    <div className="actions">
+                        <button className="btn-secondary" onClick={onClose}>Cancel</button>
+                        <button
+                            className="btn-primary"
+                            onClick={handleSave}
+                            disabled={!isValid || validating}
+                        >
+                            Save Changes
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

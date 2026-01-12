@@ -1,156 +1,250 @@
+/* EditSlotModal.css */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.edit-slot-card {
+    background: white;
+    width: 450px;
+    max-width: 90vw;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* HEADER */
+.card-header {
+    background: #f8f9fa;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.header-icon {
+    width: 40px;
+    height: 40px;
+    background: #e3f2fd;
+    color: #1976d2;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
-    animation: fadeIn 0.2s;
+    font-size: 1.2rem;
+    margin-right: 16px;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-.modal-content {
-    background: white;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    animation: slideUp 0.3s;
-}
-
-@keyframes slideUp {
-    from {
-        transform: translateY(30px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-.modal-header {
-    padding: 24px;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.modal-header h2 {
-    margin: 0 0 8px 0;
-    font-size: 20px;
-    color: #212529;
-}
-
-.slot-info {
+.header-info h2 {
     margin: 0;
-    font-size: 13px;
-    color: #6c757d;
+    font-size: 1.25rem;
+    color: #1a1a1a;
+    font-weight: 600;
 }
 
-.modal-body {
+.slot-meta {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.close-btn {
+    margin-left: auto;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: #999;
+    cursor: pointer;
+    line-height: 0.8;
+}
+
+.close-btn:hover {
+    color: #333;
+}
+
+/* BODY */
+.card-body {
     padding: 24px;
+    overflow-y: auto;
+    max-height: 60vh;
 }
 
-.practical-warning {
-    padding: 12px;
+.notice-box.warning {
     background: #fff3cd;
-    border: 1px solid #ffc107;
-    border-radius: 6px;
-    font-size: 13px;
+    border: 1px solid #ffeeba;
+    padding: 12px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.9rem;
     color: #856404;
     margin-bottom: 20px;
 }
 
+.input-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
 .form-group {
-    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-group label {
-    display: block;
+    font-size: 0.9rem;
     font-weight: 600;
-    font-size: 13px;
-    color: #495057;
+    color: #444;
     margin-bottom: 6px;
 }
 
 .form-group select {
-    width: 100%;
     padding: 10px 12px;
-    border: 2px solid #e0e0e0;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: border-color 0.2s;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #111;
+    background-color: #fff;
+    transition: all 0.2s;
+    outline: none;
 }
 
 .form-group select:focus {
-    outline: none;
-    border-color: #667eea;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-.validating {
-    padding: 10px;
-    background: #e7f3ff;
-    border-radius: 6px;
-    text-align: center;
-    font-size: 13px;
-    color: #1565c0;
-    margin-top: 12px;
+.form-group select:disabled {
+    background-color: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
 }
 
-.modal-footer {
-    padding: 18px 24px;
-    border-top: 1px solid #e0e0e0;
+.form-group select.empty {
+    color: #6b7280;
+}
+
+.field-hint {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 4px;
+    text-align: right;
+}
+
+.error-text {
+    font-size: 0.8rem;
+    color: #dc2626;
+    margin-top: 4px;
+}
+
+/* FOOTER */
+.card-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #eaeaea;
+    background: #f9fafb;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-indicator span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-valid {
+    color: #059669;
+}
+
+.status-invalid {
+    color: #dc2626;
+}
+
+.actions {
+    display: flex;
     gap: 12px;
 }
 
-.btn-cancel,
-.btn-save {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
+.btn-secondary {
+    padding: 8px 16px;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #374151;
+    border-radius: 8px;
     font-weight: 500;
     cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #f3f4f6;
+}
+
+.btn-primary {
+    padding: 8px 20px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
     transition: all 0.2s;
 }
 
-.btn-cancel {
-    background: #e9ecef;
-    color: #495057;
+.btn-primary:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
 }
 
-.btn-cancel:hover {
-    background: #dee2e6;
-}
-
-.btn-save {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-}
-
-.btn-save:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.btn-save:disabled {
-    opacity: 0.5;
+.btn-primary:disabled {
+    background: #93c5fd;
     cursor: not-allowed;
+    transform: none;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); scale: 0.98; }
+    to { opacity: 1; transform: translateY(0); scale: 1; }
+}
+
+.spinner-mini {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ccc;
+    border-top-color: #333;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 8px;
+    display: inline-block;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }

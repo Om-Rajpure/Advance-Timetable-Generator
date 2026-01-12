@@ -1,6 +1,8 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
+import { generateDayLayout } from './timetableTransforms';
+
 /**
  * Generates a PDF containing timetables for all years and divisions.
  * Each division gets its own page.
@@ -8,7 +10,7 @@ import autoTable from 'jspdf-autotable';
  * @param {Object} fullGrid - The structured grid data { "FE": { "A": { ...days... } } }
  * @param {Object} branchData - Context for headers (Department Name, etc.)
  */
-export const generateFullTimetablePDF = (fullGrid, branchData) => {
+export const generateFullTimetablePDF = (fullGrid, branchData, customLayout = null) => {
     try {
         console.log("📄 PDF Generation Started");
 
@@ -50,34 +52,46 @@ export const generateFullTimetablePDF = (fullGrid, branchData) => {
 
                 // Prepare Table Data
                 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                const maxSlots = 8;
 
-                // Column Headers
+                // Dynamic Layout Generation
+                const layout = customLayout || generateDayLayout(branchData);
                 const columns = [{ header: 'Day', dataKey: 'day' }];
-                for (let i = 1; i <= maxSlots; i++) {
-                    columns.push({ header: `Slot ${i}`, dataKey: `slot${i}` });
-                }
+
+                layout.forEach((col, i) => {
+                    if (col.type === 'lecture') {
+                        columns.push({ header: col.label, dataKey: `slot${col.index}` });
+                    } else if (col.type === 'recess') {
+                        columns.push({ header: col.label, dataKey: `recess_${i}` });
+                    }
+                });
 
                 // Create Rows
                 const rows = days.map(day => {
                     const row = { day: day };
                     const daySlots = divData[day] || {};
 
-                    for (let i = 1; i <= maxSlots; i++) {
-                        const entries = daySlots[i] || [];
-                        if (entries.length > 0) {
-                            const content = entries.map(e => {
-                                const room = e.room ? `[${e.room}]` : '';
-                                const batch = e.batch ? `(${e.batch})` : '';
-                                // Only show teacher if present
-                                const teacher = e.teacher && e.teacher !== 'Unknown' ? e.teacher : '';
-                                return `${e.subject} ${batch}\n${teacher} ${room}`;
-                            }).join('\n---\n');
-                            row[`slot${i}`] = content;
-                        } else {
-                            row[`slot${i}`] = '';
+                    layout.forEach((col, i) => {
+                        if (col.type === 'lecture') {
+                            const entries = daySlots[col.index] || [];
+                            const key = `slot${col.index}`;
+
+                            if (entries.length > 0) {
+                                const content = entries.map(e => {
+                                    const room = e.room ? `[${e.room}]` : '';
+                                    const batch = e.batch ? `(${e.batch})` : '';
+                                    // Only show teacher if present
+                                    const teacher = e.teacher && e.teacher !== 'Unknown' ? e.teacher : '';
+                                    return `${e.subject} ${batch}\n${teacher} ${room}`;
+                                }).join('\n---\n');
+                                row[key] = content;
+                            } else {
+                                row[key] = '';
+                            }
+                        } else if (col.type === 'recess') {
+                            row[`recess_${i}`] = 'BREAK';
                         }
-                    }
+                    });
+
                     return row;
                 });
 

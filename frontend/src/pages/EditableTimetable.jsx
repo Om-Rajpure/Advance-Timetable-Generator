@@ -24,6 +24,7 @@ function EditableTimetable() {
     const [editingSlot, setEditingSlot] = useState(null);
     const [selectedYear, setSelectedYear] = useState(null);
     const [selectedDiv, setSelectedDiv] = useState(null);
+    const [slotConfig, setSlotConfig] = useState(location.state?.slots || null);
 
     // 1.5 Load from Storage if missing (Persistence Fix)
     useEffect(() => {
@@ -34,8 +35,19 @@ function EditableTimetable() {
             if (storedTimetable) {
                 try {
                     const parsedData = JSON.parse(storedTimetable);
-                    console.log("🔄 Loaded Timetable from LocalStorage:", parsedData.length, "slots");
-                    setTimetable(parsedData);
+                    console.log("🔄 Loaded Timetable Data:", parsedData);
+
+                    if (parsedData.timetable && Array.isArray(parsedData.timetable)) {
+                        // New Format: { timetable: [], slots: [] }
+                        setTimetable(parsedData.timetable);
+                        if (parsedData.slots) {
+                            console.log("✅ Found Slot Config in Payload:", parsedData.slots);
+                            setSlotConfig(parsedData.slots);
+                        }
+                    } else {
+                        // Old Format: Array directly
+                        setTimetable(parsedData);
+                    }
 
                     // Also try to restore context
                     if (!context.branchData) {
@@ -181,7 +193,20 @@ function EditableTimetable() {
 
     // Calculate fixed slots from branch config
     const fixedSlots = calculateTotalSlots(context.branchData);
-    const dayLayout = generateDayLayout(context.branchData);
+
+    // Dynamic Day Layout Logic (Task 1 & 2)
+    const dayLayout = slotConfig
+        ? slotConfig.map(s => ({
+            type: 'lecture',
+            index: s.slotIndex,
+            label: `${s.startTime} – ${s.endTime}`,
+            startTime: s.startTime,
+            endTime: s.endTime,
+            duration: 60
+        }))
+        : generateDayLayout(context.branchData);
+
+    // console.log("📅 [EditableTimetable] Applied Day Layout:", dayLayout);
 
     return (
         <div className="editable-timetable">
@@ -239,7 +264,7 @@ function EditableTimetable() {
 
                         <div className="right-controls">
                             <button
-                                onClick={() => generateFullTimetablePDF(transformToGrid(timetable, context.branchData), context.branchData)}
+                                onClick={() => generateFullTimetablePDF(transformToGrid(timetable, context.branchData), context.branchData, dayLayout)}
                                 className="download-btn"
                                 title="Download All Timetables"
                             >

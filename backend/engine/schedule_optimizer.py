@@ -13,147 +13,209 @@ class ScheduleOptimizer:
         
     def compact_daily_schedule(self, year, division, day):
         """
-        Re-organizes the day's schedule to eliminate gaps.
-        Strategy: Left-Shift Blocks.
+        Re-organizes the day's schedule to eliminate gaps using GRAVITY ALGORITHM.
+        
+        Strategy: Fill-First (Gravity)
+        1. Collect all valid assignments for the day.
+        2. CLEAR the day's slots in the state.
+        3. Sort assignments by priority (Practical blocks > Theory).
+        4. Re-insert them starting from Slot 0 (skipping Recess).
         """
         recess_slot = getattr(self.state, 'recess_slot', None)
         
-        # 1. Identify and COLLECT Assignments
-        temp_assignments = [] 
-        for i in range(12):
+        # 1. EXTRACT: Collect all Assignments
+        #    We grouping them into "Blocks" that must stay together (e.g. Lab sessions)
+        raw_assignments = []
+        for i in range(12): # Assuming max 12 slots/day
             if recess_slot is not None and i == recess_slot:
                 continue
                 
             ass = self.state.get_slot_assignment(day, i, year, division)
             if ass:
-                # Handle list (multi-batch)
+                # Normalize to list
                 is_multi = isinstance(ass, list)
                 data_list = ass if is_multi else [ass]
+                
+                # Check what type
                 first = data_list[0]
                 
-                temp_assignments.append({
-                    'slot': i,
+                raw_assignments.append({
+                    'original_slot': i,
                     'data': data_list,
-                    'is_multi': is_multi,
                     'type': first.get('type', 'THEORY'),
-                    'subject': first.get('subject')
+                    'subject': first.get('subject'),
+                    'is_practical': first.get('type') == 'Practical' or first.get('isPractical')
                 })
         
-        if not temp_assignments:
-            return
+        if not raw_assignments:
+            return # Nothing to compact
 
-        # 2. Group into BLOCKS (Contiguous assignments of same subject)
+        # 2. GROUPING (Reconstruct blocks)
+        #    If we have consecutive slots of same Subject+Type, treat as one BLOCK.
+        #    This is critical for Labs (2-3 hrs) to move as a unit.
         blocks = []
-        if temp_assignments:
-            current_block = [temp_assignments[0]]
+        if raw_assignments:
+            # Sort by original slot to ensure correct grouping order
+            raw_assignments.sort(key=lambda x: x['original_slot'])
             
-            for k in range(1, len(temp_assignments)):
-                prev = temp_assignments[k-1]
-                curr = temp_assignments[k]
+            current_block = [raw_assignments[0]]
+            
+            for k in range(1, len(raw_assignments)):
+                prev = raw_assignments[k-1]
+                curr = raw_assignments[k]
                 
-                slots_diff = curr['slot'] - prev['slot']
+                # Check continuity
+                is_consecutive = (curr['original_slot'] - prev['original_slot']) == 1
+                # If there's a recess gap, they might still be consecutive logically?
+                # For now, strict slot continuity is required for a BLOCK.
+                
                 same_subject = (curr['subject'] == prev['subject'])
                 same_type = (curr['type'] == prev['type'])
                 
-                # Logic: If same subject+type and relatively close (<=2 slots difference), group.
-                # Actually, strictly contiguous (or jumped over recess) is best.
-                # But since we just want to move them together, grouping by subject is safe.
-                
-                if same_subject and same_type and slots_diff <= 2:
+                if is_consecutive and same_subject and same_type:
                     current_block.append(curr)
                 else:
                     blocks.append(current_block)
                     current_block = [curr]
             blocks.append(current_block)
-            
-        # 3. ROLLBACK all slots (Clear the board)
+
+        # 3. CLEAR THE BOARD (The scariest part!)
+        #    We must remove these from the state so we can re-place them without self-collision.
         for block in blocks:
             for item in block:
                 for a in item['data']:
                     self.state.rollback_slot(a)
                     
-        # 4. RE-ASSIGN Blocks Contiguously
+        # 4. SORT BLOCKS
+        #    Priority: Practicals (Hard constraints) > Theory
+        #    Within same type: maintain original relative order (Stable sort)
+        #    Actually, to maintain relative order of lectures, we should JUST rely on original order.
+        #    BUT, if we want to fill gaps, we just push everything LEFT.
+        #    So, simpler is better: Keep original order of blocks.
+        #    Exception: If we couldn't place a block, we might try to swap? No, that breaks teacher flow.
+        
+        # 5. RE-INSERT WITH GRAVITY
         current_slot_ptr = 0
-        items_to_place = blocks[:]
+        total_slots = 8 # Soft limit, but loop goes to max
         
-        # Safety limit for iterations
-        max_scan = 12 
+        # Track failures to re-insert
+        failed_blocks = []
         
-        while items_to_place:
+        for block in blocks:
+            duration = len(block)
+            subj = block[0]['subject']
             
-            # Skip Recess Slot
-            if recess_slot is not None and current_slot_ptr == recess_slot:
-                current_slot_ptr += 1
-                continue
-                
-            if current_slot_ptr >= max_scan:
-                # Run out of day!
-                # This implies we couldn't fit everything back in.
-                # This can happen if shifting accidentally caused a conflict that wasn't there (rare)
-                # or if we are just failing to find a spot.
-                print(f"Compact Fail: Run out of slots for {year}-{division} on {day}.")
-                break
-                
+            with open('backend_compaction_trace.log', 'a') as f:
+                 f.write(f"COMPACTION: {year}-{division} | Block {subj} | Size: {duration} | OrigSlot: {block[0]['original_slot']}\n")
+            
             placed = False
             
-            for i, block in enumerate(items_to_place):
-                block_len = len(block)
-                # Can we place this block at current_slot_ptr?
-                if self._can_place_block(block, day, current_slot_ptr, block_len):
-                    self._place_block(block, day, current_slot_ptr)
-                    items_to_place.pop(i)
+            # Search for FIRST valid slot starting from current_slot_ptr
+            # We want to stack them as close to 0 as possible.
+            # We reset search from 0? No, that might re-order time.
+            # We searching from 0 fills gaps ("Tetris").
+            # Searching from last_placed preserve order.
+            # Requirement: "Remove empty slots between start and end".
+            # This implies "Slide Left".
+            
+            # To preserve teacher sequences (e.g. Math at 10am shouldn't move to 9am if 9am was empty? 
+            # Actually, "Compaction" implies moving to 9am.)
+            
+            # Let's try finding the EARLIEST POSSIBLE slot for each block.
+            search_start = 0 
+            
+            for start_s in range(search_start, 12):
+                # Bounds check
+                if start_s + duration > 12: 
+                    break
+                    
+                # Recess skip check
+                # A block cannot span across recess ideally? Or can it?
+                # Usually we don't want a lab split by recess.
+                # Assuming recess is a hard break.
+                hit_recess = False
+                if recess_slot is not None:
+                    # Check if any slot in range hits recess
+                    for i in range(duration):
+                        if (start_s + i) == recess_slot:
+                            hit_recess = True
+                            break
+                if hit_recess: continue
+                
+                # Check Constraints
+                if self._can_place_block(block, day, start_s, duration):
+                    self._place_block(block, day, start_s)
                     placed = True
-                    current_slot_ptr += block_len
                     break
             
             if not placed:
-                # Gap forced. Move pointer.
-                current_slot_ptr += 1
+                print(f"⚠️ Compaction Warning: Could not re-place block {block[0]['subject']} ({block[0]['type']}) in {year}-{division}. Restoring to original.")
+                # RESTORE to original slots
+                # We need to ensure original slots are still free?
+                # We cleared them, and if we followed specific order (sorted by time), 
+                # earlier blocks might have moved into our original slots?
+                # This is tricky. 
+                # Better strategy: Try to place at original_slot specifically.
+                
+                start_original = block[0]['original_slot']
+                if self._can_place_block(block, day, start_original, duration):
+                    self._place_block(block, day, start_original)
+                else:
+                    print(f"❌ CRITICAL: Could not even restore {block[0]['subject']} to original slot {start_original}!")
+                    failed_blocks.append(block)
 
     def _can_place_block(self, block, day, start_slot, duration):
         """Check if block can be placed starting at start_slot."""
-        recess_slot = getattr(self.state, 'recess_slot', None)
         
-        # 1. Bounds & Recess Check
+        # 1. Slot Vacancy Check (Is slot empty in current state?)
         for i in range(duration):
             s = start_slot + i
-            if s >= 8: return False # Max slots per day assumption
-            if recess_slot is not None and s == recess_slot: return False
+            # Check global conflict (other divisions)
+            # Since we only control OUR schedule, we check if WE have something there.
+            # But we cleared our slots? Yes, rollback_slot was called.
+            # So get_slot_assignment should return None, UNLESS we re-filled it in this loop.
             
+            existing = self.state.get_slot_assignment(day, s, block[0]['data'][0]['year'], block[0]['data'][0]['division'])
+            if existing: 
+                return False 
+
         # 2. Teacher Availability Check
         for i in range(duration):
             s = start_slot + i
-            # Block item i corresponds to offset i
-            if i < len(block):
-                valid_item = block[i]
-                sessions = valid_item['data']
-                for sess in sessions:
-                    teacher = sess.get('teacher')
-                    if teacher and not self.state.is_teacher_available(teacher, day, s):
-                        return False
+            valid_item = block[i]
+            sessions = valid_item['data']
+            for sess in sessions:
+                teacher = sess.get('teacher')
+                # Check teacher busy elsewhere
+                if teacher and not self.state.is_teacher_available(teacher, day, s):
+                    return False
         
-        # 3. Room Check (Flexible)
-        # Check first item room for simplicity
+        # 3. Room Check
+        # Try to use original room if possible, else find any room.
         first_item = block[0]
+        # Labs usually have fixed rooms. Theory is flexible.
+        is_theory = (first_item['type'] == 'THEORY')
         orig_sessions = first_item['data']
         orig_room = orig_sessions[0].get('room')
         
         room_valid = True
         for i in range(duration):
             s = start_slot + i
+            # For each sub-session (batch)
+            # Actually, just check if the proposed room is free.
             if orig_room and not self.state.is_room_available(orig_room, day, s):
                 room_valid = False
                 break
         
         if room_valid:
-            block[0]['_temp_assigned_room'] = orig_room
+            block[0]['_temp_target_room'] = orig_room
             return True
             
-        # If blocked, try Global Pool (only for THEORY)
-        if first_item['type'] == 'THEORY':
+        # If original room blocked, try to find NEW room (Only for Theory)
+        if is_theory:
              candidate_room = self._find_free_global_room_multi(day, start_slot, duration)
              if candidate_room:
-                 block[0]['_temp_assigned_room'] = candidate_room
+                 block[0]['_temp_target_room'] = candidate_room
                  return True
                  
         return False
@@ -169,7 +231,7 @@ class ScheduleOptimizer:
              for v in all_classrooms.values():
                  if isinstance(v, list): temp.extend(v)
              all_classrooms = list(set(temp))
-        if not isinstance(all_classrooms, list):
+        if not isinstance(all_classrooms, list) or not all_classrooms:
              all_classrooms = branch_data.get('rooms', [])
 
         for r in all_classrooms:
@@ -186,8 +248,8 @@ class ScheduleOptimizer:
         return None
 
     def _place_block(self, block, day, start_slot):
-        """Commit the block to the state."""
-        assigned_room = block[0].get('_temp_assigned_room')
+        """Commit the block to the state at new position."""
+        target_room = block[0].get('_temp_target_room')
         
         for i, item in enumerate(block):
             current_s = start_slot + i
@@ -197,8 +259,18 @@ class ScheduleOptimizer:
                 sess['day'] = day
                 sess['slot'] = current_s
                 
-                # Apply new room if applicable
-                if assigned_room and sess.get('type') == 'THEORY':
-                    sess['room'] = assigned_room
+                # Update room if we found a better one / forced one
+                # Note: For Labs (multi-batch), usually we don't swap rooms easily 
+                # because implies multiple different rooms. 
+                # But here we treat Lab as single block. 
+                # If target_room is set, it overrides.
+                # BUT wait, Labs have different rooms per batch usually?
+                # If 'target_room' reflects the first batch's room, we shouldn't apply it to all batches bluntly if they were different.
+                
+                # Safer: Only override room for Theory.
+                if sess.get('type') == 'THEORY' and target_room:
+                     sess['room'] = target_room
+                # For labs, keep original room unless specific logic added.
+                # But we checked original room availability above.
                     
                 self.state.assign_slot(sess)

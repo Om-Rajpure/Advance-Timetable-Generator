@@ -99,7 +99,12 @@ class TimetableScheduler:
             
             with open('backend_debug_inputs.json', 'w') as f:
                  import json
-                 json.dump({ "normalized_classes": self.normalized_classes }, f, default=str)
+                 subjects_debug = self.context.get('smartInputData', {}).get('subjects', [])
+                 json.dump({ 
+                     "normalized_classes": self.normalized_classes,
+                     "subjects_sample": subjects_debug[:20], # First 20 to check parsing
+                     "se_subjects": [s for s in subjects_debug if s.get('year') in ['SE', 'Second Year', 'II']]
+                 }, f, default=str)
             
             for class_obj in self.normalized_classes:
                 class_key = class_obj['id']
@@ -114,13 +119,21 @@ class TimetableScheduler:
                     # FIREWALL: Pass global_state
                     class_result = self.generate_single_class_timetable(class_obj, global_state)
                     
+                    # DEBUG: Print Count
+                    slot_c = len(class_result) if class_result else 0
+                    print(f"DEBUG: {class_key} raw slot count: {slot_c}")
+
                     # HIERARCHICAL STORAGE
                     if year not in all_timetables:
                         all_timetables[year] = {}
                     
-                    # Frontend expects { "timetable": [...] } wrapper per division
+                    # class_result is ALREADY Canonical (Dict) from generate_single_class_timetable
+                    # Do NOT format it again.
+                    formatted_tt = class_result if class_result else {}
+
+                    # Frontend expects { "timetable": ... } wrapper per division
                     all_timetables[year][division] = {
-                        "timetable": class_result if class_result else {}
+                        "timetable": formatted_tt
                     }
                     
                     if not class_result:
@@ -166,6 +179,8 @@ class TimetableScheduler:
 
             # --- PHASE 4: POST-PROCESSING & COMPACTION ---
             print("\n--- Starting Daily Compaction (No Gaps) ---")
+            with open('backend_compaction_trace.log', 'w') as f:
+                 f.write("COMPACTION PHASE STARTED\n")
             try:
                 from engine.schedule_optimizer import ScheduleOptimizer
                 optimizer = ScheduleOptimizer(global_state)
@@ -186,6 +201,8 @@ class TimetableScheduler:
                                 print(f"Error compacting {year}-{division} on {day}: {e}")
                                 # Don't crash global gen
             except Exception as e:
+                import traceback
+                traceback.print_exc()
                 print(f"Warning: Compaction failed or module missing: {e}")
 
             # 4. Final Validation / Partial Success
@@ -198,10 +215,7 @@ class TimetableScheduler:
             print(f"\nGeneration Complete. Generated {generated_count}/{expected_class_count} classes.")
             print(f"Failures: {len(failures)}")
             
-            # GUARANTEED SUCCESS if at least one generated (or even if 0, return structure so frontend handles it)
-            # The User wants "Return status, not throw". 
-            
-            # Recalculate slots filled for stats
+            # 5. Populate Statistics & Raw Data
             total_slots_filled = 0
             raw_all_slots = []
             for year_data in all_timetables.values():
@@ -212,13 +226,78 @@ class TimetableScheduler:
                             raw_all_slots.extend(day_slots)
                             total_slots_filled += len(day_slots)
 
+            # GENERATE TIME-BASED LAYOUT
+            day_layout = []
+            try:
+                # RELIABLE IMPORT: Add backend root to path to find 'utils'
+                import sys
+                import os
+                current_dir = os.path.dirname(os.path.abspath(__file__)) # .../backend/engine
+                backend_dir = os.path.dirname(current_dir) # .../backend
+                if backend_dir not in sys.path:
+                    sys.path.insert(0, backend_dir)
+
+                from utils.time_utils import calculate_time_slots, get_slot_time
+                from datetime import timedelta
+
+                time_config = calculate_time_slots(self.context.get('branchData', {}))
+                total_s = time_config['total_slots']
+                recess_s = time_config['recess_slot']
+                duration = int(self.context.get('branchData', {}).get('lectureDuration', 60))
+                
+                current_visual_idx = 1
+                for i in range(total_s):
+                    if recess_s is not None and i == recess_s:
+                        day_layout.append({
+                            "type": "recess",
+                            "index": -1,
+                            "label": "Recess"
+                        })
+                        continue
+                        
+                    start_dt = get_slot_time(i, self.context.get('branchData', {}))
+                    end_dt = start_dt + timedelta(minutes=duration)
+                    
+                    time_label = f"{start_dt.strftime('%I:%M %p')} - {end_dt.strftime('%I:%M %p')}"
+                    
+                    day_layout.append({
+                        "type": "lecture",
+                        "index": i, 
+                        "label": time_label
+                    })
+                    current_visual_idx += 1
+            except Exception as e:
+                # LOG ERROR
+                with open('backend_time_layout_error.log', 'w') as f:
+                    import traceback
+                    f.write(f"ERROR: {str(e)}\n\n{traceback.format_exc()}")
+                day_layout = []
+            
+            print(f"DEBUG: Generated Day Layout: {day_layout}")
+
+            # DEBUG: DUMP FINAL STRUCTURE
+            try:
+                import json
+                # Use a custom encoder for datetime/sets if necessary
+                class SetEncoder(json.JSONEncoder):
+                    def default(self, obj):
+                        if isinstance(obj, set): return list(obj)
+                        if isinstance(obj, datetime): return str(obj)
+                        return super().default(obj)
+
+                with open('backend_final_structure.json', 'w') as f:
+                    json.dump(all_timetables, f, indent=2, cls=SetEncoder)
+            except Exception as e:
+                print(f"Failed to dump structure: {e}")
+
             return {
-                "success": True, # Always true if we handled exceptions
+                "success": True, 
                 "stage": "COMPLETED",
-                "timetables": all_timetables, # Now Hierarchical
-                "failures": failures, # Frontend can display these
+                "timetables": all_timetables,
+                "failures": failures,
                 "raw_timetable": raw_all_slots, 
                 "qualityScore": 100, 
+                "dayLayout": day_layout,
                 "message": f"Generated {generated_count}/{expected_class_count} classes. {len(failures)} failures.",
                 "stats": {
                     "classes_generated": generated_count,
@@ -247,6 +326,17 @@ class TimetableScheduler:
             import traceback
             tb = traceback.format_exc()
             print(tb)
+            
+            # LOG TRACEBACK TO FILE
+            try:
+                with open('backend_startup_error.log', 'w') as f:
+                    f.write(f"TIMESTAMP: {str(datetime.now())}\n")
+                    f.write(f"ERROR: {str(e)}\n")
+                    f.write("TRACEBACK:\n")
+                    f.write(tb)
+            except:
+                pass
+
             return {
                 "success": False,
                 "stage": "GLOBAL_SETUP",
@@ -324,21 +414,25 @@ class TimetableScheduler:
         theory_scheduler.schedule_theory(class_obj)
         
         # 5. Extract & Format Result
-        # Get all slots filled in this state
-        raw_slots = class_state.get_filled_slots()
+        # Get all slots filled in this state (Global State has everyone!)
+        all_raw_slots = class_state.get_filled_slots()
         
-        # Format to canonical
-        formatted_all = self.format_to_canonical(raw_slots)
+        # FILTER ONLY CURRENT CLASS
+        current_year = class_obj['year']
+        current_div = class_obj['division']
         
-        # Extract just this class's schedule
-        class_id = class_obj['id']
-        class_timetable = formatted_all.get(class_id, {})
+        class_raw_slots = []
+        for s in all_raw_slots:
+            try:
+                # Type safe access
+                if isinstance(s, dict) and s.get('year') == current_year and s.get('division') == current_div:
+                    class_raw_slots.append(s)
+            except Exception as e:
+                print(f"Error filtering slot {s}: {e}")
+
         
-        # Attach any internal warnings to the result? 
-        # The result of this function is just the timetable dict { Day: [...] }.
-        # We need to pass warnings up.
-        # But for now, we just DON'T CRASH. 
-        # The external validator or the caller can check coverage again if needed for reporting.
+        # Format to canonical (returns { Day: { Slot: [...] } })
+        class_timetable = self.format_to_canonical(class_raw_slots)
         
         return class_timetable
 
@@ -404,82 +498,68 @@ class TimetableScheduler:
         """
         Convert list of slots to the canonical format:
         {
-            "SE-A": {
-                "Monday": [ {...}, ... ],
-                ...
+            "Monday": {
+                "0": [ {...}, ... ],
+                "1": [ ... ]
             },
             ...
         }
         """
-        canonical = {}
+        canonical_days = {}
         
         for slot in slots_list:
-            class_id = f"{slot['year']}-{slot['division']}"
             day = slot['day']
+            slot_idx = str(slot['slot']) # key as string for JSON consistency
             
-            if class_id not in canonical:
-                canonical[class_id] = {}
+            if day not in canonical_days:
+                canonical_days[day] = {}
             
-            if day not in canonical[class_id]:
-                canonical[class_id][day] = []
+            # Ensure list exists for this slot index
+            if slot_idx not in canonical_days[day]:
+                 canonical_days[day][slot_idx] = []
                 
             # Filter keys for clean output
             clean_slot = {k: v for k, v in slot.items() if k not in ['id', 'isPractical']}
             
-            # DEFAULT ROOM ASSIGNMENT FOR THEORY
-            # If room is ALREADY assigned (by Dynamic Scheduler), keep it.
-            # If NOT assigned (fallback/legacy), try to assign default.
+            # DEFAULT ROOM ASSIGNMENT (THEORY)
             if 'room' not in clean_slot or not clean_slot['room']:
                 assigned_room = None
-                
-                # 1. Try to fetch from Branch Data (Real Rooms)
-                # 1. Try to fetch from Branch Data (Real Rooms)
                 try:
+                    # Logic to find room
                     branch_data = self.context.get('branchData', {})
                     all_classrooms = branch_data.get('classrooms', [])
-                    
                     if isinstance(all_classrooms, dict):
-                         # Legacy conversion
                          temp = []
                          for v in all_classrooms.values():
                              if isinstance(v, list): temp.extend(v)
                          all_classrooms = list(set(temp))
-                    
                     if not all_classrooms:
-                        # Try 'rooms' key
                         all_classrooms = branch_data.get('rooms', [])
-
+                        
+                    # Deterministic Fallback based on Class ID
+                    # We need class_id from slot for hashing
+                    class_id = f"{slot['year']}-{slot['division']}"
+                    
                     if isinstance(all_classrooms, list) and len(all_classrooms) > 0:
-                        # Deterministic Fallback: Hash Class ID -> Index
-                        # This avoids random changes on re-renders but doesn't guarantee valid schedule (it's a fallback)
                         class_hash = sum(ord(c) for c in class_id)
                         rooms_list = [r.get('name') if isinstance(r, dict) else r for r in all_classrooms]
-                        
                         if rooms_list:
                              assigned_room = rooms_list[class_hash % len(rooms_list)]
-                        
-                except Exception as e:
-                    print(f"Warning: Failed to map real room: {e}")
+                except:
+                    pass
                 
-                # 2. Assign or Fallback
                 if assigned_room:
                     clean_slot['room'] = assigned_room
                 else:
-                    # Fallback to synthetic default
                     clean_slot['room'] = f"Classroom-{slot['year']}-{slot['division']}"
 
-            # Ensure critical keys exist
             if 'type' not in clean_slot:
-                clean_slot['type'] = 'THEORY' # Default
+                clean_slot['type'] = 'THEORY'
                 
-            canonical[class_id][day].append(clean_slot)
+            canonical_days[day][slot_idx].append(clean_slot)
             
-        # Sort slots by time
-        for class_id in canonical:
-            for day in canonical[class_id]:
-                canonical[class_id][day].sort(key=lambda s: s['slot'])
-                
-        return canonical
+        return canonical_days
+
 
     def _validate_inputs(self):
         """

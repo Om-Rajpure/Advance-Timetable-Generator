@@ -650,3 +650,273 @@ SUCCESS TE-A
 SUCCESS TE-B
 SUCCESS BE-A
 SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+FAILED SE-A: cannot import name 'get_slot_time' from 'utils.time_utils' (C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\utils\time_utils.py)
+FAILED SE-B: cannot import name 'get_slot_time' from 'utils.time_utils' (C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\utils\time_utils.py)
+FAILED SE-C: cannot import name 'get_slot_time' from 'utils.time_utils' (C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\utils\time_utils.py)
+FAILED TE-A: cannot import name 'get_slot_time' from 'utils.time_utils' (C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\utils\time_utils.py)
+FAILED TE-B: cannot import name 'get_slot_time' from 'utils.time_utils' (C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\utils\time_utils.py)
+FAILED BE-A: cannot import name 'get_slot_time' from 'utils.time_utils' (C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\utils\time_utils.py)
+FAILED BE-B: cannot import name 'get_slot_time' from 'utils.time_utils' (C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\utils\time_utils.py)
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+EMPTY SE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-C: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY TE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY TE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY BE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY BE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-C: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY TE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY TE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY BE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY BE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-C: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY TE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY TE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY BE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY BE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-C: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY TE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY TE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY BE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY BE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-C: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY TE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY TE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY BE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY BE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-C: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY TE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY TE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY BE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY BE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY SE-C: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY TE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY TE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY BE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+EMPTY BE-B: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+FAILED SE-A: string indices must be integers, not 'str'
+FAILED SE-B: string indices must be integers, not 'str'
+FAILED SE-C: string indices must be integers, not 'str'
+FAILED TE-A: string indices must be integers, not 'str'
+FAILED TE-B: string indices must be integers, not 'str'
+FAILED BE-A: string indices must be integers, not 'str'
+FAILED BE-B: string indices must be integers, not 'str'
+FAILED SE-A: string indices must be integers, not 'str'
+FAILED TE-A: string indices must be integers, not 'str'
+EMPTY BE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+FAILED SE-A: string indices must be integers, not 'str'
+FAILED TE-A: string indices must be integers, not 'str'
+EMPTY BE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS TE-A
+EMPTY BE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+SUCCESS SE-A
+SUCCESS TE-A
+EMPTY BE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+SUCCESS SE-A
+SUCCESS TE-A
+EMPTY BE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+SUCCESS SE-A
+SUCCESS TE-A
+EMPTY BE-A: Scheuling failed to assign any slots (Constraints too strict? No teachers?)
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B

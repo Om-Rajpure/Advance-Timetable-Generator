@@ -319,13 +319,39 @@ class TimetableState:
         if not login_time:
             return True # Default to available
             
-        from utils.time_utils import get_slot_time, is_time_in_window
+        # Lazy Import to avoid cycle/path issues
+        try:
+            from utils.time_utils import get_slot_time, is_time_in_window
+        except ImportError:
+            try:
+                from backend.utils.time_utils import get_slot_time, is_time_in_window
+            except ImportError:
+                # Fallback purely to avoid crash
+                print("CRITICAL IMPORT ERROR: Could not find time_utils")
+                return True
         
         # Calculate real time of slot
-        slot_time = get_slot_time(slot_index, self.branch_data)
+        try:
+            slot_time = get_slot_time(slot_index, self.branch_data)
+        except Exception as e:
+            # Fallback if time calculation breaks
+            return True
+        
+        # Get lecture duration (default 60 mins)
+        duration_mins = int(self.branch_data.get('lectureDuration', 60))
         
         # Check window
-        is_available = is_time_in_window(slot_time, login_time, meta.get('workingHours', 8))
+        working_hours = meta.get('workingHours', 8)
+        is_available = is_time_in_window(slot_time, login_time, working_hours, duration_mins)
+        
+        if not is_available:
+            # DEBUG LOG
+            try:
+                with open('backend_constraints_log.txt', 'a') as f:
+                    f.write(f"REJECTED: Teacher {teacher} on Day {day} Slot {slot_index} ({slot_time}) due to Window [{login_time} for {working_hours} hrs] (Dur: {duration_mins})\n")
+            except: 
+                pass
+            
         return is_available
 
     

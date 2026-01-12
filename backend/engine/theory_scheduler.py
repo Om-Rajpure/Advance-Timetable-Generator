@@ -139,6 +139,11 @@ class TheoryScheduler:
                     
                     if not assigned_room:
                          # No room available! Cannot schedule here.
+                         # DEBUG LOG
+                         try:
+                            with open('backend_constraints_log.txt', 'a') as f:
+                                f.write(f"REJECTED: Room Unavailable for {subject} ({year}-{division}) on {day} Slot {slot_idx}\n")
+                         except: pass
                          continue
 
                     # ASSIGN
@@ -178,10 +183,18 @@ class TheoryScheduler:
             all_classrooms = branch_data.get('rooms', [])
             
         # Iterate and Find First Free
+        # DEBUG: Print room count check once per class generation (to avoid spam, maybe logic needed?)
+        # For now, just print if empty
+        if not all_classrooms:
+             print(f"DEBUG: No classrooms found in branchData for {year}-{division}!")
+             
         for room in all_classrooms:
             room_name = room.get('name') if isinstance(room, dict) else room
             
             if self.state.is_room_available(room_name, day, slot_index):
                 return room_name
+            # else:
+            #     # DEBUG: Room occupied
+            #     pass
                 
         return None

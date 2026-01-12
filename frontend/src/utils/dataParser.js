@@ -55,6 +55,37 @@ function normalizeSubjectName(name) {
 }
 
 /**
+ * Normalize Academic Year
+ */
+function normalizeYear(yearInput) {
+    if (!yearInput) return '';
+
+    let y = yearInput.toString().trim().toUpperCase();
+
+    // Remove "YEAR" keyword
+    y = y.replace(/\s+YEAR/g, '').trim();
+
+    // Map common names
+    const map = {
+        'FIRST': 'FE',
+        'SECOND': 'SE',
+        'THIRD': 'TE',
+        'FINAL': 'BE',
+        'FOURTH': 'BE',
+        '1ST': 'FE',
+        '2ND': 'SE',
+        '3RD': 'TE',
+        '4TH': 'BE',
+        'I': 'FE',
+        'II': 'SE',
+        'III': 'TE',
+        'IV': 'BE'
+    };
+
+    return map[y] || y; // Return mapped value or original (e.g., 'SE')
+}
+
+/**
  * Parse File (CSV or Excel)
  */
 export async function parseFile(file, fileType = 'teachers') {
@@ -232,10 +263,17 @@ function processParsedData(data, fileType) {
                     sessionDuration = isPractical ? 2 : 1
                 }
 
+                // AUTO-FIX: If slots > 1, force it to be a Practical (Lab)
+                // because Theory scheduler only handles single slots, and block sessions
+                // are typically Labs in this system.
+                if (sessionDuration > 1) {
+                    isPractical = true
+                }
+
                 processed.data.push({
                     id: generateId(),
                     name: normalizeSubjectName(subjectName),
-                    year: year.toUpperCase().replace('YEAR', '').trim(), // Clean year input like 'SE Year' -> 'SE'
+                    year: normalizeYear(year), // Robust normalization
                     weeklyLectures: isNaN(weeklyLectures) ? 4 : weeklyLectures,
                     isPractical,
                     sessionLength: sessionDuration
