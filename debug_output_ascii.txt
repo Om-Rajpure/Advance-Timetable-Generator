@@ -1,0 +1,115 @@
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 413, in generate_single_class_timetable
+    success_labs = lab_scheduler.schedule_class_labs(class_obj)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\lab_scheduler.py", line 125, in schedule_class_labs
+    if self._assign_batch_subject(year, division, batch, subject, duration):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\lab_scheduler.py", line 203, in _assign_batch_subject
+    print(f"    \u2705 Assigned {subject['name']} to {batch} on {day} slot {start_slot} (Duration: {duration})")
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 4: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 120, in generate
+    class_result = self.generate_single_class_timetable(class_obj, global_state)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 417, in generate_single_class_timetable
+    print(f"  \U0001f538 Lab scheduling CRASHED for {class_obj['id']}: {e}")
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f538' in position 2: character maps to <undefined>
+============================================================
+Testing Core Timetable Generation Engine
+============================================================
+
+[TEST CONFIG]
+Years: ['SE']
+Divisions: SE-A
+Slots per day: 6
+Total slots available: 6 * 6 days = 36
+Subjects: 2 (lectures only, 2 per week each)
+Total lectures needed: 4
+Teachers: 3
+Rooms: 2
+Labs: 3
+
+[STARTING GENERATION]
+------------------------------------------------------------
+=== GLOBAL_SETUP ENTERED ===
+GLOBAL_SETUP STARTED
+DEBUG_TYPE: context_branchData = <class 'dict'>
+DEBUG_TYPE: context_smartInput = <class 'dict'>
+DEBUG_TYPE: academicYears = <class 'list'>
+DEBUG_TYPE: divisions = <class 'dict'>
+DEBUG_TYPE: labs = <class 'NoneType'>
+DEBUG_TYPE: teachers = <class 'list'>
+DEBUG_TYPE: subjects = <class 'list'>
+DEBUG_TYPE: map = <class 'NoneType'>
+GLOBAL_SETUP COMPLETED
+GENERATION LOOP STARTED
+Starting Multi-Class Generation Loop...
+
+==========================================
+Generating Timetable for: SE-A
+==========================================
+  Scheduling labs for SE-A (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Python Lab']
+ALLOCATING LAB: Python Lab | SE-A | Batch: B1
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 413, in generate_single_class_timetable
+    success_labs = lab_scheduler.schedule_class_labs(class_obj)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\lab_scheduler.py", line 125, in schedule_class_labs
+    if self._assign_batch_subject(year, division, batch, subject, duration):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\lab_scheduler.py", line 203, in _assign_batch_subject
+    print(f"    \u2705 Assigned {subject['name']} to {batch} on {day} slot {start_slot} (Duration: {duration})")
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 4: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 120, in generate
+    class_result = self.generate_single_class_timetable(class_obj, global_state)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 417, in generate_single_class_timetable
+    print(f"  \U0001f538 Lab scheduling CRASHED for {class_obj['id']}: {e}")
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f538' in position 2: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 162, in generate
+    print(f"\u274c FAILED to generate {class_key}: {error_msg}", flush=True)
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 0: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\test_generation.py", line 289, in <module>
+    result = test_generation()
+             ^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\test_generation.py", line 190, in test_generation
+    result = scheduler.generate()
+             ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 370, in generate
+    print(tb)
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 731: character maps to <undefined>

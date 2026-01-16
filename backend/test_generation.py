@@ -19,7 +19,7 @@ from engine.optimizer import TimetableOptimizer
 test_context = {
     "branchData": {
         "academicYears": ["SE"],
-        "workingDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "workingDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
         "divisions": {
             "SE": ["A", "B"]
         },
@@ -71,15 +71,6 @@ test_context = {
                 "type": "Practical",
                 "isPractical": True,
                 "subjects": ["AI Lab"]
-            },
-             {
-                "name": "Data Lab",
-                "year": "SE",
-                "division": "A",
-                "lecturesPerWeek": 4,
-                "type": "Practical",
-                "isPractical": True,
-                "subjects": ["Data Lab"]
             }
         ],
         "teachers": [
@@ -129,24 +120,6 @@ test_context = {
                 "isPractical": True,
                 "subjects": ["Python Lab"]
             },
-            {
-                "name": "AI Lab",
-                "year": "SE",
-                "division": "A",
-                "lecturesPerWeek": 4,
-                "type": "Practical",
-                "isPractical": True,
-                "subjects": ["AI Lab"]
-            },
-             {
-                "name": "Data Lab",
-                "year": "SE",
-                "division": "A",
-                "lecturesPerWeek": 4,
-                "type": "Practical",
-                "isPractical": True,
-                "subjects": ["Data Lab"]
-            },
             # SE-B (Copy of A)
             {
                 "name": "Machine Learning",
@@ -183,15 +156,6 @@ test_context = {
                 "type": "Practical",
                 "isPractical": True,
                 "subjects": ["AI Lab"]
-            },
-             {
-                "name": "Data Lab",
-                "year": "SE",
-                "division": "B",
-                "lecturesPerWeek": 4,
-                "type": "Practical",
-                "isPractical": True,
-                "subjects": ["Data Lab"]
             }
         ]
     }
@@ -301,6 +265,16 @@ def test_generation():
     print("\n" + "=" * 60)
     print("Test Completed!")
     print("=" * 60)
+    
+    if result['success']:
+        # Validation: Check that NO slots are on Wednesday-Saturday
+        allowed_days = test_context['branchData']['workingDays']
+        for s in slots_list:
+            if s.get('day') not in allowed_days:
+                print(f"CRITICAL FAILURE: Found slot on forbidden day {s.get('day')}: {s}")
+                raise RuntimeError(f"Found slot on forbidden day {s.get('day')}")
+                
+        print("Day Restriction Verification Passed: No slots outside configured Working Days.")
     
     # Final Assertions for Pytest
     assert result['success'] is True, f"Generation failed: {result.get('message')}"

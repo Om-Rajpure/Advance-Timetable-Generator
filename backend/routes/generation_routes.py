@@ -32,13 +32,13 @@ def generate_full_timetable():
         except Exception as e:
             err = {"success": False, "reason": "INVALID_JSON", "details": str(e)}
             with open('backend_last_error.json', 'w') as f: json.dump(err, f)
-            print(f"❌ JSON Parse Error: {e}")
+            print(f"JSON Parse Error: {e}")
             return jsonify(err), 400
 
         if not data or 'branchData' not in data or 'smartInputData' not in data:
             err = {"success": False, "reason": "INVALID_PAYLOAD", "details": "Missing required data fields (branchData or smartInputData)"}
             with open('backend_last_error.json', 'w') as f: json.dump(err, f)
-            print("❌ Missing branchData or smartInputData")
+            print("Missing branchData or smartInputData")
             return jsonify(err), 400
             
         # STRICT Deep Validation
@@ -77,7 +77,7 @@ def generate_full_timetable():
         # But partial success (success=True with failures) is 200.
         
         if not result.get('success'):
-            print(f"❌ Generation Global Failure: {result.get('message')}")
+            print(f"Generation Global Failure: {result.get('message')}")
             with open('backend_last_error.json', 'w') as f: json.dump(result, f, default=str)
             return jsonify(result), 400 
             
@@ -88,7 +88,7 @@ def generate_full_timetable():
         if not all_timetables and not failures:
              err = {"success": False, "reason": "NO_DATA_GENERATED", "details": "Scheduler returned success but no data."}
              with open('backend_last_error.json', 'w') as f: json.dump(err, f)
-             print("❌ No timetables AND no failures recorded?")
+             print("No timetables AND no failures recorded?")
              return jsonify(err), 400
              
         # 5. Soft Post-Gen Validation
@@ -101,7 +101,7 @@ def generate_full_timetable():
             try:
                 validator._validate_division(div_key, timetable)
             except ValidationError as ve:
-                print(f"⚠️ Validation Warning for {div_key}: {ve.reason}")
+                print(f"Validation Warning for {div_key}: {ve.reason}")
                 # SOFT FAIL: Add to errors but keep timetable
                 validation_errors.append({
                     "division": div_key,
@@ -114,9 +114,9 @@ def generate_full_timetable():
         result['validationErrors'] = validation_errors
         
         if validation_errors:
-            print(f"⚠️ Completing with {len(validation_errors)} validation warnings.")
+            print(f"Completing with {len(validation_errors)} validation warnings.")
         else:
-            print("✅ Generation & Validation Clean.")
+            print("Generation & Validation Clean.")
             
         # 6. Auto-Save to History
         # 6. Auto-Save to History
@@ -150,11 +150,11 @@ def generate_full_timetable():
                 action="Generation",
                 description=f"Full timetable generated with {len(full_timetable_list)} slots"
             )
-            print(f"✅ History Version Created: {version['versionId']}")
+            print(f"History Version Created: {version['versionId']}")
             result['versionId'] = version['versionId']
             
         except Exception as h_err:
-             print(f"⚠️ History Save Failed: {h_err}")
+             print(f"History Save Failed: {h_err}")
              # Do not fail generation if history fails, just log it
             
         # ALWAYS RETURN 200 for partial/full success
@@ -163,9 +163,9 @@ def generate_full_timetable():
     except Exception as e:
         import traceback
         tb = traceback.format_exc()
-        print("❌ CRITICAL SERVER CRASH TRACEBACK:")
+        print("CRITICAL SERVER CRASH TRACEBACK:")
         print(tb)
-        print(f"❌ CRITICAL SERVER CRASH MESSAGE: {str(e)}")
+        print(f"CRITICAL SERVER CRASH MESSAGE: {str(e)}")
         
         crash_info = {
             "success": False,

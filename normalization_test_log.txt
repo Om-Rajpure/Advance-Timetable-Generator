@@ -1,0 +1,46 @@
+.F..E
+======================================================================
+ERROR: test_subject_cleanup (__main__.TestDataNormalizer.test_subject_cleanup)
+Test trimming and casing of subjects
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\verify_normalization.py", line 43, in test_subject_cleanup
+    result = norm.normalize()
+             ^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\data_normalizer.py", line 43, in normalize
+    self._validate_completeness_and_batches()
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\data_normalizer.py", line 134, in _validate_completeness_and_batches
+    raise NormalizationError(f"Completeness Failure: Class {year}-{div} has NO theory subjects. Check input data.")
+engine.data_normalizer.NormalizationError: Completeness Failure: Class SE-B has NO theory subjects. Check input data.
+
+======================================================================
+FAIL: test_completeness_failure (__main__.TestDataNormalizer.test_completeness_failure)
+Test failure if a division has no theory subjects
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\verify_normalization.py", line 79, in test_completeness_failure
+    self.assertIn("class SE-B has NO theory subjects", str(cm.exception).lower().replace("class se-b", "class se-b"))
+AssertionError: 'class SE-B has NO theory subjects' not found in 'completeness failure: class se-b has no theory subjects. check input data.'
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.002s
+
+FAILED (failures=1, errors=1)
+=== DATA NORMALIZATION LAYER STARTED ===
+Normalized 4 subjects.
+Expanded subject list to 4 entries.
+=== DATA NORMALIZATION SUCCESSFUL ===
+=== DATA NORMALIZATION LAYER STARTED ===
+Normalized 1 subjects.
+Expanded subject list to 1 entries.
+
+Caught Expected Error: Completeness Failure: Class SE-B has NO theory subjects. Check input data.
+=== DATA NORMALIZATION LAYER STARTED ===
+Normalized 1 subjects.
+Expanding subject 'Generic Sub' (SE) to divisions: ['A', 'B']
+Expanded subject list to 2 entries.
+=== DATA NORMALIZATION SUCCESSFUL ===
+=== DATA NORMALIZATION LAYER STARTED ===
+=== DATA NORMALIZATION LAYER STARTED ===
+Normalized 1 subjects.
+Expanded subject list to 1 entries.

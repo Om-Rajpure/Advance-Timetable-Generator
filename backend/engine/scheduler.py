@@ -72,6 +72,23 @@ class TimetableScheduler:
                 print(f"DEBUG_TYPE: map = {type(si.get('teacherSubjectMap'))}")
                 
             # 1. Validate & Normalize Inputs
+            # NEW: Strict Data Normalization Layer
+            from .data_normalizer import DataNormalizer, NormalizationError
+            
+            print("Running Data Normalization Layer...")
+            try:
+                normalizer = DataNormalizer(self.context)
+                self.context = normalizer.normalize()
+            except NormalizationError as ne:
+                print(f"CRITICAL NORMALIZATION ERROR: {ne}")
+                return {
+                    "success": False,
+                    "stage": "NORMALIZATION",
+                    "errorType": "NormalizationError",
+                    "message": str(ne),
+                    "details": "Data contains inconsistencies that prevent safe generation."
+                }
+                
             self._run_stage("INPUT_NORMALIZATION", self._validate_and_normalize_inputs)
             
             print("GLOBAL_SETUP COMPLETED")
@@ -106,74 +123,74 @@ class TimetableScheduler:
                      "se_subjects": [s for s in subjects_debug if s.get('year') in ['SE', 'Second Year', 'II']]
                  }, f, default=str)
             
+            # STRICT GENERATION LOOP
+            expected_ids = set(c['id'] for c in self.normalized_classes)
+            generated_ids = set()
+            
             for class_obj in self.normalized_classes:
                 class_key = class_obj['id']
                 year = class_obj['year']
                 division = class_obj['division']
                 
                 print(f"\n==========================================")
-                print(f"🚀 Generating Timetable for: {class_key}")
+                print(f"Generating Timetable for: {class_key}")
                 print(f"==========================================")
-                
+
                 try:
+                    # TASK 3: VERIFY DATA EXISTS BEFORE TRYING
+                    subjects = self.context.get('smartInputData', {}).get('subjects', [])
+                    class_subjects = [
+                        s for s in subjects 
+                        if s.get('year') == year 
+                        and (not s.get('division') or s.get('division') == division)
+                    ]
+                    
+                    print(f"DATA CHECK: {class_key} has {len(class_subjects)} subjects.")
+                    if not class_subjects:
+                        # TASK 4: REMOVE SILENT SKIPS - FAIL LOUDLY
+                        raise RuntimeError(f"CRITICAL DATA ERROR: No subjects found for {class_key}. Cannot generate.")
+
                     # FIREWALL: Pass global_state
                     class_result = self.generate_single_class_timetable(class_obj, global_state)
                     
-                    # DEBUG: Print Count
-                    slot_c = len(class_result) if class_result else 0
-                    print(f"DEBUG: {class_key} raw slot count: {slot_c}")
+                    # TASK 4: CHECK RESULT
+                    if not class_result:
+                         raise RuntimeError(f"SCHEDULING FAILURE: Engine returned empty result for {class_key} despite valid data. Constraints might be impossible.")
 
-                    # HIERARCHICAL STORAGE
+                    # TASK 2: VERIFY RESULT STORAGE
                     if year not in all_timetables:
                         all_timetables[year] = {}
                     
-                    # class_result is ALREADY Canonical (Dict) from generate_single_class_timetable
-                    # Do NOT format it again.
-                    formatted_tt = class_result if class_result else {}
-
-                    # Frontend expects { "timetable": ... } wrapper per division
+                    # Store explicitly
                     all_timetables[year][division] = {
-                        "timetable": formatted_tt
+                        "timetable": class_result
                     }
                     
-                    if not class_result:
-                         # ANALYSIS: Why is it empty?
-                         subjects = self.context.get('smartInputData', {}).get('subjects', [])
-                         cls_subs = [s for s in subjects if s.get('year') == year and (not s.get('division') or s.get('division') == division)]
-                         
-                         if not cls_subs:
-                             fail_reason = "No subjects found for this class in input data."
-                         else:
-                             fail_reason = "Scheuling failed to assign any slots (Constraints too strict? No teachers?)"
-                             
-                         print(f"⚠️ Warning: No schedule generated for {class_key} (Empty). Reason: {fail_reason}", flush=True)
-                         failures[class_key] = fail_reason
-                         with open('backend_generation_progress.log', 'a') as f:
-                            f.write(f"EMPTY {class_key}: {fail_reason}\n")
-                    else:
-                        print(f"✅ Generated {class_key} successfully", flush=True)
-                        with open('backend_generation_progress.log', 'a') as f:
-                            f.write(f"SUCCESS {class_key}\n")
+                    # Verify immediate storage
+                    if division not in all_timetables[year]:
+                        raise RuntimeError(f"STORAGE ERROR: Failed to save result for {class_key} in result dictionary.")
+                        
+                    generated_ids.add(class_key)
+                    print(f"SAVED TIMETABLE: {class_key} | Days populated: {len(class_result)}")
+                    
+                    with open('backend_generation_progress.log', 'a') as f:
+                        f.write(f"SUCCESS {class_key}\n")
 
                 except Exception as class_err:
                     import traceback
                     traceback.print_exc()
-                    error_msg = str(class_err)
-                    print(f"❌ FAILED to generate {class_key}: {error_msg}", flush=True)
-                    failures[class_key] = error_msg
-                    
-                    with open('backend_generation_progress.log', 'a') as f:
-                        f.write(f"FAILED {class_key}: {error_msg}\n")
-                        
-                    # Ensure structure exists even on failure
-                    import traceback
-                    traceback.print_exc()
-                    error_msg = str(class_err)
-                    print(f"❌ FAILED to generate {class_key}: {error_msg}")
-                    failures[class_key] = error_msg
-                    # Ensure structure exists even on failure
-                    if year not in all_timetables: all_timetables[year] = {}
-                    all_timetables[year][division] = { "timetable": [], "error": error_msg }
+                    error_msg = f"FAILED to generate {class_key}: {str(class_err)}"
+                    print(error_msg, flush=True)
+                    # TASK 4: DO NOT CONTINUE IF DIVISION FAILS
+                    # The user prompt says "Generation FAILS loudly if any division is skipped"
+                    # raising here ensures the whole process stops and returns 500.
+                    raise RuntimeError(error_msg)
+            
+            # TASK 5: POST-GENERATION VALIDATION
+            missing_divisions = expected_ids - generated_ids
+            if missing_divisions:
+                raise RuntimeError(f"CRITICAL: The following divisions were SKIPPED: {missing_divisions}")
+
 
 
 
@@ -237,7 +254,7 @@ class TimetableScheduler:
                  error_msg = ("CRITICAL FAILURE: No lectures were placed for ANY class. "
                               "This usually means Constraint Logic (Time/Teacher/Room) rejected everything. "
                               "Check backend_constraints_log.txt for REJECTED reasons.")
-                 print(f"❌ {error_msg}")
+                 print(f"ERROR: {error_msg}")
                  raise RuntimeError(error_msg)
                  
             # GENERATE TIME-BASED LAYOUT
@@ -329,7 +346,7 @@ class TimetableScheduler:
             if total_slots_filled == 0:
                  error_msg = ("FATAL: Allocation failed. Grid initialized but no sessions placed. "
                               "Constraint Logic might have rejected everything.")
-                 print(f"❌ {error_msg}")
+                 print(f"ERROR: {error_msg}")
                  raise RuntimeError(error_msg)
 
             return {
@@ -412,10 +429,10 @@ class TimetableScheduler:
         try:
             success_labs = lab_scheduler.schedule_class_labs(class_obj)
             if not success_labs:
-                print(f"  🔸 Lab scheduling returned False for {class_obj['id']}")
+                print(f"  Lab scheduling returned False for {class_obj['id']}")
         except Exception as e:
-            print(f"  🔸 Lab scheduling CRASHED for {class_obj['id']}: {e}")
-            print(f"  🔸 Proceeding with Theory only (Partial Generation).")
+            print(f"  Lab scheduling CRASHED for {class_obj['id']}: {e}")
+            print(f"  Proceeding with Theory only (Partial Generation).")
             # Clear any partial lab slots to avoid phantom collisions? 
             # Ideally yes, but difficult to isolate. We trust rollback was done if needed.
             success_labs = False
@@ -444,7 +461,7 @@ class TimetableScheduler:
             for lab in lab_subjects:
                 if lab['name'] not in batch_labs:
                      error_msg = f"WARNING: Batch {batch} in {class_obj['id']} missing lab {lab['name']}"
-                     print(f"    🔸 {error_msg}")
+                     print(f"    {error_msg}")
                      # NO RAISE - Allow partial timetable
                      # We can append to a warnings list if we refactor return type, 
                      # but for now, main priority is NOT CRASHING.
@@ -458,6 +475,9 @@ class TimetableScheduler:
         # 5. Extract & Format Result
         # Get all slots filled in this state (Global State has everyone!)
         all_raw_slots = class_state.get_filled_slots()
+        print(f"DEBUG: {class_obj['id']} State Raw Slots: {len(all_raw_slots)}")
+        if all_raw_slots:
+             print(f"DEBUG: Sample Slot: {all_raw_slots[0]}")
         
         # FILTER ONLY CURRENT CLASS
         current_year = class_obj['year']
@@ -660,7 +680,7 @@ class TimetableScheduler:
                 unique_subjects[key] = s
                 cleaned_subjects.append(s)
             else:
-                print(f"    ⚠️ Warning: Dropping duplicate subject input: {s.get('name')} ({s.get('year')})")
+                print(f"    Warning: Dropping duplicate subject input: {s.get('name')} ({s.get('year')})")
         
         smart_input['subjects'] = cleaned_subjects
         subjects = cleaned_subjects # Update reference for further checks
@@ -672,16 +692,19 @@ class TimetableScheduler:
         num_days = len(working_days) if isinstance(working_days, list) else 5
         
         # Count labs per year
+        # Count labs per (Year, Division)
         lab_counts = {}
         for s in subjects:
             if s.get('isPractical') or s.get('type') == 'Practical':
                 y = s.get('year')
-                lab_counts[y] = lab_counts.get(y, 0) + 1
+                d = s.get('division')
+                key = (y, d)
+                lab_counts[key] = lab_counts.get(key, 0) + 1
                 
-        for year, count in lab_counts.items():
+        for (year, div), count in lab_counts.items():
             if count > num_days * daily_lab_limit:
-                msg = f"Year {year} has {count} labs but only {num_days} working days. Rule 'One Lab/Batch/Day' makes this impossible."
-                print(f"❌ CRITICAL CONFIG ERROR: {msg}")
+                msg = f"Class {year}-{div} has {count} labs but only {num_days} working days. Rule 'One Lab/Batch/Day' makes this impossible."
+                print(f"CRITICAL CONFIG ERROR: {msg}")
                 # We raise error to stop generation immediately and inform user
                 raise ValueError(msg)
                  
@@ -700,7 +723,7 @@ class TimetableScheduler:
                  lt = t.get('loginTime')
                  import re
                  if not re.match(r'^\d{1,2}:\d{2}(?:\s?[AaPp][Mm])?$', str(lt)):
-                     print(f"    ⚠️ Warning: Invalid loginTime format '{lt}' for teacher {t.get('name')}. Expected HH:MM or HH:MM AM/PM.")
+                     print(f"    Warning: Invalid loginTime format '{lt}' for teacher {t.get('name')}. Expected HH:MM or HH:MM AM/PM.")
                  
     def _generate_slot_id(self, slot):
         """Generate unique ID for a slot"""

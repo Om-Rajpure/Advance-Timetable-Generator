@@ -41,10 +41,22 @@ class TheoryScheduler:
             lectures_needed = int(subject.get('weeklyLectures', 3))
             subject_name = subject.get('name')
             print(f"ALLOCATING THEORY: {subject_name} | {year}-{division} | Needed: {lectures_needed}")
+            self.current_subject = subject_name
             
             teacher_name = self._get_teacher_for_subject(subject_name, division, year=year)
             
             assignments_count = 0
+            
+            # TRACKING DISTRIBUTION
+            if not hasattr(self, 'theory_count'):
+                self.theory_count = {d: 0 for d in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']}
+            if not hasattr(self, 'subject_day_usage'):
+                # Map: subject_name -> set(days)
+                self.subject_day_usage = {}
+
+            # Ensure subject entry exists
+            if subject_name not in self.subject_day_usage:
+                self.subject_day_usage[subject_name] = set()
             
             # Try to spread across different days first
             days_tried = set()
@@ -64,6 +76,9 @@ class TheoryScheduler:
                 
                 if slot_assigned:
                     assignments_count += 1
+                    # UPDATE TRACKING
+                    self.theory_count[best_day] += 1
+                    self.subject_day_usage[subject_name].add(best_day)
                 else: 
                     # If we couldn't fit on this day, we might loop and try another day
                     # But if we run out of days, we might fail or settle for uneven distribution
@@ -78,6 +93,11 @@ class TheoryScheduler:
             
             if assignments_count < lectures_needed:
                 print(f"    ! CAUTION: Only scheduled {assignments_count}/{lectures_needed} for {subject_name}")
+
+                print(f"    ! CAUTION: Only scheduled {assignments_count}/{lectures_needed} for {subject_name}")
+
+        # 4. POST-PROCESS BALANCING
+        self._balance_theory_distribution(year, division)
 
         return True
 
@@ -101,24 +121,86 @@ class TheoryScheduler:
                 return m.get('teacherName')
         return "TBA"
 
-    def _pick_best_day(self, year, division, teacher, excluded_days):
-        days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-        candidates = [d for d in days if d not in excluded_days]
+    def _pick_best_day(self, year, division, teacher, excluded_days) -> Optional[str]:
+        # Get configured working days or default to full week
+        cfg_days = self.context.get('branchData', {}).get('workingDays')
+        if not cfg_days or not isinstance(cfg_days, list):
+            cfg_days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+            
+        candidates = [d for d in cfg_days if d not in excluded_days]
         
-        # Score days: Lower score = Better
-        # Score = (Class Load) + (Teacher Load)
         best_day = None
         min_score = float('inf')
         
+        # Determine subject name from context? 
+        # _pick_best_day signature in original didn't have subject.
+        # But wait, I call it as: self._pick_best_day(year, division, teacher_name, days_tried)
+        # I need 'subject_name' to check 'subject_day_usage'.
+        # I MUST update the signature in a separate edit or rely on 'days_tried' which partly handles it?
+        # NO, 'days_tried' is for retry loop. 
+        # 'subject_day_usage' is for "don't put subject twice on same day".
+        # Current logic: If I already put subject on Monday, Monday should be in 'subject_day_usage[sub]'.
+        # The retry loop uses 'days_tried' to avoid re-picking the *same failed day*.
+        # But for *allocation*, I should filter out days where subject is ALREADY assigned.
+        
+        # Wait, I cannot change signature easily without changing call site which I did not in previous chunk?
+        # Actually I didn't change the call site signature in previous chunk. 
+        # I should have.
+        # Let's see if I can access subject from somewhere? No.
+        # BUT: I can rely on `subject_day_usage` if I knew the subject.
+        # FIX: I will get subject from `self.subject_day_usage` if I assume single-threaded subject processing loop?
+        # No, that's risky.
+        # Let's assume I missed updating the call site in previous chunk.
+        # I will fix call site and signature here together? 
+        # MultiReplace allows multiple chunks.
+        # Let's fix the call site in Chunk 1 logic if possible? 
+        # Chunk 1 was purely setup.
+        # I will update `schedule_theory` again in a follow-up or try to do it right now?
+        # I'll stick to modifying `_pick_best_day` to accept subject OR 
+        # use a member variable `self.current_subject` which I set in the loop?
+        # Setting `self.current_subject` in the loop is cleaner for minimal diff.
+        
+        # Let's use `current_subject` approach to avoid signature refactor hell.
+        subject_name = getattr(self, 'current_subject', None)
+        
         for day in candidates:
-            class_load = self.state.get_daily_load_for_class(year, division, day)
+            # CONSTRAINT 1: Max 1 lecture per subject per day
+            if subject_name and day in self.subject_day_usage.get(subject_name, set()):
+                continue # Skip this day, subject already present
+            
+            # Base Load (Theory Only)
+            theory_load = self.theory_count.get(day, 0)
+            
+            # Total Class Load (includes Labs)
+            # We still want to respect total limits
+            total_load = self.state.get_daily_load_for_class(year, division, day)
+            if total_load >= self.max_daily_lectures: continue
+            
+            # Teacher Load
             teacher_load = self.state.get_daily_load_for_teacher(teacher, day)
+            if teacher_load >= 4: continue
             
-            # Constraints
-            if class_load >= self.max_daily_lectures: continue
-            if teacher_load >= 4: continue # Max 4 lectures per day per teacher
+            # SCORING
+            # 1. Balanced Theory Dist (Primary)
+            score = theory_load * 10 
             
-            score = class_load + teacher_load
+            # 2. Avoid Consecutive Days (Secondary)
+            if subject_name:
+                used_days = self.subject_day_usage.get(subject_name, set())
+                # specific consecutive day check
+                all_days = self.context.get('branchData', {}).get('workingDays', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'])
+                if day in all_days:
+                    idx = all_days.index(day)
+                    if idx > 0 and all_days[idx-1] in used_days:
+                        score += 50 # Dislike consecutive
+                    if idx < len(all_days)-1 and all_days[idx+1] in used_days:
+                        score += 50
+                    
+            # 3. Saturday Lighter (Tertiary)
+            if day == 'Saturday':
+                # We want Saturday to be chosen LAST if loads are equal
+                score += 5
+                
             if score < min_score:
                 min_score = score
                 best_day = day
@@ -156,7 +238,7 @@ class TheoryScheduler:
                 if assignment_idx == 0 and "Mrs. S. R. Katke" in teacher: 
                      # Re-verify why it failed
                      meta = self.state.teacher_metadata.get(teacher, {})
-                     print(f"    🔍 DEBUG: {teacher} @ {day} Slot {slot_idx}")
+                     print(f"    DEBUG: {teacher} @ {day} Slot {slot_idx}")
                      print(f"      Login: {meta.get('loginTime')}, Window: {meta.get('workingHours')}h")
                      print(f"      Available? {is_avail}")
 
@@ -169,7 +251,7 @@ class TheoryScheduler:
                          assigned_elsewhere = True
                      
                      if not assigned_elsewhere:
-                         print(f"    ⚠️ DEBUG OVERRIDE: Forcing Slot {slot_idx} for {subject} despite Window constraint (First Placement).")
+                         print(f"    DEBUG OVERRIDE: Forcing Slot {slot_idx} for {subject} despite Window constraint (First Placement).")
                          is_avail = True # Force Allow
                 
                 if not is_avail:
@@ -242,4 +324,148 @@ class TheoryScheduler:
             #     # DEBUG: Room occupied
             #     pass
                 
-        return None
+    def _balance_theory_distribution(self, year, division):
+        """
+        Post-Process: Attempts to move theory slots from Heavy Days to Light Days.
+        Constraints:
+        1. Target day load < Heavy day load - 1
+        2. Target day must not already have this subject
+        3. Teacher must be free on target day/slot
+        4. Room must be free on target day/slot
+        """
+        print(f"  > Balancing Theory Load for {year}-{division}...")
+        
+        # Calculate load per day (Theory Only)
+        # Re-scan state because self.theory_count might be slightly off if we did other things?
+        # Better to rely on self.theory_count if we trust it, or scan grid.
+        # Let's scan simple grid for accuracy.
+        branch_data = self.context.get('branchData', {})
+        days = branch_data.get('workingDays')
+        if not days or not isinstance(days, list):
+            days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+            
+        # Try balancing Max 5 times
+        for pass_idx in range(5):
+            # Recalculate loads
+            loads = {day: 0 for day in days}
+            theory_slots_map = {day: [] for day in days} # store (slot_idx, assignment)
+            
+            # Scan current assignments
+            # Note: We don't have direct access to 'grid' here easily without scanning state.slots
+            # But state.slot_grid uses canonical keys? No, keys are (year, div, day, slot) in dict?
+            # StateManager uses 'slot_grid' keyed by unique string or tuple?
+            # Let's check state_manager.py... assign_slot uses keys like f"{year}_{div}_{day}_{slot}"
+            # It's expensive to reverse scan.
+            # Use `valide_slots` from `self.theory_count`? No, that's just counts.
+            
+            # Let's assume `self.theory_count` is accurate enough OR reconstruct it?
+            # We need actual slot objects to move them.
+            # We can use `self.state.get_day_assignments(year, division, day)` if it exists.
+            # It doesn't.
+            
+            # FAST SCAN: Iterate all slots for this class
+            # Assuming max 8 slots * 6 days = 48 checks. Very fast.
+            # We need finding Theory Slots.
+            
+            import utils.time_utils
+            # We need max slots
+            total_slots = 8 # Default
+            try:
+                tc = utils.time_utils.calculate_time_slots(branch_data)
+                total_slots = tc.get('total_slots', 8)
+                recess_slot = tc.get('recess_slot', -1)
+            except:
+                pass
+                
+            for d in days:
+                for s in range(total_slots):
+                     cell = self.state.get_slot_assignment(year, division, d, s)
+                     if cell and isinstance(cell, dict) and cell.get('type') == 'THEORY':
+                         loads[d] += 1
+                         theory_slots_map[d].append(cell)
+                     elif isinstance(cell, list):
+                         # Should not prevent list of theory? Usually Lab list.
+                         # If multiple theory?? No, theory is single.
+                         pass
+
+            # Find Max and Min Load (excluding Saturday if desired, or treat Saturday as lighter target?)
+            # Prompt says "Saturday should be lighter".
+            # So we treat Saturday as 'Normal' for being a SOURCE of moves? 
+            # Or receiving?
+            # Let's exclude Saturday from being a "Min" target if it's already > 2?
+            # Simple Logic: Max Load Day -> Min Load Day.
+            
+            sorted_days = sorted(days, key=lambda d: loads[d])
+            min_day = sorted_days[0]
+            max_day = sorted_days[-1]
+            
+            diff = loads[max_day] - loads[min_day]
+            if diff <= 1:
+                print("    > Load Balanced. Stopping.")
+                return # Balanced enough
+            
+            print(f"    Pass {pass_idx+1}: Attempting move from {max_day}({loads[max_day]}) to {min_day}({loads[min_day]})")
+            
+            moved = False
+            # Try to find a moveable slot from max_day
+            # Shuffle slots to avoid deterministic stuck
+            candidates = theory_slots_map[max_day]
+            random.shuffle(candidates)
+            
+            for slot_data in candidates:
+                subj = slot_data['subject']
+                teacher = slot_data['teacher']
+                current_slot_idx = slot_data['slot']
+                
+                # Validation Target Day:
+                # 1. Subject constraint: Min Day must NOT have this subject
+                # We can check existing slots in min_day
+                existing_subjects_in_min = set(s['subject'] for s in theory_slots_map[min_day])
+                if subj in existing_subjects_in_min:
+                    continue # Subject already exists on target day
+                
+                # 2. Find FREE slot in Min Day
+                target_slot = -1
+                for ts in range(total_slots):
+                    # Skip recess
+                    # if ts == recess_slot: continue 
+                    # State check handles validation usually?
+                    
+                    if self.state.is_slot_free(min_day, ts, year, division):
+                        if self.state.is_teacher_available(teacher, min_day, ts):
+                            target_slot = ts
+                            break
+                
+                if target_slot != -1:
+                    # EXECUTE SWAP (Move)
+                    # 1. Remove from old
+                    self.state.remove_slot(year, division, max_day, current_slot_idx)
+                    # 2. Add to new
+                    new_assign = slot_data.copy()
+                    new_assign['day'] = min_day
+                    new_assign['slot'] = target_slot
+                    # Room? Re-find dynamic room or keep old?
+                    # Old room might be occupied on new day.
+                    # Best to re-find room.
+                    new_room = self._find_available_room(year, division, min_day, target_slot)
+                    if new_room:
+                         new_assign['room'] = new_room
+                    else:
+                         # No room, revert?
+                         # Or keep old room name and hope? 
+                         # Verify old room avail?
+                         if self.state.is_room_available(slot_data['room'], min_day, target_slot):
+                             pass # Keep old
+                         else:
+                             # Abort this move
+                             self.state.assign_slot(slot_data) # Put back old
+                             continue
+                    
+                    self.state.assign_slot(new_assign)
+                    print(f"      Moved {subj} from {max_day} to {min_day}")
+                    moved = True
+                    break # One move per pass to re-evaluate loads
+            
+            if not moved:
+                print("      No valid moves found this pass.")
+                break

@@ -1,0 +1,161 @@
+============================================================
+Testing Core Timetable Generation Engine
+============================================================
+
+[TEST CONFIG]
+Years: ['SE']
+Divisions: SE-A
+Slots per day: 6
+Total slots available: 6 * 6 days = 36
+Subjects: 2 (lectures only, 2 per week each)
+Total lectures needed: 4
+Teachers: 3
+Rooms: 2
+Labs: 3
+
+[STARTING GENERATION]
+------------------------------------------------------------
+=== GLOBAL_SETUP ENTERED ===
+GLOBAL_SETUP STARTED
+DEBUG_TYPE: context_branchData = <class 'dict'>
+DEBUG_TYPE: context_smartInput = <class 'dict'>
+DEBUG_TYPE: academicYears = <class 'list'>
+DEBUG_TYPE: divisions = <class 'dict'>
+DEBUG_TYPE: labs = <class 'NoneType'>
+DEBUG_TYPE: teachers = <class 'list'>
+DEBUG_TYPE: subjects = <class 'list'>
+DEBUG_TYPE: map = <class 'NoneType'>
+GLOBAL_SETUP COMPLETED
+GENERATION LOOP STARTED
+Starting Multi-Class Generation Loop...
+
+==========================================
+Generating Timetable for: SE-A
+==========================================
+  Scheduling labs for SE-A (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Python Lab']
+ALLOCATING LAB: Python Lab | SE-A | Batch: B1
+    Assigned Python Lab to B1 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Python Lab | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'A')! Exist: <class 'dict'>
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 154, in generate
+    print(f"\u2705 Generated {class_key} successfully", flush=True)
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+    Assigned Python Lab to B2 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Python Lab | SE-A | Batch: B3
+      [LoadManager] Panic: No teachers valid for Python Lab Batch B3 on Monday. Relaxing Load Limits.
+      [LoadManager] Panic: No teachers valid for Python Lab Batch B3 on Monday. Relaxing Load Limits.
+    Assigned Python Lab to B3 on Monday slot 2 (Duration: 2)
+  Lab Summary for SE-A: 3/3 batches fully scheduled.
+  > Scheduling Theory for SE-A...
+    found 3 subjects for year 'SE', 2 are Theory.
+ALLOCATING THEORY: Machine Learning | SE-A | Needed: 3
+ALLOCATING THEORY: AI | SE-A | Needed: 3
+  > Balancing Theory Load for SE-A...
+    > Load Balanced. Stopping.
+DEBUG: SE-A State Raw Slots: 12
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Python Lab', 'teacher': 'Neha', 'room': 'Lab-1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+DEBUG: SE-A raw slot count: 5
+FAILED to generate SE-A: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 154, in generate
+    print(f"\u2705 Generated {class_key} successfully", flush=True)
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+FAILED to generate SE-A: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+
+==========================================
+Generating Timetable for: SE-B
+==========================================
+  Scheduling labs for SE-B (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Python Lab', 'AI Lab']
+ALLOCATING LAB: Python Lab | SE-B | Batch: B1
+      [LoadManager] Panic: No teachers valid for Python Lab Batch B1 on Monday. Relaxing Load Limits.
+      [LoadManager] Panic: No teachers valid for Python Lab Batch B1 on Monday. Relaxing Load Limits.
+    Assigned Python Lab to B1 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: AI Lab | SE-B | Batch: B1
+    Assigned AI Lab to B1 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: AI Lab | SE-B | Batch: B2
+    Assigned AI Lab to B2 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Python Lab | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Python Lab to B2 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Python Lab | SE-B | Batch: B3
+      [LoadManager] Panic: No teachers valid for Python Lab Batch B3 on Monday. Relaxing Load Limits.
+      [LoadManager] Panic: No teachers valid for Python Lab Batch B3 on Monday. Relaxing Load Limits.
+    Assigned Python Lab to B3 on Monday slot 4 (Duration: 2)
+ALLOCATING LAB: AI Lab | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'list'>
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 154, in generate
+    print(f"\u2705 Generated {class_key} successfully", flush=True)
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+    Assigned AI Lab to B3 on Tuesday slot 0 (Duration: 2)
+  Lab Summary for SE-B: 3/3 batches fully scheduled.
+  > Scheduling Theory for SE-B...
+    found 4 subjects for year 'SE', 2 are Theory.
+ALLOCATING THEORY: Machine Learning | SE-B | Needed: 3
+ALLOCATING THEORY: AI | SE-B | Needed: 3
+  > Balancing Theory Load for SE-B...
+    > Load Balanced. Stopping.
+DEBUG: SE-B State Raw Slots: 30
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Python Lab', 'teacher': 'Neha', 'room': 'Lab-1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+DEBUG: SE-B raw slot count: 5
+FAILED to generate SE-B: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 154, in generate
+    print(f"\u2705 Generated {class_key} successfully", flush=True)
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+FAILED to generate SE-B: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+
+--- Starting Daily Compaction (No Gaps) ---
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'list'>
+
+Generation Complete. Generated 2/2 classes.
+Failures: 2
+ALLOCATED SESSIONS COUNT: 0
+SAMPLE SESSION: None
+ERROR: CRITICAL FAILURE: No lectures were placed for ANY class. This usually means Constraint Logic (Time/Teacher/Room) rejected everything. Check backend_constraints_log.txt for REJECTED reasons.
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 241, in generate
+    raise RuntimeError(error_msg)
+RuntimeError: CRITICAL FAILURE: No lectures were placed for ANY class. This usually means Constraint Logic (Time/Teacher/Room) rejected everything. Check backend_constraints_log.txt for REJECTED reasons.
+
+
+Generation Result: FAILED
+Valid: False
+
+[FAILURE REASON]
+Message: CRITICAL FAILURE: No lectures were placed for ANY class. This usually means Constraint Logic (Time/Teacher/Room) rejected everything. Check backend_constraints_log.txt for REJECTED reasons.
+
+============================================================
+Test Completed!
+============================================================
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\test_generation.py", line 289, in <module>
+    result = test_generation()
+             ^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\test_generation.py", line 280, in test_generation
+    assert result['success'] is True, f"Generation failed: {result.get('message')}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Generation failed: CRITICAL FAILURE: No lectures were placed for ANY class. This usually means Constraint Logic (Time/Teacher/Room) rejected everything. Check backend_constraints_log.txt for REJECTED reasons.

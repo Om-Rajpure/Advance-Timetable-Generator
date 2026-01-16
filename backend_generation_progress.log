@@ -1027,3 +1027,186 @@ SUCCESS TE-A
 SUCCESS TE-B
 SUCCESS BE-A
 SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+FAILED SE-A: name 'days' is not defined
+FAILED SE-B: name 'days' is not defined
+FAILED SE-A: name 'days' is not defined
+FAILED SE-B: name 'days' is not defined
+FAILED SE-A: name 'days' is not defined
+FAILED SE-B: name 'days' is not defined
+FAILED SE-A: name 'days' is not defined
+FAILED SE-B: name 'days' is not defined
+FAILED SE-A: name 'days' is not defined
+FAILED SE-B: name 'days' is not defined
+FAILED SE-A: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+FAILED SE-B: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+FAILED SE-C: 'charmap' codec can't encode characters in position 4-5: character maps to <undefined>
+SUCCESS TE-A
+FAILED TE-B: 'charmap' codec can't encode characters in position 4-5: character maps to <undefined>
+FAILED BE-A: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+FAILED BE-B: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+FAILED SE-C: 'charmap' codec can't encode characters in position 4-5: character maps to <undefined>
+SUCCESS TE-A
+FAILED TE-B: 'charmap' codec can't encode characters in position 4-5: character maps to <undefined>
+FAILED BE-A: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+FAILED BE-B: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+SUCCESS SE-A
+SUCCESS SE-B
+FAILED SE-C: 'charmap' codec can't encode characters in position 4-5: character maps to <undefined>
+SUCCESS TE-A
+FAILED TE-B: 'charmap' codec can't encode characters in position 4-5: character maps to <undefined>
+FAILED BE-A: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+FAILED BE-B: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+SUCCESS SE-A
+SUCCESS SE-B
+FAILED SE-C: 'charmap' codec can't encode characters in position 4-5: character maps to <undefined>
+SUCCESS TE-A
+FAILED TE-B: 'charmap' codec can't encode characters in position 4-5: character maps to <undefined>
+FAILED BE-A: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+FAILED BE-B: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+SUCCESS SE-A
+SUCCESS SE-A
+SUCCESS SE-A
+SUCCESS BE-A
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B

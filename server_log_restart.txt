@@ -7,16 +7,7 @@ WARNING: This is a development server. Do not use it in a production deployment.
  * Running on http://192.168.0.103:5000
 Press CTRL+C to quit
  * Restarting with stat
-Server running on http://localhost:5000
  * Debugger is active!
  * Debugger PIN: 812-211-480
  * Detected change in 'C:\\Users\\omraj\\OneDrive\\Desktop\\Adv Timetable Gen\\backend\\routes\\generation_routes.py', reloading
- * Restarting with stat
 Server running on http://localhost:5000
- * Debugger is active!
- * Debugger PIN: 812-211-480
- * Detected change in 'C:\\Users\\omraj\\OneDrive\\Desktop\\Adv Timetable Gen\\backend\\routes\\generation_routes.py', reloading
- * Restarting with stat
-Server running on http://localhost:5000
- * Debugger is active!
- * Debugger PIN: 812-211-480

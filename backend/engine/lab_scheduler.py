@@ -146,7 +146,7 @@ class LabScheduler:
                 
         # STRICT VALIDATION: Check if we actually scheduled anything
         total_labs_placed = success_count * len(lab_subjects) 
-        print(f"  📊 Lab Summary for {year}-{division}: {success_count}/{num_batches} batches fully scheduled.")
+        print(f"  Lab Summary for {year}-{division}: {success_count}/{num_batches} batches fully scheduled.")
         
         # If any batch failed to get ALL labs, we should technically consider this a partial failure.
         # But we don't want to crash unless count is 0.
@@ -200,7 +200,7 @@ class LabScheduler:
             
             # 4. ASSIGN
             self._commit_assignment(year, division, batch, subject, teacher, lab_room, day, start_slot, duration)
-            print(f"    ✅ Assigned {subject['name']} to {batch} on {day} slot {start_slot} (Duration: {duration})")
+            print(f"    Assigned {subject['name']} to {batch} on {day} slot {start_slot} (Duration: {duration})")
             
             # LOG SUCCESS to file for tracing
             with open('backend_lab_trace.log', 'a') as f:
@@ -325,7 +325,9 @@ class LabScheduler:
         Actually Labs often are afternoon. But let's keep standard generation.
         """
         windows = []
-        days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+        days = self.branch_data.get('workingDays')
+        if not days or not isinstance(days, list):
+            days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
         
         # Determine slots
         try:
@@ -387,4 +389,6 @@ class LabScheduler:
                 return t
         
         # Fallback: Just take the first one (or shuffled by offset to avoid bias)
-        return available_teachers[0]
+        if available_teachers:
+            return available_teachers[0]
+        return None

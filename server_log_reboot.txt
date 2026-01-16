@@ -1,0 +1,2174 @@
+Server running on http://localhost:5000
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.103:5000
+Press CTRL+C to quit
+ * Restarting with stat
+Server running on http://localhost:5000
+ * Debugger is active!
+ * Debugger PIN: 812-211-480
+127.0.0.1 - - [16/Jan/2026 18:36:14] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:36:51] "OPTIONS /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:36:51] "OPTIONS /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:36:52] "GET /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:36:52] "GET /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:36:54] "OPTIONS /api/generate/full HTTP/1.1" 200 -
+GENERATION STARTED
+RAW PAYLOAD KEYS: ['branchData', 'smartInputData']
+Deep Validation: 3 Years, 34 Subjects
+=== GLOBAL_SETUP ENTERED ===
+GLOBAL_SETUP STARTED
+DEBUG_TYPE: context_branchData = <class 'dict'>
+DEBUG_TYPE: context_smartInput = <class 'dict'>
+DEBUG_TYPE: academicYears = <class 'list'>
+DEBUG_TYPE: divisions = <class 'dict'>
+DEBUG_TYPE: labs = <class 'NoneType'>
+DEBUG_TYPE: teachers = <class 'list'>
+DEBUG_TYPE: subjects = <class 'list'>
+DEBUG_TYPE: map = <class 'list'>
+Running Data Normalization Layer...
+=== DATA NORMALIZATION LAYER STARTED ===
+Normalized 34 subjects.
+Expanding subject 'Computer Networks' (TE) to divisions: ['A', 'B']
+Expanding subject 'Wc' (TE) to divisions: ['A', 'B']
+Expanding subject 'Fsjp' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Dl' (BE) to divisions: ['A', 'B']
+Expanding subject 'AI' (TE) to divisions: ['A', 'B']
+Expanding subject 'Aoa' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Mis' (BE) to divisions: ['A', 'B']
+Expanding subject 'Saids' (TE) to divisions: ['A', 'B']
+Expanding subject 'Dwm' (TE) to divisions: ['A', 'B']
+Expanding subject 'Coa' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Ese' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Fsjp' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Dsgt' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bda' (BE) to divisions: ['A', 'B']
+Expanding subject 'Nlp' (BE) to divisions: ['A', 'B']
+Expanding subject 'Bt' (BE) to divisions: ['A', 'B']
+Expanding subject 'Ese' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Fsjp' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Ed' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Oe-lm' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bda' (BE) to divisions: ['A', 'B']
+Expanding subject 'Wcn L' (TE) to divisions: ['A', 'B']
+Expanding subject 'Dl L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Ai L' (TE) to divisions: ['A', 'B']
+Expanding subject 'Aoa L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bt L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Fsjp L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Dwm L' (TE) to divisions: ['A', 'B']
+Expanding subject 'Coa L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bda L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Nlp L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Ese L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Ed L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Fsjp L' (SE) to divisions: ['A', 'B', 'C']
+Expanded subject list to 84 entries.
+=== DATA NORMALIZATION SUCCESSFUL ===
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Ese (SE)
+    Warning: Dropping duplicate subject input: Ese (SE)
+    Warning: Dropping duplicate subject input: Ese (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Bda (BE)
+    Warning: Dropping duplicate subject input: Bda (BE)
+    Warning: Dropping duplicate subject input: Fsjp L (SE)
+    Warning: Dropping duplicate subject input: Fsjp L (SE)
+    Warning: Dropping duplicate subject input: Fsjp L (SE)
+GLOBAL_SETUP COMPLETED
+GENERATION LOOP STARTED
+Starting Multi-Class Generation Loop...
+
+==========================================
+Generating Timetable for: SE-A
+==========================================
+DATA CHECK: SE-A has 12 subjects.
+  Scheduling labs for SE-A (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Aoa L', 'Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+ALLOCATING LAB: Aoa L | SE-A | Batch: B1
+    Assigned Aoa L to B1 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-A | Batch: B1
+    Assigned Fsjp L to B1 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-A | Batch: B1
+    Assigned Coa L to B1 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-A | Batch: B1
+    Assigned Ese L to B1 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-A | Batch: B1
+    Assigned Ed L to B1 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Fsjp L to B2 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Coa L to B2 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Ese L to B2 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Ed L to B2 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Aoa L to B2 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Coa L to B3 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Ese L to B3 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Ed L to B3 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Aoa L to B3 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Fsjp L to B3 on Friday slot 0 (Duration: 2)
+  Lab Summary for SE-A: 3/3 batches fully scheduled.
+  > Scheduling Theory for SE-A...
+    found 12 subjects for year 'SE', 7 are Theory.
+ALLOCATING THEORY: Fsjp | SE-A | Needed: 3
+ALLOCATING THEORY: Aoa | SE-A | Needed: 3
+ALLOCATING THEORY: Coa | SE-A | Needed: 3
+ALLOCATING THEORY: Ese | SE-A | Needed: 3
+ALLOCATING THEORY: Dsgt | SE-A | Needed: 3
+ALLOCATING THEORY: Ed | SE-A | Needed: 3
+ALLOCATING THEORY: Oe-lm | SE-A | Needed: 3
+    ! Could not find valid day for Oe-lm (2/3)
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+  > Balancing Theory Load for SE-A...
+    > Load Balanced. Stopping.
+DEBUG: SE-A State Raw Slots: 50
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: SE-A | Days populated: 5
+
+==========================================
+Generating Timetable for: SE-B
+==========================================
+DATA CHECK: SE-B has 12 subjects.
+  Scheduling labs for SE-B (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Aoa L', 'Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+ALLOCATING LAB: Aoa L | SE-B | Batch: B1
+    Assigned Aoa L to B1 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-B | Batch: B1
+    Assigned Fsjp L to B1 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-B | Batch: B1
+    Assigned Coa L to B1 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-B | Batch: B1
+    Assigned Ese L to B1 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-B | Batch: B1
+    Assigned Ed L to B1 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Fsjp L to B2 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Coa L to B2 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Ese L to B2 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Ed L to B2 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Aoa L to B2 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Coa L to B3 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Ese L to B3 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Ed L to B3 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Aoa L to B3 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Fsjp L to B3 on Friday slot 0 (Duration: 2)
+  Lab Summary for SE-B: 3/3 batches fully scheduled.
+  > Scheduling Theory for SE-B...
+    found 12 subjects for year 'SE', 7 are Theory.
+ALLOCATING THEORY: Fsjp | SE-B | Needed: 3
+ALLOCATING THEORY: Aoa | SE-B | Needed: 3
+ALLOCATING THEORY: Coa | SE-B | Needed: 3
+ALLOCATING THEORY: Ese | SE-B | Needed: 3
+ALLOCATING THEORY: Dsgt | SE-B | Needed: 3
+ALLOCATING THEORY: Ed | SE-B | Needed: 3
+ALLOCATING THEORY: Oe-lm | SE-B | Needed: 3
+    ! Could not find valid day for Oe-lm (2/3)
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+  > Balancing Theory Load for SE-B...
+    > Load Balanced. Stopping.
+DEBUG: SE-B State Raw Slots: 100
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: SE-B | Days populated: 5
+
+==========================================
+Generating Timetable for: SE-C
+==========================================
+DATA CHECK: SE-C has 12 subjects.
+  Scheduling labs for SE-C (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Aoa L', 'Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+ALLOCATING LAB: Aoa L | SE-C | Batch: B1
+    Assigned Aoa L to B1 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-C | Batch: B1
+    Assigned Fsjp L to B1 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-C | Batch: B1
+    Assigned Coa L to B1 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-C | Batch: B1
+    Assigned Ese L to B1 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-C | Batch: B1
+    Assigned Ed L to B1 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-C | Batch: B2
+    Assigned Fsjp L to B2 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-C | Batch: B2
+    Assigned Coa L to B2 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-C | Batch: B2
+    Assigned Ese L to B2 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-C | Batch: B2
+    Assigned Ed L to B2 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-C | Batch: B2
+    Assigned Aoa L to B2 on Friday slot 2 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Coa L to B3 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Ese L to B3 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Ed L to B3 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Aoa L to B3 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Fsjp L to B3 on Friday slot 2 (Duration: 2)
+  Lab Summary for SE-C: 3/3 batches fully scheduled.
+  > Scheduling Theory for SE-C...
+    found 12 subjects for year 'SE', 7 are Theory.
+ALLOCATING THEORY: Fsjp | SE-C | Needed: 3
+ALLOCATING THEORY: Aoa | SE-C | Needed: 3
+ALLOCATING THEORY: Coa | SE-C | Needed: 3
+ALLOCATING THEORY: Ese | SE-C | Needed: 3
+    ! Could not find valid day for Ese (1/3)
+    ! CAUTION: Only scheduled 1/3 for Ese
+    ! CAUTION: Only scheduled 1/3 for Ese
+ALLOCATING THEORY: Dsgt | SE-C | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Dsgt despite Window constraint (First Placement).
+    ! Could not find valid day for Dsgt (1/3)
+    ! CAUTION: Only scheduled 1/3 for Dsgt
+    ! CAUTION: Only scheduled 1/3 for Dsgt
+ALLOCATING THEORY: Ed | SE-C | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Ed despite Window constraint (First Placement).
+    ! Could not find valid day for Ed (1/3)
+    ! CAUTION: Only scheduled 1/3 for Ed
+    ! CAUTION: Only scheduled 1/3 for Ed
+ALLOCATING THEORY: Oe-lm | SE-C | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Oe-lm despite Window constraint (First Placement).
+    ! Could not find valid day for Oe-lm (1/3)
+    ! CAUTION: Only scheduled 1/3 for Oe-lm
+    ! CAUTION: Only scheduled 1/3 for Oe-lm
+  > Balancing Theory Load for SE-C...
+    > Load Balanced. Stopping.
+DEBUG: SE-C State Raw Slots: 143
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: SE-C | Days populated: 5
+
+==========================================
+Generating Timetable for: TE-A
+==========================================
+DATA CHECK: TE-A has 8 subjects.
+  Scheduling labs for TE-A (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Wcn L', 'Ai L', 'Dwm L']
+ALLOCATING LAB: Wcn L | TE-A | Batch: B1
+    Assigned Wcn L to B1 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-A | Batch: B1
+    Assigned Ai L to B1 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-A | Batch: B1
+    Assigned Dwm L to B1 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'TE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'TE', 'A')! Exist: <class 'dict'>
+    Assigned Ai L to B2 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'TE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'TE', 'A')! Exist: <class 'dict'>
+    Assigned Dwm L to B2 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'TE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'TE', 'A')! Exist: <class 'dict'>
+    Assigned Wcn L to B2 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'TE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'TE', 'A')! Exist: <class 'list'>
+    Assigned Dwm L to B3 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'TE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'TE', 'A')! Exist: <class 'list'>
+    Assigned Wcn L to B3 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'TE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'TE', 'A')! Exist: <class 'list'>
+    Assigned Ai L to B3 on Wednesday slot 2 (Duration: 2)
+  Lab Summary for TE-A: 3/3 batches fully scheduled.
+  > Scheduling Theory for TE-A...
+    found 8 subjects for year 'TE', 5 are Theory.
+ALLOCATING THEORY: Computer Networks | TE-A | Needed: 3
+ALLOCATING THEORY: Wc | TE-A | Needed: 3
+ALLOCATING THEORY: AI | TE-A | Needed: 3
+ALLOCATING THEORY: Saids | TE-A | Needed: 3
+ALLOCATING THEORY: Dwm | TE-A | Needed: 3
+  > Balancing Theory Load for TE-A...
+    > Load Balanced. Stopping.
+DEBUG: TE-A State Raw Slots: 176
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: TE-A | Days populated: 5
+
+==========================================
+Generating Timetable for: TE-B
+==========================================
+DATA CHECK: TE-B has 8 subjects.
+  Scheduling labs for TE-B (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Wcn L', 'Ai L', 'Dwm L']
+ALLOCATING LAB: Wcn L | TE-B | Batch: B1
+    Assigned Wcn L to B1 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-B | Batch: B1
+    Assigned Ai L to B1 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-B | Batch: B1
+    Assigned Dwm L to B1 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'TE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'TE', 'B')! Exist: <class 'dict'>
+    Assigned Ai L to B2 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'TE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'TE', 'B')! Exist: <class 'dict'>
+    Assigned Dwm L to B2 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'TE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'TE', 'B')! Exist: <class 'dict'>
+    Assigned Wcn L to B2 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-B | Batch: B3
+    Assigned Dwm L to B3 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-B | Batch: B3
+    Assigned Wcn L to B3 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-B | Batch: B3
+    Assigned Ai L to B3 on Wednesday slot 5 (Duration: 2)
+  Lab Summary for TE-B: 3/3 batches fully scheduled.
+  > Scheduling Theory for TE-B...
+    found 8 subjects for year 'TE', 5 are Theory.
+ALLOCATING THEORY: Computer Networks | TE-B | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Computer Networks despite Window constraint (First Placement).
+ALLOCATING THEORY: Wc | TE-B | Needed: 3
+ALLOCATING THEORY: AI | TE-B | Needed: 3
+ALLOCATING THEORY: Saids | TE-B | Needed: 3
+ALLOCATING THEORY: Dwm | TE-B | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Dwm despite Window constraint (First Placement).
+  > Balancing Theory Load for TE-B...
+    > Load Balanced. Stopping.
+DEBUG: TE-B State Raw Slots: 209
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: TE-B | Days populated: 5
+
+==========================================
+Generating Timetable for: BE-A
+==========================================
+DATA CHECK: BE-A has 9 subjects.
+  Scheduling labs for BE-A (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Dl L', 'Bt L', 'Bda L', 'Nlp L']
+ALLOCATING LAB: Dl L | BE-A | Batch: B1
+    Assigned Dl L to B1 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Bt L | BE-A | Batch: B1
+    Assigned Bt L to B1 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Bda L | BE-A | Batch: B1
+    Assigned Bda L to B1 on Wednesday slot 5 (Duration: 2)
+ALLOCATING LAB: Nlp L | BE-A | Batch: B1
+    Assigned Nlp L to B1 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Bt L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 5, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 6, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Bt L to B2 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Bda L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 5, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 6, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Bda L to B2 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Nlp L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 5, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 6, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Nlp L to B2 on Wednesday slot 5 (Duration: 2)
+ALLOCATING LAB: Dl L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 2, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 3, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Dl L to B2 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Bda L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 5, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 6, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Bda L to B3 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Nlp L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 5, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 6, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Nlp L to B3 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Dl L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 5, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 6, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Dl L to B3 on Wednesday slot 5 (Duration: 2)
+ALLOCATING LAB: Bt L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 2, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 3, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Bt L to B3 on Thursday slot 2 (Duration: 2)
+  Lab Summary for BE-A: 3/3 batches fully scheduled.
+  > Scheduling Theory for BE-A...
+    found 9 subjects for year 'BE', 5 are Theory.
+ALLOCATING THEORY: Dl | BE-A | Needed: 3
+ALLOCATING THEORY: Mis | BE-A | Needed: 3
+ALLOCATING THEORY: Bda | BE-A | Needed: 3
+ALLOCATING THEORY: Nlp | BE-A | Needed: 3
+ALLOCATING THEORY: Bt | BE-A | Needed: 3
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 154, in generate
+    class_result = self.generate_single_class_timetable(class_obj, global_state)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 473, in generate_single_class_timetable
+    theory_scheduler.schedule_theory(class_obj)
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 75, in schedule_theory
+    slot_assigned = self._assign_slot_on_day(year, division, best_day, subject_name, teacher_name, assignments_count)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 241, in _assign_slot_on_day
+    print(f"    \U0001f50d DEBUG: {teacher} @ {day} Slot {slot_idx}")
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+FAILED to generate BE-A: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+CRITICAL SERVER CRASH TRACEBACK:
+127.0.0.1 - - [16/Jan/2026 18:36:55] "POST /api/generate/full HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 154, in generate
+    class_result = self.generate_single_class_timetable(class_obj, global_state)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 473, in generate_single_class_timetable
+    theory_scheduler.schedule_theory(class_obj)
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 75, in schedule_theory
+    slot_assigned = self._assign_slot_on_day(year, division, best_day, subject_name, teacher_name, assignments_count)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 241, in _assign_slot_on_day
+    print(f"    \U0001f50d DEBUG: {teacher} @ {day} Slot {slot_idx}")
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 187, in generate
+    raise RuntimeError(error_msg)
+RuntimeError: FAILED to generate BE-A: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\routes\generation_routes.py", line 71, in generate_full_timetable
+    result = scheduler.generate()
+             ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 387, in generate
+    print(tb)
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 1001: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1458, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\routes\generation_routes.py", line 167, in generate_full_timetable
+    print(tb)
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 1001: character maps to <undefined>
+127.0.0.1 - - [16/Jan/2026 18:37:30] "OPTIONS /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:37:31] "OPTIONS /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:37:31] "GET /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:37:31] "GET /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:37:34] "OPTIONS /api/generate/full HTTP/1.1" 200 -
+GENERATION STARTED
+RAW PAYLOAD KEYS: ['branchData', 'smartInputData']
+Deep Validation: 3 Years, 34 Subjects
+=== GLOBAL_SETUP ENTERED ===
+GLOBAL_SETUP STARTED
+DEBUG_TYPE: context_branchData = <class 'dict'>
+DEBUG_TYPE: context_smartInput = <class 'dict'>
+DEBUG_TYPE: academicYears = <class 'list'>
+DEBUG_TYPE: divisions = <class 'dict'>
+DEBUG_TYPE: labs = <class 'NoneType'>
+DEBUG_TYPE: teachers = <class 'list'>
+DEBUG_TYPE: subjects = <class 'list'>
+DEBUG_TYPE: map = <class 'list'>
+Running Data Normalization Layer...
+=== DATA NORMALIZATION LAYER STARTED ===
+Normalized 34 subjects.
+Expanding subject 'Computer Networks' (TE) to divisions: ['A', 'B']
+Expanding subject 'Wc' (TE) to divisions: ['A', 'B']
+Expanding subject 'Fsjp' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Dl' (BE) to divisions: ['A', 'B']
+Expanding subject 'AI' (TE) to divisions: ['A', 'B']
+Expanding subject 'Aoa' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Mis' (BE) to divisions: ['A', 'B']
+Expanding subject 'Saids' (TE) to divisions: ['A', 'B']
+Expanding subject 'Dwm' (TE) to divisions: ['A', 'B']
+Expanding subject 'Coa' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Ese' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Fsjp' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Dsgt' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bda' (BE) to divisions: ['A', 'B']
+Expanding subject 'Nlp' (BE) to divisions: ['A', 'B']
+Expanding subject 'Bt' (BE) to divisions: ['A', 'B']
+Expanding subject 'Ese' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Fsjp' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Ed' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Oe-lm' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bda' (BE) to divisions: ['A', 'B']
+Expanding subject 'Wcn L' (TE) to divisions: ['A', 'B']
+Expanding subject 'Dl L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Ai L' (TE) to divisions: ['A', 'B']
+Expanding subject 'Aoa L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bt L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Fsjp L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Dwm L' (TE) to divisions: ['A', 'B']
+Expanding subject 'Coa L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bda L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Nlp L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Ese L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Ed L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Fsjp L' (SE) to divisions: ['A', 'B', 'C']
+Expanded subject list to 84 entries.
+=== DATA NORMALIZATION SUCCESSFUL ===
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Ese (SE)
+    Warning: Dropping duplicate subject input: Ese (SE)
+    Warning: Dropping duplicate subject input: Ese (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Bda (BE)
+    Warning: Dropping duplicate subject input: Bda (BE)
+    Warning: Dropping duplicate subject input: Fsjp L (SE)
+    Warning: Dropping duplicate subject input: Fsjp L (SE)
+    Warning: Dropping duplicate subject input: Fsjp L (SE)
+GLOBAL_SETUP COMPLETED
+GENERATION LOOP STARTED
+Starting Multi-Class Generation Loop...
+
+==========================================
+Generating Timetable for: SE-A
+==========================================
+DATA CHECK: SE-A has 12 subjects.
+  Scheduling labs for SE-A (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Aoa L', 'Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+ALLOCATING LAB: Aoa L | SE-A | Batch: B1
+    Assigned Aoa L to B1 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-A | Batch: B1
+    Assigned Fsjp L to B1 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-A | Batch: B1
+    Assigned Coa L to B1 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-A | Batch: B1
+    Assigned Ese L to B1 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-A | Batch: B1
+    Assigned Ed L to B1 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Fsjp L to B2 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Coa L to B2 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Ese L to B2 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Ed L to B2 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Aoa L to B2 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Coa L to B3 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Ese L to B3 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Ed L to B3 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Aoa L to B3 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Fsjp L to B3 on Friday slot 0 (Duration: 2)
+  Lab Summary for SE-A: 3/3 batches fully scheduled.
+  > Scheduling Theory for SE-A...
+    found 12 subjects for year 'SE', 7 are Theory.
+ALLOCATING THEORY: Fsjp | SE-A | Needed: 3
+ALLOCATING THEORY: Aoa | SE-A | Needed: 3
+ALLOCATING THEORY: Coa | SE-A | Needed: 3
+ALLOCATING THEORY: Ese | SE-A | Needed: 3
+ALLOCATING THEORY: Dsgt | SE-A | Needed: 3
+ALLOCATING THEORY: Ed | SE-A | Needed: 3
+ALLOCATING THEORY: Oe-lm | SE-A | Needed: 3
+    ! Could not find valid day for Oe-lm (2/3)
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+  > Balancing Theory Load for SE-A...
+    > Load Balanced. Stopping.
+DEBUG: SE-A State Raw Slots: 50
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: SE-A | Days populated: 5
+
+==========================================
+Generating Timetable for: SE-B
+==========================================
+DATA CHECK: SE-B has 12 subjects.
+  Scheduling labs for SE-B (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Aoa L', 'Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+ALLOCATING LAB: Aoa L | SE-B | Batch: B1
+    Assigned Aoa L to B1 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-B | Batch: B1
+    Assigned Fsjp L to B1 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-B | Batch: B1
+    Assigned Coa L to B1 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-B | Batch: B1
+    Assigned Ese L to B1 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-B | Batch: B1
+    Assigned Ed L to B1 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Fsjp L to B2 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Coa L to B2 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Ese L to B2 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Ed L to B2 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Aoa L to B2 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Coa L to B3 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Ese L to B3 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Ed L to B3 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Aoa L to B3 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Fsjp L to B3 on Friday slot 0 (Duration: 2)
+  Lab Summary for SE-B: 3/3 batches fully scheduled.
+  > Scheduling Theory for SE-B...
+    found 12 subjects for year 'SE', 7 are Theory.
+ALLOCATING THEORY: Fsjp | SE-B | Needed: 3
+ALLOCATING THEORY: Aoa | SE-B | Needed: 3
+ALLOCATING THEORY: Coa | SE-B | Needed: 3
+ALLOCATING THEORY: Ese | SE-B | Needed: 3
+ALLOCATING THEORY: Dsgt | SE-B | Needed: 3
+ALLOCATING THEORY: Ed | SE-B | Needed: 3
+ALLOCATING THEORY: Oe-lm | SE-B | Needed: 3
+    ! Could not find valid day for Oe-lm (2/3)
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+  > Balancing Theory Load for SE-B...
+    > Load Balanced. Stopping.
+DEBUG: SE-B State Raw Slots: 100
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: SE-B | Days populated: 5
+
+==========================================
+Generating Timetable for: SE-C
+==========================================
+DATA CHECK: SE-C has 12 subjects.
+  Scheduling labs for SE-C (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Aoa L', 'Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+ALLOCATING LAB: Aoa L | SE-C | Batch: B1
+    Assigned Aoa L to B1 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-C | Batch: B1
+    Assigned Fsjp L to B1 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-C | Batch: B1
+    Assigned Coa L to B1 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-C | Batch: B1
+    Assigned Ese L to B1 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-C | Batch: B1
+    Assigned Ed L to B1 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-C | Batch: B2
+    Assigned Fsjp L to B2 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-C | Batch: B2
+    Assigned Coa L to B2 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-C | Batch: B2
+    Assigned Ese L to B2 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-C | Batch: B2
+    Assigned Ed L to B2 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-C | Batch: B2
+    Assigned Aoa L to B2 on Friday slot 2 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Coa L to B3 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Ese L to B3 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Ed L to B3 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Aoa L to B3 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Fsjp L to B3 on Friday slot 2 (Duration: 2)
+  Lab Summary for SE-C: 3/3 batches fully scheduled.
+  > Scheduling Theory for SE-C...
+    found 12 subjects for year 'SE', 7 are Theory.
+ALLOCATING THEORY: Fsjp | SE-C | Needed: 3
+ALLOCATING THEORY: Aoa | SE-C | Needed: 3
+ALLOCATING THEORY: Coa | SE-C | Needed: 3
+ALLOCATING THEORY: Ese | SE-C | Needed: 3
+    ! Could not find valid day for Ese (1/3)
+    ! CAUTION: Only scheduled 1/3 for Ese
+    ! CAUTION: Only scheduled 1/3 for Ese
+ALLOCATING THEORY: Dsgt | SE-C | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Dsgt despite Window constraint (First Placement).
+    ! Could not find valid day for Dsgt (1/3)
+    ! CAUTION: Only scheduled 1/3 for Dsgt
+    ! CAUTION: Only scheduled 1/3 for Dsgt
+ALLOCATING THEORY: Ed | SE-C | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Ed despite Window constraint (First Placement).
+    ! Could not find valid day for Ed (1/3)
+    ! CAUTION: Only scheduled 1/3 for Ed
+    ! CAUTION: Only scheduled 1/3 for Ed
+ALLOCATING THEORY: Oe-lm | SE-C | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Oe-lm despite Window constraint (First Placement).
+    ! Could not find valid day for Oe-lm (1/3)
+    ! CAUTION: Only scheduled 1/3 for Oe-lm
+    ! CAUTION: Only scheduled 1/3 for Oe-lm
+  > Balancing Theory Load for SE-C...
+    > Load Balanced. Stopping.
+DEBUG: SE-C State Raw Slots: 143
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: SE-C | Days populated: 5
+
+==========================================
+Generating Timetable for: TE-A
+==========================================
+DATA CHECK: TE-A has 8 subjects.
+  Scheduling labs for TE-A (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Wcn L', 'Ai L', 'Dwm L']
+ALLOCATING LAB: Wcn L | TE-A | Batch: B1
+    Assigned Wcn L to B1 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-A | Batch: B1
+    Assigned Ai L to B1 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-A | Batch: B1
+    Assigned Dwm L to B1 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'TE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'TE', 'A')! Exist: <class 'dict'>
+    Assigned Ai L to B2 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'TE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'TE', 'A')! Exist: <class 'dict'>
+    Assigned Dwm L to B2 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'TE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'TE', 'A')! Exist: <class 'dict'>
+    Assigned Wcn L to B2 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'TE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'TE', 'A')! Exist: <class 'list'>
+    Assigned Dwm L to B3 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'TE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'TE', 'A')! Exist: <class 'list'>
+    Assigned Wcn L to B3 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'TE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'TE', 'A')! Exist: <class 'list'>
+    Assigned Ai L to B3 on Wednesday slot 2 (Duration: 2)
+  Lab Summary for TE-A: 3/3 batches fully scheduled.
+  > Scheduling Theory for TE-A...
+    found 8 subjects for year 'TE', 5 are Theory.
+ALLOCATING THEORY: Computer Networks | TE-A | Needed: 3
+ALLOCATING THEORY: Wc | TE-A | Needed: 3
+ALLOCATING THEORY: AI | TE-A | Needed: 3
+ALLOCATING THEORY: Saids | TE-A | Needed: 3
+ALLOCATING THEORY: Dwm | TE-A | Needed: 3
+  > Balancing Theory Load for TE-A...
+    > Load Balanced. Stopping.
+DEBUG: TE-A State Raw Slots: 176
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: TE-A | Days populated: 5
+
+==========================================
+Generating Timetable for: TE-B
+==========================================
+DATA CHECK: TE-B has 8 subjects.
+  Scheduling labs for TE-B (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Wcn L', 'Ai L', 'Dwm L']
+ALLOCATING LAB: Wcn L | TE-B | Batch: B1
+    Assigned Wcn L to B1 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-B | Batch: B1
+    Assigned Ai L to B1 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-B | Batch: B1
+    Assigned Dwm L to B1 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'TE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'TE', 'B')! Exist: <class 'dict'>
+    Assigned Ai L to B2 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'TE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'TE', 'B')! Exist: <class 'dict'>
+    Assigned Dwm L to B2 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'TE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'TE', 'B')! Exist: <class 'dict'>
+    Assigned Wcn L to B2 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-B | Batch: B3
+    Assigned Dwm L to B3 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-B | Batch: B3
+    Assigned Wcn L to B3 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-B | Batch: B3
+    Assigned Ai L to B3 on Wednesday slot 5 (Duration: 2)
+  Lab Summary for TE-B: 3/3 batches fully scheduled.
+  > Scheduling Theory for TE-B...
+    found 8 subjects for year 'TE', 5 are Theory.
+ALLOCATING THEORY: Computer Networks | TE-B | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Computer Networks despite Window constraint (First Placement).
+ALLOCATING THEORY: Wc | TE-B | Needed: 3
+ALLOCATING THEORY: AI | TE-B | Needed: 3
+ALLOCATING THEORY: Saids | TE-B | Needed: 3
+ALLOCATING THEORY: Dwm | TE-B | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Dwm despite Window constraint (First Placement).
+  > Balancing Theory Load for TE-B...
+    > Load Balanced. Stopping.
+DEBUG: TE-B State Raw Slots: 209
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: TE-B | Days populated: 5
+
+==========================================
+Generating Timetable for: BE-A
+==========================================
+DATA CHECK: BE-A has 9 subjects.
+  Scheduling labs for BE-A (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Dl L', 'Bt L', 'Bda L', 'Nlp L']
+ALLOCATING LAB: Dl L | BE-A | Batch: B1
+    Assigned Dl L to B1 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Bt L | BE-A | Batch: B1
+    Assigned Bt L to B1 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Bda L | BE-A | Batch: B1
+    Assigned Bda L to B1 on Wednesday slot 5 (Duration: 2)
+ALLOCATING LAB: Nlp L | BE-A | Batch: B1
+    Assigned Nlp L to B1 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Bt L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 5, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 6, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Bt L to B2 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Bda L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 5, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 6, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Bda L to B2 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Nlp L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 5, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 6, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Nlp L to B2 on Wednesday slot 5 (Duration: 2)
+ALLOCATING LAB: Dl L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 2, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 3, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Dl L to B2 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Bda L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 5, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 6, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Bda L to B3 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Nlp L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 5, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 6, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Nlp L to B3 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Dl L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 5, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 6, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Dl L to B3 on Wednesday slot 5 (Duration: 2)
+ALLOCATING LAB: Bt L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 2, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 3, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Bt L to B3 on Thursday slot 2 (Duration: 2)
+  Lab Summary for BE-A: 3/3 batches fully scheduled.
+  > Scheduling Theory for BE-A...
+    found 9 subjects for year 'BE', 5 are Theory.
+ALLOCATING THEORY: Dl | BE-A | Needed: 3
+ALLOCATING THEORY: Mis | BE-A | Needed: 3
+ALLOCATING THEORY: Bda | BE-A | Needed: 3
+ALLOCATING THEORY: Nlp | BE-A | Needed: 3
+ALLOCATING THEORY: Bt | BE-A | Needed: 3
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 154, in generate
+    class_result = self.generate_single_class_timetable(class_obj, global_state)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 473, in generate_single_class_timetable
+    theory_scheduler.schedule_theory(class_obj)
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 75, in schedule_theory
+    slot_assigned = self._assign_slot_on_day(year, division, best_day, subject_name, teacher_name, assignments_count)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 241, in _assign_slot_on_day
+    print(f"    \U0001f50d DEBUG: {teacher} @ {day} Slot {slot_idx}")
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+FAILED to generate BE-A: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+CRITICAL SERVER CRASH TRACEBACK:
+127.0.0.1 - - [16/Jan/2026 18:37:35] "POST /api/generate/full HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 154, in generate
+    class_result = self.generate_single_class_timetable(class_obj, global_state)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 473, in generate_single_class_timetable
+    theory_scheduler.schedule_theory(class_obj)
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 75, in schedule_theory
+    slot_assigned = self._assign_slot_on_day(year, division, best_day, subject_name, teacher_name, assignments_count)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 241, in _assign_slot_on_day
+    print(f"    \U0001f50d DEBUG: {teacher} @ {day} Slot {slot_idx}")
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 187, in generate
+    raise RuntimeError(error_msg)
+RuntimeError: FAILED to generate BE-A: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\routes\generation_routes.py", line 71, in generate_full_timetable
+    result = scheduler.generate()
+             ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 387, in generate
+    print(tb)
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 1001: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1458, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\routes\generation_routes.py", line 167, in generate_full_timetable
+    print(tb)
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 1001: character maps to <undefined>
+127.0.0.1 - - [16/Jan/2026 18:38:23] "OPTIONS /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:38:23] "OPTIONS /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:38:23] "GET /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:38:24] "GET /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:44:03] "OPTIONS /api/generate/full HTTP/1.1" 200 -
+GENERATION STARTED
+RAW PAYLOAD KEYS: ['branchData', 'smartInputData']
+Deep Validation: 3 Years, 34 Subjects
+=== GLOBAL_SETUP ENTERED ===
+GLOBAL_SETUP STARTED
+DEBUG_TYPE: context_branchData = <class 'dict'>
+DEBUG_TYPE: context_smartInput = <class 'dict'>
+DEBUG_TYPE: academicYears = <class 'list'>
+DEBUG_TYPE: divisions = <class 'dict'>
+DEBUG_TYPE: labs = <class 'NoneType'>
+DEBUG_TYPE: teachers = <class 'list'>
+DEBUG_TYPE: subjects = <class 'list'>
+DEBUG_TYPE: map = <class 'list'>
+Running Data Normalization Layer...
+=== DATA NORMALIZATION LAYER STARTED ===
+Normalized 34 subjects.
+Expanding subject 'Computer Networks' (TE) to divisions: ['A', 'B']
+Expanding subject 'Wc' (TE) to divisions: ['A', 'B']
+Expanding subject 'Fsjp' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Dl' (BE) to divisions: ['A', 'B']
+Expanding subject 'AI' (TE) to divisions: ['A', 'B']
+Expanding subject 'Aoa' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Mis' (BE) to divisions: ['A', 'B']
+Expanding subject 'Saids' (TE) to divisions: ['A', 'B']
+Expanding subject 'Dwm' (TE) to divisions: ['A', 'B']
+Expanding subject 'Coa' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Ese' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Fsjp' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Dsgt' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bda' (BE) to divisions: ['A', 'B']
+Expanding subject 'Nlp' (BE) to divisions: ['A', 'B']
+Expanding subject 'Bt' (BE) to divisions: ['A', 'B']
+Expanding subject 'Ese' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Fsjp' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Ed' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Oe-lm' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bda' (BE) to divisions: ['A', 'B']
+Expanding subject 'Wcn L' (TE) to divisions: ['A', 'B']
+Expanding subject 'Dl L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Ai L' (TE) to divisions: ['A', 'B']
+Expanding subject 'Aoa L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bt L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Fsjp L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Dwm L' (TE) to divisions: ['A', 'B']
+Expanding subject 'Coa L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bda L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Nlp L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Ese L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Ed L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Fsjp L' (SE) to divisions: ['A', 'B', 'C']
+Expanded subject list to 84 entries.
+=== DATA NORMALIZATION SUCCESSFUL ===
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Ese (SE)
+    Warning: Dropping duplicate subject input: Ese (SE)
+    Warning: Dropping duplicate subject input: Ese (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Bda (BE)
+    Warning: Dropping duplicate subject input: Bda (BE)
+    Warning: Dropping duplicate subject input: Fsjp L (SE)
+    Warning: Dropping duplicate subject input: Fsjp L (SE)
+    Warning: Dropping duplicate subject input: Fsjp L (SE)
+GLOBAL_SETUP COMPLETED
+GENERATION LOOP STARTED
+Starting Multi-Class Generation Loop...
+
+==========================================
+Generating Timetable for: SE-A
+==========================================
+DATA CHECK: SE-A has 12 subjects.
+  Scheduling labs for SE-A (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Aoa L', 'Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+ALLOCATING LAB: Aoa L | SE-A | Batch: B1
+    Assigned Aoa L to B1 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-A | Batch: B1
+    Assigned Fsjp L to B1 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-A | Batch: B1
+    Assigned Coa L to B1 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-A | Batch: B1
+    Assigned Ese L to B1 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-A | Batch: B1
+    Assigned Ed L to B1 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Fsjp L to B2 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Coa L to B2 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Ese L to B2 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Ed L to B2 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Aoa L to B2 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Coa L to B3 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Ese L to B3 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Ed L to B3 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Aoa L to B3 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Fsjp L to B3 on Friday slot 0 (Duration: 2)
+  Lab Summary for SE-A: 3/3 batches fully scheduled.
+  > Scheduling Theory for SE-A...
+    found 12 subjects for year 'SE', 7 are Theory.
+ALLOCATING THEORY: Fsjp | SE-A | Needed: 3
+ALLOCATING THEORY: Aoa | SE-A | Needed: 3
+ALLOCATING THEORY: Coa | SE-A | Needed: 3
+ALLOCATING THEORY: Ese | SE-A | Needed: 3
+ALLOCATING THEORY: Dsgt | SE-A | Needed: 3
+ALLOCATING THEORY: Ed | SE-A | Needed: 3
+ALLOCATING THEORY: Oe-lm | SE-A | Needed: 3
+    ! Could not find valid day for Oe-lm (2/3)
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+  > Balancing Theory Load for SE-A...
+    > Load Balanced. Stopping.
+DEBUG: SE-A State Raw Slots: 50
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: SE-A | Days populated: 5
+
+==========================================
+Generating Timetable for: SE-B
+==========================================
+DATA CHECK: SE-B has 12 subjects.
+  Scheduling labs for SE-B (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Aoa L', 'Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+ALLOCATING LAB: Aoa L | SE-B | Batch: B1
+    Assigned Aoa L to B1 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-B | Batch: B1
+    Assigned Fsjp L to B1 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-B | Batch: B1
+    Assigned Coa L to B1 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-B | Batch: B1
+    Assigned Ese L to B1 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-B | Batch: B1
+    Assigned Ed L to B1 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Fsjp L to B2 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Coa L to B2 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Ese L to B2 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Ed L to B2 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Aoa L to B2 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Coa L to B3 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Ese L to B3 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Ed L to B3 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Aoa L to B3 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Fsjp L to B3 on Friday slot 0 (Duration: 2)
+  Lab Summary for SE-B: 3/3 batches fully scheduled.
+  > Scheduling Theory for SE-B...
+    found 12 subjects for year 'SE', 7 are Theory.
+ALLOCATING THEORY: Fsjp | SE-B | Needed: 3
+ALLOCATING THEORY: Aoa | SE-B | Needed: 3
+ALLOCATING THEORY: Coa | SE-B | Needed: 3
+ALLOCATING THEORY: Ese | SE-B | Needed: 3
+ALLOCATING THEORY: Dsgt | SE-B | Needed: 3
+ALLOCATING THEORY: Ed | SE-B | Needed: 3
+ALLOCATING THEORY: Oe-lm | SE-B | Needed: 3
+    ! Could not find valid day for Oe-lm (2/3)
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+  > Balancing Theory Load for SE-B...
+    > Load Balanced. Stopping.
+DEBUG: SE-B State Raw Slots: 100
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: SE-B | Days populated: 5
+
+==========================================
+Generating Timetable for: SE-C
+==========================================
+DATA CHECK: SE-C has 12 subjects.
+  Scheduling labs for SE-C (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Aoa L', 'Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+ALLOCATING LAB: Aoa L | SE-C | Batch: B1
+    Assigned Aoa L to B1 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-C | Batch: B1
+    Assigned Fsjp L to B1 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-C | Batch: B1
+    Assigned Coa L to B1 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-C | Batch: B1
+    Assigned Ese L to B1 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-C | Batch: B1
+    Assigned Ed L to B1 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-C | Batch: B2
+    Assigned Fsjp L to B2 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-C | Batch: B2
+    Assigned Coa L to B2 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-C | Batch: B2
+    Assigned Ese L to B2 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-C | Batch: B2
+    Assigned Ed L to B2 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-C | Batch: B2
+    Assigned Aoa L to B2 on Friday slot 2 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Coa L to B3 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Ese L to B3 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Ed L to B3 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Aoa L to B3 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Fsjp L to B3 on Friday slot 2 (Duration: 2)
+  Lab Summary for SE-C: 3/3 batches fully scheduled.
+  > Scheduling Theory for SE-C...
+    found 12 subjects for year 'SE', 7 are Theory.
+ALLOCATING THEORY: Fsjp | SE-C | Needed: 3
+ALLOCATING THEORY: Aoa | SE-C | Needed: 3
+ALLOCATING THEORY: Coa | SE-C | Needed: 3
+ALLOCATING THEORY: Ese | SE-C | Needed: 3
+    ! Could not find valid day for Ese (1/3)
+    ! CAUTION: Only scheduled 1/3 for Ese
+    ! CAUTION: Only scheduled 1/3 for Ese
+ALLOCATING THEORY: Dsgt | SE-C | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Dsgt despite Window constraint (First Placement).
+    ! Could not find valid day for Dsgt (1/3)
+    ! CAUTION: Only scheduled 1/3 for Dsgt
+    ! CAUTION: Only scheduled 1/3 for Dsgt
+ALLOCATING THEORY: Ed | SE-C | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Ed despite Window constraint (First Placement).
+    ! Could not find valid day for Ed (1/3)
+    ! CAUTION: Only scheduled 1/3 for Ed
+    ! CAUTION: Only scheduled 1/3 for Ed
+ALLOCATING THEORY: Oe-lm | SE-C | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Oe-lm despite Window constraint (First Placement).
+    ! Could not find valid day for Oe-lm (1/3)
+    ! CAUTION: Only scheduled 1/3 for Oe-lm
+    ! CAUTION: Only scheduled 1/3 for Oe-lm
+  > Balancing Theory Load for SE-C...
+    > Load Balanced. Stopping.
+DEBUG: SE-C State Raw Slots: 143
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: SE-C | Days populated: 5
+
+==========================================
+Generating Timetable for: TE-A
+==========================================
+DATA CHECK: TE-A has 8 subjects.
+  Scheduling labs for TE-A (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Wcn L', 'Ai L', 'Dwm L']
+ALLOCATING LAB: Wcn L | TE-A | Batch: B1
+    Assigned Wcn L to B1 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-A | Batch: B1
+    Assigned Ai L to B1 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-A | Batch: B1
+    Assigned Dwm L to B1 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'TE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'TE', 'A')! Exist: <class 'dict'>
+    Assigned Ai L to B2 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'TE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'TE', 'A')! Exist: <class 'dict'>
+    Assigned Dwm L to B2 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'TE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'TE', 'A')! Exist: <class 'dict'>
+    Assigned Wcn L to B2 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'TE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'TE', 'A')! Exist: <class 'list'>
+    Assigned Dwm L to B3 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'TE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'TE', 'A')! Exist: <class 'list'>
+    Assigned Wcn L to B3 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'TE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'TE', 'A')! Exist: <class 'list'>
+    Assigned Ai L to B3 on Wednesday slot 2 (Duration: 2)
+  Lab Summary for TE-A: 3/3 batches fully scheduled.
+  > Scheduling Theory for TE-A...
+    found 8 subjects for year 'TE', 5 are Theory.
+ALLOCATING THEORY: Computer Networks | TE-A | Needed: 3
+ALLOCATING THEORY: Wc | TE-A | Needed: 3
+ALLOCATING THEORY: AI | TE-A | Needed: 3
+ALLOCATING THEORY: Saids | TE-A | Needed: 3
+ALLOCATING THEORY: Dwm | TE-A | Needed: 3
+  > Balancing Theory Load for TE-A...
+    > Load Balanced. Stopping.
+DEBUG: TE-A State Raw Slots: 176
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: TE-A | Days populated: 5
+
+==========================================
+Generating Timetable for: TE-B
+==========================================
+DATA CHECK: TE-B has 8 subjects.
+  Scheduling labs for TE-B (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Wcn L', 'Ai L', 'Dwm L']
+ALLOCATING LAB: Wcn L | TE-B | Batch: B1
+    Assigned Wcn L to B1 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-B | Batch: B1
+    Assigned Ai L to B1 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-B | Batch: B1
+    Assigned Dwm L to B1 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'TE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'TE', 'B')! Exist: <class 'dict'>
+    Assigned Ai L to B2 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'TE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'TE', 'B')! Exist: <class 'dict'>
+    Assigned Dwm L to B2 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'TE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'TE', 'B')! Exist: <class 'dict'>
+    Assigned Wcn L to B2 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-B | Batch: B3
+    Assigned Dwm L to B3 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-B | Batch: B3
+    Assigned Wcn L to B3 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-B | Batch: B3
+    Assigned Ai L to B3 on Wednesday slot 5 (Duration: 2)
+  Lab Summary for TE-B: 3/3 batches fully scheduled.
+  > Scheduling Theory for TE-B...
+    found 8 subjects for year 'TE', 5 are Theory.
+ALLOCATING THEORY: Computer Networks | TE-B | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Computer Networks despite Window constraint (First Placement).
+ALLOCATING THEORY: Wc | TE-B | Needed: 3
+ALLOCATING THEORY: AI | TE-B | Needed: 3
+ALLOCATING THEORY: Saids | TE-B | Needed: 3
+ALLOCATING THEORY: Dwm | TE-B | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Dwm despite Window constraint (First Placement).
+  > Balancing Theory Load for TE-B...
+    > Load Balanced. Stopping.
+DEBUG: TE-B State Raw Slots: 209
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: TE-B | Days populated: 5
+
+==========================================
+Generating Timetable for: BE-A
+==========================================
+DATA CHECK: BE-A has 9 subjects.
+  Scheduling labs for BE-A (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Dl L', 'Bt L', 'Bda L', 'Nlp L']
+ALLOCATING LAB: Dl L | BE-A | Batch: B1
+    Assigned Dl L to B1 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Bt L | BE-A | Batch: B1
+    Assigned Bt L to B1 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Bda L | BE-A | Batch: B1
+    Assigned Bda L to B1 on Wednesday slot 5 (Duration: 2)
+ALLOCATING LAB: Nlp L | BE-A | Batch: B1
+    Assigned Nlp L to B1 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Bt L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 5, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 6, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Bt L to B2 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Bda L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 5, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 6, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Bda L to B2 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Nlp L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 5, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 6, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Nlp L to B2 on Wednesday slot 5 (Duration: 2)
+ALLOCATING LAB: Dl L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 2, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 3, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Dl L to B2 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Bda L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 5, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 6, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Bda L to B3 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Nlp L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 5, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 6, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Nlp L to B3 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Dl L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 5, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 6, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Dl L to B3 on Wednesday slot 5 (Duration: 2)
+ALLOCATING LAB: Bt L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 2, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 3, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Bt L to B3 on Thursday slot 2 (Duration: 2)
+  Lab Summary for BE-A: 3/3 batches fully scheduled.
+  > Scheduling Theory for BE-A...
+    found 9 subjects for year 'BE', 5 are Theory.
+ALLOCATING THEORY: Dl | BE-A | Needed: 3
+ALLOCATING THEORY: Mis | BE-A | Needed: 3
+ALLOCATING THEORY: Bda | BE-A | Needed: 3
+ALLOCATING THEORY: Nlp | BE-A | Needed: 3
+ALLOCATING THEORY: Bt | BE-A | Needed: 3
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 154, in generate
+    class_result = self.generate_single_class_timetable(class_obj, global_state)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 473, in generate_single_class_timetable
+    theory_scheduler.schedule_theory(class_obj)
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 75, in schedule_theory
+    slot_assigned = self._assign_slot_on_day(year, division, best_day, subject_name, teacher_name, assignments_count)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 241, in _assign_slot_on_day
+    print(f"    \U0001f50d DEBUG: {teacher} @ {day} Slot {slot_idx}")
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+FAILED to generate BE-A: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+CRITICAL SERVER CRASH TRACEBACK:
+127.0.0.1 - - [16/Jan/2026 18:44:05] "POST /api/generate/full HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 154, in generate
+    class_result = self.generate_single_class_timetable(class_obj, global_state)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 473, in generate_single_class_timetable
+    theory_scheduler.schedule_theory(class_obj)
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 75, in schedule_theory
+    slot_assigned = self._assign_slot_on_day(year, division, best_day, subject_name, teacher_name, assignments_count)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 241, in _assign_slot_on_day
+    print(f"    \U0001f50d DEBUG: {teacher} @ {day} Slot {slot_idx}")
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 187, in generate
+    raise RuntimeError(error_msg)
+RuntimeError: FAILED to generate BE-A: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\routes\generation_routes.py", line 71, in generate_full_timetable
+    result = scheduler.generate()
+             ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 387, in generate
+    print(tb)
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 1001: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1458, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\routes\generation_routes.py", line 167, in generate_full_timetable
+    print(tb)
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 1001: character maps to <undefined>
+127.0.0.1 - - [16/Jan/2026 18:44:27] "OPTIONS /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:44:27] "OPTIONS /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:44:27] "GET /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:44:28] "GET /api/auth/verify HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jan/2026 18:44:30] "OPTIONS /api/generate/full HTTP/1.1" 200 -
+GENERATION STARTED
+RAW PAYLOAD KEYS: ['branchData', 'smartInputData']
+Deep Validation: 3 Years, 34 Subjects
+=== GLOBAL_SETUP ENTERED ===
+GLOBAL_SETUP STARTED
+DEBUG_TYPE: context_branchData = <class 'dict'>
+DEBUG_TYPE: context_smartInput = <class 'dict'>
+DEBUG_TYPE: academicYears = <class 'list'>
+DEBUG_TYPE: divisions = <class 'dict'>
+DEBUG_TYPE: labs = <class 'NoneType'>
+DEBUG_TYPE: teachers = <class 'list'>
+DEBUG_TYPE: subjects = <class 'list'>
+DEBUG_TYPE: map = <class 'list'>
+Running Data Normalization Layer...
+=== DATA NORMALIZATION LAYER STARTED ===
+Normalized 34 subjects.
+Expanding subject 'Computer Networks' (TE) to divisions: ['A', 'B']
+Expanding subject 'Wc' (TE) to divisions: ['A', 'B']
+Expanding subject 'Fsjp' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Dl' (BE) to divisions: ['A', 'B']
+Expanding subject 'AI' (TE) to divisions: ['A', 'B']
+Expanding subject 'Aoa' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Mis' (BE) to divisions: ['A', 'B']
+Expanding subject 'Saids' (TE) to divisions: ['A', 'B']
+Expanding subject 'Dwm' (TE) to divisions: ['A', 'B']
+Expanding subject 'Coa' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Ese' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Fsjp' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Dsgt' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bda' (BE) to divisions: ['A', 'B']
+Expanding subject 'Nlp' (BE) to divisions: ['A', 'B']
+Expanding subject 'Bt' (BE) to divisions: ['A', 'B']
+Expanding subject 'Ese' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Fsjp' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Ed' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Oe-lm' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bda' (BE) to divisions: ['A', 'B']
+Expanding subject 'Wcn L' (TE) to divisions: ['A', 'B']
+Expanding subject 'Dl L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Ai L' (TE) to divisions: ['A', 'B']
+Expanding subject 'Aoa L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bt L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Fsjp L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Dwm L' (TE) to divisions: ['A', 'B']
+Expanding subject 'Coa L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Bda L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Nlp L' (BE) to divisions: ['A', 'B']
+Expanding subject 'Ese L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Ed L' (SE) to divisions: ['A', 'B', 'C']
+Expanding subject 'Fsjp L' (SE) to divisions: ['A', 'B', 'C']
+Expanded subject list to 84 entries.
+=== DATA NORMALIZATION SUCCESSFUL ===
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Ese (SE)
+    Warning: Dropping duplicate subject input: Ese (SE)
+    Warning: Dropping duplicate subject input: Ese (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Fsjp (SE)
+    Warning: Dropping duplicate subject input: Bda (BE)
+    Warning: Dropping duplicate subject input: Bda (BE)
+    Warning: Dropping duplicate subject input: Fsjp L (SE)
+    Warning: Dropping duplicate subject input: Fsjp L (SE)
+    Warning: Dropping duplicate subject input: Fsjp L (SE)
+GLOBAL_SETUP COMPLETED
+GENERATION LOOP STARTED
+Starting Multi-Class Generation Loop...
+
+==========================================
+Generating Timetable for: SE-A
+==========================================
+DATA CHECK: SE-A has 12 subjects.
+  Scheduling labs for SE-A (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Aoa L', 'Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+ALLOCATING LAB: Aoa L | SE-A | Batch: B1
+    Assigned Aoa L to B1 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-A | Batch: B1
+    Assigned Fsjp L to B1 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-A | Batch: B1
+    Assigned Coa L to B1 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-A | Batch: B1
+    Assigned Ese L to B1 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-A | Batch: B1
+    Assigned Ed L to B1 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Fsjp L to B2 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Coa L to B2 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Ese L to B2 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Ed L to B2 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'A')! Exist: <class 'dict'>
+    Assigned Aoa L to B2 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Coa L to B3 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Ese L to B3 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Ed L to B3 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Aoa L to B3 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'A')! Exist: <class 'list'>
+    Assigned Fsjp L to B3 on Friday slot 0 (Duration: 2)
+  Lab Summary for SE-A: 3/3 batches fully scheduled.
+  > Scheduling Theory for SE-A...
+    found 12 subjects for year 'SE', 7 are Theory.
+ALLOCATING THEORY: Fsjp | SE-A | Needed: 3
+ALLOCATING THEORY: Aoa | SE-A | Needed: 3
+ALLOCATING THEORY: Coa | SE-A | Needed: 3
+ALLOCATING THEORY: Ese | SE-A | Needed: 3
+ALLOCATING THEORY: Dsgt | SE-A | Needed: 3
+ALLOCATING THEORY: Ed | SE-A | Needed: 3
+ALLOCATING THEORY: Oe-lm | SE-A | Needed: 3
+    ! Could not find valid day for Oe-lm (2/3)
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+  > Balancing Theory Load for SE-A...
+    > Load Balanced. Stopping.
+DEBUG: SE-A State Raw Slots: 50
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: SE-A | Days populated: 5
+
+==========================================
+Generating Timetable for: SE-B
+==========================================
+DATA CHECK: SE-B has 12 subjects.
+  Scheduling labs for SE-B (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Aoa L', 'Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+ALLOCATING LAB: Aoa L | SE-B | Batch: B1
+    Assigned Aoa L to B1 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-B | Batch: B1
+    Assigned Fsjp L to B1 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-B | Batch: B1
+    Assigned Coa L to B1 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-B | Batch: B1
+    Assigned Ese L to B1 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-B | Batch: B1
+    Assigned Ed L to B1 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Fsjp L to B2 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Coa L to B2 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Ese L to B2 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Ed L to B2 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Aoa L to B2 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Coa L to B3 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Ese L to B3 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Ed L to B3 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Aoa L to B3 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 1, 'SE', 'B')! Exist: <class 'list'>
+    Assigned Fsjp L to B3 on Friday slot 0 (Duration: 2)
+  Lab Summary for SE-B: 3/3 batches fully scheduled.
+  > Scheduling Theory for SE-B...
+    found 12 subjects for year 'SE', 7 are Theory.
+ALLOCATING THEORY: Fsjp | SE-B | Needed: 3
+ALLOCATING THEORY: Aoa | SE-B | Needed: 3
+ALLOCATING THEORY: Coa | SE-B | Needed: 3
+ALLOCATING THEORY: Ese | SE-B | Needed: 3
+ALLOCATING THEORY: Dsgt | SE-B | Needed: 3
+ALLOCATING THEORY: Ed | SE-B | Needed: 3
+ALLOCATING THEORY: Oe-lm | SE-B | Needed: 3
+    ! Could not find valid day for Oe-lm (2/3)
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+    ! CAUTION: Only scheduled 2/3 for Oe-lm
+  > Balancing Theory Load for SE-B...
+    > Load Balanced. Stopping.
+DEBUG: SE-B State Raw Slots: 100
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: SE-B | Days populated: 5
+
+==========================================
+Generating Timetable for: SE-C
+==========================================
+DATA CHECK: SE-C has 12 subjects.
+  Scheduling labs for SE-C (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Aoa L', 'Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+ALLOCATING LAB: Aoa L | SE-C | Batch: B1
+    Assigned Aoa L to B1 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-C | Batch: B1
+    Assigned Fsjp L to B1 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-C | Batch: B1
+    Assigned Coa L to B1 on Wednesday slot 0 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-C | Batch: B1
+    Assigned Ese L to B1 on Thursday slot 0 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-C | Batch: B1
+    Assigned Ed L to B1 on Friday slot 0 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-C | Batch: B2
+    Assigned Fsjp L to B2 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-C | Batch: B2
+    Assigned Coa L to B2 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-C | Batch: B2
+    Assigned Ese L to B2 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-C | Batch: B2
+    Assigned Ed L to B2 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-C | Batch: B2
+    Assigned Aoa L to B2 on Friday slot 2 (Duration: 2)
+ALLOCATING LAB: Coa L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Coa L to B3 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Ese L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Ese L to B3 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ed L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Ed L to B3 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Aoa L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Aoa L to B3 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Fsjp L | SE-C | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 2, 'SE', 'C')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Friday', 3, 'SE', 'C')! Exist: <class 'dict'>
+    Assigned Fsjp L to B3 on Friday slot 2 (Duration: 2)
+  Lab Summary for SE-C: 3/3 batches fully scheduled.
+  > Scheduling Theory for SE-C...
+    found 12 subjects for year 'SE', 7 are Theory.
+ALLOCATING THEORY: Fsjp | SE-C | Needed: 3
+ALLOCATING THEORY: Aoa | SE-C | Needed: 3
+ALLOCATING THEORY: Coa | SE-C | Needed: 3
+ALLOCATING THEORY: Ese | SE-C | Needed: 3
+    ! Could not find valid day for Ese (1/3)
+    ! CAUTION: Only scheduled 1/3 for Ese
+    ! CAUTION: Only scheduled 1/3 for Ese
+ALLOCATING THEORY: Dsgt | SE-C | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Dsgt despite Window constraint (First Placement).
+    ! Could not find valid day for Dsgt (1/3)
+    ! CAUTION: Only scheduled 1/3 for Dsgt
+    ! CAUTION: Only scheduled 1/3 for Dsgt
+ALLOCATING THEORY: Ed | SE-C | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Ed despite Window constraint (First Placement).
+    ! Could not find valid day for Ed (1/3)
+    ! CAUTION: Only scheduled 1/3 for Ed
+    ! CAUTION: Only scheduled 1/3 for Ed
+ALLOCATING THEORY: Oe-lm | SE-C | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Oe-lm despite Window constraint (First Placement).
+    ! Could not find valid day for Oe-lm (1/3)
+    ! CAUTION: Only scheduled 1/3 for Oe-lm
+    ! CAUTION: Only scheduled 1/3 for Oe-lm
+  > Balancing Theory Load for SE-C...
+    > Load Balanced. Stopping.
+DEBUG: SE-C State Raw Slots: 143
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: SE-C | Days populated: 5
+
+==========================================
+Generating Timetable for: TE-A
+==========================================
+DATA CHECK: TE-A has 8 subjects.
+  Scheduling labs for TE-A (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Wcn L', 'Ai L', 'Dwm L']
+ALLOCATING LAB: Wcn L | TE-A | Batch: B1
+    Assigned Wcn L to B1 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-A | Batch: B1
+    Assigned Ai L to B1 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-A | Batch: B1
+    Assigned Dwm L to B1 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'TE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'TE', 'A')! Exist: <class 'dict'>
+    Assigned Ai L to B2 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'TE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'TE', 'A')! Exist: <class 'dict'>
+    Assigned Dwm L to B2 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'TE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'TE', 'A')! Exist: <class 'dict'>
+    Assigned Wcn L to B2 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'TE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'TE', 'A')! Exist: <class 'list'>
+    Assigned Dwm L to B3 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'TE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'TE', 'A')! Exist: <class 'list'>
+    Assigned Wcn L to B3 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'TE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'TE', 'A')! Exist: <class 'list'>
+    Assigned Ai L to B3 on Wednesday slot 2 (Duration: 2)
+  Lab Summary for TE-A: 3/3 batches fully scheduled.
+  > Scheduling Theory for TE-A...
+    found 8 subjects for year 'TE', 5 are Theory.
+ALLOCATING THEORY: Computer Networks | TE-A | Needed: 3
+ALLOCATING THEORY: Wc | TE-A | Needed: 3
+ALLOCATING THEORY: AI | TE-A | Needed: 3
+ALLOCATING THEORY: Saids | TE-A | Needed: 3
+ALLOCATING THEORY: Dwm | TE-A | Needed: 3
+  > Balancing Theory Load for TE-A...
+    > Load Balanced. Stopping.
+DEBUG: TE-A State Raw Slots: 176
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: TE-A | Days populated: 5
+
+==========================================
+Generating Timetable for: TE-B
+==========================================
+DATA CHECK: TE-B has 8 subjects.
+  Scheduling labs for TE-B (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Wcn L', 'Ai L', 'Dwm L']
+ALLOCATING LAB: Wcn L | TE-B | Batch: B1
+    Assigned Wcn L to B1 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-B | Batch: B1
+    Assigned Ai L to B1 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-B | Batch: B1
+    Assigned Dwm L to B1 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 2, 'TE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 3, 'TE', 'B')! Exist: <class 'dict'>
+    Assigned Ai L to B2 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 2, 'TE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 3, 'TE', 'B')! Exist: <class 'dict'>
+    Assigned Dwm L to B2 on Tuesday slot 2 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 2, 'TE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 3, 'TE', 'B')! Exist: <class 'dict'>
+    Assigned Wcn L to B2 on Wednesday slot 2 (Duration: 2)
+ALLOCATING LAB: Dwm L | TE-B | Batch: B3
+    Assigned Dwm L to B3 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Wcn L | TE-B | Batch: B3
+    Assigned Wcn L to B3 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Ai L | TE-B | Batch: B3
+    Assigned Ai L to B3 on Wednesday slot 5 (Duration: 2)
+  Lab Summary for TE-B: 3/3 batches fully scheduled.
+  > Scheduling Theory for TE-B...
+    found 8 subjects for year 'TE', 5 are Theory.
+ALLOCATING THEORY: Computer Networks | TE-B | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Computer Networks despite Window constraint (First Placement).
+ALLOCATING THEORY: Wc | TE-B | Needed: 3
+ALLOCATING THEORY: AI | TE-B | Needed: 3
+ALLOCATING THEORY: Saids | TE-B | Needed: 3
+ALLOCATING THEORY: Dwm | TE-B | Needed: 3
+    DEBUG OVERRIDE: Forcing Slot 7 for Dwm despite Window constraint (First Placement).
+  > Balancing Theory Load for TE-B...
+    > Load Balanced. Stopping.
+DEBUG: TE-B State Raw Slots: 209
+DEBUG: Sample Slot: {'day': 'Monday', 'slot': 0, 'year': 'SE', 'division': 'A', 'batch': 'B1', 'subject': 'Aoa L', 'teacher': 'Dr. S. M. Patil', 'room': 'Computer Lab 1', 'type': 'LAB', 'isPractical': True, 'sessionLength': 2, 'id': 'LAB_SE_A_Monday_0_B1_0'}
+SAVED TIMETABLE: TE-B | Days populated: 5
+
+==========================================
+Generating Timetable for: BE-A
+==========================================
+DATA CHECK: BE-A has 9 subjects.
+  Scheduling labs for BE-A (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Dl L', 'Bt L', 'Bda L', 'Nlp L']
+ALLOCATING LAB: Dl L | BE-A | Batch: B1
+    Assigned Dl L to B1 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Bt L | BE-A | Batch: B1
+    Assigned Bt L to B1 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Bda L | BE-A | Batch: B1
+    Assigned Bda L to B1 on Wednesday slot 5 (Duration: 2)
+ALLOCATING LAB: Nlp L | BE-A | Batch: B1
+    Assigned Nlp L to B1 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Bt L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 5, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 6, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Bt L to B2 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Bda L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 5, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 6, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Bda L to B2 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Nlp L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 5, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 6, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Nlp L to B2 on Wednesday slot 5 (Duration: 2)
+ALLOCATING LAB: Dl L | BE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 2, 'BE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 3, 'BE', 'A')! Exist: <class 'dict'>
+    Assigned Dl L to B2 on Thursday slot 2 (Duration: 2)
+ALLOCATING LAB: Bda L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 5, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 6, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Bda L to B3 on Monday slot 5 (Duration: 2)
+ALLOCATING LAB: Nlp L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 5, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 6, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Nlp L to B3 on Tuesday slot 5 (Duration: 2)
+ALLOCATING LAB: Dl L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 5, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Wednesday', 6, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Dl L to B3 on Wednesday slot 5 (Duration: 2)
+ALLOCATING LAB: Bt L | BE-A | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 2, 'BE', 'A')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Thursday', 3, 'BE', 'A')! Exist: <class 'list'>
+    Assigned Bt L to B3 on Thursday slot 2 (Duration: 2)
+  Lab Summary for BE-A: 3/3 batches fully scheduled.
+  > Scheduling Theory for BE-A...
+    found 9 subjects for year 'BE', 5 are Theory.
+ALLOCATING THEORY: Dl | BE-A | Needed: 3
+ALLOCATING THEORY: Mis | BE-A | Needed: 3
+ALLOCATING THEORY: Bda | BE-A | Needed: 3
+ALLOCATING THEORY: Nlp | BE-A | Needed: 3
+ALLOCATING THEORY: Bt | BE-A | Needed: 3
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 154, in generate
+    class_result = self.generate_single_class_timetable(class_obj, global_state)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 473, in generate_single_class_timetable
+    theory_scheduler.schedule_theory(class_obj)
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 75, in schedule_theory
+    slot_assigned = self._assign_slot_on_day(year, division, best_day, subject_name, teacher_name, assignments_count)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 241, in _assign_slot_on_day
+    print(f"    \U0001f50d DEBUG: {teacher} @ {day} Slot {slot_idx}")
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+FAILED to generate BE-A: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+CRITICAL SERVER CRASH TRACEBACK:
+127.0.0.1 - - [16/Jan/2026 18:44:31] "POST /api/generate/full HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 154, in generate
+    class_result = self.generate_single_class_timetable(class_obj, global_state)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 473, in generate_single_class_timetable
+    theory_scheduler.schedule_theory(class_obj)
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 75, in schedule_theory
+    slot_assigned = self._assign_slot_on_day(year, division, best_day, subject_name, teacher_name, assignments_count)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\theory_scheduler.py", line 241, in _assign_slot_on_day
+    print(f"    \U0001f50d DEBUG: {teacher} @ {day} Slot {slot_idx}")
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 187, in generate
+    raise RuntimeError(error_msg)
+RuntimeError: FAILED to generate BE-A: 'charmap' codec can't encode character '\U0001f50d' in position 4: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\routes\generation_routes.py", line 71, in generate_full_timetable
+    result = scheduler.generate()
+             ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\engine\scheduler.py", line 387, in generate
+    print(tb)
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 1001: character maps to <undefined>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1458, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\routes\generation_routes.py", line 167, in generate_full_timetable
+    print(tb)
+  File "C:\Users\omraj\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f50d' in position 1001: character maps to <undefined>
+ * Detected change in 'C:\\Users\\omraj\\OneDrive\\Desktop\\Adv Timetable Gen\\backend\\engine\\theory_scheduler.py', reloading
+ * Restarting with stat
+Server running on http://localhost:5000
+ * Debugger is active!
+ * Debugger PIN: 812-211-480

@@ -1,0 +1,175 @@
+============================================================
+Testing Core Timetable Generation Engine
+============================================================
+
+[TEST CONFIG]
+Years: ['SE']
+Divisions: SE-A
+Slots per day: 6
+Total slots available: 6 * 6 days = 36
+Subjects: 2 (lectures only, 2 per week each)
+Total lectures needed: 4
+Teachers: 3
+Rooms: 2
+Labs: 3
+
+[STARTING GENERATION]
+------------------------------------------------------------
+=== GLOBAL_SETUP ENTERED ===
+GLOBAL_SETUP STARTED
+DEBUG_TYPE: context_branchData = <class 'dict'>
+DEBUG_TYPE: context_smartInput = <class 'dict'>
+DEBUG_TYPE: academicYears = <class 'list'>
+DEBUG_TYPE: divisions = <class 'dict'>
+DEBUG_TYPE: labs = <class 'NoneType'>
+DEBUG_TYPE: teachers = <class 'list'>
+DEBUG_TYPE: subjects = <class 'list'>
+DEBUG_TYPE: map = <class 'NoneType'>
+GLOBAL_SETUP COMPLETED
+GENERATION LOOP STARTED
+Starting Multi-Class Generation Loop...
+
+==========================================
+Generating Timetable for: SE-A
+==========================================
+  Scheduling labs for SE-A (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Python Lab']
+ALLOCATING LAB: Python Lab | SE-A | Batch: B1
+    Assigned Python Lab to B1 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Python Lab | SE-A | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'A')! Exist: <class 'dict'>
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 120, in generate
+    class_result = self.generate_single_class_timetable(class_obj, global_state)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 456, in generate_single_class_timetable
+    theory_scheduler.schedule_theory(class_obj)
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\theory_scheduler.py", line 66, in schedule_theory
+    best_day = self._pick_best_day(year, division, teacher_name, days_tried)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\theory_scheduler.py", line 191, in _pick_best_day
+    idx = days.index(day)
+          ^^^^
+NameError: name 'days' is not defined. Did you mean: 'day'?
+    Assigned Python Lab to B2 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Python Lab | SE-A | Batch: B3
+      [LoadManager] Panic: No teachers valid for Python Lab Batch B3 on Monday. Relaxing Load Limits.
+      [LoadManager] Panic: No teachers valid for Python Lab Batch B3 on Monday. Relaxing Load Limits.
+    Assigned Python Lab to B3 on Monday slot 2 (Duration: 2)
+  Lab scheduling CRASHED for SE-A: 'charmap' codec can't encode character '\U0001f4ca' in position 2: character maps to <undefined>
+  Proceeding with Theory only (Partial Generation).
+  > Scheduling Theory for SE-A...
+    found 3 subjects for year 'SE', 2 are Theory.
+ALLOCATING THEORY: Machine Learning | SE-A | Needed: 3
+FAILED to generate SE-A: name 'days' is not defined
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 120, in generate
+    class_result = self.generate_single_class_timetable(class_obj, global_state)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 456, in generate_single_class_timetable
+    theory_scheduler.schedule_theory(class_obj)
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\theory_scheduler.py", line 66, in schedule_theory
+    best_day = self._pick_best_day(year, division, teacher_name, days_tried)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\theory_scheduler.py", line 191, in _pick_best_day
+    idx = days.index(day)
+          ^^^^
+NameError: name 'days' is not defined. Did you mean: 'day'?
+FAILED to generate SE-A: name 'days' is not defined
+
+==========================================
+Generating Timetable for: SE-B
+==========================================
+  Scheduling labs for SE-B (Batches: ['B1', 'B2', 'B3'])
+  Required Labs: ['Python Lab', 'AI Lab']
+ALLOCATING LAB: Python Lab | SE-B | Batch: B1
+      [LoadManager] Panic: No teachers valid for Python Lab Batch B1 on Monday. Relaxing Load Limits.
+      [LoadManager] Panic: No teachers valid for Python Lab Batch B1 on Monday. Relaxing Load Limits.
+    Assigned Python Lab to B1 on Monday slot 2 (Duration: 2)
+ALLOCATING LAB: AI Lab | SE-B | Batch: B1
+    Assigned AI Lab to B1 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: AI Lab | SE-B | Batch: B2
+    Assigned AI Lab to B2 on Monday slot 0 (Duration: 2)
+ALLOCATING LAB: Python Lab | SE-B | Batch: B2
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'dict'>
+    Assigned Python Lab to B2 on Tuesday slot 0 (Duration: 2)
+ALLOCATING LAB: Python Lab | SE-B | Batch: B3
+      [LoadManager] Panic: No teachers valid for Python Lab Batch B3 on Monday. Relaxing Load Limits.
+      [LoadManager] Panic: No teachers valid for Python Lab Batch B3 on Monday. Relaxing Load Limits.
+    Assigned Python Lab to B3 on Monday slot 4 (Duration: 2)
+ALLOCATING LAB: AI Lab | SE-B | Batch: B3
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'list'>
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 120, in generate
+    class_result = self.generate_single_class_timetable(class_obj, global_state)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 456, in generate_single_class_timetable
+    theory_scheduler.schedule_theory(class_obj)
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\theory_scheduler.py", line 66, in schedule_theory
+    best_day = self._pick_best_day(year, division, teacher_name, days_tried)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\theory_scheduler.py", line 191, in _pick_best_day
+    idx = days.index(day)
+          ^^^^
+NameError: name 'days' is not defined. Did you mean: 'day'?
+    Assigned AI Lab to B3 on Tuesday slot 0 (Duration: 2)
+  Lab scheduling CRASHED for SE-B: 'charmap' codec can't encode character '\U0001f4ca' in position 2: character maps to <undefined>
+  Proceeding with Theory only (Partial Generation).
+  > Scheduling Theory for SE-B...
+    found 4 subjects for year 'SE', 2 are Theory.
+ALLOCATING THEORY: Machine Learning | SE-B | Needed: 3
+FAILED to generate SE-B: name 'days' is not defined
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 120, in generate
+    class_result = self.generate_single_class_timetable(class_obj, global_state)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 456, in generate_single_class_timetable
+    theory_scheduler.schedule_theory(class_obj)
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\theory_scheduler.py", line 66, in schedule_theory
+    best_day = self._pick_best_day(year, division, teacher_name, days_tried)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\theory_scheduler.py", line 191, in _pick_best_day
+    idx = days.index(day)
+          ^^^^
+NameError: name 'days' is not defined. Did you mean: 'day'?
+FAILED to generate SE-B: name 'days' is not defined
+
+--- Starting Daily Compaction (No Gaps) ---
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 0, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Monday', 1, 'SE', 'A')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 0, 'SE', 'B')! Exist: <class 'list'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'dict'>
+DEBUG: Slot Collision or Multi-Assign at ('Tuesday', 1, 'SE', 'B')! Exist: <class 'list'>
+
+Generation Complete. Generated 2/2 classes.
+Failures: 2
+ALLOCATED SESSIONS COUNT: 0
+SAMPLE SESSION: None
+ERROR: CRITICAL FAILURE: No lectures were placed for ANY class. This usually means Constraint Logic (Time/Teacher/Room) rejected everything. Check backend_constraints_log.txt for REJECTED reasons.
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\.\engine\scheduler.py", line 241, in generate
+    raise RuntimeError(error_msg)
+RuntimeError: CRITICAL FAILURE: No lectures were placed for ANY class. This usually means Constraint Logic (Time/Teacher/Room) rejected everything. Check backend_constraints_log.txt for REJECTED reasons.
+
+
+Generation Result: FAILED
+Valid: False
+
+[FAILURE REASON]
+Message: CRITICAL FAILURE: No lectures were placed for ANY class. This usually means Constraint Logic (Time/Teacher/Room) rejected everything. Check backend_constraints_log.txt for REJECTED reasons.
+
+============================================================
+Test Completed!
+============================================================
+Traceback (most recent call last):
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\test_generation.py", line 289, in <module>
+    result = test_generation()
+             ^^^^^^^^^^^^^^^^^
+  File "C:\Users\omraj\OneDrive\Desktop\Adv Timetable Gen\backend\test_generation.py", line 280, in test_generation
+    assert result['success'] is True, f"Generation failed: {result.get('message')}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Generation failed: CRITICAL FAILURE: No lectures were placed for ANY class. This usually means Constraint Logic (Time/Teacher/Room) rejected everything. Check backend_constraints_log.txt for REJECTED reasons.
