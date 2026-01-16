@@ -122,28 +122,23 @@ def is_time_in_window(slot_start_time, login_time_str, working_hours=8, slot_dur
     if not login_time:
         return True # Fail open
         
-    # Normalize dates to compare only times
-    # We use a dummy date for comparison to avoid date rollover issues (e.g. overnight shifts - not supported yet)
-    base_date = datetime(2000, 1, 1).date()
+    # Normalize to Minutes from Midnight for robust comparison
+    slot_start_mins = slot_start_time.hour * 60 + slot_start_time.minute
     
-    # Construct datetimes on the same base date
-    # Handle slot_start_time which might have random date component
-    slot_start = datetime.combine(base_date, slot_start_time.time())
+    # Login Time Minutes
+    login_mins = login_time.hour * 60 + login_time.minute
     
-    # Login Time
-    window_start = datetime.combine(base_date, login_time.time())
+    # Window End Minutes
+    window_end_mins = login_mins + (working_hours * 60)
     
-    # Window End
-    window_end = window_start + timedelta(hours=working_hours)
-    
-    # Slot End
-    slot_end = slot_start + timedelta(minutes=slot_duration_minutes)
+    # Slot End Minutes
+    slot_end_mins = slot_start_mins + slot_duration_minutes
     
     # STRICT CHECK:
-    # 1. Slot Start >= Window Start
+    # 1. Slot Start >= Login Time
     # 2. Slot End <= Window End
     
-    in_window = (slot_start >= window_start) and (slot_end <= window_end)
+    in_window = (slot_start_mins >= login_mins) and (slot_end_mins <= window_end_mins)
     
     return in_window
 

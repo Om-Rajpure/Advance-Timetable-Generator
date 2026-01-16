@@ -34,6 +34,13 @@
       "password": "scrypt:32768:8:1$NmHpm2IilgCvGbUV$d51c8b8cb7b02309c2b627a544291c8a248a9d91a15dcb51abc21be854a2c8e14f883d324b5f2fa4704698ede3d28a862fc51be89958559ed0b4b17d7f2c75be",
       "role": "user",
       "createdAt": "2026-01-11T22:18:30.415012"
+    },
+    {
+      "id": "1ff4a527-1791-4742-8a34-05942aa69e18",
+      "username": "testuser123",
+      "password": "scrypt:32768:8:1$mXYDprYmmYrnYM1b$a441200d4363cc72ed29edb4adf222170f26f1fc9a4af6cc85fc50e558cbf1aa03e1289e011fd56f3a8c600cb7bd2fda4a5590a5ca010a0ee4a3851635533512",
+      "role": "user",
+      "createdAt": "2026-01-15T22:18:59.934615"
     }
   ]
 }

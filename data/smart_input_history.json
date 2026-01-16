@@ -1,1 +1,247 @@
-{"history": []}
+{
+  "history": [
+    {
+      "id": "e7291ef8-076a-4afe-8fb0-5d665731c95d",
+      "branchName": "Computer Engineering",
+      "createdAt": "2026-01-15T22:09:46.771884",
+      "teacherCount": 8,
+      "subjectCount": 8,
+      "data": {
+        "teachers": [
+          {
+            "id": "t1",
+            "name": "Prof. Smith",
+            "availableDays": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday"
+            ],
+            "maxLoad": 18
+          },
+          {
+            "id": "t2",
+            "name": "Prof. Johnson",
+            "availableDays": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday"
+            ],
+            "maxLoad": 18
+          },
+          {
+            "id": "t3",
+            "name": "Prof. Williams",
+            "availableDays": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday"
+            ],
+            "maxLoad": 18
+          },
+          {
+            "id": "t4",
+            "name": "Prof. Brown",
+            "availableDays": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday"
+            ],
+            "maxLoad": 18
+          },
+          {
+            "id": "t5",
+            "name": "Prof. Jones",
+            "availableDays": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday"
+            ],
+            "maxLoad": 18
+          },
+          {
+            "id": "t6",
+            "name": "Prof. Garcia",
+            "availableDays": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday"
+            ],
+            "maxLoad": 18
+          },
+          {
+            "id": "t7",
+            "name": "Prof. Miller",
+            "availableDays": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday"
+            ],
+            "maxLoad": 18
+          },
+          {
+            "id": "t8",
+            "name": "Prof. Davis",
+            "availableDays": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday"
+            ],
+            "maxLoad": 18
+          }
+        ],
+        "subjects": [
+          {
+            "id": "s1",
+            "name": "Data Structures",
+            "weeklyLectures": 3,
+            "isPractical": false,
+            "year": "SE"
+          },
+          {
+            "id": "s2",
+            "name": "DS Lab",
+            "weeklyLectures": 1,
+            "isPractical": true,
+            "sessionLength": 2,
+            "year": "SE"
+          },
+          {
+            "id": "s3",
+            "name": "Algorithms",
+            "weeklyLectures": 3,
+            "isPractical": false,
+            "year": "TE"
+          },
+          {
+            "id": "s4",
+            "name": "Algo Lab",
+            "weeklyLectures": 1,
+            "isPractical": true,
+            "sessionLength": 2,
+            "year": "TE"
+          },
+          {
+            "id": "s5",
+            "name": "AI",
+            "weeklyLectures": 3,
+            "isPractical": false,
+            "year": "BE"
+          },
+          {
+            "id": "s6",
+            "name": "AI Lab",
+            "weeklyLectures": 1,
+            "isPractical": true,
+            "sessionLength": 2,
+            "year": "BE"
+          },
+          {
+            "id": "s7",
+            "name": "Database",
+            "weeklyLectures": 3,
+            "isPractical": false,
+            "year": "SE"
+          },
+          {
+            "id": "s8",
+            "name": "OS",
+            "weeklyLectures": 3,
+            "isPractical": false,
+            "year": "TE"
+          }
+        ],
+        "teacherSubjectMap": [
+          {
+            "teacherId": "t1",
+            "subjectId": "s1",
+            "year": "SE"
+          },
+          {
+            "teacherId": "t1",
+            "subjectId": "s2",
+            "year": "SE"
+          },
+          {
+            "teacherId": "t2",
+            "subjectId": "s3",
+            "year": "TE"
+          },
+          {
+            "teacherId": "t2",
+            "subjectId": "s4",
+            "year": "TE"
+          },
+          {
+            "teacherId": "t3",
+            "subjectId": "s5",
+            "year": "BE"
+          },
+          {
+            "teacherId": "t3",
+            "subjectId": "s6",
+            "year": "BE"
+          },
+          {
+            "teacherId": "t4",
+            "subjectId": "s7",
+            "year": "SE"
+          },
+          {
+            "teacherId": "t5",
+            "subjectId": "s8",
+            "year": "TE"
+          }
+        ],
+        "rooms": [
+          {
+            "id": "r1",
+            "name": "101",
+            "capacity": 60,
+            "type": "classroom"
+          },
+          {
+            "id": "r2",
+            "name": "102",
+            "capacity": 60,
+            "type": "classroom"
+          },
+          {
+            "id": "r3",
+            "name": "103",
+            "capacity": 60,
+            "type": "classroom"
+          },
+          {
+            "id": "r4",
+            "name": "Lab 1",
+            "capacity": 20,
+            "type": "lab"
+          },
+          {
+            "id": "r5",
+            "name": "Lab 2",
+            "capacity": 20,
+            "type": "lab"
+          }
+        ],
+        "branchName": "Computer Engineering"
+      }
+    }
+  ]
+}

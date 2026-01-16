@@ -226,6 +226,20 @@ class TimetableScheduler:
                             raw_all_slots.extend(day_slots)
                             total_slots_filled += len(day_slots)
 
+            # TASK 5: STRICT GLOBAL FAILURE & TASK 1 LOGGING
+            print(f"ALLOCATED SESSIONS COUNT: {total_slots_filled}")
+            if raw_all_slots:
+                 print(f"SAMPLE SESSION: {raw_all_slots[0]}")
+            else:
+                 print("SAMPLE SESSION: None")
+
+            if total_slots_filled == 0:
+                 error_msg = ("CRITICAL FAILURE: No lectures were placed for ANY class. "
+                              "This usually means Constraint Logic (Time/Teacher/Room) rejected everything. "
+                              "Check backend_constraints_log.txt for REJECTED reasons.")
+                 print(f"❌ {error_msg}")
+                 raise RuntimeError(error_msg)
+                 
             # GENERATE TIME-BASED LAYOUT
             day_layout = []
             try:
@@ -290,8 +304,36 @@ class TimetableScheduler:
             except Exception as e:
                 print(f"Failed to dump structure: {e}")
 
+            # STEP 1: HARD INSTRUMENTATION
+            print("==== FINAL ALLOCATION DEBUG ====")
+            print("Total divisions:", len(all_timetables))
+            for year, divs in all_timetables.items():
+                for div, wrapper in divs.items():
+                    table = wrapper.get('timetable', {})
+                    non_empty_count = 0
+                    for d in table:
+                        # table[d] is now a DICT of slots (canonical) or LIST?
+                        # format_to_canonical returns { Day: { Slot: [List of entries] } }
+                        # So table[d] is a dict of slots.
+                        # We count entries.
+                        slots_map = table[d]
+                        if isinstance(slots_map, dict):
+                            for s_key, entries in slots_map.items():
+                                if entries: non_empty_count += 1
+                        elif isinstance(slots_map, list): # Legacy check
+                            non_empty_count += len(slots_map)
+                            
+                    print(f"Division: {year}-{div} | Non-empty slots: {non_empty_count}")
+
+            # STEP 7: FINAL HARD ASSERTION
+            if total_slots_filled == 0:
+                 error_msg = ("FATAL: Allocation failed. Grid initialized but no sessions placed. "
+                              "Constraint Logic might have rejected everything.")
+                 print(f"❌ {error_msg}")
+                 raise RuntimeError(error_msg)
+
             return {
-                "success": True, 
+                "success": True,  
                 "stage": "COMPLETED",
                 "timetables": all_timetables,
                 "failures": failures,
@@ -498,34 +540,51 @@ class TimetableScheduler:
         """
         Convert list of slots to the canonical format:
         {
-            "Monday": {
-                "0": [ {...}, ... ],
-                "1": [ ... ]
-            },
-            ...
+            "Monday": [ {...}, ... ],  # List of slots
+            "Tuesday": [ ... ]
         }
+        
+        FIX: Returns LIST per day (not dict) to match Frontend 'transformToGrid' 
+        and Backend 'history' expectations.
+        Also maps internal 0-based indices to 1-based Visual Indices.
         """
         canonical_days = {}
         
+        # Calculate recess configuration for mapping
+        try:
+            from utils.time_utils import calculate_time_slots
+            time_config = calculate_time_slots(self.context.get('branchData', {}))
+            recess_slot = time_config.get('recess_slot')
+        except:
+            recess_slot = None
+            
         for slot in slots_list:
             day = slot['day']
-            slot_idx = str(slot['slot']) # key as string for JSON consistency
+            raw_slot_idx = int(slot['slot'])
             
-            if day not in canonical_days:
-                canonical_days[day] = {}
-            
-            # Ensure list exists for this slot index
-            if slot_idx not in canonical_days[day]:
-                 canonical_days[day][slot_idx] = []
+            # --- SLOT MAPPING LOGIC (0-based -> 1-based Visual) ---
+            if recess_slot is not None:
+                if raw_slot_idx < recess_slot:
+                    visual_idx = raw_slot_idx + 1
+                elif raw_slot_idx > recess_slot:
+                    visual_idx = raw_slot_idx # Mapping shifted 4->4 (after recess)
+                else:
+                    visual_idx = raw_slot_idx + 1
+            else:
+                visual_idx = raw_slot_idx + 1
                 
             # Filter keys for clean output
             clean_slot = {k: v for k, v in slot.items() if k not in ['id', 'isPractical']}
+            
+            # OVERWRITE SLOT WITH VISUAL INDEX
+            clean_slot['slot'] = visual_idx
+            if 'id' in slot: clean_slot['id'] = slot['id']
+            if 'isPractical' in slot: clean_slot['isPractical'] = slot['isPractical']
             
             # DEFAULT ROOM ASSIGNMENT (THEORY)
             if 'room' not in clean_slot or not clean_slot['room']:
                 assigned_room = None
                 try:
-                    # Logic to find room
                     branch_data = self.context.get('branchData', {})
                     all_classrooms = branch_data.get('classrooms', [])
                     if isinstance(all_classrooms, dict):
@@ -536,10 +595,7 @@ class TimetableScheduler:
                     if not all_classrooms:
                         all_classrooms = branch_data.get('rooms', [])
                         
-                    # Deterministic Fallback based on Class ID
-                    # We need class_id from slot for hashing
                     class_id = f"{slot['year']}-{slot['division']}"
-                    
                     if isinstance(all_classrooms, list) and len(all_classrooms) > 0:
                         class_hash = sum(ord(c) for c in class_id)
                         rooms_list = [r.get('name') if isinstance(r, dict) else r for r in all_classrooms]
@@ -548,15 +604,15 @@ class TimetableScheduler:
                 except:
                     pass
                 
-                if assigned_room:
-                    clean_slot['room'] = assigned_room
-                else:
-                    clean_slot['room'] = f"Classroom-{slot['year']}-{slot['division']}"
+                clean_slot['room'] = assigned_room if assigned_room else f"Classroom-{slot['year']}-{slot['division']}"
 
             if 'type' not in clean_slot:
                 clean_slot['type'] = 'THEORY'
                 
-            canonical_days[day][slot_idx].append(clean_slot)
+            # Append to Day List
+            if day not in canonical_days:
+                canonical_days[day] = []
+            canonical_days[day].append(clean_slot)
             
         return canonical_days
 

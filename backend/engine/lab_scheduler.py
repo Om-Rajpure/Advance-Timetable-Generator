@@ -114,6 +114,9 @@ class LabScheduler:
             completed_subjects = 0
             
             for subject in subjects_to_schedule:
+                # Step 2: Confirm allocation loop runs
+                print(f"ALLOCATING LAB: {subject['name']} | {year}-{division} | Batch: {batch}")
+                
                 # Determine duration for THIS subject
                 # Frontend sends 'sessionLength' or 'slots'
                 duration = int(subject.get('sessionLength') or subject.get('slots') or standard_duration)

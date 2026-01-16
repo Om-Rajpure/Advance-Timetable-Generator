@@ -153,8 +153,11 @@ function parseCSV(csvText, fileType) {
             header: true,
             skipEmptyLines: true,
             transformHeader: (header) => {
-                // Normalize column headers
-                return header.trim().toLowerCase().replace(/\s+/g, '_')
+                // Normalize column headers: lowercase, replace non-alphanumeric with _, trim _
+                let normalized = header.trim().toLowerCase().replace(/[\s\W]+/g, '_')
+                if (normalized.startsWith('_')) normalized = normalized.substring(1)
+                if (normalized.endsWith('_')) normalized = normalized.substring(0, normalized.length - 1)
+                return normalized
             },
             complete: (results) => {
                 try {

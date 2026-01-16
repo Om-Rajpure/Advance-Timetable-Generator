@@ -1,0 +1,17 @@
+{
+  "versionId": "v_c25f66515e37",
+  "branchId": "temp-branch-id-1767503501351",
+  "timestamp": "2026-01-15T23:03:26.247854",
+  "action": "Generation",
+  "description": "Full timetable generated with 0 slots",
+  "qualityScore": 0.0,
+  "createdBy": "System",
+  "timetableSnapshot": [],
+  "metadata": {
+    "slotCount": 0,
+    "divisions": [],
+    "years": [],
+    "teachers": [],
+    "subjects": []
+  }
+}

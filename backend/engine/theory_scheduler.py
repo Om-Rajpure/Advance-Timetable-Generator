@@ -40,6 +40,8 @@ class TheoryScheduler:
         for subject in theory_subjects:
             lectures_needed = int(subject.get('weeklyLectures', 3))
             subject_name = subject.get('name')
+            print(f"ALLOCATING THEORY: {subject_name} | {year}-{division} | Needed: {lectures_needed}")
+            
             teacher_name = self._get_teacher_for_subject(subject_name, division, year=year)
             
             assignments_count = 0
@@ -58,7 +60,7 @@ class TheoryScheduler:
                 days_tried.add(best_day)
                 
                 # Try to find a slot on this day
-                slot_assigned = self._assign_slot_on_day(year, division, best_day, subject_name, teacher_name)
+                slot_assigned = self._assign_slot_on_day(year, division, best_day, subject_name, teacher_name, assignments_count)
                 
                 if slot_assigned:
                     assignments_count += 1
@@ -66,6 +68,13 @@ class TheoryScheduler:
                     # If we couldn't fit on this day, we might loop and try another day
                     # But if we run out of days, we might fail or settle for uneven distribution
                     pass
+            
+            if assignments_count == 0:
+                 # TASK 4: STOP SILENT FAILURES
+                 # If we scheduled NOTHING for a subject, we must fail.
+                 error_msg = f"CRITICAL: Could not schedule ANY lectures for {subject_name} (Teacher: {teacher_name}). Constraints too strict?"
+                 print(f"    ❌ {error_msg}")
+                 raise Exception(error_msg)
             
             if assignments_count < lectures_needed:
                 print(f"    ! CAUTION: Only scheduled {assignments_count}/{lectures_needed} for {subject_name}")
@@ -116,20 +125,55 @@ class TheoryScheduler:
                 
         return best_day
 
-    def _assign_slot_on_day(self, year, division, day, subject, teacher):
+    def _assign_slot_on_day(self, year, division, day, subject, teacher, assignment_idx=0):
         # Determine available slots
-        total_slots = int(self.context.get('branchData', {}).get('slotsPerDay', 8))
-        
+        # Validate Recess
+        try:
+            from utils.time_utils import calculate_time_slots
+            time_config = calculate_time_slots(self.context.get('branchData', {}))
+            recess_slot = time_config.get('recess_slot')
+            total_slots = time_config.get('total_slots', 8)
+        except:
+            total_slots = int(self.context.get('branchData', {}).get('slotsPerDay', 8))
+            recess_slot = None
+
         # Randomize start order to minimize collisions
         # FIX: Use 0-based indexing to match StateManager and TimeUtils
         slots = list(range(total_slots)) 
         
         for slot_idx in slots:
+            # SKIP RECESS (Task 2)
+            if recess_slot is not None and slot_idx == recess_slot:
+                continue
+
             # Check Global State (Class Free)
             if self.state.is_slot_free(day, slot_idx, year, division):
+                
+                # Check Teacher Availability
                 is_avail = self.state.is_teacher_available(teacher, day, slot_idx)
+                
+                # TASK 6: TEMPORARY DEBUG LO (Log strictly for one subject/teacher to avoid spam)
+                if assignment_idx == 0 and "Mrs. S. R. Katke" in teacher: 
+                     # Re-verify why it failed
+                     meta = self.state.teacher_metadata.get(teacher, {})
+                     print(f"    🔍 DEBUG: {teacher} @ {day} Slot {slot_idx}")
+                     print(f"      Login: {meta.get('loginTime')}, Window: {meta.get('workingHours')}h")
+                     print(f"      Available? {is_avail}")
+
+                # TASK 3: Relax Constraint for First Assignment
+                if not is_avail and assignment_idx == 0:
+                     # Check if it's a hard conflict (assigned elsewhere) or just Window
+                     # If teacher is assigned elsewhere, we CANNOT override (hard conflict).
+                     assigned_elsewhere = False
+                     if (teacher, day, slot_idx) in self.state.teacher_assignments:
+                         assigned_elsewhere = True
+                     
+                     if not assigned_elsewhere:
+                         print(f"    ⚠️ DEBUG OVERRIDE: Forcing Slot {slot_idx} for {subject} despite Window constraint (First Placement).")
+                         is_avail = True # Force Allow
+                
                 if not is_avail:
-                     print(f"DEBUG: {teacher} unavailable at {day} slot {slot_idx}")
+                     # print(f"DEBUG: {teacher} unavailable at {day} slot {slot_idx}")
                      pass
                      
                 if is_avail:
@@ -139,11 +183,7 @@ class TheoryScheduler:
                     
                     if not assigned_room:
                          # No room available! Cannot schedule here.
-                         # DEBUG LOG
-                         try:
-                            with open('backend_constraints_log.txt', 'a') as f:
-                                f.write(f"REJECTED: Room Unavailable for {subject} ({year}-{division}) on {day} Slot {slot_idx}\n")
-                         except: pass
+                         pass
                          continue
 
                     # ASSIGN
@@ -181,6 +221,11 @@ class TheoryScheduler:
         if not all_classrooms:
             # Fallback to 'rooms' key if 'classrooms' is empty/missing
             all_classrooms = branch_data.get('rooms', [])
+            
+        if not all_classrooms:
+             # CRITICAL FALLBACK: If no rooms defined, create virtual pool to allow generation
+             print(f"DEBUG: No classrooms defined. Using Virtual Room Pool 1-20.")
+             all_classrooms = [f"Virtual-Room-{i}" for i in range(1, 21)]
             
         # Iterate and Find First Free
         # DEBUG: Print room count check once per class generation (to avoid spam, maybe logic needed?)

@@ -19,6 +19,7 @@ from engine.optimizer import TimetableOptimizer
 test_context = {
     "branchData": {
         "academicYears": ["SE"],
+        "workingDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
         "divisions": {
             "SE": ["A", "B"]
         },
@@ -259,8 +260,13 @@ def test_generation():
             for div, data in divs.items():
                 class_schedule = data.get('timetable', {})
                 for day, day_slots in class_schedule.items():
-                    for slot in day_slots:
-                        slots_list.append(slot)
+                    # day_slots is LIST with new format
+                    if isinstance(day_slots, list):
+                        for slot in day_slots:
+                            slots_list.append(slot)
+                    elif isinstance(day_slots, dict): # Fallback
+                         for slot_key, slots in day_slots.items():
+                             if isinstance(slots, list): slots_list.extend(slots)
                     
         for i, slot in enumerate(slots_list[:5]):
             print(f"{i+1}. {slot.get('day')} Slot {slot.get('slot')}: "

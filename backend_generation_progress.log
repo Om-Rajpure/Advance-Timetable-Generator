@@ -920,3 +920,110 @@ SUCCESS TE-A
 SUCCESS TE-B
 SUCCESS BE-A
 SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+FAILED SE-A: 'float' object has no attribute 'strip'
+FAILED SE-B: 'float' object has no attribute 'strip'
+FAILED SE-C: 'float' object has no attribute 'strip'
+FAILED TE-A: 'float' object has no attribute 'strip'
+FAILED TE-B: 'float' object has no attribute 'strip'
+FAILED BE-A: 'float' object has no attribute 'strip'
+FAILED BE-B: 'float' object has no attribute 'strip'
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+FAILED SE-A: 'float' object has no attribute 'strip'
+FAILED SE-B: 'float' object has no attribute 'strip'
+FAILED SE-C: 'float' object has no attribute 'strip'
+FAILED TE-A: 'float' object has no attribute 'strip'
+FAILED TE-B: 'float' object has no attribute 'strip'
+FAILED BE-A: 'float' object has no attribute 'strip'
+FAILED BE-B: 'float' object has no attribute 'strip'
+FAILED SE-A: 'float' object has no attribute 'strip'
+FAILED SE-B: 'float' object has no attribute 'strip'
+FAILED SE-C: 'float' object has no attribute 'strip'
+FAILED TE-A: 'float' object has no attribute 'strip'
+FAILED TE-B: 'float' object has no attribute 'strip'
+FAILED BE-A: 'float' object has no attribute 'strip'
+FAILED BE-B: 'float' object has no attribute 'strip'
+FAILED SE-A: 'float' object has no attribute 'strip'
+FAILED SE-B: 'float' object has no attribute 'strip'
+FAILED SE-C: 'float' object has no attribute 'strip'
+FAILED TE-A: 'float' object has no attribute 'strip'
+FAILED TE-B: 'float' object has no attribute 'strip'
+FAILED BE-A: 'float' object has no attribute 'strip'
+FAILED BE-B: 'float' object has no attribute 'strip'
+FAILED SE-A: 'float' object has no attribute 'strip'
+FAILED SE-B: 'float' object has no attribute 'strip'
+FAILED SE-C: 'float' object has no attribute 'strip'
+FAILED TE-A: 'float' object has no attribute 'strip'
+FAILED TE-B: 'float' object has no attribute 'strip'
+FAILED BE-A: 'float' object has no attribute 'strip'
+FAILED BE-B: 'float' object has no attribute 'strip'
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
+SUCCESS SE-A
+SUCCESS SE-B
+SUCCESS SE-C
+SUCCESS TE-A
+SUCCESS TE-B
+SUCCESS BE-A
+SUCCESS BE-B
