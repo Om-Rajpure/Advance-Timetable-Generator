@@ -210,7 +210,7 @@ function BranchSetup() {
 
         try {
             // Submit to backend API
-            const response = await fetch('/api/branch/setup', {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/branch/setup`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

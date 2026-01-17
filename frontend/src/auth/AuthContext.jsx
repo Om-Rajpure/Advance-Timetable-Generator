@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { API_BASE_URL } from '../config'
 
 // Real auth logic
 const AuthContext = createContext(null)
@@ -18,7 +19,9 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
 
-    const API_URL = '/api/auth'
+
+
+    const API_URL = `${API_BASE_URL}/api/auth`
 
     // Load auth state from localStorage on mount and verify token
     useEffect(() => {

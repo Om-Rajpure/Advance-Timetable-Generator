@@ -7,10 +7,6 @@ import json
 from datetime import datetime
 import uuid
 
-# Add backend directory to Python path
-backend_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'backend')
-if backend_dir not in sys.path:
-    sys.path.insert(0, backend_dir)
 
 import pdf_parser
 from routes.constraint_routes import constraint_bp
@@ -20,17 +16,17 @@ from routes.edit_routes import edit_bp
 from routes.analytics_routes import analytics_bp
 from routes.history_routes import history_bp
 
-# Static folder setup
-static_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
-app = Flask(__name__, static_folder=static_folder, static_url_path='')
-# Allow CORS for all domains for development simplicity
+# Static folder setup - REMOVED for API-only backend
+app = Flask(__name__)
+
+# Allow CORS for all domains for development and Vercel deployment
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-print(f"Server running on http://localhost:5000. Serving static from: {static_folder}")
+print(f"Server running on http://localhost:5000. API Only Mode.")
 
 # Register blueprints
 # Config
-app.config['SECRET_KEY'] = 'dev-secret-key-change-in-prod'  # TODO: Move to env var
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-prod')
 
 # Register blueprints
 from routes.auth_routes import auth_bp
@@ -587,20 +583,6 @@ def upload_pdf_timetable():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-# Serve React App
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve(path):
-    """Serve React static files and handle SPA routing"""
-    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
-        return send_from_directory(app.static_folder, path)
-    
-    # Check if file exists, if not serve index.html (SPA routing)
-    if os.path.exists(os.path.join(app.static_folder, 'index.html')):
-         return send_from_directory(app.static_folder, 'index.html')
-    else:
-        return f"App Root is: {os.getcwd()} | Static Folder: {app.static_folder} | index.html not found", 404
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

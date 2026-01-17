@@ -8,7 +8,8 @@ import uuid
 
 auth_bp = Blueprint('auth_bp', __name__)
 
-DATA_DIR = 'data'
+
+DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data')
 USERS_FILE = os.path.join(DATA_DIR, 'users.json')
 
 def load_users():
