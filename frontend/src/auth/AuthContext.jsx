@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
 
-    const API_URL = 'http://localhost:5000/api/auth'
+    const API_URL = '/api/auth'
 
     // Load auth state from localStorage on mount and verify token
     useEffect(() => {

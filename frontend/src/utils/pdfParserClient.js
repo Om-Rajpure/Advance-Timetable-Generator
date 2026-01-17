@@ -3,7 +3,7 @@
  * Handles PDF file uploads and communication with backend PDF parser
  */
 
-const API_BASE_URL = 'http://localhost:5000/api'
+const API_BASE_URL = '/api'
 
 /**
  * Upload PDF file to backend for extraction

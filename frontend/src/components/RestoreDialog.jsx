@@ -13,7 +13,7 @@ function RestoreDialog({ version, branchId, context, onConfirm, onCancel }) {
     const validateRestore = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:5000/api/history/restore', {
+            const response = await fetch('/api/history/restore', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

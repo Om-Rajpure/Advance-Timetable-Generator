@@ -26,7 +26,7 @@ const WhatIfSimulation = () => {
 
     const loadScenarios = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/simulation/scenarios');
+            const response = await axios.get('/api/simulation/scenarios');
             setAvailableScenarios(response.data.scenarios);
         } catch (err) {
             console.error('Failed to load scenarios:', err);
@@ -35,7 +35,7 @@ const WhatIfSimulation = () => {
 
     const loadBranches = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/branch/all');
+            const response = await axios.get('/api/branch/all');
             setBranches(response.data.branches);
         } catch (err) {
             console.error('Failed to load branches:', err);
@@ -63,7 +63,7 @@ const WhatIfSimulation = () => {
                 ? currentTimetable
                 : generateSampleTimetable();
 
-            const response = await axios.post('http://localhost:5000/api/simulation/run', {
+            const response = await axios.post('/api/simulation/run', {
                 branchId: branchId,
                 currentTimetable: timetableToSimulate,
                 scenarioType: selectedScenario.type,
@@ -83,7 +83,7 @@ const WhatIfSimulation = () => {
         if (!simulationResult) return;
 
         try {
-            await axios.post('http://localhost:5000/api/simulation/apply', {
+            await axios.post('/api/simulation/apply', {
                 branchId: branchId,
                 simulatedTimetable: simulationResult.simulation.simulatedTimetable
             });

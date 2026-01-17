@@ -19,7 +19,7 @@ function ReuseDataSelector({ onDataSelected }) {
     const fetchPreviousSetups = async () => {
         setLoading(true)
         try {
-            const response = await fetch('http://localhost:5000/api/smart-input/history')
+            const response = await fetch('/api/smart-input/history')
 
             if (response.ok) {
                 const data = await response.json()

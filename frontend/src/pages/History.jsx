@@ -31,7 +31,7 @@ function History() {
     const fetchVersions = async () => {
         setLoading(true);
         try {
-            const url = new URL('http://localhost:5000/api/history/versions');
+            const url = new URL('/api/history/versions', window.location.origin);
             url.searchParams.append('branchId', branchId);
             const response = await fetch(url);
             const data = await response.json();
@@ -50,7 +50,7 @@ function History() {
 
     const fetchFullVersion = async (versionId) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/history/version/${versionId}?branchId=${branchId}`);
+            const response = await fetch(`/api/history/version/${versionId}?branchId=${branchId}`);
             const data = await response.json();
             if (data.success) {
                 return data.version;

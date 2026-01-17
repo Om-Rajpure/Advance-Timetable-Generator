@@ -92,7 +92,7 @@ function Analytics() {
             console.log("📊 Sending payload with slots:", TimetableToAnalyze.length)
 
             // Call analytics API
-            const response = await fetch('http://localhost:5000/api/analytics/full-report', {
+            const response = await fetch('/api/analytics/full-report', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

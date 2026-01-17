@@ -284,3 +284,17 @@ Username: om
 Loaded 6 users
 Found user: om
 Password valid: True
+
+[2026-01-17 08:30:06.260155] Login attempt:
+Received data: {"username": "om", "password": "om@123"}
+Username: om
+Loaded 6 users
+Found user: om
+Password valid: True
+
+[2026-01-17 09:20:21.863148] Login attempt:
+Received data: {"username": "om", "password": "om@123"}
+Username: om
+Loaded 6 users
+Found user: om
+Password valid: True

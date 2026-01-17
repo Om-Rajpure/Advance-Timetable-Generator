@@ -210,7 +210,7 @@ function BranchSetup() {
 
         try {
             // Submit to backend API
-            const response = await fetch('http://localhost:5000/api/branch/setup', {
+            const response = await fetch('/api/branch/setup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

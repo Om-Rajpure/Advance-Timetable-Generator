@@ -281,7 +281,7 @@ function SmartInput() {
             // 3. Send to Backend
             console.log('Sending Generation Payload:', payload)
 
-            const response = await fetch('http://localhost:5000/api/generate/full', {
+            const response = await fetch('/api/generate/full', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -336,7 +336,7 @@ function SmartInput() {
             if (error instanceof TypeError && error.message === "Failed to fetch") {
                 alert(`
 ❌ Backend Unreachable
-The server is not responding at http://localhost:5000.
+The server is not responding.
 
 Please ensure:
 1. The backend server is running (python app.py)

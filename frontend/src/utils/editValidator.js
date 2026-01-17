@@ -4,7 +4,7 @@
  * Client-side helper for validating timetable edits.
  */
 
-const API_BASE = 'http://localhost:5000/api/edit';
+const API_BASE = '/api/edit';
 
 export async function validateEdit(modifiedSlot, timetable, context) {
     try {
