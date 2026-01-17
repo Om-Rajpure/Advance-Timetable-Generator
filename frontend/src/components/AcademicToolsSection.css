@@ -1,0 +1,227 @@
+/* AcademicToolsSection.css */
+
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.4);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    --text-primary: #1F2937;
+    --text-secondary: #4B5563;
+    --hover-transform: translateY(-5px);
+}
+
+.academic-tools-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5rem 0;
+    background: radial-gradient(circle at 10% 20%, rgb(242, 246, 253) 0%, rgb(248, 250, 255) 90%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Background decorative blur blobs */
+.academic-tools-section::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: -5%;
+    width: 400px;
+    height: 400px;
+    background: rgba(118, 75, 162, 0.05);
+    /* very subtle purple */
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: 0;
+}
+
+.academic-tools-section::after {
+    content: '';
+    position: absolute;
+    bottom: -10%;
+    right: -5%;
+    width: 500px;
+    height: 500px;
+    background: rgba(102, 126, 234, 0.05);
+    /* very subtle blue */
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: 0;
+}
+
+.section-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.tools-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    animation: fadeUp 0.8s ease-out forwards;
+}
+
+.tools-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+}
+
+.tools-description {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Tool Card Grid */
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    justify-content: center;
+    padding: 0 0;
+}
+
+/* Tool Card Styling */
+.tool-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: var(--glass-border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: var(--glass-shadow);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tool-card:hover {
+    transform: var(--hover-transform);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.icon-container {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    font-size: 2.5rem;
+    transition: transform 0.4s ease;
+}
+
+.tool-card:hover .icon-container {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.card-description {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+/* Process Flow Styling */
+.process-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    background: rgba(243, 244, 246, 0.5);
+    padding: 1rem;
+    border-radius: 12px;
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+.process-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.step-icon {
+    font-size: 1.25rem;
+    filter: grayscale(0.5);
+    transition: filter 0.3s ease;
+}
+
+.process-step:hover .step-icon {
+    filter: grayscale(0);
+    transform: scale(1.1);
+}
+
+.step-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #4b5563;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.step-arrow {
+    color: #9ca3af;
+    font-size: 0.9rem;
+    padding-bottom: 1rem;
+    /* Align with icons */
+}
+
+/* how-it-works removed/styles not needed */
+
+.card-footer {
+    margin-top: auto;
+}
+
+.action-arrow {
+    color: #667eea;
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.tool-card:hover .action-arrow {
+    transform: translateX(5px);
+    color: #764ba2;
+}
+
+/* Animations */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

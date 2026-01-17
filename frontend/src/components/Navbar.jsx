@@ -42,6 +42,7 @@ function Navbar() {
         { id: 'home', label: 'Home' },
         { id: 'features', label: 'Features' },
         { id: 'how-it-works', label: 'How It Works' },
+        { id: 'attendance', label: 'Attendance', path: '/attendance' },
     ]
 
     return (
@@ -57,14 +58,25 @@ function Navbar() {
                     {/* Desktop Navigation */}
                     <div className="desktop-nav">
                         {navItems.map((item) => (
-                            <button
-                                key={item.id}
-                                onClick={() => scrollToSection(item.id)}
-                                className="nav-link"
-                                style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                            >
-                                {item.label}
-                            </button>
+                            item.path ? (
+                                <Link
+                                    key={item.id}
+                                    to={item.path}
+                                    className="nav-link"
+                                    style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'inline-block' }}
+                                >
+                                    {item.label}
+                                </Link>
+                            ) : (
+                                <button
+                                    key={item.id}
+                                    onClick={() => scrollToSection(item.id)}
+                                    className="nav-link"
+                                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                                >
+                                    {item.label}
+                                </button>
+                            )
                         ))}
                     </div>
 
@@ -126,21 +138,37 @@ function Navbar() {
                 </div>
                 <div className="drawer-items">
                     {navItems.map((item, index) => (
-                        <button
-                            key={item.id}
-                            onClick={() => scrollToSection(item.id)}
-                            className="drawer-link"
-                            style={{
-                                animationDelay: `${index * 0.05}s`,
-                                background: 'none',
-                                border: 'none',
-                                width: '100%',
-                                justifyContent: 'flex-start',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            {item.label}
-                        </button>
+                        item.path ? (
+                            <Link
+                                key={item.id}
+                                to={item.path}
+                                className="drawer-link"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                style={{
+                                    animationDelay: `${index * 0.05}s`,
+                                    width: '100%',
+                                    justifyContent: 'flex-start'
+                                }}
+                            >
+                                {item.label}
+                            </Link>
+                        ) : (
+                            <button
+                                key={item.id}
+                                onClick={() => scrollToSection(item.id)}
+                                className="drawer-link"
+                                style={{
+                                    animationDelay: `${index * 0.05}s`,
+                                    background: 'none',
+                                    border: 'none',
+                                    width: '100%',
+                                    justifyContent: 'flex-start',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                {item.label}
+                            </button>
+                        )
                     ))}
 
                     <div className="drawer-divider" />

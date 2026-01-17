@@ -17,6 +17,7 @@ import TimetableUpload from './pages/TimetableUpload'
 import EditableTimetable from './pages/EditableTimetable'
 import TestEditPage from './pages/TestEditPage'
 import WhatIfSimulation from './pages/WhatIfSimulation'
+import Attendance from './pages/Attendance'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/attendance" element={<Attendance />} />
 
           {/* Protected Routes */}
           <Route

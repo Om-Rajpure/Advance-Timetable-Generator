@@ -4,6 +4,7 @@ import ProblemSection from '../components/ProblemSection'
 import SolutionSection from '../components/SolutionSection'
 import FeaturesSection from '../components/FeaturesSection'
 import CTASection from '../components/CTASection'
+import AcademicToolsSection from '../components/AcademicToolsSection'
 import Footer from '../components/Footer'
 
 function LandingPage() {
@@ -11,6 +12,7 @@ function LandingPage() {
         <div className="landing-page">
             <Navbar />
             <Hero />
+            <AcademicToolsSection />
             <ProblemSection />
             <SolutionSection />
             <FeaturesSection />

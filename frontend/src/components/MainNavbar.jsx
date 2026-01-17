@@ -25,7 +25,7 @@ function MainNavbar() {
 
     // AUTH BYPASS: Hide on landing page if auth disabled
     const isAuthEnabled = true;
-    const publicPaths = ['/', '/login', '/signup']
+    const publicPaths = ['/', '/login', '/signup', '/attendance']
     if (publicPaths.includes(location.pathname)) {
         return null
     }
