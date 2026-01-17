@@ -798,8 +798,7 @@
     margin: 0;
 }
 
-margin-bottom: var(--spacing-3);
-}
+
 
 .preview-errors {
     background: #fef2f2;
@@ -1264,8 +1263,7 @@ margin-bottom: var(--spacing-3);
     }
 }
 
-box-shadow: var(--shadow-lg);
-}
+
 
 .setup-card-header {
     display: flex;
