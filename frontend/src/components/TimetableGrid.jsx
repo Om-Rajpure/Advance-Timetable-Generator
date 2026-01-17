@@ -133,6 +133,7 @@ function TimetableGrid({ gridData = {}, conflictingSlots = [], onSlotClick, tota
                                     <td key={i} className="slot-cell" colSpan={colSpan}>
                                         {cellSlots && cellSlots.length > 0 ? (
                                             <div className="slot-content">
+                                                <span className="mobile-time-label">{col.label}</span>
                                                 {cellSlots.map((slot, idx) => (
                                                     <div
                                                         key={slot.id || idx}
@@ -152,7 +153,10 @@ function TimetableGrid({ gridData = {}, conflictingSlots = [], onSlotClick, tota
                                                 ))}
                                             </div>
                                         ) : (
-                                            <div className="empty-slot">—</div>
+                                            <div className="empty-slot">
+                                                <span className="mobile-time-label">{col.label}</span>
+                                                —
+                                            </div>
                                         )}
                                     </td>
                                 );

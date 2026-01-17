@@ -267,5 +267,118 @@
 }
 
 .download-btn:hover {
+    transition: background 0.2s;
+}
+
+.download-btn:hover {
     background: #4338ca;
+}
+
+/* =========================================
+   MOBILE LAYOUT
+   ========================================= */
+@media (max-width: 768px) {
+    .editable-timetable {
+        flex-direction: column;
+        padding-top: 70px;
+        /* Reduced navbar height */
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+    }
+
+    /* Sidebar becomes Top Nav / Horizontal Scroller */
+    .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 0;
+        flex-shrink: 0;
+        background: white;
+        z-index: 40;
+    }
+
+    .sidebar-header {
+        display: none;
+        /* Hide brand, already in navbar */
+    }
+
+    .class-list {
+        flex-direction: row;
+        padding: 12px;
+        gap: 12px;
+        width: max-content;
+        /* Allow content to dictate width for scrolling */
+    }
+
+    .year-group {
+        flex-direction: row;
+        /* Keep year label and divs together or stack? Let's stack label small */
+        align-items: center;
+        gap: 8px;
+        background: #f8fafc;
+        padding: 6px 12px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .year-label {
+        font-size: 0.65rem;
+        padding: 0;
+        white-space: nowrap;
+    }
+
+    .division-list {
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .nav-item {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+    /* Main Content Adjustments */
+    .main-content {
+        height: auto;
+        /* Let it grow */
+        overflow: visible;
+    }
+
+    .sticky-header {
+        padding: 12px 16px;
+        position: sticky;
+        top: 0;
+        /* Sidebar is 0 height effectively if it scrolls out or stays? 
+           Let's unstick page header to save space or keep it.
+           If sidebar is top, we want that + header. 
+        */
+        z-index: 30;
+    }
+
+    .header-content h1 {
+        font-size: 1.1rem;
+    }
+
+    .status-bar {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .left-controls,
+    .right-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .grid-container {
+        padding: 12px;
+        overflow: visible;
+        /* Let body scroll */
+    }
 }

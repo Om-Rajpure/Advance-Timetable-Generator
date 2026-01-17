@@ -7,6 +7,8 @@
     padding: 120px 24px 32px;
     /* Top padding to clear navbar */
     font-family: 'Inter', sans-serif;
+    position: relative;
+    z-index: 1;
 }
 
 .analytics-header {

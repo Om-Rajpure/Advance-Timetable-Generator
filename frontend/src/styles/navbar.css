@@ -373,7 +373,9 @@
         display: none;
     }
 
-}
+    .mobile-toggle {
+        display: flex;
+    }
 }
 
 /* -----------------------------------------

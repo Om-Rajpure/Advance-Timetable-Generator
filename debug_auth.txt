@@ -298,3 +298,10 @@ Username: om
 Loaded 6 users
 Found user: om
 Password valid: True
+
+[2026-01-17 09:36:14.279981] Login attempt:
+Received data: {"username": "om", "password": "om@123"}
+Username: om
+Loaded 6 users
+Found user: om
+Password valid: True
