@@ -5699,6 +5699,214 @@
         "TE": 3,
         "BE": 3
       }
+    },
+    {
+      "id": "046d45db-8a32-4a19-a94d-d630d7552dbb",
+      "createdAt": "2026-01-17T09:55:20.299380",
+      "branchName": "Computer Engineering",
+      "academicYears": [
+        "SE",
+        "BE",
+        "TE"
+      ],
+      "divisions": {
+        "SE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "TE": [
+          "A",
+          "B",
+          "C"
+        ],
+        "BE": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      "workingDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "startTime": "10:00 AM",
+      "endTime": "6:00 PM",
+      "lectureDuration": 60,
+      "recessEnabled": true,
+      "recessStart": "12:00 PM",
+      "recessDuration": 60,
+      "classrooms": [
+        "Room-101",
+        "Room-102",
+        "Room-103",
+        "Room-104",
+        "Room-105"
+      ],
+      "sharedLabs": [
+        {
+          "name": "Computer Lab 1",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 30
+        },
+        {
+          "name": "Physics Lab",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 30
+        },
+        {
+          "name": "huuG",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        },
+        {
+          "name": "dgiuB",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        },
+        {
+          "name": "rdviuG",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        },
+        {
+          "name": "cguF",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        },
+        {
+          "name": "dgkhV",
+          "availableDays": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+          ],
+          "availableSlots": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "capacity": 25
+        }
+      ],
+      "labBatchesPerYear": {
+        "SE": 3,
+        "TE": 2,
+        "BE": 3
+      }
     }
   ]
 }
