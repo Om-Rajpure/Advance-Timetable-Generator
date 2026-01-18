@@ -1,66 +1,137 @@
+/* CSS GRID IMPLEMENTATION */
 .timetable-grid {
+    /* Main container handling overflow */
     width: 100%;
-    overflow-x: auto;
     margin-top: 20px;
-    margin-bottom: 0;
-}
-
-.grid-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    background: #fff;
     border-radius: 8px;
-    overflow: hidden;
-}
-
-.grid-table th,
-.grid-table td {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #e0e0e0;
-    padding: 12px;
-    text-align: center;
+
+    /* SCROLLING */
+    overflow-x: auto;
+    position: relative;
 }
 
-.day-header,
-.slot-header {
+.grid-container-view {
+    display: grid;
+    align-items: stretch;
+    min-width: max-content;
+
+    /* ROW HEIGHT CONTROL */
+    /* Header (50px) + 6 Days (Fixed 140px each) */
+    /* This ensures every day row is exactly the same height */
+    grid-template-rows: 50px repeat(6, minmax(140px, 1fr));
+}
+
+/* Base Cells */
+.grid-cell {
+    border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 6px;
+    height: 100%;
+    /* Fill the fixed row height */
+    box-sizing: border-box;
+    position: relative;
+    background: white;
+    overflow: hidden;
+    /* Prevent content from stretching the cell/row */
+}
+
+.grid-header-cell {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     font-weight: 600;
     font-size: 14px;
-    padding: 14px;
+    padding: 0 14px;
+    /* Remove vertical padding, rely on centering */
+    text-align: center;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    height: 100%;
+    /* Fill header row */
 }
 
-.day-cell {
+.grid-day-cell {
     background: #f8f9fa;
-    font-weight: 600;
     color: #495057;
-    min-width: 100px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 2px solid #ced4da;
+    border-bottom: 1px solid #e0e0e0;
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    height: 100%;
+    /* Fill row */
 }
 
-.slot-cell {
-    min-width: 150px;
-    vertical-align: top;
-    padding: 8px;
-    min-height: fit-content;
+/* Recess Column */
+.grid-recess-cell {
+    background: #e9ecef;
+    /* Clean Gray, no pattern for less noise */
+    padding: 0;
+    pointer-events: none;
+    z-index: 1;
+    height: 100%;
 }
 
+.recess-header {
+    background: #6c757d !important;
+    color: #fff;
+}
+
+.recess-marker {
+    display: none;
+}
+
+/* Slot Content - FILL HEIGHT */
 .slot-content {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
+    height: 100%;
+    width: 100%;
 }
 
 .slot-item {
-    padding: 10px;
+    padding: 8px;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
     border: 2px solid transparent;
+    background: #f8f9fa;
+
+    /* FORCE FILL */
+    flex: 1;
+    min-height: 0;
+    /* Important for scroll/overflow */
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    /* Clip extra content */
 }
 
 .slot-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 5;
+    /* Allow expanding on hover if needed, but for now keep strict */
 }
 
 .slot-item.valid {
@@ -78,153 +149,77 @@
     border-color: #ff9800;
 }
 
+/* Compact Text for fixed height */
 .slot-subject {
-    font-weight: 600;
-    font-size: 13px;
+    font-weight: 700;
+    font-size: 12px;
     color: #212529;
-    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
 }
 
-.slot-teacher {
+.slot-teacher,
+.slot-room,
+.slot-batch {
     font-size: 11px;
     color: #6c757d;
-    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
 }
 
 .slot-room {
-    font-size: 11px;
-    color: #6c757d;
-    margin-bottom: 2px;
+    font-weight: 500;
+    color: #495057;
 }
 
 .slot-batch {
-    font-size: 10px;
     color: #9c27b0;
-    font-weight: 500;
+    font-weight: 700;
 }
 
 .empty-slot {
-    color: #adb5bd;
-    font-size: 18px;
-    padding: 20px;
-}
-
-/* Recess Styles */
-.recess-header {
-    background: #6c757d;
-    color: #fff;
-}
-
-.recess-cell {
-    background: #e9ecef url('data:image/svg+xml;utf8,<svg width="4" height="4" viewBox="0 0 4 4" xmlns="http://www.w3.org/2000/svg"><path d="M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2" style="stroke:%23dee2e6;stroke-width:1" /></svg>');
-    vertical-align: middle;
-    padding: 0;
-}
-
-.recess-content {
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    transform: rotate(180deg);
-    margin: 0 auto;
-    font-weight: 700;
-    color: #adb5bd;
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    height: auto;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 12px 6px;
+    color: #e9ecef;
+    font-size: 24px;
+    font-weight: 300;
 }
 
-.mobile-time-label {
-    display: none;
-}
-
-/* =========================================
-   MOBILE RESPONSIVENESS (List View)
-   ========================================= */
-
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
-    .timetable-grid {
-        margin-top: 10px;
+    .grid-container-view {
+        display: flex;
+        flex-direction: column;
+        grid-template-rows: none;
+        /* Reset rows for list view */
     }
 
-    /* Force table to block layout */
-    .grid-table,
-    .grid-table tbody,
-    .grid-table tr,
-    .grid-table td {
-        display: block;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    /* Hide Desktop Headers */
-    .grid-table thead {
+    .grid-header-cell,
+    .grid-recess-cell {
         display: none;
     }
 
-    /* Day Header becomes a Section Title */
-    .grid-table tr td.day-cell {
+    .grid-day-cell {
+        position: static;
+        width: 100%;
         background: #e0f2fe;
         color: #0c4a6e;
-        font-size: 1.1rem;
-        text-align: left;
+        justify-content: flex-start;
         padding: 12px 16px;
         border-bottom: 2px solid #bae6fd;
-        position: sticky;
-        top: 0;
-        z-index: 5;
+        height: auto;
     }
 
-    /* Slot Cells become Cards */
-    .grid-table tr td.slot-cell {
-        border-bottom: 1px solid #f0f0f0;
-        padding: 12px 16px;
+    .grid-cell {
+        border-right: none;
+        padding: 12px;
         min-height: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .grid-table tr td.slot-cell:last-child {
-        border-bottom: none;
-        margin-bottom: 12px;
-    }
-
-    /* Recess Handling */
-    .recess-cell {
-        display: none !important;
-        /* Hide recess in mobile list view to save space, or style simply */
-    }
-
-    /* Show Time Label */
-    .mobile-time-label {
-        display: block;
-        font-size: 0.75rem;
-        font-weight: 700;
-        color: #64748b;
-        text-transform: uppercase;
-        margin-bottom: 4px;
-        background: #f1f5f9;
-        padding: 4px 8px;
-        border-radius: 4px;
-        width: fit-content;
-    }
-
-    /* Card Styling for Slot Items */
-    .slot-item {
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    }
-
-    .empty-slot {
-        padding: 0;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        height: auto;
     }
 }

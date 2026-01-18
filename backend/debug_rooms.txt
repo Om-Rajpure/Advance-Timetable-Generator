@@ -1,11 +1,11 @@
-Timetable entries: 286
+Timetable entries: 264
 Unique Rooms: ['Computer Lab 1', 'Computer Lab 2', 'Electronics Lab', 'Room-101', 'Room-102', 'Room-103', 'Room-104', 'Room-105', 'lab4', 'lab5', 'lab6', 'lab7']
 Sample Slot:
 {
   "day": "Friday",
   "division": "A",
-  "room": "Room-103",
-  "slot": 1,
+  "room": "Room-104",
+  "slot": 5,
   "subject": "Dl",
   "teacher": "Dr. (mrs.) P. N. Jain",
   "type": "THEORY",

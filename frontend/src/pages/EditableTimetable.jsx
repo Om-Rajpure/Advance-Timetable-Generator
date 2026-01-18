@@ -38,9 +38,13 @@ function EditableTimetable() {
                     console.log("🔄 Loaded Timetable Data:", parsedData);
 
                     if (parsedData.timetable && Array.isArray(parsedData.timetable)) {
-                        // New Format: { timetable: [], slots: [] }
                         setTimetable(parsedData.timetable);
-                        if (parsedData.slots) {
+                        // CHECK FOR dayLayout FIRST
+                        if (parsedData.dayLayout) {
+                            console.log("✅ Found Backend Day Layout:", parsedData.dayLayout);
+                            setSlotConfig(parsedData.dayLayout);
+                        }
+                        else if (parsedData.slots) {
                             console.log("✅ Found Slot Config in Payload:", parsedData.slots);
                             setSlotConfig(parsedData.slots);
                         }
@@ -195,16 +199,25 @@ function EditableTimetable() {
     const fixedSlots = calculateTotalSlots(context.branchData);
 
     // Dynamic Day Layout Logic (Task 1 & 2)
-    const dayLayout = slotConfig
-        ? slotConfig.map(s => ({
-            type: 'lecture',
-            index: s.slotIndex,
-            label: `${s.startTime} – ${s.endTime}`,
-            startTime: s.startTime,
-            endTime: s.endTime,
-            duration: 60
-        }))
-        : generateDayLayout(context.branchData);
+    // PRIORITIZE Backend 'dayLayout' (stored in slotConfig or location state)
+    // If we have slotConfig and it looks like the new dayLayout (has 'type' and 'label'), use it directly.
+    // Otherwise fallback to generating.
+    const dayLayout = (() => {
+        if (slotConfig && Array.isArray(slotConfig) && slotConfig.length > 0) {
+            // Check if it's the new format
+            if (slotConfig[0].type && slotConfig[0].label) {
+                return slotConfig;
+            }
+            // Old format cleanup (if needed)
+            return slotConfig.map((s, i) => ({
+                type: 'lecture',
+                index: i + 1,
+                label: `${s.startTime || ''} - ${s.endTime || ''}`
+            }));
+        }
+        // Fallback (Should happen mainly on first load if no config)
+        return generateDayLayout(context.branchData);
+    })();
 
     // console.log("📅 [EditableTimetable] Applied Day Layout:", dayLayout);
 
