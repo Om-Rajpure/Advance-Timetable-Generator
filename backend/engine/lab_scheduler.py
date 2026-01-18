@@ -210,8 +210,11 @@ class LabScheduler:
             
         # Log failure details if not assigned
         print(f"    ❌ Failed to schedule {subject['name']} for {batch}. Reasons: {list(failure_reasons)[:3]}")
-        with open('backend_debug_lab_failure.log', 'a') as f:
-             f.write(f"FAILED {subject['name']} @ {year}-{division}-{batch}: {list(failure_reasons)}\n")
+        
+        ctx_id = f"{year}-{division}-{batch}"
+        if hasattr(self.state, 'logger'):
+             self.state.logger.log_unscheduled(subject['name'], ctx_id, f"Failed Constraints: {list(failure_reasons)}")
+        
         return False
 
     def _is_batch_free(self, day, start_slot, duration, year, division, batch):
@@ -329,30 +332,27 @@ class LabScheduler:
         if not days or not isinstance(days, list):
             days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
         
-        # Determine slots
-        try:
-            from utils.time_utils import calculate_time_slots
-        except ImportError:
-            try:
-                from backend.utils.time_utils import calculate_time_slots
-            except ImportError:
-                print("CRITICAL: LabScheduler could not import calculate_time_slots")
-                return []
-                
-        time_config = calculate_time_slots(self.branch_data)
-        slots = time_config['total_slots']
-        recess_slot = time_config['recess_slot']
         
-        # Randomize days to distribute?
-        # random.shuffle(days) 
+        # Determine slots
+        total_slots = getattr(self.state, 'total_slots', 8)
+        recess_slot = getattr(self.state, 'recess_slot', None)
+        
+        # Use centralized schedulable slots for candidate starts
+        candidate_starts = self.state.get_schedulable_slots()
         
         for day in days:
-            # FIX: 0-based indexing window generation
-            # Range: 0 to (Total - Duration)
-            for i in range(slots - duration + 1):
-                # Check recess
+            for i in candidate_starts:
+                # Check bounds
+                if i + duration > total_slots:
+                    continue
+
+                # Check recess/blocked overlap
                 indices = range(i, i + duration)
                 if recess_slot is not None and recess_slot in indices:
+                    # LOG REASON: Recess
+                    if hasattr(self.state, 'logger'):
+                        ctx = f"{year}-{division}"
+                        self.state.logger.log_failure("ANY_LAB", ctx, "HARD", "Recess Conflict", {"day": day, "window": list(indices)})
                     continue
                 
                 windows.append({'day': day, 'start_slot': i, 'duration': duration})

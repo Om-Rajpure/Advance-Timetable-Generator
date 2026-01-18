@@ -9,7 +9,16 @@ from .candidate_generator import CandidateGenerator
 from .heuristics import SlotHeuristics
 from constraints.constraint_engine import ConstraintEngine
 from .feasibility import FeasibilityVerifier
+from .feasibility import FeasibilityVerifier
 from .lab_scheduler import LabScheduler
+from .data_normalizer import DataNormalizer, NormalizationError
+
+import sys
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__)) 
+backend_dir = os.path.dirname(current_dir)
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
 
 class TimetableScheduler:
     """Main CSP scheduler for timetable generation"""
@@ -47,6 +56,13 @@ class TimetableScheduler:
         Returns:
             dict: Combined timetable response with quality score.
         """
+        # Path setup moved to module level
+        
+        try:
+             from utils.constraint_logger import ConstraintLogger
+        except ImportError:
+             from backend.utils.constraint_logger import ConstraintLogger
+
         self.current_stage = "INITIALIZATION"
         
         print("=== GLOBAL_SETUP ENTERED ===")
@@ -73,7 +89,7 @@ class TimetableScheduler:
                 
             # 1. Validate & Normalize Inputs
             # NEW: Strict Data Normalization Layer
-            from .data_normalizer import DataNormalizer, NormalizationError
+            # from .data_normalizer import DataNormalizer, NormalizationError (Moved to top)
             
             print("Running Data Normalization Layer...")
             try:
@@ -83,7 +99,7 @@ class TimetableScheduler:
                 print(f"CRITICAL NORMALIZATION ERROR: {ne}")
                 return {
                     "success": False,
-                    "stage": "NORMALIZATION",
+                    "stage": "GENERATION_FAILED",
                     "errorType": "NormalizationError",
                     "message": str(ne),
                     "details": "Data contains inconsistencies that prevent safe generation."
@@ -105,7 +121,8 @@ class TimetableScheduler:
             print("Starting Multi-Class Generation Loop...")
             
             # --- GLOBAL STATE (Shared across classes) ---
-            global_state = TimetableState(self.context, self.load_manager)
+            self.constraint_logger = ConstraintLogger()
+            global_state = TimetableState(self.context, self.load_manager, logger=self.constraint_logger)
             
             # 3. Main Generation Loop
             expected_class_count = len(self.normalized_classes)
@@ -137,6 +154,11 @@ class TimetableScheduler:
                 print(f"==========================================")
 
                 try:
+                    # TASK: ENFORCE GLOBAL RECESS
+                    # Recess is now implicitly handled by schedulable_slots
+                    # global_state.block_recess_for_class(year, division) -> REMOVED
+
+
                     # TASK 3: VERIFY DATA EXISTS BEFORE TRYING
                     subjects = self.context.get('smartInputData', {}).get('subjects', [])
                     class_subjects = [
@@ -245,58 +267,50 @@ class TimetableScheduler:
 
             # TASK 5: STRICT GLOBAL FAILURE & TASK 1 LOGGING
             print(f"ALLOCATED SESSIONS COUNT: {total_slots_filled}")
+            
+            # AGGREGATE INTERNAL RAW SLOTS (For Validation)
+            all_internal_slots = []
+            if global_state:
+                 all_internal_slots = global_state.get_filled_slots()
+            
             if raw_all_slots:
                  print(f"SAMPLE SESSION: {raw_all_slots[0]}")
             else:
                  print("SAMPLE SESSION: None")
 
             if total_slots_filled == 0:
-                 error_msg = ("CRITICAL FAILURE: No lectures were placed for ANY class. "
-                              "This usually means Constraint Logic (Time/Teacher/Room) rejected everything. "
-                              "Check backend_constraints_log.txt for REJECTED reasons.")
-                 print(f"ERROR: {error_msg}")
-                 raise RuntimeError(error_msg)
+                  print("WARNING: No lectures placed during initialization. Constraint logic might be too strict.")
+                  # Instead of crashing, return a failure report with analysis
+                  return self._generate_failure_report()
                  
             # GENERATE TIME-BASED LAYOUT
             day_layout = []
             try:
-                # RELIABLE IMPORT: Add backend root to path to find 'utils'
-                import sys
-                import os
-                current_dir = os.path.dirname(os.path.abspath(__file__)) # .../backend/engine
-                backend_dir = os.path.dirname(current_dir) # .../backend
-                if backend_dir not in sys.path:
-                    sys.path.insert(0, backend_dir)
-
-                from utils.time_utils import calculate_time_slots, get_slot_time
-                from datetime import timedelta
-
-                time_config = calculate_time_slots(self.context.get('branchData', {}))
-                total_s = time_config['total_slots']
-                recess_s = time_config['recess_slot']
-                duration = int(self.context.get('branchData', {}).get('lectureDuration', 60))
+                # RELIABLE IMPORT: Path already setup at top of function
+                # RELIABLE IMPORT: Path already setup at top of function
+                from utils.time_utils import generate_day_structure 
+                from utils.constraint_logger import ConstraintLogger
                 
-                current_visual_idx = 1
-                for i in range(total_s):
-                    if recess_s is not None and i == recess_s:
-                        day_layout.append({
-                            "type": "recess",
-                            "index": -1,
-                            "label": "Recess"
-                        })
-                        continue
-                        
-                    start_dt = get_slot_time(i, self.context.get('branchData', {}))
-                    end_dt = start_dt + timedelta(minutes=duration)
-                    
-                    time_label = f"{start_dt.strftime('%I:%M %p')} - {end_dt.strftime('%I:%M %p')}"
-                    
-                    day_layout.append({
-                        "type": "lecture",
-                        "index": i, 
-                        "label": time_label
-                    })
-                    current_visual_idx += 1
+                # Fetch Structure
+                topo = generate_day_structure(self.context.get('branchData', {}))
+                raw_layout = topo['layout']
+                
+                for item in raw_layout:
+                    if item['is_recess']:
+                         day_layout.append({
+                             "type": "recess",
+                             "index": -1,
+                             "label": "Recess" # or item['label']
+                         })
+                    else:
+                         idx = item.get('slot_index', 0)
+                         day_layout.append({
+                             "type": "lecture",
+                             "index": idx + 1, # Visual Index 1-based
+                             "label": item['label']
+                         })
+                    # current_visual_idx not needed
+
             except Exception as e:
                 # LOG ERROR
                 with open('backend_time_layout_error.log', 'w') as f:
@@ -324,6 +338,7 @@ class TimetableScheduler:
             # STEP 1: HARD INSTRUMENTATION
             print("==== FINAL ALLOCATION DEBUG ====")
             print("Total divisions:", len(all_timetables))
+            total_slots_filled = 0 # RESET for final count
             for year, divs in all_timetables.items():
                 for div, wrapper in divs.items():
                     table = wrapper.get('timetable', {})
@@ -336,9 +351,16 @@ class TimetableScheduler:
                         slots_map = table[d]
                         if isinstance(slots_map, dict):
                             for s_key, entries in slots_map.items():
-                                if entries: non_empty_count += 1
+                                if entries:
+                                    # Filter out BREAK and RECESS
+                                    real_entries = [e for e in entries if e.get('type') not in ['BREAK', 'RECESS']]
+                                    if real_entries: 
+                                        non_empty_count += 1
+                                        total_slots_filled += 1
                         elif isinstance(slots_map, list): # Legacy check
-                            non_empty_count += len(slots_map)
+                            real_entries = [e for e in slots_map if e.get('type') not in ['BREAK', 'RECESS']]
+                            non_empty_count += len(real_entries)
+                            total_slots_filled += len(real_entries)
                             
                     print(f"Division: {year}-{div} | Non-empty slots: {non_empty_count}")
 
@@ -347,6 +369,8 @@ class TimetableScheduler:
                  error_msg = ("FATAL: Allocation failed. Grid initialized but no sessions placed. "
                               "Constraint Logic might have rejected everything.")
                  print(f"ERROR: {error_msg}")
+                 if hasattr(self, 'constraint_logger'):
+                     print(self.constraint_logger.get_report())
                  raise RuntimeError(error_msg)
 
             return {
@@ -355,9 +379,15 @@ class TimetableScheduler:
                 "timetables": all_timetables,
                 "failures": failures,
                 "raw_timetable": raw_all_slots, 
+                "internal_slots": all_internal_slots, # NEW for Validation
                 "qualityScore": 100, 
+                "config": {
+                    "recess_slot": self.state.recess_slot,
+                    "total_slots": self.state.total_slots
+                },
                 "dayLayout": day_layout,
                 "message": f"Generated {generated_count}/{expected_class_count} classes. {len(failures)} failures.",
+                "constraintReport": self.constraint_logger.get_report(),
                 "stats": {
                     "classes_generated": generated_count,
                     "classes_failed": len(failures),
@@ -396,9 +426,21 @@ class TimetableScheduler:
             except:
                 pass
 
+            # Check if it's a structured RuntimeError
+            if isinstance(e, RuntimeError) and e.args and isinstance(e.args[0], dict):
+                 err_dict = e.args[0]
+                 return {
+                     "success": False,
+                     "stage": err_dict.get('stage', 'GENERATION_FAILED'),
+                     "errorType": err_dict.get('type', 'RuntimeError'),
+                     "message": err_dict.get('error', str(e)),
+                     "details": str(err_dict),
+                     "traceback": tb
+                 }
+
             return {
                 "success": False,
-                "stage": "GLOBAL_SETUP",
+                "stage": "GENERATION_FAILED",
                 "errorType": type(e).__name__,
                 "message": str(e),
                 "details": "Critical error before generation loop started.",
@@ -583,15 +625,8 @@ class TimetableScheduler:
             raw_slot_idx = int(slot['slot'])
             
             # --- SLOT MAPPING LOGIC (0-based -> 1-based Visual) ---
-            if recess_slot is not None:
-                if raw_slot_idx < recess_slot:
-                    visual_idx = raw_slot_idx + 1
-                elif raw_slot_idx > recess_slot:
-                    visual_idx = raw_slot_idx # Mapping shifted 4->4 (after recess)
-                else:
-                    visual_idx = raw_slot_idx + 1
-            else:
-                visual_idx = raw_slot_idx + 1
+            # Strictly use 1-based indexing to match Day Layout
+            visual_idx = raw_slot_idx + 1
                 
             # Filter keys for clean output
             clean_slot = {k: v for k, v in slot.items() if k not in ['id', 'isPractical']}
@@ -776,6 +811,7 @@ class TimetableScheduler:
         
         return {
             "success": False,
+            "stage": "GENERATION_FAILED",
             "timetable": self.state.get_filled_slots(),
             "valid": False,
             "qualityScore": 0,
@@ -786,6 +822,6 @@ class TimetableScheduler:
             "stats": {
                 "iterations": self.iterations,
                 "backtracks": self.backtracks,
-                "slotsF illed": len(self.state.slots)
+                "slotsFilled": len(self.state.slots)
             }
         }

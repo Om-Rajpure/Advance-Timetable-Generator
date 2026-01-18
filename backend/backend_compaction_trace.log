@@ -1,151 +1,157 @@
 COMPACTION PHASE STARTED
-COMPACTION: SE-A | Block Aoa L | Size: 2 | OrigSlot: 0
-COMPACTION: SE-A | Block Fsjp | Size: 1 | OrigSlot: 2
-COMPACTION: SE-A | Block Aoa | Size: 1 | OrigSlot: 3
-COMPACTION: SE-A | Block Ese | Size: 1 | OrigSlot: 5
-COMPACTION: SE-A | Block Dsgt | Size: 1 | OrigSlot: 6
 COMPACTION: SE-A | Block Fsjp L | Size: 2 | OrigSlot: 0
-COMPACTION: SE-A | Block Aoa | Size: 1 | OrigSlot: 2
-COMPACTION: SE-A | Block Coa | Size: 1 | OrigSlot: 3
-COMPACTION: SE-A | Block Dsgt | Size: 1 | OrigSlot: 5
-COMPACTION: SE-A | Block Ed | Size: 1 | OrigSlot: 6
-COMPACTION: SE-A | Block Coa L | Size: 2 | OrigSlot: 0
-COMPACTION: SE-A | Block Fsjp | Size: 1 | OrigSlot: 2
+COMPACTION: SE-A | Block Coa | Size: 1 | OrigSlot: 2
 COMPACTION: SE-A | Block Ese | Size: 1 | OrigSlot: 3
-COMPACTION: SE-A | Block Ed | Size: 1 | OrigSlot: 5
-COMPACTION: SE-A | Block Oe-lm | Size: 1 | OrigSlot: 6
+COMPACTION: SE-A | Block Dsgt | Size: 1 | OrigSlot: 4
+COMPACTION: SE-A | Block Oe-lm | Size: 1 | OrigSlot: 5
+COMPACTION: SE-A | Block Fsjp | Size: 1 | OrigSlot: 6
+COMPACTION: SE-A | Block Coa L | Size: 2 | OrigSlot: 0
+COMPACTION: SE-A | Block Ese | Size: 1 | OrigSlot: 2
+COMPACTION: SE-A | Block Ed | Size: 1 | OrigSlot: 3
+COMPACTION: SE-A | Block Oe-lm | Size: 1 | OrigSlot: 4
 COMPACTION: SE-A | Block Ese L | Size: 2 | OrigSlot: 0
-COMPACTION: SE-A | Block Aoa | Size: 1 | OrigSlot: 2
-COMPACTION: SE-A | Block Coa | Size: 1 | OrigSlot: 3
-COMPACTION: SE-A | Block Dsgt | Size: 1 | OrigSlot: 5
-COMPACTION: SE-A | Block Oe-lm | Size: 1 | OrigSlot: 6
+COMPACTION: SE-A | Block Coa | Size: 1 | OrigSlot: 2
+COMPACTION: SE-A | Block Dsgt | Size: 1 | OrigSlot: 3
+COMPACTION: SE-A | Block Fsjp | Size: 1 | OrigSlot: 4
 COMPACTION: SE-A | Block Ed L | Size: 2 | OrigSlot: 0
-COMPACTION: SE-A | Block Fsjp | Size: 1 | OrigSlot: 2
-COMPACTION: SE-A | Block Coa | Size: 1 | OrigSlot: 3
-COMPACTION: SE-A | Block Ese | Size: 1 | OrigSlot: 5
-COMPACTION: SE-A | Block Ed | Size: 1 | OrigSlot: 6
-COMPACTION: SE-B | Block Aoa L | Size: 2 | OrigSlot: 0
-COMPACTION: SE-B | Block Aoa | Size: 1 | OrigSlot: 2
-COMPACTION: SE-B | Block Fsjp | Size: 1 | OrigSlot: 3
-COMPACTION: SE-B | Block Dsgt | Size: 1 | OrigSlot: 5
-COMPACTION: SE-B | Block Ese | Size: 1 | OrigSlot: 6
+COMPACTION: SE-A | Block Ese | Size: 1 | OrigSlot: 2
+COMPACTION: SE-A | Block Ed | Size: 1 | OrigSlot: 3
+COMPACTION: SE-A | Block Oe-lm | Size: 1 | OrigSlot: 4
+COMPACTION: SE-A | Block Coa | Size: 1 | OrigSlot: 0
+COMPACTION: SE-A | Block Ed | Size: 1 | OrigSlot: 1
+COMPACTION: SE-A | Block Dsgt | Size: 1 | OrigSlot: 2
+COMPACTION: SE-A | Block Fsjp | Size: 1 | OrigSlot: 3
 COMPACTION: SE-B | Block Fsjp L | Size: 2 | OrigSlot: 0
-COMPACTION: SE-B | Block Aoa | Size: 1 | OrigSlot: 2
-COMPACTION: SE-B | Block Coa | Size: 1 | OrigSlot: 3
-COMPACTION: SE-B | Block Ed | Size: 1 | OrigSlot: 5
-COMPACTION: SE-B | Block Dsgt | Size: 1 | OrigSlot: 6
-COMPACTION: SE-B | Block Coa L | Size: 2 | OrigSlot: 0
-COMPACTION: SE-B | Block Ese | Size: 1 | OrigSlot: 2
-COMPACTION: SE-B | Block Fsjp | Size: 1 | OrigSlot: 3
-COMPACTION: SE-B | Block Oe-lm | Size: 1 | OrigSlot: 5
-COMPACTION: SE-B | Block Ed | Size: 1 | OrigSlot: 6
-COMPACTION: SE-B | Block Ese L | Size: 2 | OrigSlot: 0
-COMPACTION: SE-B | Block Aoa | Size: 1 | OrigSlot: 2
-COMPACTION: SE-B | Block Coa | Size: 1 | OrigSlot: 3
-COMPACTION: SE-B | Block Oe-lm | Size: 1 | OrigSlot: 5
-COMPACTION: SE-B | Block Dsgt | Size: 1 | OrigSlot: 6
-COMPACTION: SE-B | Block Ed L | Size: 2 | OrigSlot: 0
 COMPACTION: SE-B | Block Coa | Size: 1 | OrigSlot: 2
-COMPACTION: SE-B | Block Fsjp | Size: 1 | OrigSlot: 3
+COMPACTION: SE-B | Block Dsgt | Size: 1 | OrigSlot: 3
+COMPACTION: SE-B | Block Ese | Size: 1 | OrigSlot: 4
+COMPACTION: SE-B | Block Fsjp | Size: 1 | OrigSlot: 5
+COMPACTION: SE-B | Block Oe-lm | Size: 1 | OrigSlot: 6
+COMPACTION: SE-B | Block Coa L | Size: 2 | OrigSlot: 0
+COMPACTION: SE-B | Block Ese L | Size: 2 | OrigSlot: 2
+COMPACTION: SE-B | Block Ese | Size: 1 | OrigSlot: 4
 COMPACTION: SE-B | Block Ed | Size: 1 | OrigSlot: 5
-COMPACTION: SE-B | Block Ese | Size: 1 | OrigSlot: 6
-COMPACTION: SE-C | Block Aoa L | Size: 2 | OrigSlot: 0
+COMPACTION: SE-B | Block Oe-lm | Size: 1 | OrigSlot: 6
+COMPACTION: SE-B | Block Ese L | Size: 2 | OrigSlot: 0
+COMPACTION: SE-B | Block Ed L | Size: 2 | OrigSlot: 2
+COMPACTION: SE-B | Block Coa | Size: 1 | OrigSlot: 4
+COMPACTION: SE-B | Block Dsgt | Size: 1 | OrigSlot: 5
+COMPACTION: SE-B | Block Fsjp | Size: 1 | OrigSlot: 6
+COMPACTION: SE-B | Block Fsjp L | Size: 2 | OrigSlot: 0
+COMPACTION: SE-B | Block Ed L | Size: 2 | OrigSlot: 2
+COMPACTION: SE-B | Block Ese | Size: 1 | OrigSlot: 4
+COMPACTION: SE-B | Block Ed | Size: 1 | OrigSlot: 5
+COMPACTION: SE-B | Block Oe-lm | Size: 1 | OrigSlot: 6
+COMPACTION: SE-B | Block Coa | Size: 1 | OrigSlot: 0
+COMPACTION: SE-B | Block Dsgt | Size: 1 | OrigSlot: 1
+COMPACTION: SE-B | Block Ed | Size: 1 | OrigSlot: 2
+COMPACTION: SE-B | Block Fsjp | Size: 1 | OrigSlot: 3
+COMPACTION: SE-C | Block Ese | Size: 1 | OrigSlot: 0
+COMPACTION: SE-C | Block Ed | Size: 1 | OrigSlot: 1
 COMPACTION: SE-C | Block Fsjp L | Size: 2 | OrigSlot: 2
-COMPACTION: SE-C | Block Fsjp | Size: 1 | OrigSlot: 5
-COMPACTION: SE-C | Block Aoa | Size: 1 | OrigSlot: 6
-COMPACTION: SE-C | Block Dsgt | Size: 1 | OrigSlot: 7
-COMPACTION: SE-C | Block Fsjp L | Size: 2 | OrigSlot: 0
-COMPACTION: SE-C | Block Coa L | Size: 2 | OrigSlot: 2
-COMPACTION: SE-C | Block Aoa | Size: 1 | OrigSlot: 5
-COMPACTION: SE-C | Block Coa | Size: 1 | OrigSlot: 6
-COMPACTION: SE-C | Block Ed | Size: 1 | OrigSlot: 7
+COMPACTION: SE-C | Block Coa | Size: 1 | OrigSlot: 4
+COMPACTION: SE-C | Block Dsgt | Size: 1 | OrigSlot: 5
 COMPACTION: SE-C | Block Coa L | Size: 2 | OrigSlot: 0
 COMPACTION: SE-C | Block Ese L | Size: 2 | OrigSlot: 2
-COMPACTION: SE-C | Block Fsjp | Size: 1 | OrigSlot: 5
+COMPACTION: SE-C | Block Ed L | Size: 2 | OrigSlot: 4
 COMPACTION: SE-C | Block Ese | Size: 1 | OrigSlot: 6
-COMPACTION: SE-C | Block Oe-lm | Size: 1 | OrigSlot: 7
-COMPACTION: SE-C | Block Ese L | Size: 2 | OrigSlot: 0
-COMPACTION: SE-C | Block Ed L | Size: 2 | OrigSlot: 2
-COMPACTION: SE-C | Block Aoa | Size: 1 | OrigSlot: 5
-COMPACTION: SE-C | Block Coa | Size: 1 | OrigSlot: 6
-COMPACTION: SE-C | Block Ed L | Size: 2 | OrigSlot: 0
-COMPACTION: SE-C | Block Aoa L | Size: 2 | OrigSlot: 2
-COMPACTION: SE-C | Block Fsjp | Size: 1 | OrigSlot: 5
-COMPACTION: SE-C | Block Coa | Size: 1 | OrigSlot: 6
-COMPACTION: TE-A | Block Saids | Size: 1 | OrigSlot: 0
-COMPACTION: TE-A | Block Dwm | Size: 1 | OrigSlot: 1
-COMPACTION: TE-A | Block Wcn L | Size: 2 | OrigSlot: 2
-COMPACTION: TE-A | Block Computer Networks | Size: 1 | OrigSlot: 5
-COMPACTION: TE-A | Block Wc | Size: 1 | OrigSlot: 6
-COMPACTION: TE-A | Block AI | Size: 1 | OrigSlot: 0
-COMPACTION: TE-A | Block Dwm | Size: 1 | OrigSlot: 1
+COMPACTION: SE-C | Block Coa | Size: 1 | OrigSlot: 0
+COMPACTION: SE-C | Block Ed | Size: 1 | OrigSlot: 1
+COMPACTION: SE-C | Block Ese L | Size: 2 | OrigSlot: 2
+COMPACTION: SE-C | Block Ed L | Size: 2 | OrigSlot: 4
+COMPACTION: SE-C | Block Dsgt | Size: 1 | OrigSlot: 6
+COMPACTION: SE-C | Block Coa L | Size: 2 | OrigSlot: 0
+COMPACTION: SE-C | Block Fsjp L | Size: 2 | OrigSlot: 2
+COMPACTION: SE-C | Block Ed L | Size: 2 | OrigSlot: 4
+COMPACTION: SE-C | Block Ese | Size: 1 | OrigSlot: 6
+COMPACTION: SE-C | Block Ed | Size: 1 | OrigSlot: 0
+COMPACTION: SE-C | Block Coa | Size: 1 | OrigSlot: 1
+COMPACTION: SE-C | Block Oe-lm | Size: 1 | OrigSlot: 2
+COMPACTION: SE-C | Block Dsgt | Size: 1 | OrigSlot: 3
+COMPACTION: SE-C | Block Fsjp | Size: 1 | OrigSlot: 4
+COMPACTION: TE-A | Block Wcn L | Size: 2 | OrigSlot: 0
 COMPACTION: TE-A | Block Ai L | Size: 2 | OrigSlot: 2
-COMPACTION: TE-A | Block Wc | Size: 1 | OrigSlot: 5
+COMPACTION: TE-A | Block Wc | Size: 1 | OrigSlot: 4
+COMPACTION: TE-A | Block AI | Size: 1 | OrigSlot: 5
+COMPACTION: TE-A | Block Computer Networks | Size: 1 | OrigSlot: 6
+COMPACTION: TE-A | Block Ai L | Size: 2 | OrigSlot: 0
 COMPACTION: TE-A | Block Dwm L | Size: 2 | OrigSlot: 2
-COMPACTION: TE-A | Block Computer Networks | Size: 1 | OrigSlot: 5
+COMPACTION: TE-A | Block AI | Size: 1 | OrigSlot: 4
+COMPACTION: TE-A | Block Aoa | Size: 1 | OrigSlot: 5
 COMPACTION: TE-A | Block Saids | Size: 1 | OrigSlot: 6
+COMPACTION: TE-A | Block Aoa L | Size: 2 | OrigSlot: 0
+COMPACTION: TE-A | Block Wcn L | Size: 2 | OrigSlot: 2
+COMPACTION: TE-A | Block Wc | Size: 1 | OrigSlot: 4
+COMPACTION: TE-A | Block Computer Networks | Size: 1 | OrigSlot: 5
+COMPACTION: TE-A | Block Dwm | Size: 1 | OrigSlot: 6
+COMPACTION: TE-A | Block Dwm L | Size: 2 | OrigSlot: 0
+COMPACTION: TE-A | Block Wcn L | Size: 2 | OrigSlot: 2
+COMPACTION: TE-A | Block AI | Size: 1 | OrigSlot: 4
+COMPACTION: TE-A | Block Aoa | Size: 1 | OrigSlot: 5
+COMPACTION: TE-A | Block Dwm | Size: 1 | OrigSlot: 6
 COMPACTION: TE-A | Block Wc | Size: 1 | OrigSlot: 0
-COMPACTION: TE-A | Block AI | Size: 1 | OrigSlot: 2
-COMPACTION: TE-A | Block Dwm | Size: 1 | OrigSlot: 3
-COMPACTION: TE-A | Block Computer Networks | Size: 1 | OrigSlot: 0
-COMPACTION: TE-A | Block AI | Size: 1 | OrigSlot: 2
+COMPACTION: TE-A | Block Aoa | Size: 1 | OrigSlot: 1
+COMPACTION: TE-A | Block Computer Networks | Size: 1 | OrigSlot: 2
 COMPACTION: TE-A | Block Saids | Size: 1 | OrigSlot: 3
+COMPACTION: TE-A | Block Dwm | Size: 1 | OrigSlot: 4
 COMPACTION: TE-B | Block AI | Size: 1 | OrigSlot: 0
-COMPACTION: TE-B | Block Saids | Size: 1 | OrigSlot: 1
+COMPACTION: TE-B | Block Computer Networks | Size: 1 | OrigSlot: 1
 COMPACTION: TE-B | Block Wcn L | Size: 2 | OrigSlot: 2
-COMPACTION: TE-B | Block Dwm L | Size: 2 | OrigSlot: 5
-COMPACTION: TE-B | Block Computer Networks | Size: 1 | OrigSlot: 7
-COMPACTION: TE-B | Block Saids | Size: 1 | OrigSlot: 0
-COMPACTION: TE-B | Block AI | Size: 1 | OrigSlot: 1
+COMPACTION: TE-B | Block Ai L | Size: 2 | OrigSlot: 4
+COMPACTION: TE-B | Block Wc | Size: 1 | OrigSlot: 6
+COMPACTION: TE-B | Block AI | Size: 1 | OrigSlot: 0
+COMPACTION: TE-B | Block Aoa | Size: 1 | OrigSlot: 1
 COMPACTION: TE-B | Block Ai L | Size: 2 | OrigSlot: 2
-COMPACTION: TE-B | Block Wcn L | Size: 2 | OrigSlot: 5
-COMPACTION: TE-B | Block Wc | Size: 1 | OrigSlot: 0
-COMPACTION: TE-B | Block Dwm L | Size: 2 | OrigSlot: 2
-COMPACTION: TE-B | Block Ai L | Size: 2 | OrigSlot: 5
-COMPACTION: TE-B | Block Dwm | Size: 1 | OrigSlot: 7
-COMPACTION: TE-B | Block Computer Networks | Size: 1 | OrigSlot: 0
-COMPACTION: TE-B | Block Wc | Size: 1 | OrigSlot: 1
-COMPACTION: TE-B | Block Dwm | Size: 1 | OrigSlot: 2
-COMPACTION: TE-B | Block AI | Size: 1 | OrigSlot: 3
+COMPACTION: TE-B | Block Dwm L | Size: 2 | OrigSlot: 4
+COMPACTION: TE-B | Block Saids | Size: 1 | OrigSlot: 7
 COMPACTION: TE-B | Block Wc | Size: 1 | OrigSlot: 0
 COMPACTION: TE-B | Block Computer Networks | Size: 1 | OrigSlot: 1
-COMPACTION: TE-B | Block Saids | Size: 1 | OrigSlot: 2
+COMPACTION: TE-B | Block Aoa L | Size: 2 | OrigSlot: 2
+COMPACTION: TE-B | Block Dwm | Size: 1 | OrigSlot: 4
+COMPACTION: TE-B | Block AI | Size: 1 | OrigSlot: 0
+COMPACTION: TE-B | Block Aoa | Size: 1 | OrigSlot: 1
+COMPACTION: TE-B | Block Dwm L | Size: 2 | OrigSlot: 2
+COMPACTION: TE-B | Block Ai L | Size: 2 | OrigSlot: 4
+COMPACTION: TE-B | Block Aoa | Size: 1 | OrigSlot: 0
+COMPACTION: TE-B | Block Wc | Size: 1 | OrigSlot: 1
+COMPACTION: TE-B | Block Computer Networks | Size: 1 | OrigSlot: 2
 COMPACTION: TE-B | Block Dwm | Size: 1 | OrigSlot: 3
-COMPACTION: BE-A | Block Dl | Size: 1 | OrigSlot: 0
-COMPACTION: BE-A | Block Bt | Size: 1 | OrigSlot: 1
-COMPACTION: BE-A | Block Mis | Size: 1 | OrigSlot: 2
-COMPACTION: BE-A | Block Bda | Size: 1 | OrigSlot: 3
-COMPACTION: BE-A | Block Dl L | Size: 2 | OrigSlot: 5
-COMPACTION: BE-A | Block Bda | Size: 1 | OrigSlot: 0
-COMPACTION: BE-A | Block Nlp | Size: 1 | OrigSlot: 2
-COMPACTION: BE-A | Block Bt L | Size: 2 | OrigSlot: 5
-COMPACTION: BE-A | Block Mis | Size: 1 | OrigSlot: 0
-COMPACTION: BE-A | Block Bt | Size: 1 | OrigSlot: 2
-COMPACTION: BE-A | Block Bda L | Size: 2 | OrigSlot: 5
-COMPACTION: BE-A | Block Bda | Size: 1 | OrigSlot: 0
-COMPACTION: BE-A | Block Nlp L | Size: 2 | OrigSlot: 2
-COMPACTION: BE-A | Block Dl | Size: 1 | OrigSlot: 5
-COMPACTION: BE-A | Block Nlp | Size: 1 | OrigSlot: 6
+COMPACTION: TE-B | Block Saids | Size: 1 | OrigSlot: 4
 COMPACTION: BE-A | Block Dl | Size: 1 | OrigSlot: 0
 COMPACTION: BE-A | Block Mis | Size: 1 | OrigSlot: 1
 COMPACTION: BE-A | Block Nlp | Size: 1 | OrigSlot: 2
 COMPACTION: BE-A | Block Bt | Size: 1 | OrigSlot: 3
-COMPACTION: BE-B | Block Bt | Size: 1 | OrigSlot: 0
-COMPACTION: BE-B | Block Dl | Size: 1 | OrigSlot: 1
-COMPACTION: BE-B | Block Bda | Size: 1 | OrigSlot: 2
-COMPACTION: BE-B | Block Mis | Size: 1 | OrigSlot: 3
-COMPACTION: BE-B | Block Dl L | Size: 2 | OrigSlot: 5
-COMPACTION: BE-B | Block Bda | Size: 1 | OrigSlot: 1
-COMPACTION: BE-B | Block Nlp | Size: 1 | OrigSlot: 3
-COMPACTION: BE-B | Block Bt L | Size: 2 | OrigSlot: 5
-COMPACTION: BE-B | Block Nlp | Size: 1 | OrigSlot: 0
-COMPACTION: BE-B | Block Mis | Size: 1 | OrigSlot: 1
-COMPACTION: BE-B | Block Bt | Size: 1 | OrigSlot: 3
-COMPACTION: BE-B | Block Bda L | Size: 2 | OrigSlot: 5
-COMPACTION: BE-B | Block Bt | Size: 1 | OrigSlot: 0
-COMPACTION: BE-B | Block Bda | Size: 1 | OrigSlot: 1
-COMPACTION: BE-B | Block Nlp L | Size: 2 | OrigSlot: 2
-COMPACTION: BE-B | Block Bt L | Size: 2 | OrigSlot: 5
+COMPACTION: BE-A | Block Dl L | Size: 2 | OrigSlot: 4
+COMPACTION: BE-A | Block Mis | Size: 1 | OrigSlot: 0
+COMPACTION: BE-A | Block Bda | Size: 1 | OrigSlot: 1
+COMPACTION: BE-A | Block Bt L | Size: 2 | OrigSlot: 2
+COMPACTION: BE-A | Block Bda L | Size: 2 | OrigSlot: 4
+COMPACTION: BE-A | Block Bt | Size: 1 | OrigSlot: 6
+COMPACTION: BE-A | Block Dl | Size: 1 | OrigSlot: 0
+COMPACTION: BE-A | Block Nlp | Size: 1 | OrigSlot: 2
+COMPACTION: BE-A | Block Bda L | Size: 2 | OrigSlot: 4
+COMPACTION: BE-A | Block Mis | Size: 1 | OrigSlot: 0
+COMPACTION: BE-A | Block Bda | Size: 1 | OrigSlot: 1
+COMPACTION: BE-A | Block Dl L | Size: 2 | OrigSlot: 2
+COMPACTION: BE-A | Block Bt | Size: 1 | OrigSlot: 4
+COMPACTION: BE-A | Block Dl | Size: 1 | OrigSlot: 4
+COMPACTION: BE-A | Block Bda | Size: 1 | OrigSlot: 5
+COMPACTION: BE-A | Block Nlp | Size: 1 | OrigSlot: 6
 COMPACTION: BE-B | Block Mis | Size: 1 | OrigSlot: 0
 COMPACTION: BE-B | Block Dl | Size: 1 | OrigSlot: 1
-COMPACTION: BE-B | Block Nlp | Size: 1 | OrigSlot: 5
+COMPACTION: BE-B | Block Bda | Size: 1 | OrigSlot: 2
+COMPACTION: BE-B | Block Bt | Size: 1 | OrigSlot: 6
+COMPACTION: BE-B | Block Nlp | Size: 1 | OrigSlot: 0
+COMPACTION: BE-B | Block Mis | Size: 1 | OrigSlot: 1
+COMPACTION: BE-B | Block Bt L | Size: 2 | OrigSlot: 4
+COMPACTION: BE-B | Block Bda | Size: 1 | OrigSlot: 0
+COMPACTION: BE-B | Block Dl | Size: 1 | OrigSlot: 1
+COMPACTION: BE-B | Block Bt | Size: 1 | OrigSlot: 2
+COMPACTION: BE-B | Block Nlp | Size: 1 | OrigSlot: 0
+COMPACTION: BE-B | Block Mis | Size: 1 | OrigSlot: 1
+COMPACTION: BE-B | Block Dl L | Size: 2 | OrigSlot: 4
+COMPACTION: BE-B | Block Bt L | Size: 1 | OrigSlot: 6
+COMPACTION: BE-B | Block Bda L | Size: 4 | OrigSlot: 0
+COMPACTION: BE-B | Block Nlp | Size: 1 | OrigSlot: 4
+COMPACTION: BE-B | Block Dl | Size: 1 | OrigSlot: 5
+COMPACTION: BE-B | Block Bt | Size: 1 | OrigSlot: 6

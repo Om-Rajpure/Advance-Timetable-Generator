@@ -21,15 +21,21 @@ class ScheduleOptimizer:
         3. Sort assignments by priority (Practical blocks > Theory).
         4. Re-insert them starting from Slot 0 (skipping Recess).
         """
-        recess_slot = getattr(self.state, 'recess_slot', None)
+        try:
+            from utils.time_utils import calculate_time_slots
+            time_config = calculate_time_slots(self.context.get('branchData', {}))
+            recess_slot = time_config.get('recess_slot')
+        except:
+             recess_slot = getattr(self.state, 'recess_slot', None)
         
         # 1. EXTRACT: Collect all Assignments
         #    We grouping them into "Blocks" that must stay together (e.g. Lab sessions)
         raw_assignments = []
-        for i in range(12): # Assuming max 12 slots/day
-            if recess_slot is not None and i == recess_slot:
-                continue
-                
+        
+        # USE CENTRALIZED SCHEDULABLE SLOTS
+        schedulable_indices = self.state.get_schedulable_slots()
+        
+        for i in schedulable_indices: 
             ass = self.state.get_slot_assignment(day, i, year, division)
             if ass:
                 # Normalize to list
@@ -39,6 +45,10 @@ class ScheduleOptimizer:
                 # Check what type
                 first = data_list[0]
                 
+                # Double check we didn't pick up RECESS object
+                if first.get('type') in ['RECESS', 'BREAK']:
+                    continue
+
                 raw_assignments.append({
                     'original_slot': i,
                     'data': data_list,
@@ -96,7 +106,7 @@ class ScheduleOptimizer:
         
         # 5. RE-INSERT WITH GRAVITY
         current_slot_ptr = 0
-        total_slots = 8 # Soft limit, but loop goes to max
+        total_slots = getattr(self.state, 'total_slots', 8)
         
         # Track failures to re-insert
         failed_blocks = []
@@ -124,14 +134,17 @@ class ScheduleOptimizer:
             # Let's try finding the EARLIEST POSSIBLE slot for each block.
             search_start = 0 
             
-            for start_s in range(search_start, 12):
+            # Use schedulable slots for candidate starts
+            # Note: We must check bounds (start + duration must be valid)
+            
+            for start_s in schedulable_indices:
                 # Bounds check
-                if start_s + duration > 12: 
-                    break
+                if start_s + duration > total_slots: 
+                    continue
                     
                 # Recess skip check
                 # A block cannot span across recess ideally? Or can it?
-                # Usually we don't want a lab split by recess.
+                # usually we don't want a lab split by recess.
                 # Assuming recess is a hard break.
                 hit_recess = False
                 if recess_slot is not None:

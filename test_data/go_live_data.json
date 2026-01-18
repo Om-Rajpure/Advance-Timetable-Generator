@@ -1,60 +1,688 @@
 {
     "branchData": {
         "branchName": "Computer Engineering",
-        "academicYears": ["SE", "TE", "BE"],
+        "academicYears": [
+            "SE",
+            "TE",
+            "BE"
+        ],
         "divisions": {
-            "SE": ["A", "B"],
-            "TE": ["A", "B"],
-            "BE": ["A"]
+            "SE": [
+                "A",
+                "B",
+                "C"
+            ],
+            "TE": [
+                "A",
+                "B"
+            ],
+            "BE": [
+                "A",
+                "B"
+            ]
         },
-        "workingDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "workingDays": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday"
+        ],
         "slotConfig": {
             "startTime": "09:00",
-            "endTime": "17:00",
+            "endTime": "18:00",
             "slotDuration": 60,
             "recess": {
                 "startTime": "13:00",
-                "duration": 60
+                "duration": 45
             }
         }
     },
     "smartInputData": {
         "teachers": [
-            { "id": "t1", "name": "Prof. Smith", "availableDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "maxLoad": 18 },
-            { "id": "t2", "name": "Prof. Johnson", "availableDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "maxLoad": 18 },
-            { "id": "t3", "name": "Prof. Williams", "availableDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "maxLoad": 18 },
-            { "id": "t4", "name": "Prof. Brown", "availableDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "maxLoad": 18 },
-            { "id": "t5", "name": "Prof. Jones", "availableDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "maxLoad": 18 },
-            { "id": "t6", "name": "Prof. Garcia", "availableDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "maxLoad": 18 },
-            { "id": "t7", "name": "Prof. Miller", "availableDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "maxLoad": 18 },
-            { "id": "t8", "name": "Prof. Davis", "availableDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "maxLoad": 18 }
+            {
+                "id": "t1",
+                "name": "Dr. S. M. Patil",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t2",
+                "name": "Mr. A. S. Londhe",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t3",
+                "name": "Dr. (Mrs.) P. N. Jain",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t4",
+                "name": "Mrs. D. J. Janjani",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t5",
+                "name": "Mrs. P. A. Kamble",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t6",
+                "name": "Mrs. A. R. Sonawane",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t7",
+                "name": "Mrs. S. S. Parhad",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t8",
+                "name": "Ms. I. A. Solomon",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t9",
+                "name": "Dr. (Mrs.) A. M. Patil",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t10",
+                "name": "Mrs. A. Tiwari",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t11",
+                "name": "Mrs. S. Atram",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t12",
+                "name": "Mrs. M. Umate",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t13",
+                "name": "Ms. O. Samantha",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t14",
+                "name": "Mrs. Y. S. Vadanerkar",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t15",
+                "name": "Mrs. S. R. Katke",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t16",
+                "name": "Mrs. A. G. Divekar",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t17",
+                "name": "Mrs. S. Singh",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t18",
+                "name": "Ms. M. Saxena",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t19",
+                "name": "Ms. A. Raut",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            },
+            {
+                "id": "t20",
+                "name": "Mr. S. H. Rathod",
+                "availableDays": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "maxLoad": 7
+            }
         ],
         "subjects": [
-            { "id": "s1", "name": "Data Structures", "weeklyLectures": 3, "isPractical": false, "year": "SE" },
-            { "id": "s2", "name": "DS Lab", "weeklyLectures": 1, "isPractical": true, "sessionLength": 2, "year": "SE" },
-            { "id": "s3", "name": "Algorithms", "weeklyLectures": 3, "isPractical": false, "year": "TE" },
-            { "id": "s4", "name": "Algo Lab", "weeklyLectures": 1, "isPractical": true, "sessionLength": 2, "year": "TE" },
-            { "id": "s5", "name": "AI", "weeklyLectures": 3, "isPractical": false, "year": "BE" },
-            { "id": "s6", "name": "AI Lab", "weeklyLectures": 1, "isPractical": true, "sessionLength": 2, "year": "BE" },
-            { "id": "s7", "name": "Database", "weeklyLectures": 3, "isPractical": false, "year": "SE" },
-             { "id": "s8", "name": "OS", "weeklyLectures": 3, "isPractical": false, "year": "TE" }
+            {
+                "id": "s1",
+                "name": "WC",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "TE"
+            },
+            {
+                "id": "s2",
+                "name": "DL",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "BE"
+            },
+            {
+                "id": "s3",
+                "name": "AI",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "TE"
+            },
+            {
+                "id": "s4",
+                "name": "AOA",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "TE"
+            },
+            {
+                "id": "s5",
+                "name": "MIS",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "BE"
+            },
+            {
+                "id": "s6",
+                "name": "CN",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "TE"
+            },
+            {
+                "id": "s7",
+                "name": "SAIDS",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "TE"
+            },
+            {
+                "id": "s8",
+                "name": "DWM",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "TE"
+            },
+            {
+                "id": "s9",
+                "name": "COA",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "SE"
+            },
+            {
+                "id": "s10",
+                "name": "ESE",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "SE"
+            },
+            {
+                "id": "s11",
+                "name": "BDA",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "BE"
+            },
+            {
+                "id": "s12",
+                "name": "NLP",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "BE"
+            },
+            {
+                "id": "s13",
+                "name": "BT",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "BE"
+            },
+            {
+                "id": "s14",
+                "name": "ED",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "SE"
+            },
+            {
+                "id": "s15",
+                "name": "DSGT",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "SE"
+            },
+            {
+                "id": "s16",
+                "name": "OE-LM",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "SE"
+            },
+            {
+                "id": "s17",
+                "name": "FSJP",
+                "weeklyLectures": 3,
+                "isPractical": false,
+                "year": "SE"
+            },
+            {
+                "id": "s18",
+                "name": "WCN L",
+                "weeklyLectures": 1,
+                "isPractical": true,
+                "year": "TE",
+                "sessionLength": 2
+            },
+            {
+                "id": "s19",
+                "name": "DL L",
+                "weeklyLectures": 1,
+                "isPractical": true,
+                "year": "BE",
+                "sessionLength": 2
+            },
+            {
+                "id": "s20",
+                "name": "AI L",
+                "weeklyLectures": 1,
+                "isPractical": true,
+                "year": "TE",
+                "sessionLength": 2
+            },
+            {
+                "id": "s21",
+                "name": "AOA L",
+                "weeklyLectures": 1,
+                "isPractical": true,
+                "year": "TE",
+                "sessionLength": 2
+            },
+            {
+                "id": "s22",
+                "name": "BT L",
+                "weeklyLectures": 1,
+                "isPractical": true,
+                "year": "BE",
+                "sessionLength": 2
+            },
+            {
+                "id": "s23",
+                "name": "FSJP L",
+                "weeklyLectures": 1,
+                "isPractical": true,
+                "year": "SE",
+                "sessionLength": 2
+            },
+            {
+                "id": "s24",
+                "name": "DWM L",
+                "weeklyLectures": 1,
+                "isPractical": true,
+                "year": "TE",
+                "sessionLength": 2
+            },
+            {
+                "id": "s25",
+                "name": "COA L",
+                "weeklyLectures": 1,
+                "isPractical": true,
+                "year": "SE",
+                "sessionLength": 2
+            },
+            {
+                "id": "s26",
+                "name": "BDA L",
+                "weeklyLectures": 1,
+                "isPractical": true,
+                "year": "BE",
+                "sessionLength": 2
+            },
+            {
+                "id": "s27",
+                "name": "ESE L",
+                "weeklyLectures": 1,
+                "isPractical": true,
+                "year": "SE",
+                "sessionLength": 2
+            },
+            {
+                "id": "s28",
+                "name": "ED L",
+                "weeklyLectures": 1,
+                "isPractical": true,
+                "year": "SE",
+                "sessionLength": 2
+            }
         ],
         "teacherSubjectMap": [
-            { "teacherId": "t1", "subjectId": "s1", "year": "SE" },
-            { "teacherId": "t1", "subjectId": "s2", "year": "SE" },
-            { "teacherId": "t2", "subjectId": "s3", "year": "TE" },
-            { "teacherId": "t2", "subjectId": "s4", "year": "TE" },
-            { "teacherId": "t3", "subjectId": "s5", "year": "BE" },
-            { "teacherId": "t3", "subjectId": "s6", "year": "BE" },
-             { "teacherId": "t4", "subjectId": "s7", "year": "SE" },
-               { "teacherId": "t5", "subjectId": "s8", "year": "TE" }
+            {
+                "teacherName": "Mr. A. S. Londhe",
+                "subjectName": "WC",
+                "year": "TE"
+            },
+            {
+                "teacherName": "Mr. A. S. Londhe",
+                "subjectName": "WCN L",
+                "year": "TE"
+            },
+            {
+                "teacherName": "Dr. (Mrs.) P. N. Jain",
+                "subjectName": "DL",
+                "year": "BE"
+            },
+            {
+                "teacherName": "Mrs. D. J. Janjani",
+                "subjectName": "AI",
+                "year": "TE"
+            },
+            {
+                "teacherName": "Mrs. D. J. Janjani",
+                "subjectName": "AI L",
+                "year": "TE"
+            },
+            {
+                "teacherName": "Mrs. P. A. Kamble",
+                "subjectName": "AOA",
+                "year": "TE"
+            },
+            {
+                "teacherName": "Mrs. P. A. Kamble",
+                "subjectName": "AOA L",
+                "year": "TE"
+            },
+            {
+                "teacherName": "Mrs. A. R. Sonawane",
+                "subjectName": "MIS",
+                "year": "BE"
+            },
+            {
+                "teacherName": "Mrs. A. R. Sonawane",
+                "subjectName": "DWM",
+                "year": "TE"
+            },
+            {
+                "teacherName": "Mrs. S. S. Parhad",
+                "subjectName": "WC",
+                "year": "TE"
+            },
+            {
+                "teacherName": "Mrs. S. S. Parhad",
+                "subjectName": "WCN L",
+                "year": "TE"
+            },
+            {
+                "teacherName": "Mrs. S. S. Parhad",
+                "subjectName": "AOA L",
+                "year": "TE"
+            },
+            {
+                "teacherName": "Ms. I. A. Solomon",
+                "subjectName": "SAIDS",
+                "year": "TE"
+            },
+            {
+                "teacherName": "Ms. I. A. Solomon",
+                "subjectName": "FSJP L",
+                "year": "SE"
+            },
+            {
+                "teacherName": "Ms. I. A. Solomon",
+                "subjectName": "AI L",
+                "year": "TE"
+            },
+            {
+                "teacherName": "Dr. (Mrs.) A. M. Patil",
+                "subjectName": "DWM",
+                "year": "TE"
+            },
+            {
+                "teacherName": "Mrs. S. R. Katke",
+                "subjectName": "BT",
+                "year": "BE"
+            },
+            {
+                "teacherName": "Mrs. S. R. Katke",
+                "subjectName": "BT L",
+                "year": "BE"
+            },
+            {
+                "teacherName": "Mrs. A. G. Divekar",
+                "subjectName": "ESE",
+                "year": "SE"
+            },
+            {
+                "teacherName": "Mrs. A. G. Divekar",
+                "subjectName": "FSJP",
+                "year": "SE"
+            },
+            {
+                "teacherName": "Mrs. A. G. Divekar",
+                "subjectName": "ESE L",
+                "year": "SE"
+            },
+            {
+                "teacherName": "Mrs. A. G. Divekar",
+                "subjectName": "COA L",
+                "year": "SE"
+            },
+            {
+                "teacherName": "Mrs. S. Singh",
+                "subjectName": "ED",
+                "year": "SE"
+            },
+            {
+                "teacherName": "Mrs. S. Singh",
+                "subjectName": "MIS",
+                "year": "BE"
+            },
+            {
+                "teacherName": "Mrs. S. Singh",
+                "subjectName": "ED L",
+                "year": "SE"
+            },
+            {
+                "teacherName": "Mrs. S. Singh",
+                "subjectName": "AOA L",
+                "year": "TE"
+            },
+            {
+                "teacherName": "Ms. M. Saxena",
+                "subjectName": "ED",
+                "year": "SE"
+            },
+            {
+                "teacherName": "Ms. M. Saxena",
+                "subjectName": "ED L",
+                "year": "SE"
+            },
+            {
+                "teacherName": "Ms. A. Raut",
+                "subjectName": "DSGT",
+                "year": "SE"
+            },
+            {
+                "teacherName": "Ms. A. Raut",
+                "subjectName": "FSJP L",
+                "year": "SE"
+            },
+            {
+                "teacherName": "Mr. S. H. Rathod",
+                "subjectName": "OE-LM",
+                "year": "SE"
+            },
+            {
+                "teacherName": "Mr. S. H. Rathod",
+                "subjectName": "ESE L",
+                "year": "SE"
+            }
         ],
         "rooms": [
-            { "id": "r1", "name": "101", "capacity": 60, "type": "classroom" },
-            { "id": "r2", "name": "102", "capacity": 60, "type": "classroom" },
-            { "id": "r3", "name": "103", "capacity": 60, "type": "classroom" },
-            { "id": "r4", "name": "Lab 1", "capacity": 20, "type": "lab" },
-            { "id": "r5", "name": "Lab 2", "capacity": 20, "type": "lab" }
+            {
+                "id": "r1",
+                "name": "Room 101",
+                "capacity": 60,
+                "type": "classroom"
+            },
+            {
+                "id": "r2",
+                "name": "Room 102",
+                "capacity": 60,
+                "type": "classroom"
+            },
+            {
+                "id": "r3",
+                "name": "Room 103",
+                "capacity": 60,
+                "type": "classroom"
+            },
+            {
+                "id": "r4",
+                "name": "Lab 1",
+                "capacity": 20,
+                "type": "lab"
+            },
+            {
+                "id": "r5",
+                "name": "Lab 2",
+                "capacity": 20,
+                "type": "lab"
+            }
         ]
     }
 }

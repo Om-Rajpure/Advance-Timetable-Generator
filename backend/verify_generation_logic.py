@@ -13,69 +13,85 @@ def run_verification():
     print("=== VERIFYING STRICT GENERATION LOGIC ===")
     
     # ---------------------------------------------------------
-    # TEST CASE 1: MISSING DATA (Should FAIL LOUDLY)
+    # TEST CASE 1: CONSTRAINT FAILURE (Should return GENERATION_FAILED)
     # ---------------------------------------------------------
-    print("\n[TEST 1] Missing Data for BE-A")
+    print("\n[TEST 1] Force Constraint Failure (Insufficient Labs)")
     
-    context_missing = {
+    context_fail = {
         "branchData": {
-            "academicYears": ["SE", "BE"],
-            "workingDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-            "divisions": {
-                "SE": ["A"],
-                "BE": ["A"]  # Defined here but NO subjects below
-            },
+            "academicYears": ["SE"],
+            "workingDays": ["Monday"],
+            "divisions": {"SE": ["A"]},
             "slotsPerDay": 4,
-            "rooms": ["Room-1", "Room-2"],
-            "labs": [],
-            "labBatchesPerYear": {"SE": 3, "BE": 3}
+            "rooms": ["Room-1"],
+            "labs": [], # NO LABS -> Fails Practical
+            "labBatchesPerYear": {"SE": 1},
+            "recessEnabled": True,
+            "recessStart": "12:00 PM",
+            "lectureDuration": 60,
+            "startTime": "09:00 AM",
+            "endTime": "01:00 PM"
         },
         "smartInputData": {
             "subjects": [
-                # ONLY SE-A subjects
-                {"name": "SE Sub 1", "year": "SE", "division": "A", "type": "Lecture"},
-                {"name": "SE Sub 2", "year": "SE", "division": "A", "type": "Lecture"}
+                {"name": "Lab1", "year": "SE", "division": "A", "type": "Practical", "batches": 1, "lecturesPerWeek": 1}
             ],
             "teachers": [
-                {"name": "T1", "subjects": ["SE Sub 1", "SE Sub 2", "BE Sub 1"]}
+                {"name": "T1", "subjects": ["Lab1"]}
             ]
         }
     }
     
-    scheduler_1 = TimetableScheduler(context_missing, max_iterations=100)
+    scheduler_1 = TimetableScheduler(context_fail, max_iterations=10)
     
     try:
-        print("Running generation (Expect Crash/Failure)...")
+        print("Running generation (Expect Failure)...")
         result = scheduler_1.generate()
         
+        print(f"Result Stage: {result.get('stage')}")
+        
         if result.get('success') is False:
-             print("✅ SUCCESS: Generation failed explicitly as expected!")
-             msg = result.get('message', '') + " " + result.get('details', '')
-             print(f"Error Message: {msg}")
-             if "No subjects found" in msg or "CRITICAL DATA ERROR" in msg or "FAILED to generate" in msg:
-                 print(">> Verified: Correct error caught.")
+             if result.get('stage') == "GENERATION_FAILED":
+                 print("✅ SUCCESS: Generation failed with correct stage 'GENERATION_FAILED'.")
              else:
-                 print(f">> Warning: Failed but with different error? {msg}")
+                 print(f"❌ FAILURE: Generation failed but stage is '{result.get('stage')}' (Expected 'GENERATION_FAILED')")
+                 return False
         else:
-            print("❌ FAILURE: Generation succeeded silently but should have failed!")
-            print(f"Timetables: {result.get('timetables').keys()}")
+            print("❌ FAILURE: Generation succeeded unexpectedly!")
             return False
             
     except Exception as e:
-        print("✅ SUCCESS: Generation execution crashed!")  # This is also fine
-        print(f"Error: {e}")
+        print(f"❌ FAILURE: Crashed unexpectedly! {e}")
+        traceback.print_exc()
+        return False
 
     # ---------------------------------------------------------
     # TEST CASE 2: CORRECT DATA (Should SUCCEED)
     # ---------------------------------------------------------
     print("\n[TEST 2] Valid Data for All Divisions")
     
-    context_valid = context_missing.copy()
-    # Add BE-A subjects
-    context_valid['smartInputData']['subjects'] = [
-        {"name": "SE Sub 1", "year": "SE", "division": "A", "type": "Lecture", "lecturesPerWeek": 2, "subjects":["SE Sub 1"]},
-        {"name": "BE Sub 1", "year": "BE", "division": "A", "type": "Lecture", "lecturesPerWeek": 2, "subjects":["BE Sub 1"]}
-    ]
+    context_valid = {
+        "branchData": {
+            "academicYears": ["SE"],
+            "workingDays": ["Monday", "Tuesday"],
+            "divisions": {"SE": ["A"]},
+            "slotsPerDay": 4,
+            "rooms": ["Room-1"],
+            "labs": [],
+            "recessEnabled": False, # Simplify
+            "lectureDuration": 60,
+            "startTime": "09:00 AM",
+            "endTime": "12:00 PM"
+        },
+        "smartInputData": {
+             "subjects": [
+                {"name": "Theory1", "year": "SE", "division": "A", "type": "Lecture", "lecturesPerWeek": 2}
+             ],
+            "teachers": [
+                {"name": "T1", "subjects": ["Theory1"]}
+            ]
+        }
+    }
     
     scheduler_2 = TimetableScheduler(context_valid, max_iterations=100)
     
@@ -85,6 +101,9 @@ def run_verification():
         
         if not result.get('success'):
              print(f"❌ FAILURE: Generation failed with valid data. Msg: {result.get('message')}")
+             # Print blockers if any
+             if result.get('blockers'):
+                 print(f"Blockers: {result.get('blockers')}")
              return False
              
         timetables = result.get('timetables', {})
@@ -94,13 +113,6 @@ def run_verification():
              print(">> Verified: SE-A generated.")
         else:
              print("❌ FAILURE: SE-A missing from result.")
-             return False
-             
-        # Verify BE-A
-        if "BE" in timetables and "A" in timetables["BE"]:
-             print(">> Verified: BE-A generated.")
-        else:
-             print("❌ FAILURE: BE-A missing from result (Silent Skip?).")
              return False
              
         print("✅ SUCCESS: All divisions generated.")

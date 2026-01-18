@@ -12,20 +12,42 @@ auth_bp = Blueprint('auth_bp', __name__)
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data')
 USERS_FILE = os.path.join(DATA_DIR, 'users.json')
 
+# In-memory user cache
+users_cache = {
+    'data': [],
+    'last_loaded': 0,
+    'file_mtime': 0
+}
+
 def load_users():
+    global users_cache
+    
     if not os.path.exists(USERS_FILE):
         return []
+        
     try:
-        with open(USERS_FILE, 'r') as f:
-            data = json.load(f)
-            return data.get('users', [])
-    except:
+        # Check if file has changed
+        current_mtime = os.path.getmtime(USERS_FILE)
+        if current_mtime > users_cache['file_mtime'] or not users_cache['data']:
+            with open(USERS_FILE, 'r') as f:
+                data = json.load(f)
+                users_cache['data'] = data.get('users', [])
+                users_cache['file_mtime'] = current_mtime
+                users_cache['last_loaded'] = datetime.datetime.now().timestamp()
+                print(f"Loaded {len(users_cache['data'])} users from file")
+        
+        return users_cache['data']
+    except Exception as e:
+        print(f"Error loading users: {e}")
         return []
 
 def save_users(users):
     try:
         with open(USERS_FILE, 'w') as f:
             json.dump({'users': users}, f, indent=2)
+        # Update cache immediately
+        users_cache['data'] = users
+        users_cache['file_mtime'] = os.path.getmtime(USERS_FILE)
         return True
     except:
         return False
@@ -91,48 +113,34 @@ def login():
         username = data.get('username')
         password = data.get('password')
 
-        # DEBUG LOGGING
-        with open('debug_auth.txt', 'a') as f:
-            f.write(f"\n[{datetime.datetime.now()}] Login attempt:\n")
-            f.write(f"Received data: {json.dumps(data)}\n")
-            f.write(f"Username: {username}\n")
-            
-            if not username or not password:
-                f.write("Missing username or password\n")
-                return jsonify({'error': 'Missing username or password'}), 400
+        if not username or not password:
+            return jsonify({'error': 'Missing username or password'}), 400
 
-            users = load_users()
-            f.write(f"Loaded {len(users)} users\n")
-            
-            user = next((u for u in users if u['username'] == username), None)
+        users = load_users()
+        user = next((u for u in users if u['username'] == username), None)
 
-            if not user:
-                f.write(f"User {username} not found\n")
-                return jsonify({'error': 'Invalid credentials'}), 401
+        if not user:
+            return jsonify({'error': 'Invalid credentials'}), 401
 
-            f.write(f"Found user: {user['username']}\n")
-            is_valid = check_password_hash(user['password'], password)
-            f.write(f"Password valid: {is_valid}\n")
+        if check_password_hash(user['password'], password):
+            # Generate JWT
+            token = jwt.encode({
+                'user_id': user['id'],
+                'username': user['username'],
+                'role': user['role'],
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+            }, current_app.config['SECRET_KEY'], algorithm='HS256')
 
-            if is_valid:
-                # Generate JWT
-                token = jwt.encode({
-                    'user_id': user['id'],
+            return jsonify({
+                'token': token,
+                'user': {
+                    'id': user['id'],
                     'username': user['username'],
-                    'role': user['role'],
-                    'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
-                }, current_app.config['SECRET_KEY'], algorithm='HS256')
-
-                return jsonify({
-                    'token': token,
-                    'user': {
-                        'id': user['id'],
-                        'username': user['username'],
-                        'role': user['role']
-                    }
-                }), 200
-            else:
-                return jsonify({'error': 'Invalid credentials'}), 401
+                    'role': user['role']
+                }
+            }), 200
+        else:
+            return jsonify({'error': 'Invalid credentials'}), 401
             
     except Exception as e:
         print(f"Login error: {str(e)}")
@@ -163,3 +171,15 @@ def verify_token():
         return jsonify({'valid': False, 'error': 'Invalid token'}), 401
     except Exception as e:
         return jsonify({'valid': False, 'error': str(e)}), 500
+
+@auth_bp.route('/api/auth/debug', methods=['GET'])
+def debug_status():
+    global users_cache
+    import time
+    return jsonify({
+        'status': 'online',
+        'timestamp': time.time(),
+        'cache_size': len(users_cache['data']),
+        'cache_age': time.time() - users_cache['last_loaded'] if users_cache['last_loaded'] else -1,
+        'users_file_mtime': users_cache['file_mtime']
+    })

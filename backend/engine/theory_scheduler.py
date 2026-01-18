@@ -7,6 +7,15 @@ Handles scheduling of theory lectures with load balancing and constraint checkin
 from typing import List, Dict, Optional
 import random
 
+try:
+    import utils.time_utils as time_utils
+except ImportError:
+    try:
+        from backend.utils import time_utils
+    except ImportError:
+        time_utils = None
+
+
 class TheoryScheduler:
     def __init__(self, state_manager, context):
         self.state = state_manager
@@ -89,6 +98,8 @@ class TheoryScheduler:
                  # If we scheduled NOTHING for a subject, we must fail.
                  error_msg = f"CRITICAL: Could not schedule ANY lectures for {subject_name} (Teacher: {teacher_name}). Constraints too strict?"
                  print(f"    ❌ {error_msg}")
+                 if hasattr(self.state, 'logger'):
+                      self.state.logger.log_unscheduled(subject_name, f"{year}-{division}", "All slots rejected. Check constraints report.")
                  raise Exception(error_msg)
             
             if assignments_count < lectures_needed:
@@ -209,27 +220,19 @@ class TheoryScheduler:
 
     def _assign_slot_on_day(self, year, division, day, subject, teacher, assignment_idx=0):
         # Determine available slots
-        # Validate Recess
-        try:
-            from utils.time_utils import calculate_time_slots
-            time_config = calculate_time_slots(self.context.get('branchData', {}))
-            recess_slot = time_config.get('recess_slot')
-            total_slots = time_config.get('total_slots', 8)
-        except:
-            total_slots = int(self.context.get('branchData', {}).get('slotsPerDay', 8))
-            recess_slot = None
-
+        # Validate Recess (Global)
         # Randomize start order to minimize collisions
         # FIX: Use 0-based indexing to match StateManager and TimeUtils
-        slots = list(range(total_slots)) 
+        slots = self.state.get_schedulable_slots() 
         
         for slot_idx in slots:
-            # SKIP RECESS (Task 2)
-            if recess_slot is not None and slot_idx == recess_slot:
+            # Check Global State (Class Free)
+            if not self.state.is_slot_free(day, slot_idx, year, division):
+                if hasattr(self.state, 'logger'):
+                    self.state.logger.log_failure(subject, f"{year}-{division}", "HARD", "Slot Occupied", {"day": day, "slot": slot_idx})
                 continue
 
-            # Check Global State (Class Free)
-            if self.state.is_slot_free(day, slot_idx, year, division):
+            if True: # Kept indentation block (previously 'if is_free:')
                 
                 # Check Teacher Availability
                 is_avail = self.state.is_teacher_available(teacher, day, slot_idx)
@@ -255,8 +258,9 @@ class TheoryScheduler:
                          is_avail = True # Force Allow
                 
                 if not is_avail:
-                     # print(f"DEBUG: {teacher} unavailable at {day} slot {slot_idx}")
-                     pass
+                     if hasattr(self.state, 'logger'):
+                        self.state.logger.log_failure(subject, f"{year}-{division}", "HARD", "Teacher Unavailable", {"day": day, "slot": slot_idx, "teacher": teacher})
+                     continue
                      
                 if is_avail:
                     
@@ -265,7 +269,8 @@ class TheoryScheduler:
                     
                     if not assigned_room:
                          # No room available! Cannot schedule here.
-                         pass
+                         if hasattr(self.state, 'logger'):
+                             self.state.logger.log_failure(subject, f"{year}-{division}", "HARD", "No Room Available", {"day": day, "slot": slot_idx})
                          continue
 
                     # ASSIGN
@@ -367,18 +372,18 @@ class TheoryScheduler:
             # Assuming max 8 slots * 6 days = 48 checks. Very fast.
             # We need finding Theory Slots.
             
-            import utils.time_utils
             # We need max slots
             total_slots = 8 # Default
             try:
-                tc = utils.time_utils.calculate_time_slots(branch_data)
-                total_slots = tc.get('total_slots', 8)
-                recess_slot = tc.get('recess_slot', -1)
+                if time_utils:
+                    tc = time_utils.calculate_time_slots(branch_data)
+                    total_slots = tc.get('total_slots', 8)
+                    recess_slot = tc.get('recess_slot', -1)
             except:
                 pass
                 
             for d in days:
-                for s in range(total_slots):
+                for s in self.state.get_schedulable_slots():
                      cell = self.state.get_slot_assignment(year, division, d, s)
                      if cell and isinstance(cell, dict) and cell.get('type') == 'THEORY':
                          loads[d] += 1
@@ -426,11 +431,8 @@ class TheoryScheduler:
                 
                 # 2. Find FREE slot in Min Day
                 target_slot = -1
-                for ts in range(total_slots):
-                    # Skip recess
-                    # if ts == recess_slot: continue 
-                    # State check handles validation usually?
-                    
+                for ts in self.state.get_schedulable_slots():
+                    # Recess checks handled by get_schedulable_slots
                     if self.state.is_slot_free(min_day, ts, year, division):
                         if self.state.is_teacher_available(teacher, min_day, ts):
                             target_slot = ts
@@ -462,6 +464,11 @@ class TheoryScheduler:
                              continue
                     
                     self.state.assign_slot(new_assign)
+                    
+                    # LOG MOVE
+                    # with open('backend_debug_moves.log', 'a') as f:
+                    #      f.write(f"MOVED {subj} from {max_day}:{current_slot_idx} to {min_day}:{target_slot} (Recess={recess_slot})\n")
+                    
                     print(f"      Moved {subj} from {max_day} to {min_day}")
                     moved = True
                     break # One move per pass to re-evaluate loads

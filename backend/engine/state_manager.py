@@ -7,11 +7,20 @@ and handles partial/uploaded timetables.
 
 import copy
 
+try:
+    import utils.time_utils as time_utils
+except ImportError:
+    try:
+        from backend.utils import time_utils
+    except ImportError:
+        time_utils = None
+
+
 
 class TimetableState:
     """Manages the state of a timetable during generation"""
     
-    def __init__(self, context, load_manager=None):
+    def __init__(self, context, load_manager=None, logger=None):
         """
         Initialize timetable state.
         
@@ -28,6 +37,7 @@ class TimetableState:
         self.branch_data = context.get('branchData', {})
         self.smart_input = context.get('smartInputData', {})
         self.load_manager = load_manager
+        self.logger = logger
         
         # Initialize slots
         self.slots = []
@@ -59,6 +69,24 @@ class TimetableState:
                     'workingHours': t.get('workingHours', 8)
                 }
 
+        # GLOBAL CONSTANT: Recess Slot (Task: Enforce Global Recess)
+        try:
+             if time_utils:
+                 time_config = time_utils.calculate_time_slots(self.branch_data)
+                 self.recess_slot = time_config.get('recess_slot')
+                 self.total_slots = time_config.get('total_slots', 8)
+                 if self.recess_slot is not None:
+                      print(f"STATE: Global Recess Fixed at Slot {self.recess_slot}")
+             else:
+                 raise ImportError("time_utils missing")
+        except:
+             self.recess_slot = 4 # Default Fallback
+             self.total_slots = 8
+             print("STATE: Recess Defaulting to 4 (Calc Failed)")
+
+    
+    # block_recess_for_class REMOVED - Recess is inferred from Branch Data only.
+    
     def _load_uploaded_timetable(self, uploaded_timetable):
         """Load an uploaded timetable and mark valid slots as locked"""
         for slot in uploaded_timetable:
@@ -105,6 +133,25 @@ class TimetableState:
         
         return slots
     
+    def get_schedulable_slots(self):
+        """
+        Return a list of VALID, SCHEDULABLE slot indices.
+        Strictly excludes Recess slot.
+        """
+        # Calculate if not already present
+        if not hasattr(self, 'recess_slot'):
+             from utils.time_utils import calculate_time_slots
+             time_config = calculate_time_slots(self.branch_data)
+             self.recess_slot = time_config.get('recess_slot')
+             self.total_slots = time_config.get('total_slots', 8)
+             
+        valid_slots = []
+        for i in range(getattr(self, 'total_slots', 8)):
+            if self.recess_slot is not None and i == self.recess_slot:
+                continue
+            valid_slots.append(i)
+        return valid_slots
+    
     def assign_slot(self, assignment, lock=False):
         """
         Assign a value to a slot.
@@ -141,7 +188,7 @@ class TimetableState:
             # First assignment -> Store as single object
             self.slot_grid[slot_key] = assignment
             
-        # print(f"DEBUG: Assigned Key: {slot_key}, Types: {[type(x) for x in slot_key]}", flush=True)
+        # DEBUG TRIGGER REMOVED
 
         self.slots.append(assignment)
         
@@ -320,15 +367,12 @@ class TimetableState:
             return True # Default to available
             
         # Lazy Import to avoid cycle/path issues
-        try:
-            from utils.time_utils import get_slot_time, is_time_in_window
-        except ImportError:
-            try:
-                from backend.utils.time_utils import get_slot_time, is_time_in_window
-            except ImportError:
-                # Fallback purely to avoid crash
-                print("CRITICAL IMPORT ERROR: Could not find time_utils")
-                return True
+        if not time_utils:
+             print("CRITICAL IMPORT ERROR: Could not find time_utils")
+             return True
+        
+        get_slot_time = time_utils.get_slot_time
+        is_time_in_window = time_utils.is_time_in_window
         
         # Calculate real time of slot
         try:

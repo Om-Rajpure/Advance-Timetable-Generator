@@ -86,7 +86,7 @@ function TimetableGrid({ gridData = {}, conflictingSlots = [], onSlotClick, tota
                                 if (col.type === 'recess') {
                                     return (
                                         <td key={i} className="slot-cell recess-cell">
-                                            <div className="recess-content">Break</div>
+                                            {/* PURELY VISUAL COLUMN - NO CONTENT */}
                                         </td>
                                     );
                                 }
