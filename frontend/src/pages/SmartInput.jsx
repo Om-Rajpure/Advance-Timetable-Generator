@@ -287,7 +287,29 @@ function SmartInput() {
                 body: JSON.stringify(payload)
             })
 
-            const result = await response.json()
+            const responseText = await response.text()
+            let result;
+
+            try {
+                result = JSON.parse(responseText)
+            } catch (jsonError) {
+                // If parsing fails, it's likely a 500/502/504 HTML error page
+                console.error("Non-JSON Response received:", responseText.substring(0, 500)); // Log first 500 chars
+
+                if (response.status === 504 || response.status === 502) {
+                    throw {
+                        message: "Server Timeout or Gateway Error",
+                        stage: "TIMEOUT",
+                        details: "The generation process took too long and the server timed out. This is common on free hosting tiers."
+                    }
+                }
+
+                throw {
+                    message: `Server Error (${response.status})`,
+                    stage: "SERVER_ERROR",
+                    details: "The server returned an invalid response. Check backend logs."
+                }
+            }
 
             if (!response.ok) {
                 throw {
@@ -341,6 +363,7 @@ The server is not responding.
 Please ensure:
 1. The backend server is running (python app.py)
 2. You are using the correct port (5000)
+3. If on Production, check CORS or Server Status.
                  `)
                 setIsGenerating(false)
                 return
@@ -352,13 +375,20 @@ Please ensure:
             const division = error.division ? `Division: ${error.division}` : ''
             const reason = error.reason ? `Reason: ${error.reason}` : ''
 
+            let advice = "";
+            if (stage === 'TIMEOUT') {
+                advice = "\n💡 ADVICE: The free server is too slow. Try reducing the number of subjects or branches, or run locally.";
+            }
+
             alert(`
 ❌ Generation Failed
 
+${message}
 ${division}
 ${reason}
 Stage: ${stage}
 Details: ${details}
+${advice}
             `)
             setIsGenerating(false)
         }
