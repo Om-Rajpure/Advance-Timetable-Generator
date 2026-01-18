@@ -4,6 +4,7 @@ import { useDashboardState } from '../hooks/useDashboardState'
 import LoadingState from '../components/LoadingState'
 import '../components/LoadingState.css'
 import '../styles/smartInput.css'
+import { API_BASE_URL } from '../config'
 
 // ✅ DYNAMIC IMPORTS - Load child components only when needed
 const InputTabs = lazy(() => import('../components/InputTabs'))
@@ -281,20 +282,13 @@ function SmartInput() {
             // 3. Send to Backend
             console.log('Sending Generation Payload:', payload)
 
-            // 3. Send to Backend
-            console.log('Sending Generation Payload:', payload)
-
-            const apiBase = (typeof API_BASE_URL !== 'undefined') ? API_BASE_URL : '';
-            // If API_BASE_URL is not imported, we need to import it or define it. 
-            // Better to fix the import at top of file, but for this specific block:
-
-            // To be safe, let's look at imports. We didn't import API_BASE_URL in SmartInput.jsx yet.
-            // I will do this in two steps: Add import, then use it.
-            // For now, I will use a window check or relative if not found, but correct approach is importing.
-
-            // Wait, I can't see the top imports easily in this tool call.
-            // I will assume I need to add the import first.
-            // I will abort this replace and do strict import addition first.
+            const response = await fetch(`${API_BASE_URL}/api/generate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
 
             const responseText = await response.text()
             let result;
