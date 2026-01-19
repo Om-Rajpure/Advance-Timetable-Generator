@@ -16,26 +16,28 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [user, setUser] = useState(null)
+    const [token, setToken] = useState(localStorage.getItem('token'))
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
-
-
 
     const API_URL = `${API_BASE_URL}/api/auth`
 
     // Load auth state from localStorage on mount and verify token
     useEffect(() => {
         const verifyToken = async () => {
-            const token = localStorage.getItem('token')
-            if (!token) {
+            const storedToken = localStorage.getItem('token')
+            if (!storedToken) {
                 setLoading(false)
                 return
             }
 
+            // Sync state if needed
+            setToken(storedToken)
+
             try {
                 const response = await fetch(`${API_URL}/verify`, {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${storedToken}`
                     }
                 })
 
@@ -73,8 +75,8 @@ export const AuthProvider = ({ children }) => {
             if (response.ok) {
                 setIsAuthenticated(true)
                 setUser(data.user)
+                setToken(data.token) // Update State
                 localStorage.setItem('token', data.token)
-                // navigate('/dashboard') // Handled by component
                 return { success: true }
             } else {
                 return { success: false, error: data.error || 'Login failed' }
@@ -106,10 +108,10 @@ export const AuthProvider = ({ children }) => {
                 if (data.token) {
                     setIsAuthenticated(true)
                     setUser(data.user)
+                    setToken(data.token) // Update State
                     localStorage.setItem('token', data.token)
                 }
 
-                // navigate('/login') // Handled by component
                 return { success: true }
             } else {
                 return { success: false, error: data.error || 'Signup failed' }
@@ -123,13 +125,31 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setIsAuthenticated(false)
         setUser(null)
+        setToken(null) // Update State
+
+        // Clear all sensitive local state
         localStorage.removeItem('token')
+
+        // Clear Dashboard & Workflow State
+        localStorage.removeItem('selectedBranch')
+        localStorage.removeItem('branchConfig')
+        localStorage.removeItem('currentBranchId')
+        localStorage.removeItem('currentBranchData')
+        localStorage.removeItem('branchSetupCompleted')
+        localStorage.removeItem('smartInputCompleted')
+        localStorage.removeItem('timetableGenerated')
+        localStorage.removeItem('timetableStatus')
+        localStorage.removeItem('hasTimetable')
+
+        // Optional: Safe clear for this domain
+        localStorage.clear()
         navigate('/')
     }
 
     const value = {
         isAuthenticated,
         user,
+        token, // Expose Token
         loading,
         login,
         signup,

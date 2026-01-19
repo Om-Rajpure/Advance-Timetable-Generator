@@ -2,42 +2,49 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import VersionList from '../components/VersionList';
 import HistoryEmptyState from '../components/HistoryEmptyState';
+import { API_BASE_URL } from '../config'; // Import config
+import { useAuth } from '../auth/AuthContext'; // Import Auth
+import { useDashboardState } from '../hooks/useDashboardState';
 import './ModulePage.css';
 
 function History() {
+    const { token } = useAuth(); // Get token
     const navigate = useNavigate();
+    const { getBranchInfo } = useDashboardState();
+    const branchInfo = getBranchInfo();
+    const branchData = { name: branchInfo.name, years: branchInfo.years }; // Minimal context wrapper
+
     const [versions, setVersions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [branchName, setBranchName] = useState('');
-
-    // Get current branch from localStorage
-    const branchId = localStorage.getItem('currentBranchId');
-    const branchData = JSON.parse(localStorage.getItem('currentBranchData') || '{}');
 
     useEffect(() => {
-        if (branchData && branchData.branchName) {
-            setBranchName(branchData.branchName);
-        }
-    }, [branchData]);
-
-    useEffect(() => {
-        if (branchId) {
-            fetchVersions();
-        } else {
-            setLoading(false);
-        }
-    }, [branchId]);
+        fetchVersions();
+    }, [token]);
 
     const fetchVersions = async () => {
         setLoading(true);
         try {
-            const url = new URL('/api/history/versions', window.location.origin);
-            url.searchParams.append('branchId', branchId);
-            const response = await fetch(url);
+            // Use NEW secure endpoint
+            const response = await fetch(`${API_BASE_URL}/api/timetables/my`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             const data = await response.json();
 
-            if (data.success) {
-                setVersions(data.versions || []);
+            // Map SQL data to UI format expected by VersionList
+            if (response.ok) {
+                const mappedVersions = data.map(t => ({
+                    versionId: t.id, // Use DB ID
+                    timestamp: t.createdAt,
+                    action: 'Generated', // Default label
+                    description: `Academic Year: ${t.academicYear}`,
+                    metadata: { // Mock metadata to fit component
+                        qualityScore: 100,
+                        constraints: 0
+                    }
+                }));
+                setVersions(mappedVersions);
             } else {
                 console.error('Failed to fetch versions:', data.error);
             }
@@ -48,12 +55,41 @@ function History() {
         }
     };
 
-    const fetchFullVersion = async (versionId) => {
+    const fetchFullVersion = async (id) => {
         try {
-            const response = await fetch(`/api/history/version/${versionId}?branchId=${branchId}`);
+            // Use NEW details endpoint
+            const response = await fetch(`${API_BASE_URL}/api/timetables/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             const data = await response.json();
-            if (data.success) {
-                return data.version;
+
+            if (response.ok) {
+                // Transform entries back to grid format if needed
+                // For now, returning the raw structure; might need adapter if VersionList expects grid
+                // Actually EditableTimetable expects specific structure. 
+                // We will reconstruction "timetableSnapshot" from "entries"
+
+                const entries = data.entries || [];
+                // Format: { "Monday": [ { ...slot... } ] }
+                // Warning: Grid expects full structure.
+                // We'll pass the entries and let the component handle or rebuild.
+
+                // Quick rebuild:
+                const timetable = {};
+                entries.forEach(e => {
+                    if (!timetable[e.day]) timetable[e.day] = [];
+                    timetable[e.day].push({
+                        slotIndex: e.slotIndex,
+                        subject: e.subject,
+                        teacher: e.teacher,
+                        batch: e.batch,
+                        room: e.room
+                    });
+                });
+
+                return { timetableSnapshot: timetable }; // Mimic old structure
             } else {
                 alert('Failed to load version details.');
                 return null;
@@ -105,21 +141,12 @@ function History() {
         }
     };
 
-    if (!branchId) {
-        return (
-            <div className="module-page">
-                <div className="module-header">
-                    <h1 className="module-title">History</h1>
-                    <p className="module-description">Your previously generated timetables</p>
-                </div>
-                <div className="module-content">
-                    <div className="info-card">
-                        <h3>No Branch Selected</h3>
-                        <p>Please select a branch from the Dashboard.</p>
-                    </div>
-                </div>
-            </div>
-        );
+    // Branch check removed to allow viewing history even without active branch selection
+    // or we can show a warning banner instead of blocking
+    if (!branchInfo.exists) {
+        // Optional: You can keep a check here if strictly required, but for "History" 
+        // it makes sense to see past work even if current session has no branch selected.
+        // We will just proceed.
     }
 
     return (
@@ -140,7 +167,7 @@ function History() {
                 ) : versions.length > 0 ? (
                     <VersionList
                         versions={versions}
-                        branchName={branchName}
+                        branchName="My Workspace"
                         onView={handleView}
                         onEdit={handleEdit}
                         onDuplicate={handleDuplicate}

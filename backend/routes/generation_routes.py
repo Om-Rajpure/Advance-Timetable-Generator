@@ -9,6 +9,10 @@ import json
 from engine.scheduler import TimetableScheduler
 from engine.optimizer import TimetableOptimizer
 from history.history_service import HistoryService
+from database import db
+from models import Timetable, TimetableEntry, User
+import jwt
+from flask import current_app
 
 # Create blueprint
 generation_bp = Blueprint('generation', __name__, url_prefix='/api/generate')
@@ -24,7 +28,24 @@ def generate_full_timetable():
     Safe execution wrapper ensures no crashes.
     """
     print("GENERATION STARTED") # Trace marker
+
+    # Auth Check
+    token = request.headers.get('Authorization')
+    user_id = None
+    if token:
+        try:
+            if token.startswith('Bearer '):
+                token = token.split(' ')[1]
+            data = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+            user_id = data.get('user_id')
+        except:
+            pass # Allow generation without auth? Or enforce? Requirement says "When a user generates... associate". 
+                 # If we enforce, we block non-logged in users. I'll assume enforce if possible, or just fail to save to DB if no user.
     
+    # REQUIRE AUTH per objectives
+    if not user_id:
+        return jsonify({'error': 'Authentication required to save timetable'}), 401
+
     try:
         # 1. Safe Payload Extraction
         try:
@@ -156,6 +177,49 @@ def generate_full_timetable():
         except Exception as h_err:
              print(f"History Save Failed: {h_err}")
              # Do not fail generation if history fails, just log it
+
+        # 7. Auto-Save to SQLite (New Logic)
+        try:
+            if user_id:
+                # Create Timetable Record
+                new_timetable = Timetable(
+                    user_id=user_id,
+                    academic_year=str(bd.get('academicYears')), # Store as string
+                    division="All", # Since this is full gen
+                    status="success"
+                )
+                db.session.add(new_timetable)
+                db.session.flush() # Get ID
+
+                # Flatten and Save Entries
+                full_timetable_list = []
+                for year, divisions_data in all_timetables.items():
+                    if isinstance(divisions_data, dict):
+                        for div, div_wrapper in divisions_data.items():
+                            if isinstance(div_wrapper, dict):
+                                day_schedule_map = div_wrapper.get('timetable', {})
+                                if isinstance(day_schedule_map, dict):
+                                    for day, slots in day_schedule_map.items():
+                                        if isinstance(slots, list):
+                                            for slot in slots:
+                                                # Create Entry
+                                                entry = TimetableEntry(
+                                                    timetable_id=new_timetable.id,
+                                                    day=day,
+                                                    slot_index=slot.get('slotIndex', -1),
+                                                    subject=slot.get('subject'),
+                                                    teacher=slot.get('teacher'),
+                                                    batch=slot.get('batch')
+                                                )
+                                                db.session.add(entry)
+                
+                db.session.commit()
+                print(f"✅ Saved timetable {new_timetable.id} to DB for user {user_id}")
+                result['dbId'] = new_timetable.id
+
+        except Exception as db_err:
+             print(f"❌ DB Save Failed: {db_err}")
+             db.session.rollback()
             
         # ALWAYS RETURN 200 for partial/full success
         return jsonify(result), 200

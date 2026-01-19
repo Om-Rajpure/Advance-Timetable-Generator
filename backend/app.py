@@ -16,6 +16,11 @@ from routes.edit_routes import edit_bp
 from routes.analytics_routes import analytics_bp
 from routes.history_routes import history_bp
 
+# Database imports
+from database import db
+from models import User
+from werkzeug.security import generate_password_hash
+
 # Static folder setup - REMOVED for API-only backend
 app = Flask(__name__)
 
@@ -26,10 +31,21 @@ print(f"Server running on http://localhost:5000. API Only Mode.")
 
 # Register blueprints
 # Config
+# Config
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-prod')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///timetable.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Initialize DB
+db.init_app(app)
 
 # Register blueprints
 from routes.auth_routes import auth_bp
+from routes.admin_routes import admin_bp
+from routes.timetable_routes import timetable_bp
+from routes.branch_routes import branch_bp
+from routes.smart_input_routes import smart_input_bp
+
 app.register_blueprint(constraint_bp)
 app.register_blueprint(generation_bp)
 app.register_blueprint(validation_bp)
@@ -37,25 +53,28 @@ app.register_blueprint(edit_bp)
 app.register_blueprint(analytics_bp)
 app.register_blueprint(history_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(admin_bp)
+app.register_blueprint(timetable_bp)
+app.register_blueprint(branch_bp)
+app.register_blueprint(smart_input_bp)
 
 @app.route('/api/health', methods=['GET'])
 def health():
     """Health check endpoint"""
     return jsonify({'status': 'ok', 'message': 'Flask server is running'}), 200
 
-# Data directory setup
-DATA_DIR = 'data'
-BRANCHES_FILE = os.path.join(DATA_DIR, 'branches.json')
-UPLOAD_DIR = os.path.join(DATA_DIR, 'uploads')
-VERSIONS_DIR = os.path.join(DATA_DIR, 'versions')
-
-# Ensure data directories exist
-if not os.path.exists(DATA_DIR):
-    os.makedirs(DATA_DIR)
-if not os.path.exists(UPLOAD_DIR):
-    os.makedirs(UPLOAD_DIR)
-if not os.path.exists(VERSIONS_DIR):
-    os.makedirs(VERSIONS_DIR)
+# Initialize Database and Seed Admin
+with app.app_context():
+    db.create_all()
+    # Check for Admin
+    admin = User.query.filter_by(username='Om').first()
+    if not admin:
+        print("Creating default admin user...")
+        hashed_pw = generate_password_hash('Om@123')
+        new_admin = User(username='Om', password_hash=hashed_pw, role='admin')
+        db.session.add(new_admin)
+        db.session.commit()
+        print("Admin created.")
 
 # Allowed file extensions
 ALLOWED_EXTENSIONS = {'csv', 'xlsx', 'xls', 'pdf'}
@@ -63,238 +82,7 @@ ALLOWED_EXTENSIONS = {'csv', 'xlsx', 'xls', 'pdf'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Initialize branches file if it doesn't exist
-if not os.path.exists(BRANCHES_FILE):
-    with open(BRANCHES_FILE, 'w') as f:
-        json.dump({'branches': []}, f)
 
-# Helper functions
-def load_branches():
-    """Load branches from JSON file"""
-    try:
-        with open(BRANCHES_FILE, 'r') as f:
-            return json.load(f)
-    except:
-        return {'branches': []}
-
-def save_branches(data):
-    """Save branches to JSON file"""
-    with open(BRANCHES_FILE, 'w') as f:
-        json.dump(data, f, indent=2)
-
-# Branch Setup API Endpoints
-@app.route('/api/branch/setup', methods=['POST'])
-def create_branch():
-    """Create a new branch configuration"""
-    try:
-        data = request.get_json()
-        print(f"📥 [Branch Setup] Received payload: {json.dumps(data, indent=2)}")
-        
-        # Validate required fields
-        required_fields = ['branchName', 'academicYears', 'divisions', 'workingDays']
-        for field in required_fields:
-            if field not in data:
-                print(f"❌ [Branch Setup] Missing field: {field}")
-                return jsonify({'error': f'Missing required field: {field}'}), 400
-        
-        # Load existing branches
-        branches_data = load_branches()
-        
-        # Check for duplicate branch name - REMOVED per requirements
-        # for branch in branches_data['branches']:
-        #     if branch['branchName'].lower() == data['branchName'].lower():
-        #         return jsonify({'error': 'Branch name already exists'}), 409
-        
-        # Create new branch with ID and timestamp
-        new_branch = {
-            'id': str(uuid.uuid4()),
-            'createdAt': datetime.now().isoformat(),
-            **data
-        }
-        
-        # Add to branches list
-        branches_data['branches'].append(new_branch)
-        
-        # Save to file
-        save_branches(branches_data)
-        
-        return jsonify({
-            'success': True,
-            'message': 'Branch created successfully',
-            'branch': new_branch
-        }), 201
-        
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/branch/all', methods=['GET'])
-def get_all_branches():
-    """Get all branch configurations"""
-    try:
-        branches_data = load_branches()
-        
-        # Return simplified branch info
-        simplified_branches = []
-        for branch in branches_data['branches']:
-            simplified_branches.append({
-                'id': branch['id'],
-                'branchName': branch['branchName'],
-                'academicYears': branch['academicYears'],
-                'totalDivisions': sum(len(divs) for divs in branch['divisions'].values()),
-                'createdAt': branch['createdAt']
-            })
-        
-        return jsonify({'branches': simplified_branches}), 200
-        
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/branch/<branch_id>', methods=['GET'])
-def get_branch(branch_id):
-    """Get a specific branch by ID"""
-    try:
-        branches_data = load_branches()
-        
-        # Find branch by ID
-        for branch in branches_data['branches']:
-            if branch['id'] == branch_id:
-                return jsonify({'branch': branch}), 200
-        
-        return jsonify({'error': 'Branch not found'}), 404
-        
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/branch/validate-name', methods=['POST'])
-def validate_branch_name():
-    """Check if a branch name is available"""
-    try:
-        data = request.get_json()
-        branch_name = data.get('name', '')
-        
-        if not branch_name:
-            return jsonify({'error': 'Branch name is required'}), 400
-        
-        branches_data = load_branches()
-        
-        # Check if name exists
-        for branch in branches_data['branches']:
-            if branch['branchName'].lower() == branch_name.lower():
-                return jsonify({'available': False}), 200
-        
-        return jsonify({'available': True}), 200
-        
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-# Smart Input API Endpoints
-SMART_INPUT_FILE = os.path.join(DATA_DIR, 'smart_input_history.json')
-
-# Initialize smart input history file
-if not os.path.exists(SMART_INPUT_FILE):
-    with open(SMART_INPUT_FILE, 'w') as f:
-        json.dump({'history': []}, f)
-
-def load_smart_input_history():
-    """Load smart input history from JSON file"""
-    try:
-        with open(SMART_INPUT_FILE, 'r') as f:
-            return json.load(f)
-    except:
-        return {'history': []}
-
-def save_smart_input_history(data):
-    """Save smart input history to JSON file"""
-    with open(SMART_INPUT_FILE, 'w') as f:
-        json.dump(data, f, indent=2)
-
-@app.route('/api/smart-input/save', methods=['POST'])
-def save_smart_input():
-    """Save smart input data"""
-    try:
-        data = request.get_json()
-        
-        # Validate required fields
-        if 'teachers' not in data or 'subjects' not in data:
-            return jsonify({'error': 'Missing required fields: teachers or subjects'}), 400
-        
-        # Load history
-        history_data = load_smart_input_history()
-        
-        # Create new entry
-        new_entry = {
-            'id': str(uuid.uuid4()),
-            'branchName': data.get('branchName', 'Unknown Branch'),
-            'createdAt': datetime.now().isoformat(),
-            'teacherCount': len(data.get('teachers', [])),
-            'subjectCount': len(data.get('subjects', [])),
-            'data': data
-        }
-        
-        # Add to history
-        history_data['history'].append(new_entry)
-        
-        # Keep only last 20 entries
-        if len(history_data['history']) > 20:
-            history_data['history'] = history_data['history'][-20:]
-        
-        # Save
-        save_smart_input_history(history_data)
-        
-        return jsonify({
-            'success': True,
-            'message': 'Smart input data saved successfully',
-            'id': new_entry['id']
-        }), 201
-        
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/smart-input/history', methods=['GET'])
-def get_smart_input_history():
-    """Get smart input history"""
-    try:
-        history_data = load_smart_input_history()
-        return jsonify(history_data), 200
-        
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/smart-input/validate', methods=['POST'])
-def validate_smart_input():
-    """Validate smart input data"""
-    try:
-        data = request.get_json()
-        
-        errors = []
-        warnings = []
-        
-        # Basic validation
-        if not data.get('teachers') or len(data.get('teachers', [])) == 0:
-            errors.append({'message': 'At least one teacher is required'})
-        
-        if not data.get('subjects') or len(data.get('subjects', [])) == 0:
-            errors.append({'message': 'At least one subject is required'})
-        
-        # Check for unmapped subjects
-        teacher_subject_map = data.get('teacherSubjectMap', [])
-        subjects = data.get('subjects', [])
-        
-        mapped_subject_ids = set(m['subjectId'] for m in teacher_subject_map)
-        for subject in subjects:
-            if subject['id'] not in mapped_subject_ids:
-                errors.append({
-                    'message': f'Subject "{subject["name"]}" has no teacher assigned'
-                })
-        
-        return jsonify({
-            'valid': len(errors) == 0,
-            'errors': errors,
-            'warnings': warnings
-        }), 200
-        
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 # What-If Simulation API Endpoints
 from simulation.scenarios import (

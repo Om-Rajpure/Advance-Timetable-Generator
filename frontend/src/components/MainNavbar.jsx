@@ -46,8 +46,13 @@ function MainNavbar() {
         { path: '/smart-input', label: 'Smart Input', icon: '🧠' }, // Assuming this is "Generate Timetable" flow
         { path: '/upload', label: 'Upload Timetable', icon: '📤' },
         { path: '/analytics', label: 'Analytics', icon: '📈' },
-        { path: '/history', label: 'History', icon: 'clock' }, // treating 'clock' as placeholder if no emoji fits perfectly, standardizing on emojis for now as per existing style or generic icons. Let's use 🕰️
+        { path: '/history', label: 'History', icon: 'clock' },
     ]
+
+    // Only add Admin link if user is admin
+    if (user && user.role === 'admin') {
+        navItems.push({ path: '/admin', label: 'Admin Panel', icon: '🛡️' })
+    }
 
     return (
         <>
