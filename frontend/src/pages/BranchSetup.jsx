@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDashboardState } from '../hooks/useDashboardState'
 import { useDraftAutoSave } from '../hooks/useDraftAutoSave'
+import { API_BASE_URL } from '../config'
 import Stepper from '../components/Stepper'
 import Step1BranchIdentity from '../components/wizardSteps/Step1BranchIdentity'
 import Step2AcademicYears from '../components/wizardSteps/Step2AcademicYears'
@@ -210,7 +211,7 @@ function BranchSetup() {
 
         try {
             // Submit to backend API
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/branch/setup`, {
+            const response = await fetch(`${API_BASE_URL}/api/branch/setup`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

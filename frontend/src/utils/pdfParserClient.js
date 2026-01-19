@@ -3,7 +3,10 @@
  * Handles PDF file uploads and communication with backend PDF parser
  */
 
-const API_BASE_URL = '/api'
+import { API_BASE_URL } from '../config'
+
+// Remove local definition since we import it
+// const API_BASE_URL = '/api' <-- OLD
 
 /**
  * Upload PDF file to backend for extraction
