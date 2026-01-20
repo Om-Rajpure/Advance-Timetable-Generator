@@ -292,39 +292,67 @@ class TheoryScheduler:
 
     def _find_available_room(self, year, division, day, slot_index):
         """
-        Find an available room from the Global Branch Pool.
+        Find an available room using Balanced Sticky Logic.
+        1. Try to use class's Sticky Room.
+        2. If blocked, find new room (Least Used) and set as Sticky (or just use temp?).
+           User Requirement: "look for that room... until rule overrides". 
+           Implies we prefer sticky, but find alternative if blocked.
         """
         branch_data = self.context.get('branchData', {})
-        all_classrooms = branch_data.get('classrooms', [])
         
-        # Normalize to list if strict dict (legacy) was somehow passed
+        # 0. Get All Rooms
+        all_classrooms = branch_data.get('classrooms', [])
         if isinstance(all_classrooms, dict):
-            # Fallback for Mixed/Legacy Data: Flatten values
             temp_list = []
             for r_list in all_classrooms.values():
                 if isinstance(r_list, list): temp_list.extend(r_list)
-            all_classrooms = list(set(temp_list)) # dedupe
+            all_classrooms = list(set(temp_list))
             
         if not all_classrooms:
-            # Fallback to 'rooms' key if 'classrooms' is empty/missing
             all_classrooms = branch_data.get('rooms', [])
             
         if not all_classrooms:
-             # CRITICAL FALLBACK: If no rooms defined, create virtual pool to allow generation
-             print(f"DEBUG: No classrooms defined. Using Virtual Room Pool 1-20.")
              all_classrooms = [f"Virtual-Room-{i}" for i in range(1, 21)]
-            
-        # Iterate and Find First Free
-        # DEBUG: Print room count check once per class generation (to avoid spam, maybe logic needed?)
-        # For now, just print if empty
-        if not all_classrooms:
-             print(f"DEBUG: No classrooms found in branchData for {year}-{division}!")
              
-        for room in all_classrooms:
-            room_name = room.get('name') if isinstance(room, dict) else room
+        # Extract room names
+        room_names = [r.get('name') if isinstance(r, dict) else r for r in all_classrooms]
+        
+        class_id = f"{year}-{division}"
+        
+        # 1. Sticky Room Check
+        preferred = self.state.preferred_rooms.get(class_id)
+        if preferred and preferred in room_names:
+            if self.state.is_room_available(preferred, day, slot_index):
+                return preferred
+            else:
+                 # Preferred room is blocked this slot.
+                 # Fallthrough to find a temporary room for this slot.
+                 pass
+
+        # 2. Find Candidates (All Free Rooms)
+        free_rooms = []
+        for r in room_names:
+            if self.state.is_room_available(r, day, slot_index):
+                free_rooms.append(r)
+                
+        if not free_rooms:
+            return None # No room available at all!
+
+        # 3. Select Best Candidate (Least Used)
+        # Use state.room_usage_counts
+        import random
+        random.shuffle(free_rooms) # Randomize ties
+        
+        best_room = min(free_rooms, key=lambda r: self.state.room_usage_counts[r])
+        
+        # 4. Update Stats & Sticky Logic
+        self.state.room_usage_counts[best_room] += 1
+        
+        # If no sticky room was set yet, set this one as sticky
+        if not preferred:
+            self.state.preferred_rooms[class_id] = best_room
             
-            if self.state.is_room_available(room_name, day, slot_index):
-                return room_name
+        return best_room
             # else:
             #     # DEBUG: Room occupied
             #     pass

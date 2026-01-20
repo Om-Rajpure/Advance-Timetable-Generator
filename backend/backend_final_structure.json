@@ -39,7 +39,7 @@
             "batch": "B2",
             "subject": "Coa L",
             "teacher": "Mrs. M. Umate",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Monday_0_B2_0",
@@ -53,7 +53,7 @@
             "batch": "B2",
             "subject": "Coa L",
             "teacher": "Mrs. M. Umate",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Monday_0_B2_1",
@@ -67,7 +67,7 @@
             "batch": "B3",
             "subject": "Ese L",
             "teacher": "Mrs. A. G. Divekar",
-            "room": "Electronics Lab",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Monday_0_B3_0",
@@ -81,7 +81,7 @@
             "batch": "B3",
             "subject": "Ese L",
             "teacher": "Mrs. A. G. Divekar",
-            "room": "Electronics Lab",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Monday_0_B3_1",
@@ -95,7 +95,7 @@
             "subject": "Coa",
             "teacher": "Mrs. M. Umate",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           },
           {
             "year": "SE",
@@ -105,7 +105,7 @@
             "subject": "Ese",
             "teacher": "Mrs. S. Atram",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           },
           {
             "year": "SE",
@@ -115,7 +115,7 @@
             "subject": "Dsgt",
             "teacher": "Ms. A. Raut",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           },
           {
             "year": "SE",
@@ -125,7 +125,7 @@
             "subject": "Oe-lm",
             "teacher": "Mr. S. H. Rathod",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           },
           {
             "year": "SE",
@@ -135,7 +135,7 @@
             "subject": "Fsjp",
             "teacher": "Mrs. S. Atram",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           }
         ],
         "Tuesday": [
@@ -175,7 +175,7 @@
             "batch": "B2",
             "subject": "Ese L",
             "teacher": "Mr. S. H. Rathod",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Tuesday_0_B2_0",
@@ -189,7 +189,7 @@
             "batch": "B2",
             "subject": "Ese L",
             "teacher": "Mr. S. H. Rathod",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Tuesday_0_B2_1",
@@ -203,7 +203,7 @@
             "batch": "B3",
             "subject": "Ed L",
             "teacher": "Mrs. S. Singh",
-            "room": "Electronics Lab",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Tuesday_0_B3_0",
@@ -217,7 +217,7 @@
             "batch": "B3",
             "subject": "Ed L",
             "teacher": "Mrs. S. Singh",
-            "room": "Electronics Lab",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Tuesday_0_B3_1",
@@ -231,7 +231,7 @@
             "subject": "Ese",
             "teacher": "Mrs. S. Atram",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           },
           {
             "year": "SE",
@@ -241,7 +241,7 @@
             "subject": "Ed",
             "teacher": "Ms. M. Saxena",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           },
           {
             "year": "SE",
@@ -251,7 +251,7 @@
             "subject": "Oe-lm",
             "teacher": "Mr. S. H. Rathod",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           }
         ],
         "Wednesday": [
@@ -291,7 +291,7 @@
             "batch": "B2",
             "subject": "Ed L",
             "teacher": "Mrs. S. Singh",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Wednesday_0_B2_0",
@@ -305,7 +305,7 @@
             "batch": "B2",
             "subject": "Ed L",
             "teacher": "Mrs. S. Singh",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Wednesday_0_B2_1",
@@ -319,7 +319,7 @@
             "batch": "B3",
             "subject": "Fsjp L",
             "teacher": "Ms. I. A. Solomon",
-            "room": "Electronics Lab",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Wednesday_0_B3_0",
@@ -333,7 +333,7 @@
             "batch": "B3",
             "subject": "Fsjp L",
             "teacher": "Ms. I. A. Solomon",
-            "room": "Electronics Lab",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Wednesday_0_B3_1",
@@ -347,7 +347,7 @@
             "subject": "Coa",
             "teacher": "Mrs. M. Umate",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           },
           {
             "year": "SE",
@@ -357,7 +357,7 @@
             "subject": "Dsgt",
             "teacher": "Ms. A. Raut",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           },
           {
             "year": "SE",
@@ -367,7 +367,7 @@
             "subject": "Fsjp",
             "teacher": "Mrs. S. Atram",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           }
         ],
         "Thursday": [
@@ -407,7 +407,7 @@
             "batch": "B2",
             "subject": "Fsjp L",
             "teacher": "Ms. A. Raut",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Thursday_0_B2_0",
@@ -421,7 +421,7 @@
             "batch": "B2",
             "subject": "Fsjp L",
             "teacher": "Ms. A. Raut",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Thursday_0_B2_1",
@@ -435,7 +435,7 @@
             "batch": "B3",
             "subject": "Coa L",
             "teacher": "Mrs. A. Tiwari",
-            "room": "Electronics Lab",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Thursday_0_B3_0",
@@ -449,7 +449,7 @@
             "batch": "B3",
             "subject": "Coa L",
             "teacher": "Mrs. A. Tiwari",
-            "room": "Electronics Lab",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_A_Thursday_0_B3_1",
@@ -463,7 +463,7 @@
             "subject": "Ese",
             "teacher": "Mrs. S. Atram",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           },
           {
             "year": "SE",
@@ -473,7 +473,7 @@
             "subject": "Ed",
             "teacher": "Ms. M. Saxena",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           },
           {
             "year": "SE",
@@ -483,7 +483,7 @@
             "subject": "Oe-lm",
             "teacher": "Mr. S. H. Rathod",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           }
         ],
         "Friday": [
@@ -495,7 +495,7 @@
             "subject": "Coa",
             "teacher": "Mrs. M. Umate",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           },
           {
             "year": "SE",
@@ -505,7 +505,7 @@
             "subject": "Ed",
             "teacher": "Ms. M. Saxena",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           },
           {
             "year": "SE",
@@ -515,7 +515,7 @@
             "subject": "Dsgt",
             "teacher": "Ms. A. Raut",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           },
           {
             "year": "SE",
@@ -525,7 +525,7 @@
             "subject": "Fsjp",
             "teacher": "Mrs. S. Atram",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           }
         ]
       }
@@ -625,7 +625,7 @@
             "subject": "Coa",
             "teacher": "Mrs. A. Tiwari",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-103"
           },
           {
             "year": "SE",
@@ -635,7 +635,7 @@
             "subject": "Ese",
             "teacher": "Mrs. S. Atram",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-103"
           },
           {
             "year": "SE",
@@ -645,7 +645,7 @@
             "subject": "Dsgt",
             "teacher": "Mrs. M. Umate",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-103"
           },
           {
             "year": "SE",
@@ -655,7 +655,7 @@
             "subject": "Oe-lm",
             "teacher": "Mr. S. H. Rathod",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-103"
           },
           {
             "year": "SE",
@@ -665,7 +665,7 @@
             "subject": "Fsjp",
             "teacher": "Mrs. A. G. Divekar",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-103"
           }
         ],
         "Tuesday": [
@@ -733,7 +733,7 @@
             "batch": "B3",
             "subject": "Ed L",
             "teacher": "Mrs. S. Singh",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_B_Tuesday_2_B3_0",
@@ -747,7 +747,7 @@
             "batch": "B3",
             "subject": "Ed L",
             "teacher": "Mrs. S. Singh",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_B_Tuesday_2_B3_1",
@@ -761,7 +761,7 @@
             "subject": "Ese",
             "teacher": "Mrs. S. Atram",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-103"
           },
           {
             "year": "SE",
@@ -771,7 +771,7 @@
             "subject": "Ed",
             "teacher": "Ms. M. Saxena",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-103"
           },
           {
             "year": "SE",
@@ -781,7 +781,7 @@
             "subject": "Oe-lm",
             "teacher": "Mr. S. H. Rathod",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-103"
           }
         ],
         "Wednesday": [
@@ -877,7 +877,7 @@
             "subject": "Coa",
             "teacher": "Mrs. A. Tiwari",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-103"
           },
           {
             "year": "SE",
@@ -887,7 +887,7 @@
             "subject": "Dsgt",
             "teacher": "Mrs. M. Umate",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-103"
           },
           {
             "year": "SE",
@@ -897,7 +897,7 @@
             "subject": "Fsjp",
             "teacher": "Mrs. A. G. Divekar",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-103"
           }
         ],
         "Thursday": [
@@ -993,7 +993,7 @@
             "subject": "Ese",
             "teacher": "Mrs. S. Atram",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-103"
           },
           {
             "year": "SE",
@@ -1003,7 +1003,7 @@
             "subject": "Ed",
             "teacher": "Ms. M. Saxena",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-103"
           },
           {
             "year": "SE",
@@ -1013,7 +1013,7 @@
             "subject": "Oe-lm",
             "teacher": "Mr. S. H. Rathod",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-103"
           }
         ],
         "Friday": [
@@ -1025,7 +1025,7 @@
             "subject": "Coa",
             "teacher": "Mrs. A. Tiwari",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-103"
           },
           {
             "year": "SE",
@@ -1035,7 +1035,7 @@
             "subject": "Ed",
             "teacher": "Ms. M. Saxena",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-103"
           },
           {
             "year": "SE",
@@ -1045,7 +1045,7 @@
             "subject": "Dsgt",
             "teacher": "Mrs. M. Umate",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-103"
           },
           {
             "year": "SE",
@@ -1055,7 +1055,7 @@
             "subject": "Fsjp",
             "teacher": "Mrs. A. G. Divekar",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-103"
           }
         ]
       }
@@ -1099,7 +1099,7 @@
             "batch": "B2",
             "subject": "Coa L",
             "teacher": "Mrs. A. G. Divekar",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_C_Monday_2_B2_0",
@@ -1113,7 +1113,7 @@
             "batch": "B2",
             "subject": "Coa L",
             "teacher": "Mrs. A. G. Divekar",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_C_Monday_2_B2_1",
@@ -1127,7 +1127,7 @@
             "batch": "B3",
             "subject": "Ese L",
             "teacher": "Mr. S. H. Rathod",
-            "room": "Electronics Lab",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_C_Monday_2_B3_0",
@@ -1141,7 +1141,7 @@
             "batch": "B3",
             "subject": "Ese L",
             "teacher": "Mr. S. H. Rathod",
-            "room": "Electronics Lab",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_C_Monday_2_B3_1",
@@ -1155,7 +1155,7 @@
             "subject": "Coa",
             "teacher": "Mrs. A. Tiwari",
             "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-105"
           },
           {
             "year": "SE",
@@ -1165,7 +1165,7 @@
             "subject": "Ese",
             "teacher": "Mrs. S. Atram",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-105"
           },
           {
             "year": "SE",
@@ -1175,7 +1175,7 @@
             "subject": "Ed",
             "teacher": "Ms. M. Saxena",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-105"
           },
           {
             "year": "SE",
@@ -1185,7 +1185,7 @@
             "subject": "Dsgt",
             "teacher": "Ms. A. Raut",
             "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-105"
           }
         ],
         "Tuesday": [
@@ -1225,7 +1225,7 @@
             "batch": "B2",
             "subject": "Ese L",
             "teacher": "Mr. S. H. Rathod",
-            "room": "Electronics Lab",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_C_Tuesday_2_B2_0",
@@ -1239,7 +1239,7 @@
             "batch": "B2",
             "subject": "Ese L",
             "teacher": "Mr. S. H. Rathod",
-            "room": "Electronics Lab",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_C_Tuesday_2_B2_1",
@@ -1281,7 +1281,7 @@
             "subject": "Ese",
             "teacher": "Mrs. S. Atram",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-105"
           }
         ],
         "Wednesday": [
@@ -1293,7 +1293,7 @@
             "batch": "B1",
             "subject": "Ese L",
             "teacher": "Mrs. A. G. Divekar",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_C_Wednesday_2_B1_0",
@@ -1307,7 +1307,7 @@
             "batch": "B1",
             "subject": "Ese L",
             "teacher": "Mrs. A. G. Divekar",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_C_Wednesday_2_B1_1",
@@ -1349,7 +1349,7 @@
             "batch": "B3",
             "subject": "Fsjp L",
             "teacher": "Ms. I. A. Solomon",
-            "room": "Electronics Lab",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_C_Wednesday_2_B3_0",
@@ -1363,7 +1363,7 @@
             "batch": "B3",
             "subject": "Fsjp L",
             "teacher": "Ms. I. A. Solomon",
-            "room": "Electronics Lab",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_C_Wednesday_2_B3_1",
@@ -1377,7 +1377,7 @@
             "subject": "Coa",
             "teacher": "Mrs. A. Tiwari",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-105"
           },
           {
             "year": "SE",
@@ -1387,7 +1387,7 @@
             "subject": "Ed",
             "teacher": "Ms. M. Saxena",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-105"
           },
           {
             "year": "SE",
@@ -1397,7 +1397,7 @@
             "subject": "Dsgt",
             "teacher": "Ms. A. Raut",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-105"
           }
         ],
         "Thursday": [
@@ -1437,7 +1437,7 @@
             "batch": "B2",
             "subject": "Fsjp L",
             "teacher": "Ms. I. A. Solomon",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_C_Thursday_2_B2_0",
@@ -1451,7 +1451,7 @@
             "batch": "B2",
             "subject": "Fsjp L",
             "teacher": "Ms. I. A. Solomon",
-            "room": "Computer Lab 2",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_SE_C_Thursday_2_B2_1",
@@ -1493,7 +1493,7 @@
             "subject": "Ese",
             "teacher": "Mrs. S. Atram",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-105"
           }
         ],
         "Friday": [
@@ -1505,7 +1505,7 @@
             "subject": "Coa",
             "teacher": "Mrs. A. Tiwari",
             "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-105"
           },
           {
             "year": "SE",
@@ -1515,7 +1515,7 @@
             "subject": "Ed",
             "teacher": "Ms. M. Saxena",
             "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-105"
           },
           {
             "year": "SE",
@@ -1525,7 +1525,7 @@
             "subject": "Dsgt",
             "teacher": "Ms. A. Raut",
             "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-105"
           },
           {
             "year": "SE",
@@ -1535,7 +1535,7 @@
             "subject": "Oe-lm",
             "teacher": "Mr. S. H. Rathod",
             "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-105"
           },
           {
             "year": "SE",
@@ -1545,7 +1545,7 @@
             "subject": "Fsjp",
             "teacher": "Mrs. S. Atram",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-105"
           }
         ]
       }
@@ -1557,30 +1557,30 @@
         "Monday": [
           {
             "day": "Monday",
-            "slot": 1,
+            "slot": 3,
             "year": "TE",
             "division": "A",
             "batch": "B1",
             "subject": "Wcn L",
             "teacher": "Mr. A. S. Londhe",
-            "room": "lab7",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_A_Monday_0_B1_0",
+            "id": "LAB_TE_A_Monday_2_B1_0",
             "isPractical": true
           },
           {
             "day": "Monday",
-            "slot": 2,
+            "slot": 4,
             "year": "TE",
             "division": "A",
             "batch": "B1",
             "subject": "Wcn L",
             "teacher": "Mr. A. S. Londhe",
-            "room": "lab7",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_A_Monday_0_B1_1",
+            "id": "LAB_TE_A_Monday_2_B1_1",
             "isPractical": true
           },
           {
@@ -1591,7 +1591,7 @@
             "batch": "B2",
             "subject": "Ai L",
             "teacher": "Mrs. D. J. Janjani",
-            "room": "lab4",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_A_Monday_2_B2_0",
@@ -1605,7 +1605,7 @@
             "batch": "B2",
             "subject": "Ai L",
             "teacher": "Mrs. D. J. Janjani",
-            "room": "lab4",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_A_Monday_2_B2_1",
@@ -1619,7 +1619,7 @@
             "batch": "B3",
             "subject": "Aoa L",
             "teacher": "Mrs. P. A. Kamble",
-            "room": "lab5",
+            "room": "lab6",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_A_Monday_2_B3_0",
@@ -1633,7 +1633,7 @@
             "batch": "B3",
             "subject": "Aoa L",
             "teacher": "Mrs. P. A. Kamble",
-            "room": "lab5",
+            "room": "lab6",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_A_Monday_2_B3_1",
@@ -1643,31 +1643,41 @@
             "year": "TE",
             "division": "A",
             "day": "Monday",
-            "slot": 5,
+            "slot": 1,
             "subject": "Wc",
             "teacher": "Mr. A. S. Londhe",
             "type": "THEORY",
-            "room": "Room-104"
+            "room": "Room-101"
+          },
+          {
+            "year": "TE",
+            "division": "A",
+            "day": "Monday",
+            "slot": 2,
+            "subject": "AI",
+            "teacher": "Dr. S. M. Patil",
+            "type": "THEORY",
+            "room": "Room-101"
+          },
+          {
+            "year": "TE",
+            "division": "A",
+            "day": "Monday",
+            "slot": 5,
+            "subject": "Computer Networks",
+            "teacher": "Dr. (mrs.) P. N. Jain",
+            "type": "THEORY",
+            "room": "Room-101"
           },
           {
             "year": "TE",
             "division": "A",
             "day": "Monday",
             "slot": 6,
-            "subject": "AI",
-            "teacher": "Dr. S. M. Patil",
+            "subject": "Dwm",
+            "teacher": "Mrs. A. R. Sonawane",
             "type": "THEORY",
-            "room": "Room-104"
-          },
-          {
-            "year": "TE",
-            "division": "A",
-            "day": "Monday",
-            "slot": 7,
-            "subject": "Computer Networks",
-            "teacher": "Dr. (mrs.) P. N. Jain",
-            "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-101"
           }
         ],
         "Tuesday": [
@@ -1701,30 +1711,30 @@
           },
           {
             "day": "Tuesday",
-            "slot": 1,
+            "slot": 3,
             "year": "TE",
             "division": "A",
             "batch": "B2",
             "subject": "Aoa L",
             "teacher": "Mrs. S. S. Parhad",
-            "room": "lab7",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_A_Tuesday_0_B2_0",
+            "id": "LAB_TE_A_Tuesday_2_B2_0",
             "isPractical": true
           },
           {
             "day": "Tuesday",
-            "slot": 2,
+            "slot": 4,
             "year": "TE",
             "division": "A",
             "batch": "B2",
             "subject": "Aoa L",
             "teacher": "Mrs. S. S. Parhad",
-            "room": "lab7",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_A_Tuesday_0_B2_1",
+            "id": "LAB_TE_A_Tuesday_2_B2_1",
             "isPractical": true
           },
           {
@@ -1735,7 +1745,7 @@
             "batch": "B3",
             "subject": "Dwm L",
             "teacher": "Dr. (mrs.) A. M. Patil",
-            "room": "lab4",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_A_Tuesday_2_B3_0",
@@ -1749,7 +1759,7 @@
             "batch": "B3",
             "subject": "Dwm L",
             "teacher": "Dr. (mrs.) A. M. Patil",
-            "room": "lab4",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_A_Tuesday_2_B3_1",
@@ -1763,7 +1773,7 @@
             "subject": "AI",
             "teacher": "Dr. S. M. Patil",
             "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-101"
           },
           {
             "year": "TE",
@@ -1773,7 +1783,7 @@
             "subject": "Aoa",
             "teacher": "Mrs. P. A. Kamble",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-101"
           },
           {
             "year": "TE",
@@ -1783,7 +1793,7 @@
             "subject": "Saids",
             "teacher": "Ms. I. A. Solomon",
             "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-101"
           }
         ],
         "Wednesday": [
@@ -1817,30 +1827,30 @@
           },
           {
             "day": "Wednesday",
-            "slot": 1,
+            "slot": 3,
             "year": "TE",
             "division": "A",
             "batch": "B2",
             "subject": "Dwm L",
             "teacher": "Dr. (mrs.) A. M. Patil",
-            "room": "lab7",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_A_Wednesday_0_B2_0",
+            "id": "LAB_TE_A_Wednesday_2_B2_0",
             "isPractical": true
           },
           {
             "day": "Wednesday",
-            "slot": 2,
+            "slot": 4,
             "year": "TE",
             "division": "A",
             "batch": "B2",
             "subject": "Dwm L",
             "teacher": "Dr. (mrs.) A. M. Patil",
-            "room": "lab7",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_A_Wednesday_0_B2_1",
+            "id": "LAB_TE_A_Wednesday_2_B2_1",
             "isPractical": true
           },
           {
@@ -1851,7 +1861,7 @@
             "batch": "B3",
             "subject": "Wcn L",
             "teacher": "Mrs. S. S. Parhad",
-            "room": "lab4",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_A_Wednesday_2_B3_0",
@@ -1865,7 +1875,7 @@
             "batch": "B3",
             "subject": "Wcn L",
             "teacher": "Mrs. S. S. Parhad",
-            "room": "lab4",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_A_Wednesday_2_B3_1",
@@ -1879,7 +1889,7 @@
             "subject": "Wc",
             "teacher": "Mr. A. S. Londhe",
             "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-101"
           },
           {
             "year": "TE",
@@ -1889,7 +1899,7 @@
             "subject": "Computer Networks",
             "teacher": "Dr. (mrs.) P. N. Jain",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-101"
           },
           {
             "year": "TE",
@@ -1899,36 +1909,36 @@
             "subject": "Dwm",
             "teacher": "Mrs. A. R. Sonawane",
             "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-101"
           }
         ],
         "Thursday": [
           {
             "day": "Thursday",
-            "slot": 1,
+            "slot": 3,
             "year": "TE",
             "division": "A",
             "batch": "B1",
             "subject": "Dwm L",
             "teacher": "Dr. (mrs.) A. M. Patil",
-            "room": "lab7",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_A_Thursday_0_B1_0",
+            "id": "LAB_TE_A_Thursday_2_B1_0",
             "isPractical": true
           },
           {
             "day": "Thursday",
-            "slot": 2,
+            "slot": 4,
             "year": "TE",
             "division": "A",
             "batch": "B1",
             "subject": "Dwm L",
             "teacher": "Dr. (mrs.) A. M. Patil",
-            "room": "lab7",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_A_Thursday_0_B1_1",
+            "id": "LAB_TE_A_Thursday_2_B1_1",
             "isPractical": true
           },
           {
@@ -1939,7 +1949,7 @@
             "batch": "B2",
             "subject": "Wcn L",
             "teacher": "Mr. A. S. Londhe",
-            "room": "Electronics Lab",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_A_Thursday_2_B2_0",
@@ -1953,7 +1963,7 @@
             "batch": "B2",
             "subject": "Wcn L",
             "teacher": "Mr. A. S. Londhe",
-            "room": "Electronics Lab",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_A_Thursday_2_B2_1",
@@ -1967,7 +1977,7 @@
             "batch": "B3",
             "subject": "Ai L",
             "teacher": "Mrs. D. J. Janjani",
-            "room": "lab4",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_A_Thursday_2_B3_0",
@@ -1981,7 +1991,7 @@
             "batch": "B3",
             "subject": "Ai L",
             "teacher": "Mrs. D. J. Janjani",
-            "room": "lab4",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_A_Thursday_2_B3_1",
@@ -1991,31 +2001,21 @@
             "year": "TE",
             "division": "A",
             "day": "Thursday",
-            "slot": 5,
+            "slot": 1,
             "subject": "AI",
             "teacher": "Dr. S. M. Patil",
             "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-101"
           },
           {
             "year": "TE",
             "division": "A",
             "day": "Thursday",
-            "slot": 6,
+            "slot": 2,
             "subject": "Aoa",
             "teacher": "Mrs. P. A. Kamble",
             "type": "THEORY",
-            "room": "Room-102"
-          },
-          {
-            "year": "TE",
-            "division": "A",
-            "day": "Thursday",
-            "slot": 7,
-            "subject": "Dwm",
-            "teacher": "Mrs. A. R. Sonawane",
-            "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-101"
           }
         ],
         "Friday": [
@@ -2027,7 +2027,7 @@
             "subject": "Wc",
             "teacher": "Mr. A. S. Londhe",
             "type": "THEORY",
-            "room": "Room-104"
+            "room": "Room-101"
           },
           {
             "year": "TE",
@@ -2037,7 +2037,7 @@
             "subject": "Aoa",
             "teacher": "Mrs. P. A. Kamble",
             "type": "THEORY",
-            "room": "Room-104"
+            "room": "Room-101"
           },
           {
             "year": "TE",
@@ -2047,7 +2047,7 @@
             "subject": "Computer Networks",
             "teacher": "Dr. (mrs.) P. N. Jain",
             "type": "THEORY",
-            "room": "Room-104"
+            "room": "Room-101"
           },
           {
             "year": "TE",
@@ -2057,7 +2057,7 @@
             "subject": "Saids",
             "teacher": "Ms. I. A. Solomon",
             "type": "THEORY",
-            "room": "Room-104"
+            "room": "Room-101"
           },
           {
             "year": "TE",
@@ -2067,7 +2067,7 @@
             "subject": "Dwm",
             "teacher": "Mrs. A. R. Sonawane",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-101"
           }
         ]
       }
@@ -2077,30 +2077,30 @@
         "Monday": [
           {
             "day": "Monday",
-            "slot": 3,
+            "slot": 5,
             "year": "TE",
             "division": "B",
             "batch": "B1",
             "subject": "Wcn L",
             "teacher": "Mrs. S. S. Parhad",
-            "room": "lab6",
+            "room": "Computer Lab 1",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_B_Monday_2_B1_0",
+            "id": "LAB_TE_B_Monday_4_B1_0",
             "isPractical": true
           },
           {
             "day": "Monday",
-            "slot": 4,
+            "slot": 6,
             "year": "TE",
             "division": "B",
             "batch": "B1",
             "subject": "Wcn L",
             "teacher": "Mrs. S. S. Parhad",
-            "room": "lab6",
+            "room": "Computer Lab 1",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_B_Monday_2_B1_1",
+            "id": "LAB_TE_B_Monday_4_B1_1",
             "isPractical": true
           },
           {
@@ -2111,7 +2111,7 @@
             "batch": "B2",
             "subject": "Ai L",
             "teacher": "Mrs. D. J. Janjani",
-            "room": "Computer Lab 1",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_B_Monday_4_B2_0",
@@ -2125,7 +2125,7 @@
             "batch": "B2",
             "subject": "Ai L",
             "teacher": "Mrs. D. J. Janjani",
-            "room": "Computer Lab 1",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_B_Monday_4_B2_1",
@@ -2133,41 +2133,41 @@
           },
           {
             "day": "Monday",
-            "slot": 3,
+            "slot": 5,
             "year": "TE",
             "division": "B",
             "batch": "B3",
             "subject": "Aoa L",
-            "teacher": "Mrs. S. Singh",
-            "room": "lab7",
+            "teacher": "Mrs. P. A. Kamble",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_B_Monday_2_B3_0",
+            "id": "LAB_TE_B_Monday_4_B3_0",
             "isPractical": true
           },
           {
             "day": "Monday",
-            "slot": 4,
+            "slot": 6,
             "year": "TE",
             "division": "B",
             "batch": "B3",
             "subject": "Aoa L",
-            "teacher": "Mrs. S. Singh",
-            "room": "lab7",
+            "teacher": "Mrs. P. A. Kamble",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_B_Monday_2_B3_1",
+            "id": "LAB_TE_B_Monday_4_B3_1",
             "isPractical": true
           },
           {
             "year": "TE",
             "division": "B",
             "day": "Monday",
-            "slot": 7,
+            "slot": 2,
             "subject": "Wc",
             "teacher": "Mr. A. S. Londhe",
             "type": "THEORY",
-            "room": "Room-104"
+            "room": "Room-102"
           },
           {
             "year": "TE",
@@ -2183,9 +2183,19 @@
             "year": "TE",
             "division": "B",
             "day": "Monday",
-            "slot": 2,
+            "slot": 3,
             "subject": "Computer Networks",
             "teacher": "Mrs. Y. S. Vadanerkar",
+            "type": "THEORY",
+            "room": "Room-102"
+          },
+          {
+            "year": "TE",
+            "division": "B",
+            "day": "Monday",
+            "slot": 4,
+            "subject": "Dwm",
+            "teacher": "Mrs. A. R. Sonawane",
             "type": "THEORY",
             "room": "Room-102"
           }
@@ -2199,7 +2209,7 @@
             "batch": "B1",
             "subject": "Ai L",
             "teacher": "Mrs. D. J. Janjani",
-            "room": "lab5",
+            "room": "lab6",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_B_Tuesday_2_B1_0",
@@ -2213,7 +2223,7 @@
             "batch": "B1",
             "subject": "Ai L",
             "teacher": "Mrs. D. J. Janjani",
-            "room": "lab5",
+            "room": "lab6",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_B_Tuesday_2_B1_1",
@@ -2221,30 +2231,30 @@
           },
           {
             "day": "Tuesday",
-            "slot": 3,
+            "slot": 5,
             "year": "TE",
             "division": "B",
             "batch": "B2",
             "subject": "Aoa L",
             "teacher": "Mrs. S. S. Parhad",
-            "room": "lab6",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_B_Tuesday_2_B2_0",
+            "id": "LAB_TE_B_Tuesday_4_B2_0",
             "isPractical": true
           },
           {
             "day": "Tuesday",
-            "slot": 4,
+            "slot": 6,
             "year": "TE",
             "division": "B",
             "batch": "B2",
             "subject": "Aoa L",
             "teacher": "Mrs. S. S. Parhad",
-            "room": "lab6",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_B_Tuesday_2_B2_1",
+            "id": "LAB_TE_B_Tuesday_4_B2_1",
             "isPractical": true
           },
           {
@@ -2255,7 +2265,7 @@
             "batch": "B3",
             "subject": "Dwm L",
             "teacher": "Dr. (mrs.) A. M. Patil",
-            "room": "Computer Lab 2",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_B_Tuesday_4_B3_0",
@@ -2269,7 +2279,7 @@
             "batch": "B3",
             "subject": "Dwm L",
             "teacher": "Dr. (mrs.) A. M. Patil",
-            "room": "Computer Lab 2",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_B_Tuesday_4_B3_1",
@@ -2283,7 +2293,7 @@
             "subject": "AI",
             "teacher": "Ms. O. Samantha",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-102"
           },
           {
             "year": "TE",
@@ -2293,7 +2303,7 @@
             "subject": "Aoa",
             "teacher": "Mrs. P. A. Kamble",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-102"
           },
           {
             "year": "TE",
@@ -2303,7 +2313,7 @@
             "subject": "Saids",
             "teacher": "Ms. I. A. Solomon",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-102"
           }
         ],
         "Wednesday": [
@@ -2315,7 +2325,7 @@
             "batch": "B1",
             "subject": "Aoa L",
             "teacher": "Mrs. P. A. Kamble",
-            "room": "lab5",
+            "room": "lab6",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_B_Wednesday_2_B1_0",
@@ -2329,7 +2339,7 @@
             "batch": "B1",
             "subject": "Aoa L",
             "teacher": "Mrs. P. A. Kamble",
-            "room": "lab5",
+            "room": "lab6",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_B_Wednesday_2_B1_1",
@@ -2337,58 +2347,58 @@
           },
           {
             "day": "Wednesday",
-            "slot": 3,
+            "slot": 5,
             "year": "TE",
             "division": "B",
             "batch": "B2",
             "subject": "Dwm L",
             "teacher": "Dr. (mrs.) A. M. Patil",
-            "room": "lab6",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_B_Wednesday_2_B2_0",
+            "id": "LAB_TE_B_Wednesday_4_B2_0",
             "isPractical": true
           },
           {
             "day": "Wednesday",
-            "slot": 4,
+            "slot": 6,
             "year": "TE",
             "division": "B",
             "batch": "B2",
             "subject": "Dwm L",
             "teacher": "Dr. (mrs.) A. M. Patil",
-            "room": "lab6",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_B_Wednesday_2_B2_1",
+            "id": "LAB_TE_B_Wednesday_4_B2_1",
             "isPractical": true
           },
           {
             "day": "Wednesday",
-            "slot": 3,
+            "slot": 5,
             "year": "TE",
             "division": "B",
             "batch": "B3",
             "subject": "Wcn L",
-            "teacher": "Mr. A. S. Londhe",
-            "room": "lab7",
+            "teacher": "Mrs. S. S. Parhad",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_B_Wednesday_2_B3_0",
+            "id": "LAB_TE_B_Wednesday_4_B3_0",
             "isPractical": true
           },
           {
             "day": "Wednesday",
-            "slot": 4,
+            "slot": 6,
             "year": "TE",
             "division": "B",
             "batch": "B3",
             "subject": "Wcn L",
-            "teacher": "Mr. A. S. Londhe",
-            "room": "lab7",
+            "teacher": "Mrs. S. S. Parhad",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_B_Wednesday_2_B3_1",
+            "id": "LAB_TE_B_Wednesday_4_B3_1",
             "isPractical": true
           },
           {
@@ -2415,40 +2425,40 @@
             "year": "TE",
             "division": "B",
             "day": "Wednesday",
-            "slot": 5,
+            "slot": 8,
             "subject": "Dwm",
             "teacher": "Mrs. A. R. Sonawane",
             "type": "THEORY",
-            "room": "Room-104"
+            "room": "Room-102"
           }
         ],
         "Thursday": [
           {
             "day": "Thursday",
-            "slot": 3,
+            "slot": 5,
             "year": "TE",
             "division": "B",
             "batch": "B1",
             "subject": "Dwm L",
             "teacher": "Dr. (mrs.) A. M. Patil",
-            "room": "lab5",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_B_Thursday_2_B1_0",
+            "id": "LAB_TE_B_Thursday_4_B1_0",
             "isPractical": true
           },
           {
             "day": "Thursday",
-            "slot": 4,
+            "slot": 6,
             "year": "TE",
             "division": "B",
             "batch": "B1",
             "subject": "Dwm L",
             "teacher": "Dr. (mrs.) A. M. Patil",
-            "room": "lab5",
+            "room": "Physics Lab",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_TE_B_Thursday_2_B1_1",
+            "id": "LAB_TE_B_Thursday_4_B1_1",
             "isPractical": true
           },
           {
@@ -2487,7 +2497,7 @@
             "batch": "B3",
             "subject": "Ai L",
             "teacher": "Mrs. D. J. Janjani",
-            "room": "Computer Lab 2",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_B_Thursday_4_B3_0",
@@ -2501,7 +2511,7 @@
             "batch": "B3",
             "subject": "Ai L",
             "teacher": "Mrs. D. J. Janjani",
-            "room": "Computer Lab 2",
+            "room": "lab3",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_TE_B_Thursday_4_B3_1",
@@ -2515,17 +2525,17 @@
             "subject": "AI",
             "teacher": "Ms. O. Samantha",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-102"
           },
           {
             "year": "TE",
             "division": "B",
             "day": "Thursday",
-            "slot": 2,
+            "slot": 7,
             "subject": "Aoa",
             "teacher": "Mrs. P. A. Kamble",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-102"
           }
         ],
         "Friday": [
@@ -2537,7 +2547,7 @@
             "subject": "Wc",
             "teacher": "Mr. A. S. Londhe",
             "type": "THEORY",
-            "room": "Room-105"
+            "room": "Room-102"
           },
           {
             "year": "TE",
@@ -2547,7 +2557,7 @@
             "subject": "Aoa",
             "teacher": "Mrs. P. A. Kamble",
             "type": "THEORY",
-            "room": "Room-105"
+            "room": "Room-102"
           },
           {
             "year": "TE",
@@ -2557,7 +2567,7 @@
             "subject": "Computer Networks",
             "teacher": "Mrs. Y. S. Vadanerkar",
             "type": "THEORY",
-            "room": "Room-105"
+            "room": "Room-102"
           },
           {
             "year": "TE",
@@ -2567,7 +2577,7 @@
             "subject": "Saids",
             "teacher": "Ms. I. A. Solomon",
             "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-102"
           },
           {
             "year": "TE",
@@ -2577,7 +2587,7 @@
             "subject": "Dwm",
             "teacher": "Mrs. A. R. Sonawane",
             "type": "THEORY",
-            "room": "Room-105"
+            "room": "Room-102"
           }
         ]
       }
@@ -2595,7 +2605,7 @@
             "batch": "B1",
             "subject": "Dl L",
             "teacher": "Mrs. M. Umate",
-            "room": "Computer Lab 2",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_A_Monday_4_B1_0",
@@ -2609,7 +2619,7 @@
             "batch": "B1",
             "subject": "Dl L",
             "teacher": "Mrs. M. Umate",
-            "room": "Computer Lab 2",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_A_Monday_4_B1_1",
@@ -2623,7 +2633,7 @@
             "batch": "B2",
             "subject": "Bt L",
             "teacher": "Mrs. S. R. Katke",
-            "room": "Electronics Lab",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_A_Monday_4_B2_0",
@@ -2637,7 +2647,7 @@
             "batch": "B2",
             "subject": "Bt L",
             "teacher": "Mrs. S. R. Katke",
-            "room": "Electronics Lab",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_A_Monday_4_B2_1",
@@ -2651,7 +2661,7 @@
             "batch": "B3",
             "subject": "Bda L",
             "teacher": "Ms. O. Samantha",
-            "room": "lab4",
+            "room": "lab6",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_A_Monday_4_B3_0",
@@ -2665,7 +2675,7 @@
             "batch": "B3",
             "subject": "Bda L",
             "teacher": "Ms. O. Samantha",
-            "room": "lab4",
+            "room": "lab6",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_A_Monday_4_B3_1",
@@ -2679,7 +2689,7 @@
             "subject": "Dl",
             "teacher": "Dr. (mrs.) P. N. Jain",
             "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-104"
           },
           {
             "year": "BE",
@@ -2689,56 +2699,56 @@
             "subject": "Mis",
             "teacher": "Mrs. A. R. Sonawane",
             "type": "THEORY",
-            "room": "Room-103"
-          },
-          {
-            "year": "BE",
-            "division": "A",
-            "day": "Monday",
-            "slot": 3,
-            "subject": "Nlp",
-            "teacher": "Mrs. Y. S. Vadanerkar",
-            "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-104"
           },
           {
             "year": "BE",
             "division": "A",
             "day": "Monday",
             "slot": 4,
+            "subject": "Nlp",
+            "teacher": "Mrs. Y. S. Vadanerkar",
+            "type": "THEORY",
+            "room": "Room-105"
+          },
+          {
+            "year": "BE",
+            "division": "A",
+            "day": "Monday",
+            "slot": 3,
             "subject": "Bt",
             "teacher": "Mrs. S. R. Katke",
             "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-101"
           }
         ],
         "Tuesday": [
           {
             "day": "Tuesday",
-            "slot": 3,
+            "slot": 5,
             "year": "BE",
             "division": "A",
             "batch": "B1",
             "subject": "Bt L",
             "teacher": "Mrs. S. R. Katke",
-            "room": "lab7",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_BE_A_Tuesday_2_B1_0",
+            "id": "LAB_BE_A_Tuesday_4_B1_0",
             "isPractical": true
           },
           {
             "day": "Tuesday",
-            "slot": 4,
+            "slot": 6,
             "year": "BE",
             "division": "A",
             "batch": "B1",
             "subject": "Bt L",
             "teacher": "Mrs. S. R. Katke",
-            "room": "lab7",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_BE_A_Tuesday_2_B1_1",
+            "id": "LAB_BE_A_Tuesday_4_B1_1",
             "isPractical": true
           },
           {
@@ -2749,7 +2759,7 @@
             "batch": "B2",
             "subject": "Bda L",
             "teacher": "Ms. O. Samantha",
-            "room": "Electronics Lab",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_A_Tuesday_4_B2_0",
@@ -2763,7 +2773,7 @@
             "batch": "B2",
             "subject": "Bda L",
             "teacher": "Ms. O. Samantha",
-            "room": "Electronics Lab",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_A_Tuesday_4_B2_1",
@@ -2777,7 +2787,7 @@
             "batch": "B3",
             "subject": "Dl L",
             "teacher": "Mrs. M. Umate",
-            "room": "lab4",
+            "room": "lab6",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_A_Tuesday_4_B3_0",
@@ -2791,7 +2801,7 @@
             "batch": "B3",
             "subject": "Dl L",
             "teacher": "Mrs. M. Umate",
-            "room": "lab4",
+            "room": "lab6",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_A_Tuesday_4_B3_1",
@@ -2805,7 +2815,7 @@
             "subject": "Mis",
             "teacher": "Mrs. A. R. Sonawane",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-104"
           },
           {
             "year": "BE",
@@ -2815,17 +2825,17 @@
             "subject": "Bda",
             "teacher": "Ms. O. Samantha",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-104"
           },
           {
             "year": "BE",
             "division": "A",
             "day": "Tuesday",
-            "slot": 7,
+            "slot": 3,
             "subject": "Bt",
             "teacher": "Mrs. S. R. Katke",
             "type": "THEORY",
-            "room": "Room-104"
+            "room": "Room-103"
           }
         ],
         "Wednesday": [
@@ -2837,7 +2847,7 @@
             "batch": "B1",
             "subject": "Bda L",
             "teacher": "Ms. O. Samantha",
-            "room": "Computer Lab 2",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_A_Wednesday_4_B1_0",
@@ -2851,7 +2861,7 @@
             "batch": "B1",
             "subject": "Bda L",
             "teacher": "Ms. O. Samantha",
-            "room": "Computer Lab 2",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_A_Wednesday_4_B1_1",
@@ -2865,7 +2875,7 @@
             "batch": "B3",
             "subject": "Bt L",
             "teacher": "Mrs. S. R. Katke",
-            "room": "Electronics Lab",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_A_Wednesday_4_B3_0",
@@ -2879,7 +2889,7 @@
             "batch": "B3",
             "subject": "Bt L",
             "teacher": "Mrs. S. R. Katke",
-            "room": "Electronics Lab",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_A_Wednesday_4_B3_1",
@@ -2893,7 +2903,7 @@
             "subject": "Dl",
             "teacher": "Dr. (mrs.) P. N. Jain",
             "type": "THEORY",
-            "room": "Room-103"
+            "room": "Room-104"
           },
           {
             "year": "BE",
@@ -2903,36 +2913,36 @@
             "subject": "Nlp",
             "teacher": "Mrs. Y. S. Vadanerkar",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-101"
           }
         ],
         "Thursday": [
           {
             "day": "Thursday",
-            "slot": 3,
+            "slot": 5,
             "year": "BE",
             "division": "A",
             "batch": "B2",
             "subject": "Dl L",
             "teacher": "Mrs. M. Umate",
-            "room": "lab7",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_BE_A_Thursday_2_B2_0",
+            "id": "LAB_BE_A_Thursday_4_B2_0",
             "isPractical": true
           },
           {
             "day": "Thursday",
-            "slot": 4,
+            "slot": 6,
             "year": "BE",
             "division": "A",
             "batch": "B2",
             "subject": "Dl L",
             "teacher": "Mrs. M. Umate",
-            "room": "lab7",
+            "room": "lab4",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_BE_A_Thursday_2_B2_1",
+            "id": "LAB_BE_A_Thursday_4_B2_1",
             "isPractical": true
           },
           {
@@ -2943,7 +2953,7 @@
             "subject": "Mis",
             "teacher": "Mrs. A. R. Sonawane",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-104"
           },
           {
             "year": "BE",
@@ -2953,17 +2963,17 @@
             "subject": "Bda",
             "teacher": "Ms. O. Samantha",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-104"
           },
           {
             "year": "BE",
             "division": "A",
             "day": "Thursday",
-            "slot": 5,
+            "slot": 3,
             "subject": "Bt",
             "teacher": "Mrs. S. R. Katke",
             "type": "THEORY",
-            "room": "Room-104"
+            "room": "Room-102"
           }
         ],
         "Friday": [
@@ -2985,7 +2995,7 @@
             "subject": "Bda",
             "teacher": "Ms. O. Samantha",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           },
           {
             "year": "BE",
@@ -2995,13 +3005,129 @@
             "subject": "Nlp",
             "teacher": "Mrs. Y. S. Vadanerkar",
             "type": "THEORY",
-            "room": "Room-101"
+            "room": "Room-104"
           }
         ]
       }
     },
     "B": {
       "timetable": {
+        "Friday": [
+          {
+            "day": "Friday",
+            "slot": 3,
+            "year": "BE",
+            "division": "B",
+            "batch": "B1",
+            "subject": "Dl L",
+            "teacher": "Mrs. M. Umate",
+            "room": "Computer Lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Friday_2_B1_0",
+            "isPractical": true
+          },
+          {
+            "day": "Friday",
+            "slot": 4,
+            "year": "BE",
+            "division": "B",
+            "batch": "B1",
+            "subject": "Dl L",
+            "teacher": "Mrs. M. Umate",
+            "room": "Computer Lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Friday_2_B1_1",
+            "isPractical": true
+          },
+          {
+            "day": "Friday",
+            "slot": 1,
+            "year": "BE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "Bt L",
+            "teacher": "Mrs. S. R. Katke",
+            "room": "Computer Lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Friday_0_B2_0",
+            "isPractical": true
+          },
+          {
+            "day": "Friday",
+            "slot": 2,
+            "year": "BE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "Bt L",
+            "teacher": "Mrs. S. R. Katke",
+            "room": "Computer Lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Friday_0_B2_1",
+            "isPractical": true
+          },
+          {
+            "day": "Friday",
+            "slot": 1,
+            "year": "BE",
+            "division": "B",
+            "batch": "B3",
+            "subject": "Bda L",
+            "teacher": "Ms. O. Samantha",
+            "room": "Physics Lab",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Friday_0_B3_0",
+            "isPractical": true
+          },
+          {
+            "day": "Friday",
+            "slot": 2,
+            "year": "BE",
+            "division": "B",
+            "batch": "B3",
+            "subject": "Bda L",
+            "teacher": "Ms. O. Samantha",
+            "room": "Physics Lab",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Friday_0_B3_1",
+            "isPractical": true
+          },
+          {
+            "year": "BE",
+            "division": "B",
+            "day": "Friday",
+            "slot": 6,
+            "subject": "Dl",
+            "teacher": "Dr. (mrs.) P. N. Jain",
+            "type": "THEORY",
+            "room": "Room-103"
+          },
+          {
+            "year": "BE",
+            "division": "B",
+            "day": "Friday",
+            "slot": 5,
+            "subject": "Bda",
+            "teacher": "Ms. O. Samantha",
+            "type": "THEORY",
+            "room": "Room-103"
+          },
+          {
+            "year": "BE",
+            "division": "B",
+            "day": "Friday",
+            "slot": 7,
+            "subject": "Bt",
+            "teacher": "Mrs. S. R. Katke",
+            "type": "THEORY",
+            "room": "Room-103"
+          }
+        ],
         "Thursday": [
           {
             "day": "Thursday",
@@ -3009,9 +3135,9 @@
             "year": "BE",
             "division": "B",
             "batch": "B1",
-            "subject": "Dl L",
-            "teacher": "Mrs. M. Umate",
-            "room": "Electronics Lab",
+            "subject": "Bt L",
+            "teacher": "Mrs. S. R. Katke",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_B_Thursday_4_B1_0",
@@ -3023,9 +3149,9 @@
             "year": "BE",
             "division": "B",
             "batch": "B1",
-            "subject": "Dl L",
-            "teacher": "Mrs. M. Umate",
-            "room": "Electronics Lab",
+            "subject": "Bt L",
+            "teacher": "Mrs. S. R. Katke",
+            "room": "lab5",
             "type": "LAB",
             "sessionLength": 2,
             "id": "LAB_BE_B_Thursday_4_B1_1",
@@ -3033,44 +3159,16 @@
           },
           {
             "day": "Thursday",
-            "slot": 6,
-            "year": "BE",
-            "division": "B",
-            "batch": "B2",
-            "subject": "Bt L",
-            "teacher": "Mrs. S. R. Katke",
-            "room": "lab4",
-            "type": "LAB",
-            "sessionLength": 2,
-            "id": "LAB_BE_B_Thursday_5_B2_0",
-            "isPractical": true
-          },
-          {
-            "day": "Thursday",
-            "slot": 7,
-            "year": "BE",
-            "division": "B",
-            "batch": "B2",
-            "subject": "Bt L",
-            "teacher": "Mrs. S. R. Katke",
-            "room": "lab4",
-            "type": "LAB",
-            "sessionLength": 2,
-            "id": "LAB_BE_B_Thursday_5_B2_1",
-            "isPractical": true
-          },
-          {
-            "day": "Thursday",
             "slot": 5,
             "year": "BE",
             "division": "B",
-            "batch": "B3",
+            "batch": "B2",
             "subject": "Bda L",
             "teacher": "Ms. O. Samantha",
-            "room": "lab5",
+            "room": "lab6",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_BE_B_Thursday_4_B3_0",
+            "id": "LAB_BE_B_Thursday_4_B2_0",
             "isPractical": true
           },
           {
@@ -3078,13 +3176,13 @@
             "slot": 6,
             "year": "BE",
             "division": "B",
-            "batch": "B3",
+            "batch": "B2",
             "subject": "Bda L",
             "teacher": "Ms. O. Samantha",
-            "room": "lab5",
+            "room": "lab6",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_BE_B_Thursday_4_B3_1",
+            "id": "LAB_BE_B_Thursday_4_B2_1",
             "isPractical": true
           },
           {
@@ -3106,172 +3204,16 @@
             "teacher": "Mrs. Y. S. Vadanerkar",
             "type": "THEORY",
             "room": "Room-103"
-          }
-        ],
-        "Tuesday": [
-          {
-            "day": "Tuesday",
-            "slot": 5,
-            "year": "BE",
-            "division": "B",
-            "batch": "B1",
-            "subject": "Bt L",
-            "teacher": "Mrs. S. R. Katke",
-            "room": "lab5",
-            "type": "LAB",
-            "sessionLength": 2,
-            "id": "LAB_BE_B_Tuesday_4_B1_0",
-            "isPractical": true
-          },
-          {
-            "day": "Tuesday",
-            "slot": 6,
-            "year": "BE",
-            "division": "B",
-            "batch": "B1",
-            "subject": "Bt L",
-            "teacher": "Mrs. S. R. Katke",
-            "room": "lab5",
-            "type": "LAB",
-            "sessionLength": 2,
-            "id": "LAB_BE_B_Tuesday_4_B1_1",
-            "isPractical": true
           },
           {
             "year": "BE",
             "division": "B",
-            "day": "Tuesday",
-            "slot": 2,
-            "subject": "Mis",
-            "teacher": "Mrs. A. R. Sonawane",
-            "type": "THEORY",
-            "room": "Room-103"
-          },
-          {
-            "year": "BE",
-            "division": "B",
-            "day": "Tuesday",
-            "slot": 1,
-            "subject": "Nlp",
-            "teacher": "Mrs. Y. S. Vadanerkar",
-            "type": "THEORY",
-            "room": "Room-103"
-          }
-        ],
-        "Friday": [
-          {
-            "day": "Friday",
-            "slot": 1,
-            "year": "BE",
-            "division": "B",
-            "batch": "B1",
-            "subject": "Bda L",
-            "teacher": "Ms. O. Samantha",
-            "room": "Computer Lab 1",
-            "type": "LAB",
-            "sessionLength": 2,
-            "id": "LAB_BE_B_Friday_0_B1_0",
-            "isPractical": true
-          },
-          {
-            "day": "Friday",
-            "slot": 2,
-            "year": "BE",
-            "division": "B",
-            "batch": "B1",
-            "subject": "Bda L",
-            "teacher": "Ms. O. Samantha",
-            "room": "Computer Lab 1",
-            "type": "LAB",
-            "sessionLength": 2,
-            "id": "LAB_BE_B_Friday_0_B1_1",
-            "isPractical": true
-          },
-          {
-            "day": "Friday",
-            "slot": 3,
-            "year": "BE",
-            "division": "B",
-            "batch": "B2",
-            "subject": "Bda L",
-            "teacher": "Ms. O. Samantha",
-            "room": "Computer Lab 1",
-            "type": "LAB",
-            "sessionLength": 2,
-            "id": "LAB_BE_B_Friday_2_B2_0",
-            "isPractical": true
-          },
-          {
-            "day": "Friday",
+            "day": "Thursday",
             "slot": 4,
-            "year": "BE",
-            "division": "B",
-            "batch": "B2",
-            "subject": "Bda L",
-            "teacher": "Ms. O. Samantha",
-            "room": "Computer Lab 1",
-            "type": "LAB",
-            "sessionLength": 2,
-            "id": "LAB_BE_B_Friday_2_B2_1",
-            "isPractical": true
-          },
-          {
-            "day": "Friday",
-            "slot": 3,
-            "year": "BE",
-            "division": "B",
-            "batch": "B3",
-            "subject": "Dl L",
-            "teacher": "Mrs. M. Umate",
-            "room": "Computer Lab 2",
-            "type": "LAB",
-            "sessionLength": 2,
-            "id": "LAB_BE_B_Friday_2_B3_0",
-            "isPractical": true
-          },
-          {
-            "day": "Friday",
-            "slot": 4,
-            "year": "BE",
-            "division": "B",
-            "batch": "B3",
-            "subject": "Dl L",
-            "teacher": "Mrs. M. Umate",
-            "room": "Computer Lab 2",
-            "type": "LAB",
-            "sessionLength": 2,
-            "id": "LAB_BE_B_Friday_2_B3_1",
-            "isPractical": true
-          },
-          {
-            "year": "BE",
-            "division": "B",
-            "day": "Friday",
-            "slot": 6,
-            "subject": "Dl",
-            "teacher": "Dr. (mrs.) P. N. Jain",
-            "type": "THEORY",
-            "room": "Room-102"
-          },
-          {
-            "year": "BE",
-            "division": "B",
-            "day": "Friday",
-            "slot": 5,
-            "subject": "Nlp",
-            "teacher": "Mrs. Y. S. Vadanerkar",
-            "type": "THEORY",
-            "room": "Room-105"
-          },
-          {
-            "year": "BE",
-            "division": "B",
-            "day": "Friday",
-            "slot": 7,
             "subject": "Bt",
             "teacher": "Mrs. S. R. Katke",
             "type": "THEORY",
-            "room": "Room-102"
+            "room": "Room-103"
           }
         ],
         "Monday": [
@@ -3283,7 +3225,7 @@
             "subject": "Dl",
             "teacher": "Dr. (mrs.) P. N. Jain",
             "type": "THEORY",
-            "room": "Room-104"
+            "room": "Room-103"
           },
           {
             "year": "BE",
@@ -3293,7 +3235,7 @@
             "subject": "Mis",
             "teacher": "Mrs. A. R. Sonawane",
             "type": "THEORY",
-            "room": "Room-104"
+            "room": "Room-103"
           },
           {
             "year": "BE",
@@ -3303,17 +3245,17 @@
             "subject": "Bda",
             "teacher": "Ms. O. Samantha",
             "type": "THEORY",
-            "room": "Room-104"
+            "room": "Room-105"
           },
           {
             "year": "BE",
             "division": "B",
             "day": "Monday",
-            "slot": 7,
-            "subject": "Bt",
-            "teacher": "Mrs. S. R. Katke",
+            "slot": 5,
+            "subject": "Nlp",
+            "teacher": "Mrs. Y. S. Vadanerkar",
             "type": "THEORY",
-            "room": "Room-105"
+            "room": "Room-102"
           }
         ],
         "Wednesday": [
@@ -3335,13 +3277,35 @@
             "subject": "Bda",
             "teacher": "Ms. O. Samantha",
             "type": "THEORY",
-            "room": "Room-104"
+            "room": "Room-103"
+          }
+        ],
+        "Tuesday": [
+          {
+            "year": "BE",
+            "division": "B",
+            "day": "Tuesday",
+            "slot": 2,
+            "subject": "Mis",
+            "teacher": "Mrs. A. R. Sonawane",
+            "type": "THEORY",
+            "room": "Room-103"
           },
           {
             "year": "BE",
             "division": "B",
-            "day": "Wednesday",
-            "slot": 3,
+            "day": "Tuesday",
+            "slot": 1,
+            "subject": "Nlp",
+            "teacher": "Mrs. Y. S. Vadanerkar",
+            "type": "THEORY",
+            "room": "Room-103"
+          },
+          {
+            "year": "BE",
+            "division": "B",
+            "day": "Tuesday",
+            "slot": 4,
             "subject": "Bt",
             "teacher": "Mrs. S. R. Katke",
             "type": "THEORY",

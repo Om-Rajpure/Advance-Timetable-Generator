@@ -49,6 +49,11 @@ class TimetableState:
         self.room_assignments = {}  # (room, day, slot) -> assignment
         self.subject_counts = {}  # (subject, year, division) -> count
         
+        # Room Balancing State (Global)
+        from collections import Counter
+        self.room_usage_counts = Counter() # Map room_name -> usage_count
+        self.preferred_rooms = {} # Map class_id -> assigned_room (Sticky Room)
+        
         # Load uploaded timetable if provided
         uploaded = context.get('uploadedTimetable', [])
         if uploaded:
