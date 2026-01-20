@@ -45,6 +45,11 @@ class TimetableScheduler:
         self.feasibility = FeasibilityVerifier(context)
         self.lab_scheduler = LabScheduler(self.state, context)
         
+        # Room Balancing State
+        from collections import Counter
+        self.room_assignments = {} # Map class_id -> assigned_room
+        self.room_counts = Counter() # Map room_name -> usage_count
+        
         # Statistics
         self.iterations = 0
         self.backtracks = 0
@@ -598,6 +603,34 @@ class TimetableScheduler:
         if not result['valid']:
              raise ValueError(f"Feasibility Failed: {result.get('reason')}")
 
+    def _get_balanced_room(self, class_id, available_rooms):
+        """
+        Assign a room to a class using a 'Least Used' strategy.
+        Once assigned, the class keeps the room for consistency.
+        """
+        # 1. Check if already assigned
+        if class_id in self.room_assignments:
+            return self.room_assignments[class_id]
+            
+        if not available_rooms:
+            return None
+            
+        # 2. Find least used room
+        # We start with random shuffle to break ties randomly, avoiding "Room A" always winning ties
+        import random
+        # Create a copy to shuffle
+        candidates = list(available_rooms)
+        random.shuffle(candidates)
+        
+        # Find room with minimum current usage
+        best_room = min(candidates, key=lambda r: self.room_counts[r])
+        
+        # 3. Assign and Update
+        self.room_assignments[class_id] = best_room
+        self.room_counts[best_room] += 1
+        
+        return best_room
+
     def format_to_canonical(self, slots_list):
         """
         Convert list of slots to the canonical format:
@@ -650,13 +683,20 @@ class TimetableScheduler:
                     if not all_classrooms:
                         all_classrooms = branch_data.get('rooms', [])
                         
+                    if not all_classrooms:
+                        all_classrooms = branch_data.get('rooms', [])
+                        
                     class_id = f"{slot['year']}-{slot['division']}"
+                    
+                    # SMART BALANCING: Use least-used room strategy
                     if isinstance(all_classrooms, list) and len(all_classrooms) > 0:
-                        class_hash = sum(ord(c) for c in class_id)
                         rooms_list = [r.get('name') if isinstance(r, dict) else r for r in all_classrooms]
-                        if rooms_list:
-                             assigned_room = rooms_list[class_hash % len(rooms_list)]
-                except:
+                        assigned_room = self._get_balanced_room(class_id, rooms_list)
+                    else:
+                        assigned_room = f"Classroom-{class_id}"
+
+                except Exception as e:
+                    print(f"Room Assignment Error: {e}")
                     pass
                 
                 clean_slot['room'] = assigned_room if assigned_room else f"Classroom-{slot['year']}-{slot['division']}"

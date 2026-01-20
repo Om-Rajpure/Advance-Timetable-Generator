@@ -282,7 +282,7 @@ function SmartInput() {
             // 3. Send to Backend
             console.log('Sending Generation Payload:', payload)
 
-            const response = await fetch(`${API_BASE_URL}/api/generate`, {
+            const response = await fetch(`${API_BASE_URL}/api/generate/full`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
