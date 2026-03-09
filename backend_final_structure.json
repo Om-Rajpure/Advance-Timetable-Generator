@@ -1,0 +1,320 @@
+{
+  "SE": {
+    "A": {
+      "timetable": {
+        "Monday": [
+          {
+            "day": "Monday",
+            "slot": 1,
+            "year": "SE",
+            "division": "A",
+            "batch": "A1",
+            "subject": "AI Lab",
+            "teacher": "John",
+            "room": "Lab-1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_A_Monday_0_A1_0",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 2,
+            "year": "SE",
+            "division": "A",
+            "batch": "A1",
+            "subject": "AI Lab",
+            "teacher": "John",
+            "room": "Lab-1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_A_Monday_0_A1_1",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 1,
+            "year": "SE",
+            "division": "A",
+            "batch": "A2",
+            "subject": "AI Lab",
+            "teacher": "Sarah",
+            "room": "Lab-2",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_A_Monday_0_A2_0",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 2,
+            "year": "SE",
+            "division": "A",
+            "batch": "A2",
+            "subject": "AI Lab",
+            "teacher": "Sarah",
+            "room": "Lab-2",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_A_Monday_0_A2_1",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 1,
+            "year": "SE",
+            "division": "A",
+            "batch": "A3",
+            "subject": "Python Lab",
+            "teacher": "Neha",
+            "room": "Lab-3",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_A_Monday_0_A3_0",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 2,
+            "year": "SE",
+            "division": "A",
+            "batch": "A3",
+            "subject": "Python Lab",
+            "teacher": "Neha",
+            "room": "Lab-3",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_A_Monday_0_A3_1",
+            "isPractical": true
+          },
+          {
+            "year": "SE",
+            "division": "A",
+            "day": "Monday",
+            "slot": 3,
+            "subject": "Machine Learning",
+            "teacher": "Neha",
+            "type": "THEORY",
+            "room": "Room-2"
+          },
+          {
+            "year": "SE",
+            "division": "A",
+            "day": "Monday",
+            "slot": 4,
+            "subject": "AI",
+            "teacher": "Sarah",
+            "type": "THEORY",
+            "room": "Room-2"
+          }
+        ],
+        "Wednesday": [
+          {
+            "year": "SE",
+            "division": "A",
+            "day": "Wednesday",
+            "slot": 1,
+            "subject": "Machine Learning",
+            "teacher": "Neha",
+            "type": "THEORY",
+            "room": "Room-2"
+          }
+        ],
+        "Friday": [
+          {
+            "year": "SE",
+            "division": "A",
+            "day": "Friday",
+            "slot": 1,
+            "subject": "Machine Learning",
+            "teacher": "Neha",
+            "type": "THEORY",
+            "room": "Room-2"
+          }
+        ],
+        "Tuesday": [
+          {
+            "year": "SE",
+            "division": "A",
+            "day": "Tuesday",
+            "slot": 1,
+            "subject": "AI",
+            "teacher": "Sarah",
+            "type": "THEORY",
+            "room": "Room-2"
+          }
+        ],
+        "Thursday": [
+          {
+            "year": "SE",
+            "division": "A",
+            "day": "Thursday",
+            "slot": 1,
+            "subject": "AI",
+            "teacher": "Sarah",
+            "type": "THEORY",
+            "room": "Room-2"
+          }
+        ]
+      }
+    },
+    "B": {
+      "timetable": {
+        "Monday": [
+          {
+            "day": "Monday",
+            "slot": 4,
+            "year": "SE",
+            "division": "B",
+            "batch": "B1",
+            "subject": "Python Lab",
+            "teacher": "Neha",
+            "room": "Lab-1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_B_Monday_3_B1_0",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 5,
+            "year": "SE",
+            "division": "B",
+            "batch": "B1",
+            "subject": "Python Lab",
+            "teacher": "Neha",
+            "room": "Lab-1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_B_Monday_3_B1_1",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 4,
+            "year": "SE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "AI Lab",
+            "teacher": "John",
+            "room": "Lab-2",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_B_Monday_3_B2_0",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 5,
+            "year": "SE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "AI Lab",
+            "teacher": "John",
+            "room": "Lab-2",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_B_Monday_3_B2_1",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 4,
+            "year": "SE",
+            "division": "B",
+            "batch": "B3",
+            "subject": "AI Lab",
+            "teacher": "Amit",
+            "room": "Lab-3",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_B_Monday_3_B3_0",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 5,
+            "year": "SE",
+            "division": "B",
+            "batch": "B3",
+            "subject": "AI Lab",
+            "teacher": "Amit",
+            "room": "Lab-3",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_B_Monday_3_B3_1",
+            "isPractical": true
+          },
+          {
+            "year": "SE",
+            "division": "B",
+            "day": "Monday",
+            "slot": 3,
+            "subject": "Machine Learning",
+            "teacher": "Sarah",
+            "type": "THEORY",
+            "room": "Room-1"
+          }
+        ],
+        "Wednesday": [
+          {
+            "year": "SE",
+            "division": "B",
+            "day": "Wednesday",
+            "slot": 1,
+            "subject": "Machine Learning",
+            "teacher": "Sarah",
+            "type": "THEORY",
+            "room": "Room-1"
+          }
+        ],
+        "Friday": [
+          {
+            "year": "SE",
+            "division": "B",
+            "day": "Friday",
+            "slot": 1,
+            "subject": "Machine Learning",
+            "teacher": "Sarah",
+            "type": "THEORY",
+            "room": "Room-1"
+          },
+          {
+            "year": "SE",
+            "division": "B",
+            "day": "Friday",
+            "slot": 2,
+            "subject": "AI",
+            "teacher": "Neha",
+            "type": "THEORY",
+            "room": "Room-1"
+          }
+        ],
+        "Tuesday": [
+          {
+            "year": "SE",
+            "division": "B",
+            "day": "Tuesday",
+            "slot": 1,
+            "subject": "AI",
+            "teacher": "Neha",
+            "type": "THEORY",
+            "room": "Room-1"
+          }
+        ],
+        "Thursday": [
+          {
+            "year": "SE",
+            "division": "B",
+            "day": "Thursday",
+            "slot": 1,
+            "subject": "AI",
+            "teacher": "Neha",
+            "type": "THEORY",
+            "room": "Room-1"
+          }
+        ]
+      }
+    }
+  }
+}

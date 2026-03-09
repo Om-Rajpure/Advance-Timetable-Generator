@@ -1,0 +1,1382 @@
+{
+  "class_obj": {
+    "id": "SE-A",
+    "year": "SE",
+    "division": "A",
+    "batches": [
+      "B1",
+      "B2",
+      "B3"
+    ]
+  },
+  "subjects": [
+    {
+      "id": "1769504889320-mm08703",
+      "name": "Coa",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "A"
+    },
+    {
+      "id": "1769504889320-mm08703",
+      "name": "Coa",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "B"
+    },
+    {
+      "id": "1769504889320-mm08703",
+      "name": "Coa",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "C"
+    },
+    {
+      "id": "1769504889320-alwrbtf",
+      "name": "Ese",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "A"
+    },
+    {
+      "id": "1769504889320-alwrbtf",
+      "name": "Ese",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "B"
+    },
+    {
+      "id": "1769504889320-alwrbtf",
+      "name": "Ese",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "C"
+    },
+    {
+      "id": "1769504889321-cx7lgof",
+      "name": "Ed",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "A"
+    },
+    {
+      "id": "1769504889321-cx7lgof",
+      "name": "Ed",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "B"
+    },
+    {
+      "id": "1769504889321-cx7lgof",
+      "name": "Ed",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "C"
+    },
+    {
+      "id": "1769504889321-5feiw7k",
+      "name": "Dsgt",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "A"
+    },
+    {
+      "id": "1769504889321-5feiw7k",
+      "name": "Dsgt",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "B"
+    },
+    {
+      "id": "1769504889321-5feiw7k",
+      "name": "Dsgt",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "C"
+    },
+    {
+      "id": "1769504889321-tg5igjn",
+      "name": "Oe-lm",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "A"
+    },
+    {
+      "id": "1769504889321-tg5igjn",
+      "name": "Oe-lm",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "B"
+    },
+    {
+      "id": "1769504889321-tg5igjn",
+      "name": "Oe-lm",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "C"
+    },
+    {
+      "id": "1769504889321-oa8rpdq",
+      "name": "Fsjp",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "A"
+    },
+    {
+      "id": "1769504889321-oa8rpdq",
+      "name": "Fsjp",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "B"
+    },
+    {
+      "id": "1769504889321-oa8rpdq",
+      "name": "Fsjp",
+      "year": "SE",
+      "weeklyLectures": 3,
+      "isPractical": false,
+      "sessionLength": 1,
+      "type": "Lecture",
+      "division": "C"
+    },
+    {
+      "id": "1769504889321-5l59ze2",
+      "name": "Fsjp L",
+      "year": "SE",
+      "weeklyLectures": 1,
+      "isPractical": true,
+      "sessionLength": 2,
+      "type": "Lecture",
+      "division": "A"
+    },
+    {
+      "id": "1769504889321-5l59ze2",
+      "name": "Fsjp L",
+      "year": "SE",
+      "weeklyLectures": 1,
+      "isPractical": true,
+      "sessionLength": 2,
+      "type": "Lecture",
+      "division": "B"
+    },
+    {
+      "id": "1769504889321-5l59ze2",
+      "name": "Fsjp L",
+      "year": "SE",
+      "weeklyLectures": 1,
+      "isPractical": true,
+      "sessionLength": 2,
+      "type": "Lecture",
+      "division": "C"
+    },
+    {
+      "id": "1769504889321-gci60wv",
+      "name": "Coa L",
+      "year": "SE",
+      "weeklyLectures": 1,
+      "isPractical": true,
+      "sessionLength": 2,
+      "type": "Lecture",
+      "division": "A"
+    },
+    {
+      "id": "1769504889321-gci60wv",
+      "name": "Coa L",
+      "year": "SE",
+      "weeklyLectures": 1,
+      "isPractical": true,
+      "sessionLength": 2,
+      "type": "Lecture",
+      "division": "B"
+    },
+    {
+      "id": "1769504889321-gci60wv",
+      "name": "Coa L",
+      "year": "SE",
+      "weeklyLectures": 1,
+      "isPractical": true,
+      "sessionLength": 2,
+      "type": "Lecture",
+      "division": "C"
+    },
+    {
+      "id": "1769504889321-04um94i",
+      "name": "Ese L",
+      "year": "SE",
+      "weeklyLectures": 1,
+      "isPractical": true,
+      "sessionLength": 2,
+      "type": "Lecture",
+      "division": "A"
+    },
+    {
+      "id": "1769504889321-04um94i",
+      "name": "Ese L",
+      "year": "SE",
+      "weeklyLectures": 1,
+      "isPractical": true,
+      "sessionLength": 2,
+      "type": "Lecture",
+      "division": "B"
+    },
+    {
+      "id": "1769504889321-04um94i",
+      "name": "Ese L",
+      "year": "SE",
+      "weeklyLectures": 1,
+      "isPractical": true,
+      "sessionLength": 2,
+      "type": "Lecture",
+      "division": "C"
+    },
+    {
+      "id": "1769504889321-5mo2nv6",
+      "name": "Ed L",
+      "year": "SE",
+      "weeklyLectures": 1,
+      "isPractical": true,
+      "sessionLength": 2,
+      "type": "Lecture",
+      "division": "A"
+    },
+    {
+      "id": "1769504889321-5mo2nv6",
+      "name": "Ed L",
+      "year": "SE",
+      "weeklyLectures": 1,
+      "isPractical": true,
+      "sessionLength": 2,
+      "type": "Lecture",
+      "division": "B"
+    },
+    {
+      "id": "1769504889321-5mo2nv6",
+      "name": "Ed L",
+      "year": "SE",
+      "weeklyLectures": 1,
+      "isPractical": true,
+      "sessionLength": 2,
+      "type": "Lecture",
+      "division": "C"
+    }
+  ],
+  "branchData": {
+    "branchName": "Artificial Intelligence",
+    "academicYears": [
+      "SE",
+      "TE",
+      "BE"
+    ],
+    "divisions": {
+      "SE": [
+        "A",
+        "B",
+        "C"
+      ],
+      "TE": [
+        "A",
+        "B"
+      ],
+      "BE": [
+        "A",
+        "B"
+      ]
+    },
+    "workingDays": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "startTime": "8:00 AM",
+    "endTime": "5:00 PM",
+    "lectureDuration": 60,
+    "recessEnabled": true,
+    "recessStart": "12:00 PM",
+    "recessDuration": 45,
+    "classrooms": [
+      "Room-101",
+      "Room-102",
+      "Room-103",
+      "Room-104",
+      "Room-105"
+    ],
+    "sharedLabs": [
+      {
+        "name": "Lab !",
+        "availableDays": [
+          "Mon",
+          "Tue",
+          "Wed",
+          "Thu",
+          "Fri",
+          "Sat"
+        ],
+        "availableSlots": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "capacity": 25
+      },
+      {
+        "name": "Lab 2",
+        "availableDays": [
+          "Mon",
+          "Tue",
+          "Wed",
+          "Thu",
+          "Fri",
+          "Sat"
+        ],
+        "availableSlots": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "capacity": 25
+      },
+      {
+        "name": "Lab3",
+        "availableDays": [
+          "Mon",
+          "Tue",
+          "Wed",
+          "Thu",
+          "Fri",
+          "Sat"
+        ],
+        "availableSlots": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "capacity": 25
+      },
+      {
+        "name": "Lab4",
+        "availableDays": [
+          "Mon",
+          "Tue",
+          "Wed",
+          "Thu",
+          "Fri",
+          "Sat"
+        ],
+        "availableSlots": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "capacity": 25
+      },
+      {
+        "name": "Lab5",
+        "availableDays": [
+          "Mon",
+          "Tue",
+          "Wed",
+          "Thu",
+          "Fri",
+          "Sat"
+        ],
+        "availableSlots": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "capacity": 25
+      },
+      {
+        "name": "Lab 6",
+        "availableDays": [
+          "Mon",
+          "Tue",
+          "Wed",
+          "Thu",
+          "Fri",
+          "Sat"
+        ],
+        "availableSlots": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "capacity": 25
+      }
+    ],
+    "labBatchesPerYear": {
+      "SE": 3,
+      "TE": 3,
+      "BE": 3
+    },
+    "id": "temp-branch-id-1769504901704"
+  },
+  "smartInputData": {
+    "teachers": [
+      {
+        "id": "1769504882507-cjduwti",
+        "name": "Dr. S. M. Patil",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-ojzqiti",
+        "name": "Mr. A. S. Londhe",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-lxw22p9",
+        "name": "Dr. (mrs.) P. N. Jain",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-m49969r",
+        "name": "Mrs. D. J. Janjani",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-qbk5qbp",
+        "name": "Mrs. P. A. Kamble",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-z8g723g",
+        "name": "Mrs. A. R. Sonawane",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-qjs5sqr",
+        "name": "Mrs. S. S. Parhad",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-qv6pkmj",
+        "name": "Ms. I. A. Solomon",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-0uocfqu",
+        "name": "Dr. (mrs.) A. M. Patil",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-jowqrps",
+        "name": "Mrs. A. Tiwari",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-4mw47lt",
+        "name": "Mrs. S. Atram",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-h93ifym",
+        "name": "Mrs. M. Umate",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-4ymrkcz",
+        "name": "Ms. O. Samantha",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-wje6b3u",
+        "name": "Mrs. Y. S. Vadanerkar",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-5y0gpm7",
+        "name": "Mrs. S. R. Katke",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-yhv5lxd",
+        "name": "Mrs. A. G. Divekar",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-frx4z6r",
+        "name": "Mrs. S. Singh",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-0p73y60",
+        "name": "Ms. M. Saxena",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-clmp57e",
+        "name": "Ms. A. Raut",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      },
+      {
+        "id": "1769504882507-gptn4mt",
+        "name": "Mr. S. H. Rathod",
+        "maxLecturesPerDay": 5,
+        "loginTime": "09:00",
+        "subjects": []
+      }
+    ],
+    "subjects": [
+      {
+        "id": "1769504889320-aeitmwm",
+        "name": "Wc",
+        "year": "TE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889320-aeitmwm",
+        "name": "Wc",
+        "year": "TE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889320-o5oxeay",
+        "name": "Dl",
+        "year": "BE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889320-o5oxeay",
+        "name": "Dl",
+        "year": "BE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889320-m5x8iom",
+        "name": "AI",
+        "year": "TE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889320-m5x8iom",
+        "name": "AI",
+        "year": "TE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889320-sdkj4kq",
+        "name": "Aoa",
+        "year": "TE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889320-sdkj4kq",
+        "name": "Aoa",
+        "year": "TE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889320-u9v9kn9",
+        "name": "Mis",
+        "year": "BE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889320-u9v9kn9",
+        "name": "Mis",
+        "year": "BE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889320-3zfgtej",
+        "name": "Computer Networks",
+        "year": "TE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889320-3zfgtej",
+        "name": "Computer Networks",
+        "year": "TE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889320-wlgn3uc",
+        "name": "Saids",
+        "year": "TE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889320-wlgn3uc",
+        "name": "Saids",
+        "year": "TE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889320-qd4ae3w",
+        "name": "Dwm",
+        "year": "TE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889320-qd4ae3w",
+        "name": "Dwm",
+        "year": "TE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889320-mm08703",
+        "name": "Coa",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889320-mm08703",
+        "name": "Coa",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889320-mm08703",
+        "name": "Coa",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "C"
+      },
+      {
+        "id": "1769504889320-alwrbtf",
+        "name": "Ese",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889320-alwrbtf",
+        "name": "Ese",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889320-alwrbtf",
+        "name": "Ese",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "C"
+      },
+      {
+        "id": "1769504889321-v72qec8",
+        "name": "Bda",
+        "year": "BE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-v72qec8",
+        "name": "Bda",
+        "year": "BE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-9j2et5z",
+        "name": "Nlp",
+        "year": "BE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-9j2et5z",
+        "name": "Nlp",
+        "year": "BE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-v8nruqc",
+        "name": "Bt",
+        "year": "BE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-v8nruqc",
+        "name": "Bt",
+        "year": "BE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-cx7lgof",
+        "name": "Ed",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-cx7lgof",
+        "name": "Ed",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-cx7lgof",
+        "name": "Ed",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "C"
+      },
+      {
+        "id": "1769504889321-5feiw7k",
+        "name": "Dsgt",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-5feiw7k",
+        "name": "Dsgt",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-5feiw7k",
+        "name": "Dsgt",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "C"
+      },
+      {
+        "id": "1769504889321-tg5igjn",
+        "name": "Oe-lm",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-tg5igjn",
+        "name": "Oe-lm",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-tg5igjn",
+        "name": "Oe-lm",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "C"
+      },
+      {
+        "id": "1769504889321-oa8rpdq",
+        "name": "Fsjp",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-oa8rpdq",
+        "name": "Fsjp",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-oa8rpdq",
+        "name": "Fsjp",
+        "year": "SE",
+        "weeklyLectures": 3,
+        "isPractical": false,
+        "sessionLength": 1,
+        "type": "Lecture",
+        "division": "C"
+      },
+      {
+        "id": "1769504889321-jvxlk74",
+        "name": "Wcn L",
+        "year": "TE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-jvxlk74",
+        "name": "Wcn L",
+        "year": "TE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-ljznk12",
+        "name": "Dl L",
+        "year": "BE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-ljznk12",
+        "name": "Dl L",
+        "year": "BE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-4ma89t1",
+        "name": "Ai L",
+        "year": "TE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-4ma89t1",
+        "name": "Ai L",
+        "year": "TE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-n9vmdkm",
+        "name": "Aoa L",
+        "year": "TE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-n9vmdkm",
+        "name": "Aoa L",
+        "year": "TE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-hdxxkaa",
+        "name": "Bt L",
+        "year": "BE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-hdxxkaa",
+        "name": "Bt L",
+        "year": "BE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-5l59ze2",
+        "name": "Fsjp L",
+        "year": "SE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-5l59ze2",
+        "name": "Fsjp L",
+        "year": "SE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-5l59ze2",
+        "name": "Fsjp L",
+        "year": "SE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "C"
+      },
+      {
+        "id": "1769504889321-izc98zj",
+        "name": "Dwm L",
+        "year": "TE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-izc98zj",
+        "name": "Dwm L",
+        "year": "TE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-gci60wv",
+        "name": "Coa L",
+        "year": "SE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-gci60wv",
+        "name": "Coa L",
+        "year": "SE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-gci60wv",
+        "name": "Coa L",
+        "year": "SE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "C"
+      },
+      {
+        "id": "1769504889321-rbp7rmw",
+        "name": "Bda L",
+        "year": "BE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-rbp7rmw",
+        "name": "Bda L",
+        "year": "BE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-04um94i",
+        "name": "Ese L",
+        "year": "SE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-04um94i",
+        "name": "Ese L",
+        "year": "SE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-04um94i",
+        "name": "Ese L",
+        "year": "SE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "C"
+      },
+      {
+        "id": "1769504889321-5mo2nv6",
+        "name": "Ed L",
+        "year": "SE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "A"
+      },
+      {
+        "id": "1769504889321-5mo2nv6",
+        "name": "Ed L",
+        "year": "SE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "B"
+      },
+      {
+        "id": "1769504889321-5mo2nv6",
+        "name": "Ed L",
+        "year": "SE",
+        "weeklyLectures": 1,
+        "isPractical": true,
+        "sessionLength": 2,
+        "type": "Lecture",
+        "division": "C"
+      }
+    ],
+    "teacherSubjectMap": [
+      {
+        "teacherName": "Mr. A. S. Londhe",
+        "subjectName": "Wc, Wcn L"
+      },
+      {
+        "teacherName": "Dr. (mrs.) P. N. Jain",
+        "subjectName": "Dl, Dln"
+      },
+      {
+        "teacherName": "Mrs. D. J. Janjani",
+        "subjectName": "Ai, Ai L"
+      },
+      {
+        "teacherName": "Mrs. P. A. Kamble",
+        "subjectName": "Aoa, Aoa L"
+      },
+      {
+        "teacherName": "Mrs. A. R. Sonawane",
+        "subjectName": "Mis, Btl, Dwm"
+      },
+      {
+        "teacherName": "Mrs. S. S. Parhad",
+        "subjectName": "Wc, Wcn L, Aoa L"
+      },
+      {
+        "teacherName": "Ms. I. A. Solomon",
+        "subjectName": "Saids, Fsjp L, Ai L"
+      },
+      {
+        "teacherName": "Dr. (mrs.) A. M. Patil",
+        "subjectName": "Dwm, Dwm L"
+      },
+      {
+        "teacherName": "Mrs. A. Tiwari",
+        "subjectName": "Coa, Coa L"
+      },
+      {
+        "teacherName": "Mrs. S. Atram",
+        "subjectName": "Ese, Fsjp,fsjp L,aoa L"
+      },
+      {
+        "teacherName": "Mrs. M. Umate",
+        "subjectName": "Coa, Dsgt, Coa L, Dl L"
+      },
+      {
+        "teacherName": "Ms. O. Samantha",
+        "subjectName": "Bda, Bda L"
+      },
+      {
+        "teacherName": "Mrs. Y. S. Vadanerkar",
+        "subjectName": "Nlp, Nlp L"
+      },
+      {
+        "teacherName": "Mrs. S. R. Katke",
+        "subjectName": "Bt, Bt L"
+      },
+      {
+        "teacherName": "Mrs. A. G. Divekar",
+        "subjectName": "Ese, Fsjp, Ese L, Coa L"
+      },
+      {
+        "teacherName": "Mrs. S. Singh",
+        "subjectName": "Ed, Mis, Ed L, Aoa L"
+      },
+      {
+        "teacherName": "Ms. M. Saxena",
+        "subjectName": "Ed,ed L"
+      },
+      {
+        "teacherName": "Ms. A. Raut",
+        "subjectName": "Dsgt, Fsjp L"
+      },
+      {
+        "teacherName": "Mr. S. H. Rathod",
+        "subjectName": "Oe-lm, Ese L"
+      }
+    ]
+  },
+  "error": "STRICT FAILURE: Morning Block Infeasible for SE-A on Monday."
+}

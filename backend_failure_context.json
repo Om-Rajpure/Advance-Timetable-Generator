@@ -1,0 +1,69 @@
+{
+  "class_obj": {
+    "id": "SE-A",
+    "year": "SE",
+    "division": "A",
+    "batches": [
+      "B1",
+      "B2",
+      "B3"
+    ]
+  },
+  "subjects": [
+    {
+      "name": "Math",
+      "year": "SE",
+      "division": "A",
+      "weeklyLectures": 1,
+      "type": "Theory"
+    }
+  ],
+  "branchData": {
+    "academicYears": [
+      "SE"
+    ],
+    "divisions": {
+      "SE": [
+        "A"
+      ]
+    },
+    "workingDays": [
+      "Monday"
+    ],
+    "timeSlots": {
+      "startTime": "09:00",
+      "endTime": "17:00",
+      "slotDuration": 60
+    },
+    "recess_slot": 4,
+    "labs": [
+      "LabA"
+    ],
+    "labBatchesPerYear": {
+      "SE": 3
+    },
+    "classrooms": [
+      "Room1"
+    ]
+  },
+  "smartInputData": {
+    "subjects": [
+      {
+        "name": "Math",
+        "year": "SE",
+        "division": "A",
+        "weeklyLectures": 1,
+        "type": "Theory"
+      }
+    ],
+    "teachers": [
+      {
+        "name": "Prof. Math",
+        "subjects": [
+          "Math"
+        ]
+      }
+    ]
+  },
+  "error": "cannot access local variable 'generated_count' where it is not associated with a value"
+}

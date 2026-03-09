@@ -1,0 +1,126 @@
+
+--- Lab Scheduling Start for SE-A ---
+  Target: Strict Parallel Labs for ['A1', 'A2', 'A3']
+  Subjects: ['Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/4 blocks.
+
+--- Lab Scheduling Start for SE-B ---
+  Target: Strict Parallel Labs for ['B1', 'B2', 'B3']
+  Subjects: ['Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/4 blocks.
+
+--- Lab Scheduling Start for SE-C ---
+  Target: Strict Parallel Labs for ['C1', 'C2', 'C3']
+  Subjects: ['Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/4 blocks.
+
+--- Lab Scheduling Start for TE-A ---
+  Target: Strict Parallel Labs for ['A1', 'A2', 'A3']
+  Subjects: ['Wcn L', 'Ai L', 'Aoa L', 'Dwm L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/4 blocks.
+
+--- Lab Scheduling Start for TE-B ---
+  Target: Strict Parallel Labs for ['B1', 'B2', 'B3']
+  Subjects: ['Wcn L', 'Ai L', 'Aoa L', 'Dwm L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/4 blocks.
+
+--- Lab Scheduling Start for BE-A ---
+  Target: Strict Parallel Labs for ['A1', 'A2', 'A3']
+  Subjects: ['Dl L', 'Bt L', 'Bda L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/3 blocks.
+
+--- Lab Scheduling Start for BE-B ---
+  Target: Strict Parallel Labs for ['B1', 'B2', 'B3']
+  Subjects: ['Dl L', 'Bt L', 'Bda L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/3 blocks.
+
+--- Lab Scheduling Start for SE-A ---
+  Target: Strict Parallel Labs for ['A1', 'A2', 'A3']
+  Subjects: ['Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/4 blocks.
+
+--- Lab Scheduling Start for SE-B ---
+  Target: Strict Parallel Labs for ['B1', 'B2', 'B3']
+  Subjects: ['Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/4 blocks.
+
+--- Lab Scheduling Start for SE-C ---
+  Target: Strict Parallel Labs for ['C1', 'C2', 'C3']
+  Subjects: ['Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/4 blocks.
+
+--- Lab Scheduling Start for TE-A ---
+  Target: Strict Parallel Labs for ['A1', 'A2', 'A3']
+  Subjects: ['Wcn L', 'Ai L', 'Aoa L', 'Dwm L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/4 blocks.
+
+--- Lab Scheduling Start for TE-B ---
+  Target: Strict Parallel Labs for ['B1', 'B2', 'B3']
+  Subjects: ['Wcn L', 'Ai L', 'Aoa L', 'Dwm L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/4 blocks.
+
+--- Lab Scheduling Start for BE-A ---
+  Target: Strict Parallel Labs for ['A1', 'A2', 'A3']
+  Subjects: ['Dl L', 'Bt L', 'Bda L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/3 blocks.
+
+--- Lab Scheduling Start for BE-B ---
+  Target: Strict Parallel Labs for ['B1', 'B2', 'B3']
+  Subjects: ['Dl L', 'Bt L', 'Bda L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/3 blocks.
+
+--- Lab Scheduling Start for SE-A ---
+  Target: Strict Parallel Labs for ['A1', 'A2', 'A3']
+  Subjects: ['Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/4 blocks.
+
+--- Lab Scheduling Start for SE-B ---
+  Target: Strict Parallel Labs for ['B1', 'B2', 'B3']
+  Subjects: ['Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/4 blocks.
+
+--- Lab Scheduling Start for SE-C ---
+  Target: Strict Parallel Labs for ['C1', 'C2', 'C3']
+  Subjects: ['Fsjp L', 'Coa L', 'Ese L', 'Ed L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/4 blocks.
+
+--- Lab Scheduling Start for TE-A ---
+  Target: Strict Parallel Labs for ['A1', 'A2', 'A3']
+  Subjects: ['Wcn L', 'Ai L', 'Aoa L', 'Dwm L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/4 blocks.
+
+--- Lab Scheduling Start for TE-B ---
+  Target: Strict Parallel Labs for ['B1', 'B2', 'B3']
+  Subjects: ['Wcn L', 'Ai L', 'Aoa L', 'Dwm L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/4 blocks.
+
+--- Lab Scheduling Start for BE-A ---
+  Target: Strict Parallel Labs for ['A1', 'A2', 'A3']
+  Subjects: ['Dl L', 'Bt L', 'Bda L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/3 blocks.
+
+--- Lab Scheduling Start for BE-B ---
+  Target: Strict Parallel Labs for ['B1', 'B2', 'B3']
+  Subjects: ['Dl L', 'Bt L', 'Bda L']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/3 blocks.

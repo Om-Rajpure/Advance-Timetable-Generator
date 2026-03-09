@@ -1,0 +1,21 @@
+
+--- Lab Scheduling Start for SE-A ---
+  Target: Strict Parallel Labs for ['A1', 'A2', 'A3']
+  Subjects: ['Python Lab']
+  Available Windows: 35
+  Parallel Scheduling Result: 0/1 blocks.
+
+--- Lab Scheduling Start for SE-B ---
+  Target: Strict Parallel Labs for ['B1', 'B2', 'B3']
+  Subjects: ['Python Lab', 'AI Lab']
+  Available Windows: 35
+
+--- Lab Scheduling Start for SE-A ---
+  Target: Strict Parallel Labs for ['A1', 'A2', 'A3']
+  Subjects: ['Python Lab', 'AI Lab']
+  Available Windows: 35
+
+--- Lab Scheduling Start for SE-B ---
+  Target: Strict Parallel Labs for ['B1', 'B2', 'B3']
+  Subjects: ['Python Lab', 'AI Lab']
+  Available Windows: 35

@@ -91,7 +91,7 @@ function DeveloperProfile({ isOpen, onClose }) {
 
                     {/* Instagram */}
                     <a
-                        href="https://www.instagram.com/om_rajpure_"
+                        href="https://www.instagram.com/conceptsin5"
                         target="_blank"
                         rel="noreferrer"
                         className="social-btn instagram"
