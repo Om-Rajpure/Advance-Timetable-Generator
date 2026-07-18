@@ -402,12 +402,67 @@ class TheoryScheduler:
                     model.add(sum(theory_here) <= remaining)
 
         # ------------------------------------------------------------------
-        # D6: Soft objective — maximise early-slot usage (minimise gaps)
+        # D6: Gap Minimization & Daily Contiguity Objective
         # ------------------------------------------------------------------
-        slot_weight = {
-            si: (len(slots) - idx) for idx, si in enumerate(slots)
-        }
-        obj_terms = [
+        # Define cell occupancy per division-day-slot
+        occ = {}
+        for div in self.all_divisions:
+            yr = self.year_of.get(div, "")
+            div_letter = div.split("-")[1] if "-" in div else div
+
+            for di in range(days_n):
+                day_name = self.days[di]
+                for si in slots:
+                    cell_key = (day_name, si, yr, div_letter)
+                    if cell_key in self.lab_cell_busy:
+                        # Constant 1 if lab is here
+                        bvar = model.new_bool_var(f"occ_lab_{div}_{di}_{si}")
+                        model.add(bvar == 1)
+                        occ[(div, di, si)] = bvar
+                    else:
+                        vars_here = [
+                            x[(div, subj, di, si)]
+                            for subj in self.div_subjects.get(div, [])
+                            if (div, subj, di, si) in x
+                        ]
+                        if vars_here:
+                            bvar = model.new_bool_var(f"occ_theory_{div}_{di}_{si}")
+                            model.add(sum(vars_here) == bvar)
+                            occ[(div, di, si)] = bvar
+                        else:
+                            bvar = model.new_bool_var(f"occ_empty_{div}_{di}_{si}")
+                            model.add(bvar == 0)
+                            occ[(div, di, si)] = bvar
+
+        # Gap variables per division-day-slot
+        all_gaps = []
+
+        for div in self.all_divisions:
+            for di in range(days_n):
+                for idx, si in enumerate(slots):
+                    before_vars = [occ[(div, di, k)] for k in slots if k < si]
+                    after_vars = [occ[(div, di, k)] for k in slots if k > si]
+
+                    if before_vars and after_vars:
+                        has_before = model.new_bool_var(f"hb_{div}_{di}_{si}")
+                        has_after = model.new_bool_var(f"ha_{div}_{di}_{si}")
+
+                        model.add(sum(before_vars) >= 1).only_enforce_if(has_before)
+                        model.add(sum(before_vars) == 0).only_enforce_if(has_before.Not())
+
+                        model.add(sum(after_vars) >= 1).only_enforce_if(has_after)
+                        model.add(sum(after_vars) == 0).only_enforce_if(has_after.Not())
+
+                        is_gap = model.new_bool_var(f"gap_{div}_{di}_{si}")
+                        occ_var = occ[(div, di, si)]
+                        
+                        model.add_bool_and([has_before, has_after, occ_var.Not()]).only_enforce_if(is_gap)
+                        model.add_bool_or([has_before.Not(), has_after.Not(), occ_var]).only_enforce_if(is_gap.Not())
+                        all_gaps.append(is_gap)
+
+        # Early slot weight
+        slot_weight = {si: (len(slots) - idx) for idx, si in enumerate(slots)}
+        early_terms = [
             x[(div, subj, di, si)] * slot_weight.get(si, 1)
             for div in self.all_divisions
             for subj in self.div_subjects.get(div, [])
@@ -415,8 +470,10 @@ class TheoryScheduler:
             for si in slots
             if (div, subj, di, si) in x
         ]
-        if obj_terms:
-            model.maximize(sum(obj_terms))
+
+        # Objective: Heavy Penalty for Gaps (-1000 per gap slot), Reward Early Slots
+        obj_expr = sum(early_terms) - 1000 * sum(all_gaps)
+        model.maximize(obj_expr)
 
         # ------------------------------------------------------------------
         # Solver parameters
