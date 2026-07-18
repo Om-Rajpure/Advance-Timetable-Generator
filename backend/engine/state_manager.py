@@ -49,10 +49,21 @@ class TimetableState:
         self.locked_slots = set()
         
         # Track assignments
-        self.teacher_assignments = {}  # (teacher, day, slot) -> assignment
-        self.room_assignments = {}  # (room, day, slot) -> assignment
+        self.teacher_assignments = {}  # (teacher, day, slot) -> [assignment]
+        self.room_assignments = {}  # (room, day, slot) -> [assignment]
         self.subject_counts = {}  # (subject, year, division) -> count
-        
+
+        # --- GLOBAL LAB OCCUPANCY ---
+        # Dedicated tracker for physical laboratory rooms, completely separate from
+        # the general room_assignments dict (which mixes classrooms and labs).
+        #
+        # Key   : (lab_name, day, slot_index)   — all normalised to str/int
+        # Value : list of assignment dicts occupying that lab at that time
+        #
+        # Invariant: len(lab_occupancy[key]) <= 1  at all times.
+        # Enforced by is_lab_globally_available() + occupy_lab_globally().
+        self.lab_occupancy = {}  # (lab_name, day, slot) -> [assignment, ...]
+
         # Room Balancing State (Global)
         from collections import Counter
         self.room_usage_counts = Counter() # Map room_name -> usage_count
@@ -293,7 +304,13 @@ class TimetableState:
                 self.room_assignments[room_key].remove(assignment)
             if not self.room_assignments[room_key]:
                 del self.room_assignments[room_key]
-        
+
+        # Release from global lab_occupancy tracker (LAB assignments only)
+        if assignment.get('type') == 'LAB':
+            room = assignment.get('room')
+            if room:
+                self.release_lab_globally(room, assignment['day'], assignment['slot'], assignment)
+
         # Decrement subject count
         subject_key = (
             assignment.get('subject'),
@@ -452,6 +469,64 @@ class TimetableState:
         """Check if room is available at given time"""
         room_key = (room, day, slot_index)
         return room_key not in self.room_assignments
+
+    # ------------------------------------------------------------------
+    # GLOBAL LAB ROOM CONSTRAINT helpers
+    # ------------------------------------------------------------------
+
+    def is_lab_globally_available(self, lab_name, day, slot_index):
+        """
+        Return True if the physical laboratory *lab_name* is free at
+        (day, slot_index) across ALL years, ALL divisions, ALL batches.
+
+        Uses the dedicated lab_occupancy dict — never the general
+        room_assignments dict — so theory-classroom names can never
+        accidentally shadow a lab name or vice-versa.
+
+        Args:
+            lab_name  : str  e.g. "Lab 1"
+            day       : str  e.g. "Monday"
+            slot_index: int  0-based internal slot index
+        """
+        key = (str(lab_name), str(day), int(slot_index))
+        return key not in self.lab_occupancy
+
+    def occupy_lab_globally(self, lab_name, day, slot_index, assignment):
+        """
+        Mark the physical laboratory *lab_name* as occupied at
+        (day, slot_index) by *assignment* in the dedicated global tracker.
+
+        NOTE: This method writes ONLY to lab_occupancy.
+        The caller (_commit_assignment) must call assign_slot() immediately
+        after, which populates room_assignments and slot_grid as usual.
+        Keeping the two writes separate prevents duplicate entries.
+
+        Args:
+            lab_name  : str   e.g. "Lab 1"
+            day       : str   e.g. "Monday"
+            slot_index: int   0-based internal slot index
+            assignment: dict  the full assignment record
+        """
+        lab_key = (str(lab_name), str(day), int(slot_index))
+        if lab_key not in self.lab_occupancy:
+            self.lab_occupancy[lab_key] = []
+        self.lab_occupancy[lab_key].append(assignment)
+
+    def release_lab_globally(self, lab_name, day, slot_index, assignment):
+        """
+        Release a previously occupied lab slot (used by rollback_slot).
+        Removes the assignment from lab_occupancy only — room_assignments
+        is handled by the existing rollback_slot() logic.
+        """
+        lab_key = (str(lab_name), str(day), int(slot_index))
+        if lab_key in self.lab_occupancy:
+            try:
+                self.lab_occupancy[lab_key].remove(assignment)
+            except ValueError:
+                pass
+            if not self.lab_occupancy[lab_key]:
+                del self.lab_occupancy[lab_key]
+
     
     def get_subject_count(self, subject, year, division):
         """Get current count of lectures for a subject"""

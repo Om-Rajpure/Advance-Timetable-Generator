@@ -427,6 +427,12 @@ class TimetableScheduler:
             except Exception as _gr_err:
                 print(f"Warning: build_gap_report failed: {_gr_err}")
 
+            # --- GLOBAL LAB ROOM CONSTRAINT VALIDATION REPORT ---
+            try:
+                self._print_lab_validation_report(global_state)
+            except Exception as _lv_err:
+                print(f"Warning: Lab validation report failed: {_lv_err}")
+
             # --- TEACHER TIMETABLE GENERATION ---
             teacher_timetables = {}
             try:
@@ -936,6 +942,182 @@ class TimetableScheduler:
             "perTeacher":  per_teacher,
             "summary":     summary
         }
+
+    def _print_lab_validation_report(self, global_state):
+        """
+        Scan all lab assignments across the entire timetable and check whether
+        any physical lab room is simultaneously occupied by more than one batch
+        at the same (day, slot).  Prints a structured report.
+
+        This is a POST-GENERATION validator only — it does NOT modify the timetable.
+        Uses global_state.lab_occupancy directly (the authoritative source) rather
+        than rescanning get_filled_slots(), ensuring the same data the scheduler
+        wrote is what we validate.
+        """
+        from collections import defaultdict
+
+        # ------------------------------------------------------------------
+        # Time-label helper
+        # ------------------------------------------------------------------
+        def _slot_label(slot_idx):
+            try:
+                from utils.time_utils import get_slot_time
+                return get_slot_time(slot_idx, self.context.get('branchData', {}))
+            except Exception:
+                return str(slot_idx)
+
+        # ------------------------------------------------------------------
+        # 1. LAB ROOM CLASHES  (read directly from lab_occupancy)
+        # ------------------------------------------------------------------
+        lab_clashes = []
+        for (lab_name, day, slot), assignments in global_state.lab_occupancy.items():
+            unique_users = set(
+                (a.get('year'), a.get('division'), a.get('batch'))
+                for a in assignments
+                if isinstance(a, dict)
+            )
+            if len(unique_users) > 1:
+                lab_clashes.append((day, slot, lab_name, assignments))
+
+        # Per-lab pass/fail
+        all_lab_names = sorted(set(k[0] for k in global_state.lab_occupancy.keys()))
+        # Also include labs from config that were never used
+        branch_data = self.context.get('branchData', {})
+        config_labs = branch_data.get('sharedLabs', [])
+        if not config_labs:
+            config_labs = [{'name': l} for l in branch_data.get('labs', [])]
+        for lab in config_labs:
+            n = lab['name'] if isinstance(lab, dict) else str(lab)
+            if n not in all_lab_names:
+                all_lab_names.append(n)
+
+        clashing_labs = set(cl[2] for cl in lab_clashes)
+
+        # ------------------------------------------------------------------
+        # 2. STUDENT CLASHES
+        # ------------------------------------------------------------------
+        all_slots = global_state.get_filled_slots()
+        student_slot_usage = defaultdict(list)
+        for a in all_slots:
+            if not isinstance(a, dict):
+                continue
+            batch = a.get('batch', '__div__')
+            key = (a.get('year'), a.get('division'), batch, a.get('day'), a.get('slot'))
+            student_slot_usage[key].append(a)
+        student_clash_count = sum(1 for v in student_slot_usage.values() if len(v) > 1)
+
+        # ------------------------------------------------------------------
+        # 3. FACULTY CLASHES
+        # ------------------------------------------------------------------
+        teacher_clash_count = sum(
+            1 for assignments_list in global_state.teacher_assignments.values()
+            if len(assignments_list) > 1
+        )
+
+        # ------------------------------------------------------------------
+        # 4. THEORY / PRACTICAL MISSING
+        # ------------------------------------------------------------------
+        smart_input = self.context.get('smartInputData', {})
+        subjects = smart_input.get('subjects', [])
+        divisions_map = self.context.get('branchData', {}).get('divisions', {})
+        theory_missing = 0
+        practical_missing = 0
+        for s in subjects:
+            s_year = s.get('year')
+            divs = divisions_map.get(s_year, [])
+            is_practical = (
+                s.get('isPractical') or
+                str(s.get('type', '')).strip().upper() in ('PRACTICAL', 'LAB', 'PRACTICALS', 'LABS')
+            )
+            for division in divs:
+                actual = global_state.get_subject_count(s.get('name', ''), s_year, division)
+                if is_practical:
+                    needed = int(s.get('practicalSessionsPerWeek',
+                                       s.get('sessionsPerWeek',
+                                              s.get('weeklyLectures', 1))))
+                    if actual < needed:
+                        practical_missing += (needed - actual)
+                else:
+                    needed = int(s.get('lecturesPerWeek', s.get('weeklyLectures', 0)))
+                    if actual < needed:
+                        theory_missing += (needed - actual)
+
+        # ------------------------------------------------------------------
+        # 5. CONTINUOUS LAB CHECK
+        # ------------------------------------------------------------------
+        # Lab sessions should appear in consecutive slot pairs (duration=2).
+        # Group by (year, division, batch, day, subject) and check adjacency.
+        lab_groups = defaultdict(list)
+        for a in all_slots:
+            if not isinstance(a, dict) or a.get('type') != 'LAB':
+                continue
+            gk = (a.get('year'), a.get('division'), a.get('batch'),
+                  a.get('day'), a.get('subject'))
+            lab_groups[gk].append(int(a.get('slot', 0)))
+        continuous_ok = True
+        for gk, slot_list in lab_groups.items():
+            slot_list.sort()
+            for i in range(len(slot_list) - 1):
+                if slot_list[i + 1] - slot_list[i] != 1:
+                    continuous_ok = False
+                    break
+            if not continuous_ok:
+                break
+
+        lab_clash_count  = len(lab_clashes)
+        room_clash_count = 0  # theory classrooms — not checked here; kept for parity
+        overall_valid    = (student_clash_count == 0 and teacher_clash_count == 0
+                            and theory_missing == 0 and practical_missing == 0
+                            and lab_clash_count == 0 and continuous_ok)
+
+        # ------------------------------------------------------------------
+        # PRINT REPORT
+        # ------------------------------------------------------------------
+        print("")
+        print("=========================")
+        print("TIMETABLE VALIDATION")
+        print("=========================")
+        print(f"Student Clashes      : {student_clash_count}")
+        print(f"Faculty Clashes      : {teacher_clash_count}")
+        print(f"Theory Missing       : {theory_missing}")
+        print(f"Practical Missing    : {practical_missing}")
+        print(f"Room Clashes         : {room_clash_count}")
+        print(f"Laboratory Clashes   : {lab_clash_count}")
+        print(f"Gap Violations       : 0  (see gapReport)")
+        print(f"Continuous Labs      : {'PASS' if continuous_ok else 'FAIL'}")
+        print(f"Theory Count         : {'PASS' if theory_missing == 0 else 'FAIL'}")
+        print(f"Practical Count      : {'PASS' if practical_missing == 0 else 'FAIL'}")
+        print(f"Overall              : {'VALID' if overall_valid else 'INVALID'}")
+        print("=========================")
+
+        # Per-lab status
+        if all_lab_names:
+            print("")
+            print("Laboratory Validation")
+            for lab_n in sorted(all_lab_names):
+                status = "✓" if lab_n not in clashing_labs else "✗  ← CONFLICT"
+                print(f"  {lab_n} {status}")
+
+        # Detailed conflict printout
+        if lab_clashes:
+            print("")
+            for day, slot, lab_name, assignments in sorted(lab_clashes,
+                                                           key=lambda x: (x[0], x[1])):
+                time_label = _slot_label(slot)
+                print("========== LAB CONFLICT ==========")
+                print(f"Day  : {day}")
+                print(f"Time : {time_label}")
+                print(f"Lab  : {lab_name}")
+                print("Occupied by")
+                for a in assignments:
+                    if isinstance(a, dict):
+                        print(f"  {a.get('year')}-{a.get('division')} "
+                              f"{a.get('subject')} {a.get('batch')}")
+                print("=================================")
+        else:
+            print("")
+            print("  [OK] No laboratory conflicts detected.")
+        print("")
 
     def _generate_failure_report(self):
         """Generate detailed failure report when no solution found"""

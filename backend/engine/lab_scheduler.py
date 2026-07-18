@@ -165,9 +165,12 @@ class LabScheduler:
             
             if not self._is_batch_free(day, start_slot, duration, year, division, batch):
                 continue
+            # GLOBAL LAB ROOM CONSTRAINT: Never fall back to a hardcoded room.
+            # Only assign if a truly free physical lab exists.
             lab_room = self._find_lab_room(subject, day, start_slot, duration)
             if not lab_room:
-                lab_room = "Lab-1"
+                failure_reasons.add("No Lab Room (Pass 2)")
+                continue
             teacher = None
             if hasattr(self.state, 'load_manager') and self.state.load_manager:
                 teacher = self.state.load_manager.get_best_teacher_for_lab(
@@ -222,26 +225,49 @@ class LabScheduler:
         return False
 
     def _find_lab_room(self, subject, day, start_slot, duration):
-        """Find a lab room available for the entire duration."""
+        """
+        Find a physical laboratory room that is free for the entire duration.
+
+        GLOBAL LAB ROOM CONSTRAINT
+        --------------------------
+        Uses state.is_lab_globally_available() which checks the dedicated
+        lab_occupancy dict — never the general room_assignments dict.
+        This prevents name-format mismatches (e.g. "Lab-1" vs "Lab 1")
+        from silently bypassing the constraint.
+
+        Returns the lab name string if a free lab exists, or None if every
+        physical lab is already occupied during this window.  Callers MUST
+        handle None by skipping to the next time window.
+        """
         for lab in self.labs:
             name = lab['name'] if isinstance(lab, dict) else str(lab)
             available = True
             for offset in range(duration):
-                if not self.state.is_room_available(name, day, start_slot + offset):
+                # Primary check: dedicated global lab occupancy tracker
+                if not self.state.is_lab_globally_available(name, day, start_slot + offset):
                     available = False
                     break
             if available:
                 return name
-        if self.labs:
-            first = self.labs[0]
-            return first['name'] if isinstance(first, dict) else str(first)
-        return "Lab-1"
+        # No free lab found — return None so callers try a different time window.
+        # DO NOT fall back to a hardcoded lab name; that would cause clashes.
+        return None
 
     def _commit_assignment(self, year, division, batch, subject, teacher, room, day, start, duration):
+        """
+        Commit a lab assignment to the timetable state for every slot in the block.
+
+        Calls occupy_lab_globally() so the physical lab room is reserved in the
+        dedicated global tracker BEFORE any subsequent scheduling attempt can see
+        it as free.  This is the point where the global lab room constraint is
+        enforced — once occupied here, _find_lab_room() will skip this lab for
+        any other batch trying the same (day, slot).
+        """
         for offset in range(duration):
+            slot_idx = start + offset
             assignment = {
                 "day": day,
-                "slot": start + offset,
+                "slot": slot_idx,
                 "year": year,
                 "division": division,
                 "batch": batch,
@@ -253,6 +279,11 @@ class LabScheduler:
                 "sessionLength": duration,
                 "id": f"LAB_{year}_{division}_{day}_{start}_{batch}_{offset}"
             }
+            # Register in the global lab occupancy tracker FIRST so subsequent
+            # calls to _find_lab_room() for other batches/divisions see this slot
+            # as taken.  assign_slot() additionally tracks it in room_assignments
+            # and slot_grid for the rest of the scheduler.
+            self.state.occupy_lab_globally(room, day, slot_idx, assignment)
             self.state.assign_slot(assignment, lock=True)
 
     def _get_consecutive_windows(self, day, duration, total_slots, recess_slot):
