@@ -18,7 +18,9 @@ from .soft_constraints import (
     SubjectRepetitionConstraint,
     PreferenceConstraint,
     ConsecutiveLectureConstraint,
-    StudentConsecutiveConstraint
+    StudentConsecutiveConstraint,
+    StudentGapConstraint,   # FIX 2D
+    TeacherGapConstraint    # FIX 2D
 )
 
 
@@ -47,7 +49,9 @@ class ConstraintEngine:
             SubjectRepetitionConstraint(),
             PreferenceConstraint(),
             ConsecutiveLectureConstraint(),
-            StudentConsecutiveConstraint()
+            StudentConsecutiveConstraint(),
+            StudentGapConstraint(),   # FIX 2D
+            TeacherGapConstraint()    # FIX 2D
         ]
     
     def validate_timetable(self, timetable, context):

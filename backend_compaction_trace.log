@@ -1,1 +1,67 @@
 COMPACTION PHASE STARTED
+COMPACTION: SE-A | Block DL Lab | Size: 2 | OrigSlot: 0
+COMPACTION: SE-A | Block COA | Size: 1 | OrigSlot: 3
+COMPACTION: SE-A | Block BT Lab | Size: 2 | OrigSlot: 0
+COMPACTION: SE-A | Block ESE | Size: 1 | OrigSlot: 3
+COMPACTION: SE-A | Block ED | Size: 1 | OrigSlot: 6
+COMPACTION: SE-A | Block BT Lab | Size: 2 | OrigSlot: 0
+COMPACTION: SE-A | Block COA | Size: 2 | OrigSlot: 2
+COMPACTION: SE-A | Block ESE | Size: 1 | OrigSlot: 7
+COMPACTION: SE-A | Block DL Lab | Size: 2 | OrigSlot: 0
+COMPACTION: SE-A | Block FSJP | Size: 1 | OrigSlot: 2
+COMPACTION: SE-A | Block DL Lab | Size: 2 | OrigSlot: 0
+COMPACTION: SE-A | Block ESE | Size: 1 | OrigSlot: 2
+COMPACTION: SE-A | Block ED | Size: 1 | OrigSlot: 6
+COMPACTION: SE-B | Block DL Lab | Size: 2 | OrigSlot: 0
+COMPACTION: SE-B | Block ESE | Size: 1 | OrigSlot: 2
+COMPACTION: SE-B | Block ED | Size: 1 | OrigSlot: 3
+COMPACTION: SE-B | Block BT Lab | Size: 2 | OrigSlot: 0
+COMPACTION: SE-B | Block ESE | Size: 1 | OrigSlot: 2
+COMPACTION: SE-B | Block ESE | Size: 1 | OrigSlot: 5
+COMPACTION: SE-B | Block BT Lab | Size: 2 | OrigSlot: 0
+COMPACTION: SE-B | Block FSJP | Size: 1 | OrigSlot: 2
+COMPACTION: SE-B | Block ED | Size: 1 | OrigSlot: 6
+COMPACTION: SE-B | Block DL Lab | Size: 2 | OrigSlot: 0
+COMPACTION: SE-B | Block COA | Size: 1 | OrigSlot: 2
+COMPACTION: SE-B | Block FSJP | Size: 1 | OrigSlot: 3
+COMPACTION: SE-B | Block ED | Size: 1 | OrigSlot: 6
+COMPACTION: SE-B | Block DL Lab | Size: 2 | OrigSlot: 0
+COMPACTION: SE-B | Block COA | Size: 1 | OrigSlot: 3
+COMPACTION: TE-A | Block WCN Lab | Size: 2 | OrigSlot: 0
+COMPACTION: TE-A | Block CN | Size: 1 | OrigSlot: 2
+COMPACTION: TE-A | Block AI | Size: 1 | OrigSlot: 3
+COMPACTION: TE-A | Block WCN Lab | Size: 2 | OrigSlot: 0
+COMPACTION: TE-A | Block AI | Size: 1 | OrigSlot: 3
+COMPACTION: TE-A | Block WCN Lab | Size: 2 | OrigSlot: 0
+COMPACTION: TE-A | Block DWM | Size: 2 | OrigSlot: 2
+COMPACTION: TE-A | Block CN | Size: 1 | OrigSlot: 2
+COMPACTION: TE-A | Block AI | Size: 1 | OrigSlot: 3
+COMPACTION: TE-A | Block CN | Size: 1 | OrigSlot: 2
+COMPACTION: TE-A | Block DWM | Size: 1 | OrigSlot: 3
+COMPACTION: TE-B | Block WCN Lab | Size: 2 | OrigSlot: 0
+COMPACTION: TE-B | Block WCN Lab | Size: 2 | OrigSlot: 0
+COMPACTION: TE-B | Block AI | Size: 1 | OrigSlot: 2
+COMPACTION: TE-B | Block WCN Lab | Size: 2 | OrigSlot: 0
+COMPACTION: TE-B | Block CN | Size: 1 | OrigSlot: 2
+COMPACTION: TE-B | Block DWM | Size: 1 | OrigSlot: 0
+COMPACTION: TE-B | Block AI | Size: 2 | OrigSlot: 1
+COMPACTION: TE-B | Block CN | Size: 2 | OrigSlot: 0
+COMPACTION: TE-B | Block DWM | Size: 1 | OrigSlot: 2
+COMPACTION: BE-A | Block DL Lab | Size: 2 | OrigSlot: 0
+COMPACTION: BE-A | Block BT Lab | Size: 2 | OrigSlot: 0
+COMPACTION: BE-A | Block BDA Lab | Size: 2 | OrigSlot: 0
+COMPACTION: BE-A | Block BDA | Size: 1 | OrigSlot: 2
+COMPACTION: BE-A | Block BT Lab | Size: 2 | OrigSlot: 0
+COMPACTION: BE-A | Block BDA | Size: 1 | OrigSlot: 2
+COMPACTION: BE-A | Block BDA Lab | Size: 2 | OrigSlot: 0
+COMPACTION: BE-A | Block BT | Size: 1 | OrigSlot: 5
+COMPACTION: BE-B | Block DL Lab | Size: 2 | OrigSlot: 0
+COMPACTION: BE-B | Block BT Lab | Size: 2 | OrigSlot: 0
+COMPACTION: BE-B | Block BDA | Size: 2 | OrigSlot: 2
+COMPACTION: BE-B | Block BDA Lab | Size: 2 | OrigSlot: 0
+COMPACTION: BE-B | Block BT Lab | Size: 2 | OrigSlot: 0
+COMPACTION: BE-B | Block DL | Size: 1 | OrigSlot: 3
+COMPACTION: BE-B | Block DL | Size: 1 | OrigSlot: 5
+COMPACTION: BE-B | Block BDA Lab | Size: 2 | OrigSlot: 0
+COMPACTION: BE-B | Block BDA | Size: 1 | OrigSlot: 2
+COMPACTION: BE-B | Block BT | Size: 1 | OrigSlot: 3

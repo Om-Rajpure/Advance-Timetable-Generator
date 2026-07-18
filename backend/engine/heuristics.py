@@ -2,6 +2,14 @@
 Slot Selection and Candidate Ordering Heuristics
 
 Implements intelligent heuristics for CSP-based timetable generation.
+
+[FIX 7 / DEAD CODE NOTICE]
+SlotHeuristics is instantiated by TimetableScheduler.__init__ but none of
+its methods (order_slots, _calculate_slot_difficulty, select_next_slot) are
+invoked by the active scheduling pipeline (lab_scheduler + theory_scheduler).
+
+Kept to avoid ImportError from scheduler.py.  Do NOT add new call sites here
+until the pipeline is refactored to use a CSP backtracking loop.
 """
 
 

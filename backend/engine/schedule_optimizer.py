@@ -107,54 +107,38 @@ class ScheduleOptimizer:
         # 5. RE-INSERT WITH GRAVITY
         current_slot_ptr = 0
         total_slots = getattr(self.state, 'total_slots', 8)
-        
+
         # Track failures to re-insert
         failed_blocks = []
-        
+
         for block in blocks:
             duration = len(block)
             subj = block[0]['subject']
-            
-            with open('backend_compaction_trace.log', 'a') as f:
+
+            with open('backend_compaction_trace.log', 'a', encoding='utf-8') as f:
                  f.write(f"COMPACTION: {year}-{division} | Block {subj} | Size: {duration} | OrigSlot: {block[0]['original_slot']}\n")
-            
+
             placed = False
-            
-            # Search for FIRST valid slot starting from current_slot_ptr
-            # We want to stack them as close to 0 as possible.
-            # We reset search from 0? No, that might re-order time.
-            # We searching from 0 fills gaps ("Tetris").
-            # Searching from last_placed preserve order.
-            # Requirement: "Remove empty slots between start and end".
-            # This implies "Slide Left".
-            
-            # To preserve teacher sequences (e.g. Math at 10am shouldn't move to 9am if 9am was empty? 
-            # Actually, "Compaction" implies moving to 9am.)
-            
-            # Let's try finding the EARLIEST POSSIBLE slot for each block.
-            search_start = 0 
-            
-            # Use schedulable slots for candidate starts
-            # Note: We must check bounds (start + duration must be valid)
-            
+
+            # Search for FIRST valid slot starting from slot 0 (gravity / slide-left).
+            # FIX 3b: We must never slide a block INTO the recess slot.
+            # Build the candidate start list from schedulable_indices, skipping any
+            # start position whose window overlaps the recess slot.
+
             for start_s in schedulable_indices:
                 # Bounds check
-                if start_s + duration > total_slots: 
+                if start_s + duration > total_slots:
                     continue
-                    
-                # Recess skip check
-                # A block cannot span across recess ideally? Or can it?
-                # usually we don't want a lab split by recess.
-                # Assuming recess is a hard break.
-                hit_recess = False
+
+                # FIX 3b: Explicit recess-slot skip — reject ANY window whose
+                # range [start_s, start_s + duration) includes the recess slot.
                 if recess_slot is not None:
-                    # Check if any slot in range hits recess
-                    for i in range(duration):
-                        if (start_s + i) == recess_slot:
-                            hit_recess = True
-                            break
-                if hit_recess: continue
-                
+                    hit_recess = any(
+                        (start_s + i) == recess_slot for i in range(duration)
+                    )
+                    if hit_recess:
+                        continue
+
                 # Check Constraints
                 if self._can_place_block(block, day, start_s, duration):
                     self._place_block(block, day, start_s)

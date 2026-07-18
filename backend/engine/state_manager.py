@@ -3,6 +3,10 @@ Timetable State Manager
 
 Manages timetable state during generation, supports assign/rollback operations,
 and handles partial/uploaded timetables.
+
+FIX D: Added get_batches_for_division() to expose per-year batch names
+        to gap_utils, theory_scheduler, and optimizer.
+FIX D: Added get_total_slots() convenience accessor used by gap_utils.
 """
 
 import copy
@@ -307,7 +311,47 @@ class TimetableState:
             d = assignment.get('day')
             if t and d:
                 self.load_manager.rollback_load(t, d, duration=1)
-    
+
+    def remove_slot(self, year, division, day, slot_idx):
+        """
+        Convenience wrapper: look up the assignment at (year, division, day, slot_idx)
+        and call rollback_slot() on it.
+
+        This is the method previously called by _balance_theory_distribution() in
+        theory_scheduler.py.  TimetableState never had it; this fixes the AttributeError:
+            'TimetableState' object has no attribute 'remove_slot'
+
+        Args:
+            year:      e.g. "SE"
+            division:  e.g. "A"
+            day:       e.g. "Monday"
+            slot_idx:  int slot index
+
+        Returns:
+            True  if an assignment was found and removed
+            False if the slot was already empty (safe no-op)
+        """
+        slot_key = (day, slot_idx, year, division)
+        existing = self.slot_grid.get(slot_key)
+
+        if existing is None:
+            return False   # nothing to remove — safe no-op
+
+        if isinstance(existing, list):
+            # Multi-batch slot: remove all assignments in the list
+            for assignment in list(existing):
+                self.rollback_slot(assignment)
+        else:
+            # Single assignment dict
+            self.rollback_slot(existing)
+
+        return True
+
+    # Alias used in some older code paths
+    def remove_assignment(self, year, division, day, slot_idx):
+        """Alias for remove_slot() for backward compatibility."""
+        return self.remove_slot(year, division, day, slot_idx)
+
     def is_slot_locked(self, slot_key):
         """Check if a slot is locked"""
         slot_id = f"{slot_key[0]}_{slot_key[1]}_{slot_key[2]}_{slot_key[3]}"
@@ -467,3 +511,34 @@ class TimetableState:
                 load += 1
         
         return load
+
+    # ------------------------------------------------------------------
+    # FIX D: Batch / slot-count accessors
+    # ------------------------------------------------------------------
+
+    def get_total_slots(self):
+        """
+        Return the total number of slots per day (including the recess slot).
+        Used by gap_utils.build_batch_daily_schedule() to size the schedule list.
+        """
+        return getattr(self, 'total_slots', 8)
+
+    def get_batches_for_division(self, year, division):
+        """
+        FIX D: Returns the list of batch names for a given year/division.
+
+        e.g. ["B1", "B2", "B3"] for a division with 3 batches.
+
+        Derives this from branchData.labBatchesPerYear stored at init:
+            n = branchData['labBatchesPerYear'].get(year, 0)
+            return [f"B{i+1}" for i in range(n)]
+
+        If not defined, returns [] (no batches — treat as division-level only).
+
+        Args:
+            year:     e.g. "BE"
+            division: e.g. "A"  (unused currently — all divisions share the
+                                  same batch count per year; kept for API stability)
+        """
+        n = self.branch_data.get('labBatchesPerYear', {}).get(year, 0)
+        return [f'B{i+1}' for i in range(n)]

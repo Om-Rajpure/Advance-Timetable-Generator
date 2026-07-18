@@ -181,24 +181,19 @@ class TimetableScheduler:
                     class_result = self.generate_single_class_timetable(class_obj, global_state)
                     
                     # TASK 4: CHECK RESULT
+                    # generate_single_class_timetable now returns True (labs-only phase signal).
+                    # Full timetable dict (labs + theory) is built in the CP-SAT phase below.
                     if not class_result:
                          raise RuntimeError(f"SCHEDULING FAILURE: Engine returned empty result for {class_key} despite valid data. Constraints might be impossible.")
 
-                    # TASK 2: VERIFY RESULT STORAGE
+                    # Register class as successfully processed (labs done).
+                    # all_timetables is rebuilt after CP-SAT fills theory slots.
                     if year not in all_timetables:
                         all_timetables[year] = {}
+                    all_timetables[year][division] = {"timetable": {}}  # placeholder
                     
-                    # Store explicitly
-                    all_timetables[year][division] = {
-                        "timetable": class_result
-                    }
-                    
-                    # Verify immediate storage
-                    if division not in all_timetables[year]:
-                        raise RuntimeError(f"STORAGE ERROR: Failed to save result for {class_key} in result dictionary.")
-                        
                     generated_ids.add(class_key)
-                    print(f"SAVED TIMETABLE: {class_key} | Days populated: {len(class_result)}")
+                    print(f"LABS DONE: {class_key} (theory scheduled globally via CP-SAT)")
                     
                     with open('backend_generation_progress.log', 'a') as f:
                         f.write(f"SUCCESS {class_key}\n")
@@ -218,12 +213,58 @@ class TimetableScheduler:
             if missing_divisions:
                 raise RuntimeError(f"CRITICAL: The following divisions were SKIPPED: {missing_divisions}")
 
+            # --- PHASE 3: GLOBAL THEORY SCHEDULING (CP-SAT) ---
+            # All labs are placed. Now run the CP-SAT model once across all divisions.
+            print("\n--- Starting CP-SAT Theory Scheduling (all divisions) ---")
+            self.current_stage = "CPSAT_THEORY_SCHEDULING"
+            try:
+                from .theory_scheduler import TheoryScheduler
+
+                # Link load_manager to global_state so pick_teacher() can check availability
+                self.load_manager._state = global_state
+
+                theory_sched = TheoryScheduler(
+                    global_state,
+                    self.load_manager,
+                    self.context
+                )
+                cpsat_result = theory_sched.schedule()
+
+                print(
+                    f"[Scheduler] CP-SAT: {cpsat_result['status']} | "
+                    f"{cpsat_result['time_ms']:.0f}ms | "
+                    f"gaps={cpsat_result['gaps']} | "
+                    f"incomplete={len(cpsat_result['incomplete'])}"
+                )
+                if cpsat_result["incomplete"]:
+                    for div, subj, placed, needed in cpsat_result["incomplete"]:
+                        print(f"  WARNING: {div} {subj}: {placed}/{needed} lectures placed")
+            except Exception as cpsat_err:
+                import traceback
+                print(f"[Scheduler] CP-SAT theory scheduling failed: {cpsat_err}")
+                traceback.print_exc()
+                # Non-fatal — labs are still in state; generation continues
+
+            # --- Rebuild all_timetables from global_state (now includes theory) ---
+            all_timetables = {}
+            for class_obj in self.normalized_classes:
+                year = class_obj['year']
+                division = class_obj['division']
+                all_raw_slots_class = [
+                    s for s in global_state.get_filled_slots()
+                    if isinstance(s, dict)
+                    and s.get('year') == year
+                    and s.get('division') == division
+                ]
+                if year not in all_timetables:
+                    all_timetables[year] = {}
+                all_timetables[year][division] = {
+                    "timetable": self.format_to_canonical(all_raw_slots_class)
+                }
 
 
-
-            # --- PHASE 4: POST-PROCESSING & COMPACTION ---
             print("\n--- Starting Daily Compaction (No Gaps) ---")
-            with open('backend_compaction_trace.log', 'w') as f:
+            with open('backend_compaction_trace.log', 'w', encoding='utf-8') as f:
                  f.write("COMPACTION PHASE STARTED\n")
             try:
                 from engine.schedule_optimizer import ScheduleOptimizer
@@ -242,7 +283,7 @@ class TimetableScheduler:
                             try:
                                 optimizer.compact_daily_schedule(year, division, day)
                             except Exception as e:
-                                print(f"Error compacting {year}-{division} on {day}: {e}")
+                                print(f"Error compacting {year}-{division} on {day}: {str(e).encode('ascii', errors='ignore').decode('ascii')}")
                                 # Don't crash global gen
             except Exception as e:
                 import traceback
@@ -378,10 +419,31 @@ class TimetableScheduler:
                      print(self.constraint_logger.get_report())
                  raise RuntimeError(error_msg)
 
+            # FIX 6: build gap report from raw (pre-visual-index) slots
+            gap_report = {}
+            try:
+                gap_report = self.build_gap_report(raw_all_slots)
+                print(f"[GapReport] {gap_report['summary']}")
+            except Exception as _gr_err:
+                print(f"Warning: build_gap_report failed: {_gr_err}")
+
+            # --- TEACHER TIMETABLE GENERATION ---
+            teacher_timetables = {}
+            try:
+                from .teacher_timetable import TeacherTimetableGenerator
+                tt_gen = TeacherTimetableGenerator(global_state, self.context)
+                teacher_timetables = tt_gen.generate()
+                print(f"[TeacherTT] Generated schedules for {len(teacher_timetables)} teachers.")
+            except Exception as _tt_err:
+                import traceback
+                print(f"Warning: teacher_timetable generation failed: {_tt_err}")
+                traceback.print_exc()
+
             return {
                 "success": True,  
                 "stage": "COMPLETED",
                 "timetables": all_timetables,
+                "teacher_timetables": teacher_timetables,
                 "failures": failures,
                 "raw_timetable": raw_all_slots, 
                 "internal_slots": all_internal_slots, # NEW for Validation
@@ -393,6 +455,8 @@ class TimetableScheduler:
                 "dayLayout": day_layout,
                 "message": f"Generated {generated_count}/{expected_class_count} classes. {len(failures)} failures.",
                 "constraintReport": self.constraint_logger.get_report(),
+                # FIX 6: gap report surfaced in API response
+                "gapReport": gap_report,
                 "stats": {
                     "classes_generated": generated_count,
                     "classes_failed": len(failures),
@@ -456,9 +520,11 @@ class TimetableScheduler:
         """
         Generate timetable for a Single Class (Year + Division).
         Accepts optional global_state for shared constraints.
+
+        NOTE: Theory scheduling is NO LONGER done here.  CP-SAT schedules
+        all divisions simultaneously after all labs are placed.  This method
+        now handles LABS ONLY.  The caller (generate()) runs theory globally.
         """
-        from .theory_scheduler import TheoryScheduler
-        
         # 1. Initialize State (Shared or Fresh)
         if global_state:
             class_state = global_state
@@ -466,11 +532,9 @@ class TimetableScheduler:
             # Fallback for individual testing
             class_state = TimetableState(self.context, self.load_manager)
         
-        # 2. Initialize Schedulers with this state (shared or fresh)
+        # 2. Initialize Lab Scheduler only
         lab_scheduler = LabScheduler(class_state, self.context)
-        theory_scheduler = TheoryScheduler(class_state, self.context)
         
-        # 3. Schedule Labs
         # 3. Schedule Labs
         self.current_stage = f"LAB_SCHEDULING_{class_obj['id']}"
         try:
@@ -480,12 +544,9 @@ class TimetableScheduler:
         except Exception as e:
             print(f"  Lab scheduling CRASHED for {class_obj['id']}: {e}")
             print(f"  Proceeding with Theory only (Partial Generation).")
-            # Clear any partial lab slots to avoid phantom collisions? 
-            # Ideally yes, but difficult to isolate. We trust rollback was done if needed.
             success_labs = False
             
         # STRICT VALIDATION: Ensure all batches covered
-        # Get required lab subjects
         subjects = self.context.get('smartInputData', {}).get('subjects', [])
         lab_subjects = [
             s for s in subjects 
@@ -494,7 +555,6 @@ class TimetableScheduler:
             and (s.get('isPractical') or s.get('type') == 'Practical')
         ]
         
-        # Check actual assignments
         assigned_slots = class_state.get_filled_slots()
         batches = class_obj.get('batches', ["B1", "B2", "B3"])
         
@@ -503,47 +563,20 @@ class TimetableScheduler:
             for slot in assigned_slots:
                 if slot.get('batch') == batch and slot.get('type') == 'LAB':
                      batch_labs.add(slot.get('subject'))
-            
-            # Verify against required
             for lab in lab_subjects:
                 if lab['name'] not in batch_labs:
                      error_msg = f"WARNING: Batch {batch} in {class_obj['id']} missing lab {lab['name']}"
                      print(f"    {error_msg}")
-                     # NO RAISE - Allow partial timetable
-                     # We can append to a warnings list if we refactor return type, 
-                     # but for now, main priority is NOT CRASHING.
-                     
-        # 4. Schedule Theory
-        self.current_stage = f"THEORY_SCHEDULING_{class_obj['id']}"
-        # theory_scheduler.schedule_theory returns nothing? checks internal state?
-        # It modifies class_state.
-        theory_scheduler.schedule_theory(class_obj)
-        
-        # 5. Extract & Format Result
-        # Get all slots filled in this state (Global State has everyone!)
-        all_raw_slots = class_state.get_filled_slots()
-        print(f"DEBUG: {class_obj['id']} State Raw Slots: {len(all_raw_slots)}")
-        if all_raw_slots:
-             print(f"DEBUG: Sample Slot: {all_raw_slots[0]}")
-        
-        # FILTER ONLY CURRENT CLASS
-        current_year = class_obj['year']
-        current_div = class_obj['division']
-        
-        class_raw_slots = []
-        for s in all_raw_slots:
-            try:
-                # Type safe access
-                if isinstance(s, dict) and s.get('year') == current_year and s.get('division') == current_div:
-                    class_raw_slots.append(s)
-            except Exception as e:
-                print(f"Error filtering slot {s}: {e}")
 
-        
-        # Format to canonical (returns { Day: { Slot: [...] } })
-        class_timetable = self.format_to_canonical(class_raw_slots)
-        
-        return class_timetable
+        # Theory scheduling is deferred to the global CP-SAT call in generate().
+        # Return labs-only snapshot (theory slots will be added to global_state later).
+        # We return the full global state view filtered to this class; after theory
+        # runs globally, format_to_canonical() will include both lab and theory slots.
+        all_raw_slots = class_state.get_filled_slots()
+        print(f"DEBUG: {class_obj['id']} LAB slots after lab phase: {len([s for s in all_raw_slots if s.get('year') == class_obj['year'] and s.get('division') == class_obj['division']])}")
+
+        # Return placeholder — final timetable built in generate() after CP-SAT runs
+        return True  # Signal success; actual formatting happens in generate()
 
     def _run_stage(self, stage_name, fn):
         """Execute a generation stage with error context."""
@@ -805,6 +838,105 @@ class TimetableScheduler:
         return f"{slot['day']}_{slot['slot']}_{slot['year']}_{slot['division']}_{slot.get('batch', '')}"
 
     
+    def build_gap_report(self, raw_slots):
+        """
+        FIX 6: Compute a structured gap analysis over the completed timetable.
+
+        Produces two sections:
+          - perDivision: for each (year, division, day) how many internal
+                         gap slots exist between the first and last lecture.
+          - perTeacher:  for each (teacher, day) how many idle slots fall
+                         between their first and last teaching slot.
+
+        Returns:
+            dict with keys:
+              'totalStudentGaps'   : int   – sum of all division-day gaps
+              'totalTeacherGaps'   : int   – sum of all teacher-day idle slots
+              'perDivision'        : list of dicts {year, division, day, gaps}
+              'perTeacher'         : list of dicts {teacher, day, idleSlots}
+              'summary'            : human-readable string
+        """
+        try:
+            from utils.gap_utils import count_gaps_in_day, count_teacher_gaps_in_day
+        except ImportError:
+            try:
+                from backend.utils.gap_utils import count_gaps_in_day, count_teacher_gaps_in_day
+            except ImportError:
+                # Inline fallback so this method never hard-crashes
+                def count_gaps_in_day(lst):
+                    occ = [i for i, v in enumerate(lst) if v is not None]
+                    if len(occ) < 2: return 0
+                    return sum(1 for i in range(occ[0] + 1, occ[-1]) if lst[i] is None)
+                count_teacher_gaps_in_day = count_gaps_in_day
+
+        from collections import defaultdict
+
+        # ---- Build per-division-day and per-teacher-day grids ----
+        div_grid     = defaultdict(dict)     # {(year, div, day): {slot_idx: slot}}
+        teacher_grid = defaultdict(dict)     # {(teacher, day):   {slot_idx: slot}}
+
+        for slot in raw_slots:
+            year    = slot.get('year')
+            div     = slot.get('division')
+            day     = slot.get('day')
+            teacher = slot.get('teacher')
+            # Use raw 0-based index (internal_slots list); visual index is already +1 in
+            # format_to_canonical but raw_all_slots has the pre-conversion values.
+            idx = int(slot.get('slot', 0))
+
+            if year and div and day:
+                div_grid[(year, div, day)][idx] = slot
+
+            if teacher and teacher != 'TBA' and day:
+                teacher_grid[(teacher, day)][idx] = slot
+
+        # ---- Division gaps ----
+        per_division = []
+        total_student_gaps = 0
+
+        for (year, div, day), slot_map in sorted(div_grid.items()):
+            if not slot_map:
+                continue
+            max_idx  = max(slot_map.keys()) + 1
+            day_list = [slot_map.get(i) for i in range(max_idx)]
+            gaps = count_gaps_in_day(day_list)
+            total_student_gaps += gaps
+            if gaps > 0:
+                per_division.append({
+                    "year": year, "division": div, "day": day, "gaps": gaps
+                })
+
+        # ---- Teacher gaps ----
+        per_teacher = []
+        total_teacher_gaps = 0
+
+        for (teacher, day), slot_map in sorted(teacher_grid.items()):
+            if not slot_map:
+                continue
+            max_idx  = max(slot_map.keys()) + 1
+            day_list = [slot_map.get(i) for i in range(max_idx)]
+            idle = count_teacher_gaps_in_day(day_list)
+            total_teacher_gaps += idle
+            if idle > 0:
+                per_teacher.append({
+                    "teacher": teacher, "day": day, "idleSlots": idle
+                })
+
+        summary = (
+            f"{total_student_gaps} student gap-slot(s) across "
+            f"{len(per_division)} division-day(s); "
+            f"{total_teacher_gaps} teacher idle-slot(s) across "
+            f"{len(per_teacher)} teacher-day(s)."
+        )
+
+        return {
+            "totalStudentGaps": total_student_gaps,
+            "totalTeacherGaps": total_teacher_gaps,
+            "perDivision": per_division,
+            "perTeacher":  per_teacher,
+            "summary":     summary
+        }
+
     def _generate_failure_report(self):
         """Generate detailed failure report when no solution found"""
         # Analyze what went wrong

@@ -1,506 +1,713 @@
 """
-Theory Scheduler Component
+Theory Scheduler — CP-SAT Implementation
 
-Handles scheduling of theory lectures with load balancing and constraint checking.
+Replaces the previous greedy/heuristic theory scheduler with a Google OR-Tools
+CP-SAT model.
+
+INTEGRATION NOTES (from reading state_manager.py exactly):
+  * assign_slot(assignment_dict, lock=False) — takes a SINGLE dict, no keyword args.
+  * slot_grid[(day, slot, year, division)] may be a single dict OR a list of dicts
+    when parallel batches occupy the same slot.  is_slot_free() calls .get() on the
+    value — that crashes when the value is a list.  We guard against this in
+    _read_lab_busy_slots() and in the model-constraint builder.
+  * is_teacher_available(teacher, day, slot_index) — correct param order.
+  * is_room_available(room, day, slot_index)  — correct param order.
+  * teacher_assignments keys are (teacher, day, slot) tuples.
+  * room_assignments keys are (room, day, slot) tuples.
+
+All exceptions during extraction are RAISED, never swallowed.
 """
 
-from typing import List, Dict, Optional
-import random
+import logging
+import time
+import traceback
+from collections import defaultdict
 
 try:
-    import utils.time_utils as time_utils
+    from ortools.sat.python import cp_model
+    _ORTOOLS_AVAILABLE = True
 except ImportError:
-    try:
-        from backend.utils import time_utils
-    except ImportError:
-        time_utils = None
+    _ORTOOLS_AVAILABLE = False
+    cp_model = None
+
+logger = logging.getLogger(__name__)
 
 
 class TheoryScheduler:
-    def __init__(self, state_manager, context):
-        self.state = state_manager
+
+    def __init__(self, state, load_manager, context):
+        """
+        Args:
+            state:        TimetableState — already contains lab slot assignments.
+            load_manager: TeacherLoadManager — used for pick_teacher() and
+                          record_assignment() after CP-SAT finds a placement.
+            context:      Dict with 'branchData' and 'smartInputData'.
+        """
+        self.state = state
+        self.load_manager = load_manager
         self.context = context
-        self.max_daily_lectures = 7  # Configurable?
-        
-    def schedule_theory(self, class_info) -> bool:
-        """
-        Schedule theory lectures for a specific class (Year-Div).
-        """
-        if not isinstance(class_info, dict):
-            raise TypeError(f"Expected class_info dict, got {type(class_info)}")
-            
-        year = class_info.get('year')
-        division = class_info.get('division')
-        
-        print(f"  > Scheduling Theory for {year}-{division}...")
-        
-        # 1. Get Theory Subjects for this class
-        subjects = self._get_class_subjects(year, division)
-        theory_subjects = [s for s in subjects if not s.get('isPractical', False) and s.get('type') != 'Practical']
-        
-        print(f"    found {len(subjects)} subjects for year '{year}', {len(theory_subjects)} are Theory.")
-        if not theory_subjects:
-            print(f"    ⚠️ No Theory subjects found for {year}-{division}. Check 'year' field in subjects CSV.")
 
-        # 2. Sort subjects by difficulty (more lectures/constraints -> first)
-        theory_subjects.sort(key=lambda s: int(s.get('weeklyLectures', 3)), reverse=True)
-        
-        # 3. Schedule each subject
-        for subject in theory_subjects:
-            lectures_needed = int(subject.get('weeklyLectures', 3))
-            subject_name = subject.get('name')
-            print(f"ALLOCATING THEORY: {subject_name} | {year}-{division} | Needed: {lectures_needed}")
-            self.current_subject = subject_name
-            
-            teacher_name = self._get_teacher_for_subject(subject_name, division, year=year)
-            
-            assignments_count = 0
-            
-            # TRACKING DISTRIBUTION
-            if not hasattr(self, 'theory_count'):
-                self.theory_count = {d: 0 for d in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']}
-            if not hasattr(self, 'subject_day_usage'):
-                # Map: subject_name -> set(days)
-                self.subject_day_usage = {}
+        branch = context.get("branchData", {})
+        smart = context.get("smartInputData", {})
 
-            # Ensure subject entry exists
-            if subject_name not in self.subject_day_usage:
-                self.subject_day_usage[subject_name] = set()
-            
-            # Try to spread across different days first
-            days_tried = set()
-            
-            while assignments_count < lectures_needed:
-                # Pick best day (lowest load for class & teacher)
-                best_day = self._pick_best_day(year, division, teacher_name, days_tried)
-                
-                if not best_day:
-                    print(f"    ! Could not find valid day for {subject_name} ({assignments_count}/{lectures_needed})")
-                    break # Cannot schedule more for this subject efficiently
-                
-                days_tried.add(best_day)
-                
-                # Try to find a slot on this day
-                slot_assigned = self._assign_slot_on_day(year, division, best_day, subject_name, teacher_name, assignments_count)
-                
-                if slot_assigned:
-                    assignments_count += 1
-                    # UPDATE TRACKING
-                    self.theory_count[best_day] += 1
-                    self.subject_day_usage[subject_name].add(best_day)
-                else: 
-                    # If we couldn't fit on this day, we might loop and try another day
-                    # But if we run out of days, we might fail or settle for uneven distribution
-                    pass
-            
-            if assignments_count == 0:
-                 # TASK 4: STOP SILENT FAILURES
-                 # If we scheduled NOTHING for a subject, we must fail.
-                 error_msg = f"CRITICAL: Could not schedule ANY lectures for {subject_name} (Teacher: {teacher_name}). Constraints too strict?"
-                 print(f"    ❌ {error_msg}")
-                 if hasattr(self.state, 'logger'):
-                      self.state.logger.log_unscheduled(subject_name, f"{year}-{division}", "All slots rejected. Check constraints report.")
-                 raise Exception(error_msg)
-            
-            if assignments_count < lectures_needed:
-                print(f"    ! CAUTION: Only scheduled {assignments_count}/{lectures_needed} for {subject_name}")
+        self.days = branch.get("workingDays", [
+            "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"
+        ])
+        self.all_divisions = self._get_all_divisions(branch)
+        self.year_of = self._build_year_map(branch)
+        self.classrooms = self._get_classrooms(branch)
 
-                print(f"    ! CAUTION: Only scheduled {assignments_count}/{lectures_needed} for {subject_name}")
+        # Recess: prefer the value already written by time_utils into branch_data,
+        # then fall back to what TimetableState computed, then to -1 (no recess).
+        self.recess_slot = (
+            branch.get("_computed_recess_slot")
+            or getattr(state, "recess_slot", None)
+        )
+        if self.recess_slot is None:
+            self.recess_slot = -1   # sentinel: no recess
 
-        # 4. POST-PROCESS BALANCING
-        self._balance_theory_distribution(year, division)
+        self.all_slots = self._get_theory_slots(branch)
 
-        return True
+        # subject → [list of mapped teachers]
+        # Use load_manager's comprehensive cache (built from teacherSubjectMap + teacher.subjects)
+        if hasattr(load_manager, 'subject_teacher_cache') and load_manager.subject_teacher_cache:
+            self.subj_teachers = load_manager.subject_teacher_cache
+        elif hasattr(load_manager, '_build_subject_teacher_map'):
+            self.subj_teachers = load_manager._build_subject_teacher_map()
+        else:
+            self.subj_teachers = defaultdict(list)
+            for m in smart.get("teacherSubjectMap", []):
+                s = m.get("subjectName", "")
+                t = m.get("teacherName", "")
+                if s and t and t not in self.subj_teachers[s]:
+                    self.subj_teachers[s].append(t)
 
-    def _get_class_subjects(self, year: str, division: str = None) -> List[Dict]:
-        all_subjects = self.context.get('smartInputData', {}).get('subjects', [])
-        return [
-            s for s in all_subjects 
-            if s.get('year') == year 
-            and (not s.get('division') or s.get('division') == division)
-        ]
+        # division → [list of theory subject names]
+        self.div_subjects = self._build_div_subjects(branch, smart)
 
-    def _get_teacher_for_subject(self, subject: str, division: str, year: str = None) -> str:
-        # DELEGATE TO LOAD MANAGER
-        if hasattr(self.state, 'load_manager') and self.state.load_manager:
-            return self.state.load_manager.get_or_select_theory_teacher(subject, year, division)
-        
-        # Fallback (Legacy) if no manager
-        mappings = self.context.get('smartInputData', {}).get('teacherSubjectMap', [])
-        for m in mappings:
-            if m.get('subjectName') == subject:
-                return m.get('teacherName')
-        return "TBA"
+        # Read already-placed lab occupancy from state.
+        # We must be safe against list values in slot_grid.
+        self.lab_teacher_busy = self._read_lab_busy_slots()
+        self.lab_room_busy = self._read_lab_room_busy()
+        # Also track which (day, slot, year, div) cells are occupied by labs
+        self.lab_cell_busy = self._read_lab_cell_busy()
 
-    def _pick_best_day(self, year, division, teacher, excluded_days) -> Optional[str]:
-        # Get configured working days or default to full week
-        cfg_days = self.context.get('branchData', {}).get('workingDays')
-        if not cfg_days or not isinstance(cfg_days, list):
-            cfg_days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-            
-        candidates = [d for d in cfg_days if d not in excluded_days]
-        
-        best_day = None
-        min_score = float('inf')
-        
-        # Determine subject name from context? 
-        # _pick_best_day signature in original didn't have subject.
-        # But wait, I call it as: self._pick_best_day(year, division, teacher_name, days_tried)
-        # I need 'subject_name' to check 'subject_day_usage'.
-        # I MUST update the signature in a separate edit or rely on 'days_tried' which partly handles it?
-        # NO, 'days_tried' is for retry loop. 
-        # 'subject_day_usage' is for "don't put subject twice on same day".
-        # Current logic: If I already put subject on Monday, Monday should be in 'subject_day_usage[sub]'.
-        # The retry loop uses 'days_tried' to avoid re-picking the *same failed day*.
-        # But for *allocation*, I should filter out days where subject is ALREADY assigned.
-        
-        # Wait, I cannot change signature easily without changing call site which I did not in previous chunk?
-        # Actually I didn't change the call site signature in previous chunk. 
-        # I should have.
-        # Let's see if I can access subject from somewhere? No.
-        # BUT: I can rely on `subject_day_usage` if I knew the subject.
-        # FIX: I will get subject from `self.subject_day_usage` if I assume single-threaded subject processing loop?
-        # No, that's risky.
-        # Let's assume I missed updating the call site in previous chunk.
-        # I will fix call site and signature here together? 
-        # MultiReplace allows multiple chunks.
-        # Let's fix the call site in Chunk 1 logic if possible? 
-        # Chunk 1 was purely setup.
-        # I will update `schedule_theory` again in a follow-up or try to do it right now?
-        # I'll stick to modifying `_pick_best_day` to accept subject OR 
-        # use a member variable `self.current_subject` which I set in the loop?
-        # Setting `self.current_subject` in the loop is cleaner for minimal diff.
-        
-        # Let's use `current_subject` approach to avoid signature refactor hell.
-        subject_name = getattr(self, 'current_subject', None)
-        
-        for day in candidates:
-            # CONSTRAINT 1: Max 1 lecture per subject per day
-            if subject_name and day in self.subject_day_usage.get(subject_name, set()):
-                continue # Skip this day, subject already present
-            
-            # Base Load (Theory Only)
-            theory_load = self.theory_count.get(day, 0)
-            
-            # Total Class Load (includes Labs)
-            # We still want to respect total limits
-            total_load = self.state.get_daily_load_for_class(year, division, day)
-            if total_load >= self.max_daily_lectures: continue
-            
-            # Teacher Load
-            teacher_load = self.state.get_daily_load_for_teacher(teacher, day)
-            if teacher_load >= 4: continue
-            
-            # SCORING
-            # 1. Balanced Theory Dist (Primary)
-            score = theory_load * 10 
-            
-            # 2. Avoid Consecutive Days (Secondary)
-            if subject_name:
-                used_days = self.subject_day_usage.get(subject_name, set())
-                # specific consecutive day check
-                all_days = self.context.get('branchData', {}).get('workingDays', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'])
-                if day in all_days:
-                    idx = all_days.index(day)
-                    if idx > 0 and all_days[idx-1] in used_days:
-                        score += 50 # Dislike consecutive
-                    if idx < len(all_days)-1 and all_days[idx+1] in used_days:
-                        score += 50
-                    
-            # 3. Saturday Lighter (Tertiary)
-            if day == 'Saturday':
-                # We want Saturday to be chosen LAST if loads are equal
-                score += 5
-                
-            if score < min_score:
-                min_score = score
-                best_day = day
-                
-        return best_day
+    # ------------------------------------------------------------------
+    # Helper: data extraction
+    # ------------------------------------------------------------------
 
-    def _assign_slot_on_day(self, year, division, day, subject, teacher, assignment_idx=0):
-        # Determine available slots
-        # Validate Recess (Global)
-        # Randomize start order to minimize collisions
-        # FIX: Use 0-based indexing to match StateManager and TimeUtils
-        slots = self.state.get_schedulable_slots() 
-        
-        for slot_idx in slots:
-            # Check Global State (Class Free)
-            if not self.state.is_slot_free(day, slot_idx, year, division):
-                if hasattr(self.state, 'logger'):
-                    self.state.logger.log_failure(subject, f"{year}-{division}", "HARD", "Slot Occupied", {"day": day, "slot": slot_idx})
+    def _get_all_divisions(self, branch):
+        """Return ['SE-A', 'SE-B', 'TE-A', ...] from branchData."""
+        result = []
+        for year in branch.get("academicYears", []):
+            for div in branch.get("divisions", {}).get(year, []):
+                result.append(f"{year}-{div}")
+        return result
+
+    def _build_year_map(self, branch):
+        """Return {'SE-A': 'SE', 'TE-A': 'TE', ...}."""
+        m = {}
+        for year in branch.get("academicYears", []):
+            for div in branch.get("divisions", {}).get(year, []):
+                m[f"{year}-{div}"] = year
+        return m
+
+    def _get_classrooms(self, branch):
+        """Return flat list of classroom names."""
+        rooms = branch.get("classrooms", [])
+        if not rooms:
+            rooms = branch.get("rooms", [])
+        if isinstance(rooms, dict):
+            return [
+                r
+                for v in rooms.values()
+                for r in (v if isinstance(v, list) else [v])
+            ]
+        result = []
+        for r in rooms:
+            if isinstance(r, dict):
+                result.append(r.get("name", str(r)))
+            else:
+                result.append(str(r))
+        if not result:
+            result = ["Room-101", "Room-102", "Room-103", "Room-104", "Room-105"]
+        return result
+
+    def _get_theory_slots(self, branch):
+        """Return slot indices usable for theory (all teaching slots)."""
+        start = self._parse_time(branch.get("startTime", "9:00 AM"))
+        end = self._parse_time(branch.get("endTime", "5:00 PM"))
+        dur = int(branch.get("lectureDuration", 60))
+        if dur <= 0:
+            dur = 60
+        total = (end - start) // dur
+        return list(range(total))
+
+    def _build_div_subjects(self, branch, smart):
+        """Return {'SE-A': ['COA', 'ESE', ...], ...} — theory subjects only."""
+        div_subj = defaultdict(list)
+        for subj in smart.get("subjects", []):
+            # Skip practicals / labs
+            stype = str(subj.get("type", "")).strip().upper()
+            if subj.get("isPractical") or stype in ("LAB", "PRACTICAL"):
+                continue
+            if subj.get("type") == "Practical":
                 continue
 
-            if True: # Kept indentation block (previously 'if is_free:')
-                
-                # Check Teacher Availability
-                is_avail = self.state.is_teacher_available(teacher, day, slot_idx)
-                
-                # TASK 6: TEMPORARY DEBUG LO (Log strictly for one subject/teacher to avoid spam)
-                if assignment_idx == 0 and "Mrs. S. R. Katke" in teacher: 
-                     # Re-verify why it failed
-                     meta = self.state.teacher_metadata.get(teacher, {})
-                     print(f"    DEBUG: {teacher} @ {day} Slot {slot_idx}")
-                     print(f"      Login: {meta.get('loginTime')}, Window: {meta.get('workingHours')}h")
-                     print(f"      Available? {is_avail}")
+            year = subj.get("year", "")
+            target = subj.get("division", "")
+            year_divs = [
+                f"{year}-{d}"
+                for d in branch.get("divisions", {}).get(year, [])
+            ]
+            apply_to = (
+                [f"{year}-{target}"]
+                if target and target.lower() not in ("all", "", "none")
+                else year_divs
+            )
+            for div in apply_to:
+                if div in self.all_divisions and subj["name"] not in div_subj[div]:
+                    div_subj[div].append(subj["name"])
+        return div_subj
 
-                # TASK 3: Relax Constraint for First Assignment
-                if not is_avail and assignment_idx == 0:
-                     # Check if it's a hard conflict (assigned elsewhere) or just Window
-                     # If teacher is assigned elsewhere, we CANNOT override (hard conflict).
-                     assigned_elsewhere = False
-                     if (teacher, day, slot_idx) in self.state.teacher_assignments:
-                         assigned_elsewhere = True
-                     
-                     if not assigned_elsewhere:
-                         print(f"    DEBUG OVERRIDE: Forcing Slot {slot_idx} for {subject} despite Window constraint (First Placement).")
-                         is_avail = True # Force Allow
-                
-                if not is_avail:
-                     if hasattr(self.state, 'logger'):
-                        self.state.logger.log_failure(subject, f"{year}-{division}", "HARD", "Teacher Unavailable", {"day": day, "slot": slot_idx, "teacher": teacher})
-                     continue
-                     
-                if is_avail:
-                    
-                    # DYNAMIC ROOM ALLOCATION
-                    assigned_room = self._find_available_room(year, division, day, slot_idx)
-                    
-                    if not assigned_room:
-                         # No room available! Cannot schedule here.
-                         if hasattr(self.state, 'logger'):
-                             self.state.logger.log_failure(subject, f"{year}-{division}", "HARD", "No Room Available", {"day": day, "slot": slot_idx})
-                         continue
-
-                    # ASSIGN
-                    assignment = {
-                        'year': year,
-                        'division': division,
-                        'day': day,
-                        'slot': slot_idx,
-                        'subject': subject,
-                        'teacher': teacher,
-                        'type': 'THEORY',
-                        'room': assigned_room # Assigned dynamically!
-                    }
-                    
-                    self.state.assign_slot(assignment)
-                    return True
-                    
-        return False
-
-    def _find_available_room(self, year, division, day, slot_index):
+    def _safe_get_type(self, val):
         """
-        Find an available room using Balanced Sticky Logic.
-        1. Try to use class's Sticky Room.
-        2. If blocked, find new room (Least Used) and set as Sticky (or just use temp?).
-           User Requirement: "look for that room... until rule overrides". 
-           Implies we prefer sticky, but find alternative if blocked.
+        Safely extract 'type' from a slot_grid value that may be a dict or a list.
+        Returns the type string, or 'LAB' if value is a list (always occupied).
         """
-        branch_data = self.context.get('branchData', {})
-        
-        # 0. Get All Rooms
-        all_classrooms = branch_data.get('classrooms', [])
-        if isinstance(all_classrooms, dict):
-            temp_list = []
-            for r_list in all_classrooms.values():
-                if isinstance(r_list, list): temp_list.extend(r_list)
-            all_classrooms = list(set(temp_list))
-            
-        if not all_classrooms:
-            all_classrooms = branch_data.get('rooms', [])
-            
-        if not all_classrooms:
-             all_classrooms = [f"Virtual-Room-{i}" for i in range(1, 21)]
-             
-        # Extract room names
-        room_names = [r.get('name') if isinstance(r, dict) else r for r in all_classrooms]
-        
-        class_id = f"{year}-{division}"
-        
-        # 1. Sticky Room Check
-        preferred = self.state.preferred_rooms.get(class_id)
-        if preferred and preferred in room_names:
-            if self.state.is_room_available(preferred, day, slot_index):
-                return preferred
-            else:
-                 # Preferred room is blocked this slot.
-                 # Fallthrough to find a temporary room for this slot.
-                 pass
+        if isinstance(val, list):
+            return "LAB"   # multi-batch slot → occupied
+        if isinstance(val, dict):
+            return val.get("type", "")
+        return ""
 
-        # 2. Find Candidates (All Free Rooms)
-        free_rooms = []
-        for r in room_names:
-            if self.state.is_room_available(r, day, slot_index):
-                free_rooms.append(r)
-                
-        if not free_rooms:
-            return None # No room available at all!
+    def _slot_grid_has_entry(self, day, slot, year, div):
+        """
+        True if slot_grid[(day, slot, year, div)] exists AND is non-empty.
+        Safe against both dict and list values.
+        """
+        key = (day, slot, year, div)
+        val = self.state.slot_grid.get(key)
+        if val is None:
+            return False
+        if isinstance(val, list):
+            return len(val) > 0
+        return True   # single dict
 
-        # 3. Select Best Candidate (Least Used)
-        # Use state.room_usage_counts
-        import random
-        random.shuffle(free_rooms) # Randomize ties
-        
-        best_room = min(free_rooms, key=lambda r: self.state.room_usage_counts[r])
-        
-        # 4. Update Stats & Sticky Logic
-        self.state.room_usage_counts[best_room] += 1
-        
-        # If no sticky room was set yet, set this one as sticky
-        if not preferred:
-            self.state.preferred_rooms[class_id] = best_room
-            
-        return best_room
-            # else:
-            #     # DEBUG: Room occupied
-            #     pass
-                
-    def _balance_theory_distribution(self, year, division):
+    def _read_lab_busy_slots(self):
         """
-        Post-Process: Attempts to move theory slots from Heavy Days to Light Days.
-        Constraints:
-        1. Target day load < Heavy day load - 1
-        2. Target day must not already have this subject
-        3. Teacher must be free on target day/slot
-        4. Room must be free on target day/slot
+        Return set of (teacher, day, slot) tuples already occupied by labs.
+        teacher_assignments keys are (teacher, day, slot) — iterate keys directly.
         """
-        print(f"  > Balancing Theory Load for {year}-{division}...")
-        
-        # Calculate load per day (Theory Only)
-        # Re-scan state because self.theory_count might be slightly off if we did other things?
-        # Better to rely on self.theory_count if we trust it, or scan grid.
-        # Let's scan simple grid for accuracy.
-        branch_data = self.context.get('branchData', {})
-        days = branch_data.get('workingDays')
-        if not days or not isinstance(days, list):
-            days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-            
-        # Try balancing Max 5 times
-        for pass_idx in range(5):
-            # Recalculate loads
-            loads = {day: 0 for day in days}
-            theory_slots_map = {day: [] for day in days} # store (slot_idx, assignment)
-            
-            # Scan current assignments
-            # Note: We don't have direct access to 'grid' here easily without scanning state.slots
-            # But state.slot_grid uses canonical keys? No, keys are (year, div, day, slot) in dict?
-            # StateManager uses 'slot_grid' keyed by unique string or tuple?
-            # Let's check state_manager.py... assign_slot uses keys like f"{year}_{div}_{day}_{slot}"
-            # It's expensive to reverse scan.
-            # Use `valide_slots` from `self.theory_count`? No, that's just counts.
-            
-            # Let's assume `self.theory_count` is accurate enough OR reconstruct it?
-            # We need actual slot objects to move them.
-            # We can use `self.state.get_day_assignments(year, division, day)` if it exists.
-            # It doesn't.
-            
-            # FAST SCAN: Iterate all slots for this class
-            # Assuming max 8 slots * 6 days = 48 checks. Very fast.
-            # We need finding Theory Slots.
-            
-            # We need max slots
-            total_slots = 8 # Default
+        return set(self.state.teacher_assignments.keys())
+
+    def _read_lab_room_busy(self):
+        """
+        Return set of (room, day, slot) tuples already occupied by labs.
+        room_assignments keys are (room, day, slot).
+        """
+        return set(self.state.room_assignments.keys())
+
+    def _read_lab_cell_busy(self):
+        """
+        Return set of (day, slot, year, div) tuples occupied by any existing slot.
+        Safe against list values in slot_grid.
+        """
+        busy = set()
+        for key, val in self.state.slot_grid.items():
+            if val is None:
+                continue
+            if isinstance(val, list) and len(val) == 0:
+                continue
+            busy.add(key)  # key = (day, slot, year, div)
+        return busy
+
+    def _parse_time(self, time_str):
+        """Convert '9:00 AM' → minutes since midnight."""
+        try:
             try:
-                if time_utils:
-                    tc = time_utils.calculate_time_slots(branch_data)
-                    total_slots = tc.get('total_slots', 8)
-                    recess_slot = tc.get('recess_slot', -1)
-            except:
-                pass
-                
-            for d in days:
-                for s in self.state.get_schedulable_slots():
-                     cell = self.state.get_slot_assignment(year, division, d, s)
-                     if cell and isinstance(cell, dict) and cell.get('type') == 'THEORY':
-                         loads[d] += 1
-                         theory_slots_map[d].append(cell)
-                     elif isinstance(cell, list):
-                         # Should not prevent list of theory? Usually Lab list.
-                         # If multiple theory?? No, theory is single.
-                         pass
+                from backend.utils.time_utils import parse_time as _pt
+            except ImportError:
+                from utils.time_utils import parse_time as _pt
+            t = _pt(str(time_str))
+            if t is not None:
+                return t.hour * 60 + t.minute
+        except Exception:
+            pass
 
-            # Find Max and Min Load (excluding Saturday if desired, or treat Saturday as lighter target?)
-            # Prompt says "Saturday should be lighter".
-            # So we treat Saturday as 'Normal' for being a SOURCE of moves? 
-            # Or receiving?
-            # Let's exclude Saturday from being a "Min" target if it's already > 2?
-            # Simple Logic: Max Load Day -> Min Load Day.
-            
-            sorted_days = sorted(days, key=lambda d: loads[d])
-            min_day = sorted_days[0]
-            max_day = sorted_days[-1]
-            
-            diff = loads[max_day] - loads[min_day]
-            if diff <= 1:
-                print("    > Load Balanced. Stopping.")
-                return # Balanced enough
-            
-            print(f"    Pass {pass_idx+1}: Attempting move from {max_day}({loads[max_day]}) to {min_day}({loads[min_day]})")
-            
-            moved = False
-            # Try to find a moveable slot from max_day
-            # Shuffle slots to avoid deterministic stuck
-            candidates = theory_slots_map[max_day]
-            random.shuffle(candidates)
-            
-            for slot_data in candidates:
-                subj = slot_data['subject']
-                teacher = slot_data['teacher']
-                current_slot_idx = slot_data['slot']
-                
-                # Validation Target Day:
-                # 1. Subject constraint: Min Day must NOT have this subject
-                # We can check existing slots in min_day
-                existing_subjects_in_min = set(s['subject'] for s in theory_slots_map[min_day])
-                if subj in existing_subjects_in_min:
-                    continue # Subject already exists on target day
-                
-                # 2. Find FREE slot in Min Day
-                target_slot = -1
-                for ts in self.state.get_schedulable_slots():
-                    # Recess checks handled by get_schedulable_slots
-                    if self.state.is_slot_free(min_day, ts, year, division):
-                        if self.state.is_teacher_available(teacher, min_day, ts):
-                            target_slot = ts
+        import re
+        m = re.match(r'(\d+):(\d+)\s*(AM|PM)?', str(time_str).strip().upper())
+        if not m:
+            return 0
+        h, mn, p = int(m.group(1)), int(m.group(2)), m.group(3)
+        if p == "PM" and h != 12:
+            h += 12
+        if p == "AM" and h == 12:
+            h = 0
+        return h * 60 + mn
+
+    # ------------------------------------------------------------------
+    # Public entry point
+    # ------------------------------------------------------------------
+
+    def schedule(self):
+        """
+        Build the CP-SAT model, solve it, extract the solution, and write
+        placements to state via state.assign_slot(dict).
+
+        Returns dict with keys: status, time_ms, gaps, incomplete.
+        Falls back to greedy if ortools is not installed.
+        """
+        if not _ORTOOLS_AVAILABLE:
+            logger.warning(
+                "[CP-SAT] ortools not installed. Falling back to legacy greedy scheduler."
+            )
+            return self._greedy_fallback()
+
+        t0 = time.perf_counter()
+
+        model = cp_model.CpModel()
+        solver = cp_model.CpSolver()
+
+        days_n = len(self.days)
+        slots = self.all_slots
+
+        if not slots:
+            logger.error("[CP-SAT] No theory slots available (all slots reserved for recess?)")
+            return {"status": "INFEASIBLE", "time_ms": 0, "gaps": -1, "incomplete": []}
+
+        # ------------------------------------------------------------------
+        # D1: Decision variables
+        # x[(div, subj, di, si)] = 1  →  div has subj on days[di] slot si
+        # ------------------------------------------------------------------
+        x = {}
+        for div in self.all_divisions:
+            for subj in self.div_subjects.get(div, []):
+                for di in range(days_n):
+                    for si in slots:
+                        x[(div, subj, di, si)] = model.new_bool_var(
+                            f"x_{div}_{subj}_{di}_{si}"
+                        )
+
+        logger.info(f"[CP-SAT] {len(x)} variables created for {len(self.all_divisions)} divisions")
+
+        # ------------------------------------------------------------------
+        # D2: Exactly N lectures per subject per division
+        # ------------------------------------------------------------------
+        weekly_req = self._get_weekly_requirements()
+
+        for div in self.all_divisions:
+            for subj in self.div_subjects.get(div, []):
+                required = weekly_req.get(subj, 3)
+                model.add(
+                    sum(
+                        x[(div, subj, di, si)]
+                        for di in range(days_n)
+                        for si in slots
+                        if (div, subj, di, si) in x
+                    ) == required
+                )
+
+        # ------------------------------------------------------------------
+        # D3: At most 1 subject per slot per division
+        #     Force 0 if lab already occupies that slot.
+        #     We use _slot_grid_has_entry() which is safe against list values.
+        # ------------------------------------------------------------------
+        for div in self.all_divisions:
+            yr = self.year_of.get(div, "")
+            div_letter = div.split("-")[1] if "-" in div else div
+
+            for di in range(days_n):
+                day_name = self.days[di]
+                for si in slots:
+                    cell_key = (day_name, si, yr, div_letter)
+
+                    # Cell occupied by lab → force all theory vars to 0
+                    if cell_key in self.lab_cell_busy:
+                        for subj in self.div_subjects.get(div, []):
+                            if (div, subj, di, si) in x:
+                                model.add(x[(div, subj, di, si)] == 0)
+                        continue
+
+                    # At most 1 subject per slot per division
+                    vars_here = [
+                        x[(div, subj, di, si)]
+                        for subj in self.div_subjects.get(div, [])
+                        if (div, subj, di, si) in x
+                    ]
+                    if vars_here:
+                        model.add(sum(vars_here) <= 1)
+
+        # ------------------------------------------------------------------
+        # D4: Teacher no-overlap (hard)
+        # lab_teacher_busy = set of (teacher, day, slot) keys from state
+        # ------------------------------------------------------------------
+        all_teachers = {
+            t for ts in self.subj_teachers.values() for t in ts
+        }
+
+        for teacher in all_teachers:
+            for di in range(days_n):
+                day_name = self.days[di]
+                for si in slots:
+                    # Teacher busy with lab → force all theory vars to 0
+                    if (teacher, day_name, si) in self.lab_teacher_busy:
+                        for div in self.all_divisions:
+                            for subj in self.div_subjects.get(div, []):
+                                if teacher in self.subj_teachers.get(subj, []):
+                                    if (div, subj, di, si) in x:
+                                        model.add(x[(div, subj, di, si)] == 0)
+                        continue
+
+                    # At most 1 theory class using this teacher per slot
+                    uses = [
+                        x[(div, subj, di, si)]
+                        for div in self.all_divisions
+                        for subj in self.div_subjects.get(div, [])
+                        if teacher in self.subj_teachers.get(subj, [])
+                        and (div, subj, di, si) in x
+                    ]
+                    if uses:
+                        model.add(sum(uses) <= 1)
+
+        # ------------------------------------------------------------------
+        # D5: Classroom capacity constraint
+        # lab_room_busy = set of (room, day, slot) keys from state
+        # ------------------------------------------------------------------
+        max_rooms = len(self.classrooms)
+
+        for di in range(days_n):
+            day_name = self.days[di]
+            for si in slots:
+                labs_using = sum(
+                    1 for room in self.classrooms
+                    if (room, day_name, si) in self.lab_room_busy
+                )
+                remaining = max_rooms - labs_using
+
+                if remaining <= 0:
+                    for div in self.all_divisions:
+                        for subj in self.div_subjects.get(div, []):
+                            if (div, subj, di, si) in x:
+                                model.add(x[(div, subj, di, si)] == 0)
+                    continue
+
+                theory_here = [
+                    x[(div, subj, di, si)]
+                    for div in self.all_divisions
+                    for subj in self.div_subjects.get(div, [])
+                    if (div, subj, di, si) in x
+                ]
+                if theory_here:
+                    model.add(sum(theory_here) <= remaining)
+
+        # ------------------------------------------------------------------
+        # D6: Soft objective — maximise early-slot usage (minimise gaps)
+        # ------------------------------------------------------------------
+        slot_weight = {
+            si: (len(slots) - idx) for idx, si in enumerate(slots)
+        }
+        obj_terms = [
+            x[(div, subj, di, si)] * slot_weight.get(si, 1)
+            for div in self.all_divisions
+            for subj in self.div_subjects.get(div, [])
+            for di in range(days_n)
+            for si in slots
+            if (div, subj, di, si) in x
+        ]
+        if obj_terms:
+            model.maximize(sum(obj_terms))
+
+        # ------------------------------------------------------------------
+        # Solver parameters
+        # ------------------------------------------------------------------
+        solver.parameters.max_time_in_seconds = 30.0
+        solver.parameters.num_search_workers = 4
+        solver.parameters.log_search_progress = False
+        solver.parameters.cp_model_presolve = True
+
+        # ------------------------------------------------------------------
+        # Solve
+        # ------------------------------------------------------------------
+        logger.info("[CP-SAT] Starting solve...")
+        status_code = solver.solve(model)
+        elapsed_ms = (time.perf_counter() - t0) * 1000
+
+        status_names = {
+            cp_model.OPTIMAL: "OPTIMAL",
+            cp_model.FEASIBLE: "FEASIBLE",
+            cp_model.INFEASIBLE: "INFEASIBLE",
+            cp_model.UNKNOWN: "UNKNOWN",
+        }
+        status_str = status_names.get(status_code, "UNKNOWN")
+        logger.info(f"[CP-SAT] {status_str} in {elapsed_ms:.0f}ms")
+        print(f"[CP-SAT] {status_str} in {elapsed_ms:.0f}ms")
+
+        if status_code not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+            logger.error(
+                "[CP-SAT] INFEASIBLE — check teacher mappings and classroom count."
+            )
+            return {
+                "status": status_str,
+                "time_ms": elapsed_ms,
+                "gaps": -1,
+                "incomplete": [],
+            }
+
+        # ------------------------------------------------------------------
+        # Extract solution and write to state
+        # ------------------------------------------------------------------
+        logger.info("[CP-SAT] Beginning extraction of solved lectures")
+        print("[CP-SAT] Beginning extraction of solved lectures")
+
+        # Count how many variables the solver set to 1
+        solved_count = sum(
+            1
+            for (div, subj, di, si) in x
+            if solver.value(x[(div, subj, di, si)]) == 1
+        )
+        logger.info(f"[CP-SAT] Solver set {solved_count} variables to 1")
+        print(f"[CP-SAT] Solver set {solved_count} lecture-slots to 1")
+
+        written_count = 0
+        incomplete = []
+
+        for div in self.all_divisions:
+            yr = self.year_of.get(div, "")
+            div_letter = div.split("-")[1] if "-" in div else div
+
+            for subj in self.div_subjects.get(div, []):
+                required = weekly_req.get(subj, 3)
+                placed = 0
+
+                for di, day_name in enumerate(self.days):
+                    for si in slots:
+                        if (div, subj, di, si) not in x:
+                            continue
+                        if solver.value(x[(div, subj, di, si)]) != 1:
+                            continue
+
+                        logger.info(
+                            f"[CP-SAT] Extracting {div} {subj} {day_name} slot={si}"
+                        )
+                        print(
+                            f"[CP-SAT] Extracting: {div} | {subj} | {day_name} | slot {si}"
+                        )
+
+                        # Pick teacher — uses pick_teacher with fallbacks
+                        teacher = self.load_manager.pick_teacher(subj, day_name, si)
+                        if not teacher:
+                            teacher = "TBA"
+
+                        # Pick room — uses _pick_room with fallbacks
+                        room = self._pick_room(day_name, si, year_div=div)
+                        if not room:
+                            room = f"Room-{div}"
+
+                        # Build assignment dict — matches assign_slot(assignment_dict, lock=False) exactly
+                        assignment = {
+                            "day":      day_name,
+                            "slot":     si,
+                            "year":     yr,
+                            "division": div_letter,
+                            "subject":  subj,
+                            "teacher":  teacher,
+                            "room":     room,
+                            "type":     "THEORY",
+                        }
+
+                        logger.info(
+                            f"[CP-SAT] Writing slot: day={day_name!r} slot={si} "
+                            f"year={yr!r} division={div_letter!r} "
+                            f"subject={subj!r} teacher={teacher!r} room={room!r}"
+                        )
+
+                        # Write to state — RAISE on any failure, never swallow
+                        try:
+                            self.state.assign_slot(assignment)
+                        except Exception as e:
+                            logger.exception(
+                                f"[CP-SAT] assign_slot FAILED for {div} {subj} "
+                                f"{day_name} slot {si}: {e}"
+                            )
+                            print(
+                                f"  ERROR: assign_slot raised for {div} {subj} "
+                                f"{day_name} slot {si}:"
+                            )
+                            traceback.print_exc()
+                            raise   # propagate — never swallow scheduling errors
+
+                        logger.info("[CP-SAT] assign_slot completed successfully")
+                        print(f"  OK: Written {div} {subj} {day_name} slot {si}")
+
+                        # Update load tracking
+                        self.load_manager.record_assignment(teacher, day_name, si)
+
+                        # Mark room as used so subsequent picks in this batch avoid it
+                        self.lab_room_busy.add((room, day_name, si))
+                        # Update teacher busy set for subsequent constraint checks
+                        self.lab_teacher_busy.add((teacher, day_name, si))
+                        # Mark cell as used
+                        self.lab_cell_busy.add((day_name, si, yr, div_letter))
+
+                        placed += 1
+                        written_count += 1
+
+                if placed < required:
+                    incomplete.append((div, subj, placed, required))
+
+        # ------------------------------------------------------------------
+        # Mandatory post-extraction validation
+        # ------------------------------------------------------------------
+        logger.info(f"[CP-SAT] Written lectures = {written_count} (solver set {solved_count} to 1)")
+        print(f"\n[CP-SAT] Extraction complete: {written_count}/{solved_count} lectures written")
+
+        if written_count < solved_count:
+            msg = (
+                f"[CP-SAT] WARNING: {solved_count - written_count} solved lectures were NOT written "
+                f"(teacher/room unavailable at extraction time). "
+                f"Incomplete: {incomplete}"
+            )
+            logger.warning(msg)
+            print(msg)
+
+        # Print division-level summary
+        print("\n[CP-SAT] Division lecture summary:")
+        for div in self.all_divisions:
+            yr = self.year_of.get(div, "")
+            div_letter = div.split("-")[1] if "-" in div else div
+            for subj in self.div_subjects.get(div, []):
+                expected = weekly_req.get(subj, 3)
+                actual = self.state.get_subject_count(subj, yr, div_letter)
+                status = "OK" if actual >= expected else f"MISSING {expected - actual}"
+                print(f"  {div} | {subj}: {actual}/{expected} [{status}]")
+
+        gaps = self._count_gaps()
+        return {
+            "status":     status_str,
+            "time_ms":    elapsed_ms,
+            "gaps":       gaps,
+            "incomplete": incomplete,
+        }
+
+    # ------------------------------------------------------------------
+    # Helpers for schedule()
+    # ------------------------------------------------------------------
+
+    def _get_weekly_requirements(self):
+        """Return {subj_name: int} from subjects[].weeklyLectures. Default 3."""
+        req = {}
+        for subj in self.context.get("smartInputData", {}).get("subjects", []):
+            name = subj.get("name", "")
+            count = subj.get("weeklyLectures") or subj.get("lecturesPerWeek") or 3
+            req[name] = int(count)
+        return req
+
+    def _pick_room(self, day_name, slot_idx, year_div=""):
+        """
+        Return first classroom not busy at this day+slot.
+        Checks both the pre-built lab_room_busy set AND state.is_room_available().
+        Falls back to a default classroom string if all are occupied.
+        """
+        for room in self.classrooms:
+            if (room, day_name, slot_idx) in self.lab_room_busy:
+                continue
+            if not self.state.is_room_available(room, day_name, slot_idx):
+                continue
+            return room
+        if self.classrooms:
+            return self.classrooms[0]
+        return f"Room-{year_div}" if year_div else "Room-101"
+
+    def _count_gaps(self):
+        """Count empty slots between first and last occupied slot per div per day."""
+        total = 0
+        for div in self.all_divisions:
+            yr = self.year_of.get(div, "")
+            dl = div.split("-")[1] if "-" in div else div
+            for day_name in self.days:
+                occupied = [
+                    si for si in self.all_slots
+                    if self._slot_grid_has_entry(day_name, si, yr, dl)
+                ]
+                if len(occupied) < 2:
+                    continue
+                for si in range(min(occupied), max(occupied) + 1):
+                    if si == self.recess_slot:
+                        continue
+                    if not self._slot_grid_has_entry(day_name, si, yr, dl):
+                        total += 1
+        return total
+
+    # ------------------------------------------------------------------
+    # Greedy fallback (used only when ortools is not installed)
+    # ------------------------------------------------------------------
+
+    def _greedy_fallback(self):
+        """
+        Minimal greedy fallback so the scheduler does not hard-crash when
+        ortools is unavailable.
+        """
+        logger.warning("[CP-SAT] Running greedy fallback — install ortools for optimal results.")
+        incomplete = []
+        weekly_req = self._get_weekly_requirements()
+
+        for div in self.all_divisions:
+            yr = self.year_of.get(div, "")
+            dl = div.split("-")[1] if "-" in div else div
+
+            for subj in self.div_subjects.get(div, []):
+                required = weekly_req.get(subj, 3)
+                placed = 0
+
+                for di, day_name in enumerate(self.days):
+                    if placed >= required:
+                        break
+                    for si in self.all_slots:
+                        if placed >= required:
                             break
-                
-                if target_slot != -1:
-                    # EXECUTE SWAP (Move)
-                    # 1. Remove from old
-                    self.state.remove_slot(year, division, max_day, current_slot_idx)
-                    # 2. Add to new
-                    new_assign = slot_data.copy()
-                    new_assign['day'] = min_day
-                    new_assign['slot'] = target_slot
-                    # Room? Re-find dynamic room or keep old?
-                    # Old room might be occupied on new day.
-                    # Best to re-find room.
-                    new_room = self._find_available_room(year, division, min_day, target_slot)
-                    if new_room:
-                         new_assign['room'] = new_room
-                    else:
-                         # No room, revert?
-                         # Or keep old room name and hope? 
-                         # Verify old room avail?
-                         if self.state.is_room_available(slot_data['room'], min_day, target_slot):
-                             pass # Keep old
-                         else:
-                             # Abort this move
-                             self.state.assign_slot(slot_data) # Put back old
-                             continue
-                    
-                    self.state.assign_slot(new_assign)
-                    
-                    # LOG MOVE
-                    # with open('backend_debug_moves.log', 'a') as f:
-                    #      f.write(f"MOVED {subj} from {max_day}:{current_slot_idx} to {min_day}:{target_slot} (Recess={recess_slot})\n")
-                    
-                    print(f"      Moved {subj} from {max_day} to {min_day}")
-                    moved = True
-                    break # One move per pass to re-evaluate loads
-            
-            if not moved:
-                print("      No valid moves found this pass.")
-                break
+                        cell_key = (day_name, si, yr, dl)
+                        if cell_key in self.lab_cell_busy:
+                            continue
+                        teacher = self.load_manager.pick_teacher(subj, day_name, si)
+                        room = self._pick_room(day_name, si)
+                        if not teacher or not room:
+                            continue
+                        assignment = {
+                            "day": day_name, "slot": si,
+                            "year": yr, "division": dl,
+                            "subject": subj, "teacher": teacher,
+                            "room": room, "type": "THEORY",
+                        }
+                        self.state.assign_slot(assignment)
+                        self.load_manager.record_assignment(teacher, day_name, si)
+                        self.lab_room_busy.add((room, day_name, si))
+                        self.lab_teacher_busy.add((teacher, day_name, si))
+                        self.lab_cell_busy.add(cell_key)
+                        placed += 1
+
+                if placed < required:
+                    incomplete.append((div, subj, placed, required))
+
+        return {
+            "status": "FEASIBLE (greedy fallback)",
+            "time_ms": 0,
+            "gaps": self._count_gaps(),
+            "incomplete": incomplete,
+        }
+
+    # ------------------------------------------------------------------
+    # Legacy compatibility shim
+    # ------------------------------------------------------------------
+
+    _global_schedule_done = False
+
+    def schedule_theory(self, class_info):
+        """
+        Legacy shim: called by old per-class loop in scheduler.py.
+        Delegates to schedule() on first call and is a safe no-op thereafter.
+        """
+        if not TheoryScheduler._global_schedule_done:
+            TheoryScheduler._global_schedule_done = True
+            self.schedule()
+        return True

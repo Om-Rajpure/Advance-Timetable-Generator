@@ -3,6 +3,16 @@ Candidate Generator
 
 Generates valid candidate assignments for each slot using smart filtering
 and constraint-aware logic.
+
+[FIX 7 / DEAD CODE NOTICE]
+This module is NOT called by the active generation pipeline.
+The real pipeline uses lab_scheduler.py + theory_scheduler.py directly.
+This file is kept for compatibility with TimetableScheduler.__init__ which
+still instantiates CandidateGenerator.  Do NOT call generate_candidates()
+or _generate_lecture_candidates() from production code.
+
+The _generate_lecture_candidates() type field has been corrected from
+'Lecture' -> 'THEORY' to match the canonical type string (Fix 1 parity).
 """
 
 
@@ -25,10 +35,13 @@ class CandidateGenerator:
     def generate_candidates(self, slot_info):
         """
         Generate all valid candidate assignments for a slot.
-        
+
+        [FIX 7 / DEAD CODE] Not called by the active scheduling pipeline.
+        Kept for backward compatibility only.
+
         Args:
             slot_info: Dictionary with day, slot, year, division
-        
+
         Returns:
             List of candidate assignments with scores
         """
@@ -36,16 +49,16 @@ class CandidateGenerator:
         slot_index = slot_info['slot']
         year = slot_info['year']
         division = slot_info['division']
-        
+
         # Determine if this should be a practical or lecture
         # Check if we need practicals for any subject
         practical_candidates = self._generate_practical_candidates(slot_info)
         lecture_candidates = self._generate_lecture_candidates(slot_info)
-        
+
         # Combine and sort by score
         all_candidates = practical_candidates + lecture_candidates
         all_candidates.sort(key=lambda x: x.get('score', 0))
-        
+
         # Always add a "Free" slot candidate as the last resort
         # This allows the scheduler to leave a slot empty if necessary
         free_candidate = {
@@ -61,20 +74,25 @@ class CandidateGenerator:
             'score': 1000  # High score so it's tried last
         }
         all_candidates.append(free_candidate)
-        
+
         return all_candidates
     
     def _generate_lecture_candidates(self, slot_info):
-        """Generate lecture candidates"""
+        """
+        Generate lecture candidates.
+
+        [FIX 7 / DEAD CODE] Not called by the active scheduling pipeline.
+        FIX 1 PARITY: type field corrected from 'Lecture' -> 'THEORY'.
+        """
         candidates = []
         day = slot_info['day']
         slot_index = slot_info['slot']
         year = slot_info['year']
         division = slot_info['division']
-        
+
         # Get subjects for this year/division
         subjects = self.smart_input.get('subjects', [])
-        
+
         # Get explicit teacher map
         teacher_subject_map = self.smart_input.get('teacherSubjectMap', [])
         # Map: subject -> [teacher_names]
@@ -85,29 +103,29 @@ class CandidateGenerator:
             if s_name and t_name:
                 if s_name not in tm_map: tm_map[s_name] = []
                 tm_map[s_name].append(t_name)
-        
+
         for subject_data in subjects:
-            if (subject_data.get('year') != year or 
-                subject_data.get('division') != division):
+            if (subject_data.get('year') != year or
+                    subject_data.get('division') != division):
                 continue
-            
+
             # Skip if practical
             if subject_data.get('isPractical') or subject_data.get('type') == 'Practical':
                 continue
-                
+
             subject_name = subject_data.get('name')
-            
+
             # Check if we need more lectures for this subject
             remaining = self.state.get_remaining_lectures(subject_name, year, division)
             if remaining <= 0:
                 continue
-            
+
             # Find available teachers for this subject
             teachers = self.smart_input.get('teachers', [])
-            
+
             # Filter valid teachers for this subject
             valid_teacher_names = []
-            
+
             # 1. Use explicit map if exists for this subject
             if subject_name in tm_map:
                 valid_teacher_names = tm_map[subject_name]
@@ -117,7 +135,7 @@ class CandidateGenerator:
                     t_subs = t.get('subjects', [])
                     if subject_name in t_subs:
                         valid_teacher_names.append(t.get('name'))
-            
+
             # If no teachers found for subject, we (strictly) cannot schedule. (Rule 5)
             if not valid_teacher_names:
                 continue
@@ -126,39 +144,28 @@ class CandidateGenerator:
                 # Check if teacher is available
                 if not self.state.is_teacher_available(teacher_name, day, slot_index):
                     continue
-                
+
                 # Find valid CLASSROOMS (Rule 22: Classrooms only for theory)
-                # Ideally get from branch_data specific to year?
-                # branch_data['classrooms'] might be a Dict { "SE": ["Room1"] } or List.
-                # Let's handle both.
                 classrooms_config = self.branch_data.get('classrooms', {})
                 valid_rooms = []
-                
+
                 if isinstance(classrooms_config, dict):
-                     valid_rooms = classrooms_config.get(year, [])
-                     if not valid_rooms: 
-                         # Fallback to all values if year specific not found?
-                         # Or fallback to global 'rooms' list but exclude labs?
-                         pass
+                    valid_rooms = classrooms_config.get(year, [])
                 elif isinstance(classrooms_config, list):
-                     valid_rooms = classrooms_config
-                
+                    valid_rooms = classrooms_config
+
                 # If no specific classrooms found, try `rooms` but filter against `labs`
                 if not valid_rooms:
                     all_rooms = self.branch_data.get('rooms', [])
-                    # Exclude shared labs
                     shared_labs = [l.get('name') for l in self.branch_data.get('sharedLabs', [])]
                     legacy_labs = self.branch_data.get('labs', [])
-                    
                     forbidden = set(shared_labs + legacy_labs)
                     valid_rooms = [r for r in all_rooms if r not in forbidden]
 
                 for room in valid_rooms:
-                    # Check if room is available
                     if not self.state.is_room_available(room, day, slot_index):
                         continue
-                    
-                    # Create candidate
+
                     candidate = {
                         'day': day,
                         'slot': slot_index,
@@ -167,29 +174,29 @@ class CandidateGenerator:
                         'subject': subject_name,
                         'teacher': teacher_name,
                         'room': room,
-                        'type': 'Lecture',
+                        'type': 'THEORY',  # FIX 1 PARITY: was 'Lecture'
                         'batch': None,
                         'score': self._calculate_candidate_score(
                             subject_name, teacher_name, day, slot_index, year, division
                         )
                     }
-                    
                     candidates.append(candidate)
-        
+
         return candidates
     
     def _generate_practical_candidates(self, slot_info):
         """
         Generate practical candidates.
-        Use LabScheduler for practicals. This is just a fallback/empty.
+
+        [FIX 7 / DEAD CODE] Use LabScheduler for practicals.
+        This stub is intentionally empty; returning [] ensures no accidental
+        backtracking-based lab placement from this path.
         """
         return []
-    
-    # _generate_practical_candidates is now handled by LabScheduler (Hard Constraints)
-    # Keeping this simple strictly for safety, but it should return empty
-    # as we don't want backtracking to place random practicals.
 
-    
+    # _generate_practical_candidates is handled exclusively by LabScheduler.
+    # This stub exists only to satisfy the call in generate_candidates().
+
     def _calculate_candidate_score(self, subject, teacher, day, slot_index, year, division):
         """
         Calculate soft constraint penalty score for a candidate.

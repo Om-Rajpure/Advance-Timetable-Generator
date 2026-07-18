@@ -1,13 +1,13 @@
-Timetable entries: 15
-Unique Rooms: ['R101', 'R102', 'R103', 'R104', 'R201', 'R202']
+Timetable entries: 268
+Unique Rooms: ['Lab 1', 'Lab 2', 'Lab 3', 'Lab 4', 'Lab 5', 'Lab 6', 'Room-101', 'Room-102', 'Room-103', 'Room-104', 'Room-105']
 Sample Slot:
 {
-  "year": "FE",
+  "day": "Friday",
   "division": "A",
-  "day": "Monday",
-  "time": "9:00-10:00",
-  "subject": "Math",
-  "teacher": "Dr. Sharma",
-  "room": "R101",
-  "type": "Lecture"
+  "room": "Room-102",
+  "slot": 6,
+  "subject": "Dl",
+  "teacher": "Mr. S. R. Rane",
+  "type": "THEORY",
+  "year": "BE"
 }

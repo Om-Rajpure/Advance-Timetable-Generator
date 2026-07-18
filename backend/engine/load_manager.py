@@ -8,8 +8,11 @@ Ensures:
 3. Subject-Batch continuity (Same teacher for same subject-batch)
 """
 
+import logging
 from collections import defaultdict
 import random
+
+logger = logging.getLogger(__name__)
 
 class TeacherLoadManager:
     def __init__(self, context):
@@ -35,8 +38,20 @@ class TeacherLoadManager:
         # Lab: (subject_name, year, division, batch) -> teacher_name
         self.lab_assignment_map = {}
         
-        # 3. Cache available teachers per subject
+        # 3. Cache available teachers per subject (includes fallback from teacher.subjects)
         self.subject_teacher_cache = self._build_subject_teacher_map()
+
+        # 4. Strict subject->teacher map built ONLY from teacherSubjectMap.
+        #    Used by pick_teacher() — never falls back to all teachers.
+        self.subject_teacher_map = defaultdict(list)
+        for mapping in self.smart_input.get('teacherSubjectMap', []):
+            subj = mapping.get('subjectName', '')
+            t = mapping.get('teacherName', '')
+            if subj and t and t not in self.subject_teacher_map[subj]:
+                self.subject_teacher_map[subj].append(t)
+
+        # Reference to TimetableState (set externally after state is created)
+        self._state = None
         
     def _build_subject_teacher_map(self):
         """Pre-process which teachers can teach which subject."""
@@ -196,6 +211,62 @@ class TeacherLoadManager:
         if not teacher: return
         self.daily_load[teacher][day] += duration
         self.weekly_load[teacher] += duration
+
+    def record_assignment(self, teacher, day, slot):
+        """
+        Record a theory slot assignment in load counters.
+        Alias for commit_load(duration=1) — used by CP-SAT TheoryScheduler.
+        """
+        self.commit_load(teacher, day, duration=1)
+
+    def is_available(self, teacher, day, slot):
+        """
+        Check if a teacher is free at (day, slot) using the state's
+        teacher_assignments dict.  Falls back to True when state is not set.
+        Used by CP-SAT TheoryScheduler to verify picks from pick_teacher().
+        """
+        if self._state is not None:
+            return self._state.is_teacher_available(teacher, day, slot)
+        # Heuristic fallback: use daily load
+        return self.daily_load[teacher][day] < self.MAX_DAILY_LOAD
+
+    def pick_teacher(self, subject_name, day, slot):
+        """
+        Return a teacher for subject_name at (day, slot).
+        1. Consult mapped teachers from subject_teacher_cache (built from teacherSubjectMap + teacher.subjects).
+        2. Return least loaded available mapped teacher.
+        3. Fallback to all teachers if no mapped teacher is available.
+        4. Absolute fallback to least loaded mapped teacher/teacher to prevent dropping lectures.
+        """
+        mapped = self.subject_teacher_cache.get(subject_name, [])
+        if not mapped and hasattr(self, 'subject_teacher_map'):
+            mapped = self.subject_teacher_map.get(subject_name, [])
+
+        if mapped:
+            sorted_teachers = sorted(mapped, key=lambda t: self.weekly_load.get(t, 0))
+            for teacher in sorted_teachers:
+                if self.is_available(teacher, day, slot):
+                    return teacher
+
+        # Fallback 1: Any available teacher from smartInputData
+        all_teachers = [
+            t.get('name')
+            for t in self.smart_input.get('teachers', [])
+            if isinstance(t, dict) and t.get('name')
+        ]
+        if all_teachers:
+            sorted_all = sorted(all_teachers, key=lambda t: self.weekly_load.get(t, 0))
+            for teacher in sorted_all:
+                if self.is_available(teacher, day, slot):
+                    return teacher
+            # Fallback 2: Everyone is busy at this slot, return least loaded teacher
+            return sorted_all[0]
+
+        # Fallback 3: Return least loaded mapped teacher if present
+        if mapped:
+            return sorted(mapped, key=lambda t: self.weekly_load.get(t, 0))[0]
+
+        return "TBA"
 
     def rollback_load(self, teacher, day, duration=1):
         """Decrement load counters on rollback."""

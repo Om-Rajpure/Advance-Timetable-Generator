@@ -8,13 +8,13 @@
             "slot": 1,
             "year": "SE",
             "division": "A",
-            "batch": "A1",
-            "subject": "AI Lab",
-            "teacher": "John",
-            "room": "Lab-1",
+            "batch": "B1",
+            "subject": "DL Lab",
+            "teacher": "Ms. K. S. Patil",
+            "room": "lab 1",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_SE_A_Monday_0_A1_0",
+            "id": "LAB_SE_A_Monday_0_B1_0",
             "isPractical": true
           },
           {
@@ -22,13 +22,13 @@
             "slot": 2,
             "year": "SE",
             "division": "A",
-            "batch": "A1",
-            "subject": "AI Lab",
-            "teacher": "John",
-            "room": "Lab-1",
+            "batch": "B1",
+            "subject": "DL Lab",
+            "teacher": "Ms. K. S. Patil",
+            "room": "lab 1",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_SE_A_Monday_0_A1_1",
+            "id": "LAB_SE_A_Monday_0_B1_1",
             "isPractical": true
           },
           {
@@ -36,13 +36,13 @@
             "slot": 1,
             "year": "SE",
             "division": "A",
-            "batch": "A2",
-            "subject": "AI Lab",
-            "teacher": "Sarah",
-            "room": "Lab-2",
+            "batch": "B3",
+            "subject": "BT Lab",
+            "teacher": "Dr. O.M. Rajpure",
+            "room": "lab 2",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_SE_A_Monday_0_A2_0",
+            "id": "LAB_SE_A_Monday_0_B3_0",
             "isPractical": true
           },
           {
@@ -50,110 +50,254 @@
             "slot": 2,
             "year": "SE",
             "division": "A",
-            "batch": "A2",
-            "subject": "AI Lab",
-            "teacher": "Sarah",
-            "room": "Lab-2",
+            "batch": "B3",
+            "subject": "BT Lab",
+            "teacher": "Dr. O.M. Rajpure",
+            "room": "lab 2",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_SE_A_Monday_0_A2_1",
+            "id": "LAB_SE_A_Monday_0_B3_1",
             "isPractical": true
           },
           {
-            "day": "Monday",
-            "slot": 1,
-            "year": "SE",
-            "division": "A",
-            "batch": "A3",
-            "subject": "Python Lab",
-            "teacher": "Neha",
-            "room": "Lab-3",
-            "type": "LAB",
-            "sessionLength": 2,
-            "id": "LAB_SE_A_Monday_0_A3_0",
-            "isPractical": true
-          },
-          {
-            "day": "Monday",
-            "slot": 2,
-            "year": "SE",
-            "division": "A",
-            "batch": "A3",
-            "subject": "Python Lab",
-            "teacher": "Neha",
-            "room": "Lab-3",
-            "type": "LAB",
-            "sessionLength": 2,
-            "id": "LAB_SE_A_Monday_0_A3_1",
-            "isPractical": true
-          },
-          {
-            "year": "SE",
-            "division": "A",
-            "day": "Monday",
-            "slot": 3,
-            "subject": "Machine Learning",
-            "teacher": "Neha",
-            "type": "THEORY",
-            "room": "Room-2"
-          },
-          {
-            "year": "SE",
-            "division": "A",
             "day": "Monday",
             "slot": 4,
-            "subject": "AI",
-            "teacher": "Sarah",
-            "type": "THEORY",
-            "room": "Room-2"
-          }
-        ],
-        "Wednesday": [
-          {
             "year": "SE",
             "division": "A",
-            "day": "Wednesday",
-            "slot": 1,
-            "subject": "Machine Learning",
-            "teacher": "Neha",
-            "type": "THEORY",
-            "room": "Room-2"
-          }
-        ],
-        "Friday": [
+            "subject": "COA",
+            "teacher": "Mrs. V. Puthran",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
           {
+            "day": "Monday",
+            "slot": 5,
             "year": "SE",
             "division": "A",
-            "day": "Friday",
-            "slot": 1,
-            "subject": "Machine Learning",
-            "teacher": "Neha",
-            "type": "THEORY",
-            "room": "Room-2"
+            "subject": "ED",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-101",
+            "type": "THEORY"
           }
         ],
         "Tuesday": [
           {
-            "year": "SE",
-            "division": "A",
             "day": "Tuesday",
             "slot": 1,
-            "subject": "AI",
-            "teacher": "Sarah",
-            "type": "THEORY",
-            "room": "Room-2"
+            "year": "SE",
+            "division": "A",
+            "batch": "B1",
+            "subject": "BT Lab",
+            "teacher": "Dr. O.M. Rajpure",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_A_Tuesday_0_B1_0",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 2,
+            "year": "SE",
+            "division": "A",
+            "batch": "B1",
+            "subject": "BT Lab",
+            "teacher": "Dr. O.M. Rajpure",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_A_Tuesday_0_B1_1",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 4,
+            "year": "SE",
+            "division": "A",
+            "subject": "ESE",
+            "teacher": "Mrs. P. Gadre",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Tuesday",
+            "slot": 7,
+            "year": "SE",
+            "division": "A",
+            "subject": "ED",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Tuesday",
+            "slot": 5,
+            "year": "SE",
+            "division": "A",
+            "subject": "FSJP",
+            "teacher": "Ms. K. S. Patil",
+            "room": "Room-101",
+            "type": "THEORY"
+          }
+        ],
+        "Wednesday": [
+          {
+            "day": "Wednesday",
+            "slot": 1,
+            "year": "SE",
+            "division": "A",
+            "batch": "B2",
+            "subject": "BT Lab",
+            "teacher": "Dr. O.M. Rajpure",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_A_Wednesday_0_B2_0",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 2,
+            "year": "SE",
+            "division": "A",
+            "batch": "B2",
+            "subject": "BT Lab",
+            "teacher": "Dr. O.M. Rajpure",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_A_Wednesday_0_B2_1",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 3,
+            "year": "SE",
+            "division": "A",
+            "subject": "COA",
+            "teacher": "Mrs. V. Puthran",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Wednesday",
+            "slot": 4,
+            "year": "SE",
+            "division": "A",
+            "subject": "COA",
+            "teacher": "Mrs. V. Puthran",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Wednesday",
+            "slot": 8,
+            "year": "SE",
+            "division": "A",
+            "subject": "ESE",
+            "teacher": "Mrs. P. Gadre",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Wednesday",
+            "slot": 5,
+            "year": "SE",
+            "division": "A",
+            "subject": "FSJP",
+            "teacher": "Ms. K. S. Patil",
+            "room": "Room-101",
+            "type": "THEORY"
           }
         ],
         "Thursday": [
           {
-            "year": "SE",
-            "division": "A",
             "day": "Thursday",
             "slot": 1,
-            "subject": "AI",
-            "teacher": "Sarah",
-            "type": "THEORY",
-            "room": "Room-2"
+            "year": "SE",
+            "division": "A",
+            "batch": "B2",
+            "subject": "DL Lab",
+            "teacher": "Ms. K. S. Patil",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_A_Thursday_0_B2_0",
+            "isPractical": true
+          },
+          {
+            "day": "Thursday",
+            "slot": 2,
+            "year": "SE",
+            "division": "A",
+            "batch": "B2",
+            "subject": "DL Lab",
+            "teacher": "Ms. K. S. Patil",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_A_Thursday_0_B2_1",
+            "isPractical": true
+          },
+          {
+            "day": "Thursday",
+            "slot": 3,
+            "year": "SE",
+            "division": "A",
+            "subject": "FSJP",
+            "teacher": "Ms. K. S. Patil",
+            "room": "Room-101",
+            "type": "THEORY"
+          }
+        ],
+        "Friday": [
+          {
+            "day": "Friday",
+            "slot": 1,
+            "year": "SE",
+            "division": "A",
+            "batch": "B3",
+            "subject": "DL Lab",
+            "teacher": "Ms. K. S. Patil",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_A_Friday_0_B3_0",
+            "isPractical": true
+          },
+          {
+            "day": "Friday",
+            "slot": 2,
+            "year": "SE",
+            "division": "A",
+            "batch": "B3",
+            "subject": "DL Lab",
+            "teacher": "Ms. K. S. Patil",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_A_Friday_0_B3_1",
+            "isPractical": true
+          },
+          {
+            "day": "Friday",
+            "slot": 3,
+            "year": "SE",
+            "division": "A",
+            "subject": "ESE",
+            "teacher": "Mrs. P. Gadre",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 7,
+            "year": "SE",
+            "division": "A",
+            "subject": "ED",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-101",
+            "type": "THEORY"
           }
         ]
       }
@@ -163,155 +307,1391 @@
         "Monday": [
           {
             "day": "Monday",
-            "slot": 4,
+            "slot": 1,
             "year": "SE",
             "division": "B",
             "batch": "B1",
-            "subject": "Python Lab",
-            "teacher": "Neha",
-            "room": "Lab-1",
+            "subject": "DL Lab",
+            "teacher": "Mrs. V. Puthran",
+            "room": "lab 3",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_SE_B_Monday_3_B1_0",
+            "id": "LAB_SE_B_Monday_0_B1_0",
             "isPractical": true
           },
           {
             "day": "Monday",
-            "slot": 5,
+            "slot": 2,
             "year": "SE",
             "division": "B",
             "batch": "B1",
-            "subject": "Python Lab",
-            "teacher": "Neha",
-            "room": "Lab-1",
+            "subject": "DL Lab",
+            "teacher": "Mrs. V. Puthran",
+            "room": "lab 3",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_SE_B_Monday_3_B1_1",
+            "id": "LAB_SE_B_Monday_0_B1_1",
             "isPractical": true
           },
           {
             "day": "Monday",
-            "slot": 4,
-            "year": "SE",
-            "division": "B",
-            "batch": "B2",
-            "subject": "AI Lab",
-            "teacher": "John",
-            "room": "Lab-2",
-            "type": "LAB",
-            "sessionLength": 2,
-            "id": "LAB_SE_B_Monday_3_B2_0",
-            "isPractical": true
-          },
-          {
-            "day": "Monday",
-            "slot": 5,
-            "year": "SE",
-            "division": "B",
-            "batch": "B2",
-            "subject": "AI Lab",
-            "teacher": "John",
-            "room": "Lab-2",
-            "type": "LAB",
-            "sessionLength": 2,
-            "id": "LAB_SE_B_Monday_3_B2_1",
-            "isPractical": true
-          },
-          {
-            "day": "Monday",
-            "slot": 4,
+            "slot": 1,
             "year": "SE",
             "division": "B",
             "batch": "B3",
-            "subject": "AI Lab",
-            "teacher": "Amit",
-            "room": "Lab-3",
+            "subject": "BT Lab",
+            "teacher": "Mrs. P. Gadre",
+            "room": "lab 4",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_SE_B_Monday_3_B3_0",
+            "id": "LAB_SE_B_Monday_0_B3_0",
             "isPractical": true
           },
           {
             "day": "Monday",
-            "slot": 5,
+            "slot": 2,
             "year": "SE",
             "division": "B",
             "batch": "B3",
-            "subject": "AI Lab",
-            "teacher": "Amit",
-            "room": "Lab-3",
+            "subject": "BT Lab",
+            "teacher": "Mrs. P. Gadre",
+            "room": "lab 4",
             "type": "LAB",
             "sessionLength": 2,
-            "id": "LAB_SE_B_Monday_3_B3_1",
+            "id": "LAB_SE_B_Monday_0_B3_1",
             "isPractical": true
           },
           {
-            "year": "SE",
-            "division": "B",
             "day": "Monday",
             "slot": 3,
-            "subject": "Machine Learning",
-            "teacher": "Sarah",
-            "type": "THEORY",
-            "room": "Room-1"
-          }
-        ],
-        "Wednesday": [
-          {
             "year": "SE",
             "division": "B",
-            "day": "Wednesday",
-            "slot": 1,
-            "subject": "Machine Learning",
-            "teacher": "Sarah",
-            "type": "THEORY",
-            "room": "Room-1"
-          }
-        ],
-        "Friday": [
-          {
-            "year": "SE",
-            "division": "B",
-            "day": "Friday",
-            "slot": 1,
-            "subject": "Machine Learning",
-            "teacher": "Sarah",
-            "type": "THEORY",
-            "room": "Room-1"
+            "subject": "ESE",
+            "teacher": "Mrs. P. Gadre",
+            "room": "Room-101",
+            "type": "THEORY"
           },
           {
+            "day": "Monday",
+            "slot": 4,
             "year": "SE",
             "division": "B",
-            "day": "Friday",
-            "slot": 2,
-            "subject": "AI",
-            "teacher": "Neha",
-            "type": "THEORY",
-            "room": "Room-1"
+            "subject": "ED",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-102",
+            "type": "THEORY"
           }
         ],
         "Tuesday": [
           {
-            "year": "SE",
-            "division": "B",
             "day": "Tuesday",
             "slot": 1,
-            "subject": "AI",
-            "teacher": "Neha",
-            "type": "THEORY",
-            "room": "Room-1"
+            "year": "SE",
+            "division": "B",
+            "batch": "B1",
+            "subject": "BT Lab",
+            "teacher": "Mrs. V. Puthran",
+            "room": "lab 2",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_B_Tuesday_0_B1_0",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 2,
+            "year": "SE",
+            "division": "B",
+            "batch": "B1",
+            "subject": "BT Lab",
+            "teacher": "Mrs. V. Puthran",
+            "room": "lab 2",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_B_Tuesday_0_B1_1",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 3,
+            "year": "SE",
+            "division": "B",
+            "subject": "ESE",
+            "teacher": "Mrs. P. Gadre",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Tuesday",
+            "slot": 6,
+            "year": "SE",
+            "division": "B",
+            "subject": "ESE",
+            "teacher": "Mrs. P. Gadre",
+            "room": "Room-101",
+            "type": "THEORY"
+          }
+        ],
+        "Wednesday": [
+          {
+            "day": "Wednesday",
+            "slot": 1,
+            "year": "SE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "BT Lab",
+            "teacher": "Mrs. V. Puthran",
+            "room": "lab 2",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_B_Wednesday_0_B2_0",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 2,
+            "year": "SE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "BT Lab",
+            "teacher": "Mrs. V. Puthran",
+            "room": "lab 2",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_B_Wednesday_0_B2_1",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 7,
+            "year": "SE",
+            "division": "B",
+            "subject": "ED",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Wednesday",
+            "slot": 3,
+            "year": "SE",
+            "division": "B",
+            "subject": "FSJP",
+            "teacher": "Ms. K. S. Patil",
+            "room": "Room-102",
+            "type": "THEORY"
           }
         ],
         "Thursday": [
           {
-            "year": "SE",
-            "division": "B",
             "day": "Thursday",
             "slot": 1,
+            "year": "SE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "DL Lab",
+            "teacher": "Mrs. V. Puthran",
+            "room": "lab 2",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_B_Thursday_0_B2_0",
+            "isPractical": true
+          },
+          {
+            "day": "Thursday",
+            "slot": 2,
+            "year": "SE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "DL Lab",
+            "teacher": "Mrs. V. Puthran",
+            "room": "lab 2",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_B_Thursday_0_B2_1",
+            "isPractical": true
+          },
+          {
+            "day": "Thursday",
+            "slot": 3,
+            "year": "SE",
+            "division": "B",
+            "subject": "COA",
+            "teacher": "Mrs. V. Puthran",
+            "room": "Room-102",
+            "type": "THEORY"
+          },
+          {
+            "day": "Thursday",
+            "slot": 5,
+            "year": "SE",
+            "division": "B",
+            "subject": "COA",
+            "teacher": "Mrs. V. Puthran",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Thursday",
+            "slot": 7,
+            "year": "SE",
+            "division": "B",
+            "subject": "ED",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Thursday",
+            "slot": 4,
+            "year": "SE",
+            "division": "B",
+            "subject": "FSJP",
+            "teacher": "Ms. K. S. Patil",
+            "room": "Room-101",
+            "type": "THEORY"
+          }
+        ],
+        "Friday": [
+          {
+            "day": "Friday",
+            "slot": 1,
+            "year": "SE",
+            "division": "B",
+            "batch": "B3",
+            "subject": "DL Lab",
+            "teacher": "Mrs. V. Puthran",
+            "room": "lab 2",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_B_Friday_0_B3_0",
+            "isPractical": true
+          },
+          {
+            "day": "Friday",
+            "slot": 2,
+            "year": "SE",
+            "division": "B",
+            "batch": "B3",
+            "subject": "DL Lab",
+            "teacher": "Mrs. V. Puthran",
+            "room": "lab 2",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_SE_B_Friday_0_B3_1",
+            "isPractical": true
+          },
+          {
+            "day": "Friday",
+            "slot": 4,
+            "year": "SE",
+            "division": "B",
+            "subject": "COA",
+            "teacher": "Mrs. V. Puthran",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 5,
+            "year": "SE",
+            "division": "B",
+            "subject": "FSJP",
+            "teacher": "Ms. K. S. Patil",
+            "room": "Room-101",
+            "type": "THEORY"
+          }
+        ]
+      }
+    }
+  },
+  "TE": {
+    "A": {
+      "timetable": {
+        "Monday": [
+          {
+            "day": "Monday",
+            "slot": 1,
+            "year": "TE",
+            "division": "A",
+            "batch": "B1",
+            "subject": "WCN Lab",
+            "teacher": "Dr. M. R. Shetty",
+            "room": "lab 5",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_TE_A_Monday_0_B1_0",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 2,
+            "year": "TE",
+            "division": "A",
+            "batch": "B1",
+            "subject": "WCN Lab",
+            "teacher": "Dr. M. R. Shetty",
+            "room": "lab 5",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_TE_A_Monday_0_B1_1",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 3,
+            "year": "TE",
+            "division": "A",
+            "subject": "CN",
+            "teacher": "Dr. O.M. Rajpure",
+            "room": "Room-102",
+            "type": "THEORY"
+          },
+          {
+            "day": "Monday",
+            "slot": 4,
+            "year": "TE",
+            "division": "A",
             "subject": "AI",
-            "teacher": "Neha",
-            "type": "THEORY",
-            "room": "Room-1"
+            "teacher": "Mrs. D. S. Sawant",
+            "room": "Room-103",
+            "type": "THEORY"
+          }
+        ],
+        "Tuesday": [
+          {
+            "day": "Tuesday",
+            "slot": 1,
+            "year": "TE",
+            "division": "A",
+            "batch": "B2",
+            "subject": "WCN Lab",
+            "teacher": "Dr. M. R. Shetty",
+            "room": "lab 3",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_TE_A_Tuesday_0_B2_0",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 2,
+            "year": "TE",
+            "division": "A",
+            "batch": "B2",
+            "subject": "WCN Lab",
+            "teacher": "Dr. M. R. Shetty",
+            "room": "lab 3",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_TE_A_Tuesday_0_B2_1",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 4,
+            "year": "TE",
+            "division": "A",
+            "subject": "AI",
+            "teacher": "Mrs. D. S. Sawant",
+            "room": "Room-102",
+            "type": "THEORY"
+          }
+        ],
+        "Wednesday": [
+          {
+            "day": "Wednesday",
+            "slot": 1,
+            "year": "TE",
+            "division": "A",
+            "batch": "B3",
+            "subject": "WCN Lab",
+            "teacher": "Dr. M. R. Shetty",
+            "room": "lab 3",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_TE_A_Wednesday_0_B3_0",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 2,
+            "year": "TE",
+            "division": "A",
+            "batch": "B3",
+            "subject": "WCN Lab",
+            "teacher": "Dr. M. R. Shetty",
+            "room": "lab 3",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_TE_A_Wednesday_0_B3_1",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 3,
+            "year": "TE",
+            "division": "A",
+            "subject": "DWM",
+            "teacher": "Dr. M. R. Shetty",
+            "room": "Room-103",
+            "type": "THEORY"
+          },
+          {
+            "day": "Wednesday",
+            "slot": 4,
+            "year": "TE",
+            "division": "A",
+            "subject": "DWM",
+            "teacher": "Dr. M. R. Shetty",
+            "room": "Room-102",
+            "type": "THEORY"
+          }
+        ],
+        "Thursday": [
+          {
+            "day": "Thursday",
+            "slot": 3,
+            "year": "TE",
+            "division": "A",
+            "subject": "CN",
+            "teacher": "Dr. O.M. Rajpure",
+            "room": "Room-103",
+            "type": "THEORY"
+          },
+          {
+            "day": "Thursday",
+            "slot": 4,
+            "year": "TE",
+            "division": "A",
+            "subject": "AI",
+            "teacher": "Mrs. D. S. Sawant",
+            "room": "Room-102",
+            "type": "THEORY"
+          }
+        ],
+        "Friday": [
+          {
+            "day": "Friday",
+            "slot": 3,
+            "year": "TE",
+            "division": "A",
+            "subject": "CN",
+            "teacher": "Dr. O.M. Rajpure",
+            "room": "Room-102",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 4,
+            "year": "TE",
+            "division": "A",
+            "subject": "DWM",
+            "teacher": "Dr. M. R. Shetty",
+            "room": "Room-102",
+            "type": "THEORY"
+          }
+        ]
+      }
+    },
+    "B": {
+      "timetable": {
+        "Monday": [
+          {
+            "day": "Monday",
+            "slot": 1,
+            "year": "TE",
+            "division": "B",
+            "batch": "B1",
+            "subject": "WCN Lab",
+            "teacher": "Mrs. K. Singh",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_TE_B_Monday_0_B1_0",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 2,
+            "year": "TE",
+            "division": "B",
+            "batch": "B1",
+            "subject": "WCN Lab",
+            "teacher": "Mrs. K. Singh",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_TE_B_Monday_0_B1_1",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 3,
+            "year": "TE",
+            "division": "B",
+            "subject": "DWM",
+            "teacher": "Dr. M. R. Shetty",
+            "room": "Room-103",
+            "type": "THEORY"
+          }
+        ],
+        "Tuesday": [
+          {
+            "day": "Tuesday",
+            "slot": 1,
+            "year": "TE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "WCN Lab",
+            "teacher": "Mrs. P. Gadre",
+            "room": "lab 4",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_TE_B_Tuesday_0_B2_0",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 2,
+            "year": "TE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "WCN Lab",
+            "teacher": "Mrs. P. Gadre",
+            "room": "lab 4",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_TE_B_Tuesday_0_B2_1",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 3,
+            "year": "TE",
+            "division": "B",
+            "subject": "AI",
+            "teacher": "Mrs. D. S. Sawant",
+            "room": "Room-102",
+            "type": "THEORY"
+          }
+        ],
+        "Wednesday": [
+          {
+            "day": "Wednesday",
+            "slot": 1,
+            "year": "TE",
+            "division": "B",
+            "batch": "B3",
+            "subject": "WCN Lab",
+            "teacher": "Mrs. P. Gadre",
+            "room": "lab 4",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_TE_B_Wednesday_0_B3_0",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 2,
+            "year": "TE",
+            "division": "B",
+            "batch": "B3",
+            "subject": "WCN Lab",
+            "teacher": "Mrs. P. Gadre",
+            "room": "lab 4",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_TE_B_Wednesday_0_B3_1",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 3,
+            "year": "TE",
+            "division": "B",
+            "subject": "CN",
+            "teacher": "Dr. O.M. Rajpure",
+            "room": "Room-104",
+            "type": "THEORY"
+          }
+        ],
+        "Friday": [
+          {
+            "day": "Friday",
+            "slot": 1,
+            "year": "TE",
+            "division": "B",
+            "subject": "CN",
+            "teacher": "Dr. O.M. Rajpure",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 2,
+            "year": "TE",
+            "division": "B",
+            "subject": "CN",
+            "teacher": "Dr. O.M. Rajpure",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 3,
+            "year": "TE",
+            "division": "B",
+            "subject": "DWM",
+            "teacher": "Dr. M. R. Shetty",
+            "room": "Room-103",
+            "type": "THEORY"
+          }
+        ],
+        "Thursday": [
+          {
+            "day": "Thursday",
+            "slot": 2,
+            "year": "TE",
+            "division": "B",
+            "subject": "AI",
+            "teacher": "Mrs. D. S. Sawant",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Thursday",
+            "slot": 3,
+            "year": "TE",
+            "division": "B",
+            "subject": "AI",
+            "teacher": "Mrs. D. S. Sawant",
+            "room": "Room-104",
+            "type": "THEORY"
+          },
+          {
+            "day": "Thursday",
+            "slot": 1,
+            "year": "TE",
+            "division": "B",
+            "subject": "DWM",
+            "teacher": "Dr. M. R. Shetty",
+            "room": "Room-101",
+            "type": "THEORY"
+          }
+        ]
+      }
+    }
+  },
+  "BE": {
+    "A": {
+      "timetable": {
+        "Monday": [
+          {
+            "day": "Monday",
+            "slot": 1,
+            "year": "BE",
+            "division": "A",
+            "batch": "B1",
+            "subject": "DL Lab",
+            "teacher": "Mrs. D. S. Sawant",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Monday_0_B1_0",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 2,
+            "year": "BE",
+            "division": "A",
+            "batch": "B1",
+            "subject": "DL Lab",
+            "teacher": "Mrs. D. S. Sawant",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Monday_0_B1_1",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 1,
+            "year": "BE",
+            "division": "A",
+            "batch": "B2",
+            "subject": "DL Lab",
+            "teacher": "TBA",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Monday_0_B2_0",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 2,
+            "year": "BE",
+            "division": "A",
+            "batch": "B2",
+            "subject": "DL Lab",
+            "teacher": "TBA",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Monday_0_B2_1",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 1,
+            "year": "BE",
+            "division": "A",
+            "batch": "B3",
+            "subject": "BDA Lab",
+            "teacher": "TBA",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Monday_0_B3_0",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 2,
+            "year": "BE",
+            "division": "A",
+            "batch": "B3",
+            "subject": "BDA Lab",
+            "teacher": "TBA",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Monday_0_B3_1",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 6,
+            "year": "BE",
+            "division": "A",
+            "subject": "DL",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Monday",
+            "slot": 7,
+            "year": "BE",
+            "division": "A",
+            "subject": "BT",
+            "teacher": "Mrs. P. Gadre",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Monday",
+            "slot": 3,
+            "year": "BE",
+            "division": "A",
+            "subject": "BDA",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-104",
+            "type": "THEORY"
+          }
+        ],
+        "Tuesday": [
+          {
+            "day": "Tuesday",
+            "slot": 1,
+            "year": "BE",
+            "division": "A",
+            "batch": "B1",
+            "subject": "BT Lab",
+            "teacher": "Mrs. K. Singh",
+            "room": "lab 5",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Tuesday_0_B1_0",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 2,
+            "year": "BE",
+            "division": "A",
+            "batch": "B1",
+            "subject": "BT Lab",
+            "teacher": "Mrs. K. Singh",
+            "room": "lab 5",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Tuesday_0_B1_1",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 1,
+            "year": "BE",
+            "division": "A",
+            "batch": "B3",
+            "subject": "DL Lab",
+            "teacher": "Ms. K. S. Patil",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Tuesday_0_B3_0",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 2,
+            "year": "BE",
+            "division": "A",
+            "batch": "B3",
+            "subject": "DL Lab",
+            "teacher": "Ms. K. S. Patil",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Tuesday_0_B3_1",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 5,
+            "year": "BE",
+            "division": "A",
+            "subject": "DL",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-102",
+            "type": "THEORY"
+          }
+        ],
+        "Wednesday": [
+          {
+            "day": "Wednesday",
+            "slot": 1,
+            "year": "BE",
+            "division": "A",
+            "batch": "B1",
+            "subject": "BDA Lab",
+            "teacher": "Mrs. D. S. Sawant",
+            "room": "lab 5",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Wednesday_0_B1_0",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 2,
+            "year": "BE",
+            "division": "A",
+            "batch": "B1",
+            "subject": "BDA Lab",
+            "teacher": "Mrs. D. S. Sawant",
+            "room": "lab 5",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Wednesday_0_B1_1",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 1,
+            "year": "BE",
+            "division": "A",
+            "batch": "B3",
+            "subject": "BT Lab",
+            "teacher": "Mrs. K. Singh",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Wednesday_0_B3_0",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 2,
+            "year": "BE",
+            "division": "A",
+            "batch": "B3",
+            "subject": "BT Lab",
+            "teacher": "Mrs. K. Singh",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Wednesday_0_B3_1",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 5,
+            "year": "BE",
+            "division": "A",
+            "subject": "DL",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-102",
+            "type": "THEORY"
+          },
+          {
+            "day": "Wednesday",
+            "slot": 3,
+            "year": "BE",
+            "division": "A",
+            "subject": "BDA",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-105",
+            "type": "THEORY"
+          }
+        ],
+        "Thursday": [
+          {
+            "day": "Thursday",
+            "slot": 1,
+            "year": "BE",
+            "division": "A",
+            "batch": "B2",
+            "subject": "BT Lab",
+            "teacher": "Dr. O.M. Rajpure",
+            "room": "lab 3",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Thursday_0_B2_0",
+            "isPractical": true
+          },
+          {
+            "day": "Thursday",
+            "slot": 2,
+            "year": "BE",
+            "division": "A",
+            "batch": "B2",
+            "subject": "BT Lab",
+            "teacher": "Dr. O.M. Rajpure",
+            "room": "lab 3",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Thursday_0_B2_1",
+            "isPractical": true
+          },
+          {
+            "day": "Thursday",
+            "slot": 5,
+            "year": "BE",
+            "division": "A",
+            "subject": "BT",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-102",
+            "type": "THEORY"
+          },
+          {
+            "day": "Thursday",
+            "slot": 3,
+            "year": "BE",
+            "division": "A",
+            "subject": "BDA",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-105",
+            "type": "THEORY"
+          }
+        ],
+        "Friday": [
+          {
+            "day": "Friday",
+            "slot": 1,
+            "year": "BE",
+            "division": "A",
+            "batch": "B2",
+            "subject": "BDA Lab",
+            "teacher": "Mrs. D. S. Sawant",
+            "room": "lab 3",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Friday_0_B2_0",
+            "isPractical": true
+          },
+          {
+            "day": "Friday",
+            "slot": 2,
+            "year": "BE",
+            "division": "A",
+            "batch": "B2",
+            "subject": "BDA Lab",
+            "teacher": "Mrs. D. S. Sawant",
+            "room": "lab 3",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_A_Friday_0_B2_1",
+            "isPractical": true
+          },
+          {
+            "day": "Friday",
+            "slot": 6,
+            "year": "BE",
+            "division": "A",
+            "subject": "BT",
+            "teacher": "Mrs. P. Gadre",
+            "room": "Room-101",
+            "type": "THEORY"
+          }
+        ]
+      }
+    },
+    "B": {
+      "timetable": {
+        "Monday": [
+          {
+            "day": "Monday",
+            "slot": 1,
+            "year": "BE",
+            "division": "B",
+            "batch": "B1",
+            "subject": "DL Lab",
+            "teacher": "TBA",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Monday_0_B1_0",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 2,
+            "year": "BE",
+            "division": "B",
+            "batch": "B1",
+            "subject": "DL Lab",
+            "teacher": "TBA",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Monday_0_B1_1",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 1,
+            "year": "BE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "DL Lab",
+            "teacher": "TBA",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Monday_0_B2_0",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 2,
+            "year": "BE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "DL Lab",
+            "teacher": "TBA",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Monday_0_B2_1",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 1,
+            "year": "BE",
+            "division": "B",
+            "batch": "B3",
+            "subject": "BDA Lab",
+            "teacher": "TBA",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Monday_0_B3_0",
+            "isPractical": true
+          },
+          {
+            "day": "Monday",
+            "slot": 2,
+            "year": "BE",
+            "division": "B",
+            "batch": "B3",
+            "subject": "BDA Lab",
+            "teacher": "TBA",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Monday_0_B3_1",
+            "isPractical": true
+          }
+        ],
+        "Tuesday": [
+          {
+            "day": "Tuesday",
+            "slot": 1,
+            "year": "BE",
+            "division": "B",
+            "batch": "B1",
+            "subject": "BT Lab",
+            "teacher": "Mrs. D. S. Sawant",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Tuesday_0_B1_0",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 2,
+            "year": "BE",
+            "division": "B",
+            "batch": "B1",
+            "subject": "BT Lab",
+            "teacher": "Mrs. D. S. Sawant",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Tuesday_0_B1_1",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 1,
+            "year": "BE",
+            "division": "B",
+            "batch": "B3",
+            "subject": "DL Lab",
+            "teacher": "TBA",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Tuesday_0_B3_0",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 2,
+            "year": "BE",
+            "division": "B",
+            "batch": "B3",
+            "subject": "DL Lab",
+            "teacher": "TBA",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Tuesday_0_B3_1",
+            "isPractical": true
+          },
+          {
+            "day": "Tuesday",
+            "slot": 3,
+            "year": "BE",
+            "division": "B",
+            "subject": "BDA",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-103",
+            "type": "THEORY"
+          },
+          {
+            "day": "Tuesday",
+            "slot": 4,
+            "year": "BE",
+            "division": "B",
+            "subject": "BDA",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-103",
+            "type": "THEORY"
+          }
+        ],
+        "Wednesday": [
+          {
+            "day": "Wednesday",
+            "slot": 1,
+            "year": "BE",
+            "division": "B",
+            "batch": "B1",
+            "subject": "BDA Lab",
+            "teacher": "Ms. K. S. Patil",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Wednesday_0_B1_0",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 2,
+            "year": "BE",
+            "division": "B",
+            "batch": "B1",
+            "subject": "BDA Lab",
+            "teacher": "Ms. K. S. Patil",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Wednesday_0_B1_1",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 1,
+            "year": "BE",
+            "division": "B",
+            "batch": "B3",
+            "subject": "BT Lab",
+            "teacher": "TBA",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Wednesday_0_B3_0",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 2,
+            "year": "BE",
+            "division": "B",
+            "batch": "B3",
+            "subject": "BT Lab",
+            "teacher": "TBA",
+            "room": "lab 1",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Wednesday_0_B3_1",
+            "isPractical": true
+          },
+          {
+            "day": "Wednesday",
+            "slot": 4,
+            "year": "BE",
+            "division": "B",
+            "subject": "BT",
+            "teacher": "Mrs. P. Gadre",
+            "room": "Room-103",
+            "type": "THEORY"
+          },
+          {
+            "day": "Wednesday",
+            "slot": 6,
+            "year": "BE",
+            "division": "B",
+            "subject": "BT",
+            "teacher": "Mrs. P. Gadre",
+            "room": "Room-101",
+            "type": "THEORY"
+          }
+        ],
+        "Thursday": [
+          {
+            "day": "Thursday",
+            "slot": 1,
+            "year": "BE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "BT Lab",
+            "teacher": "Mrs. P. Gadre",
+            "room": "lab 4",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Thursday_0_B2_0",
+            "isPractical": true
+          },
+          {
+            "day": "Thursday",
+            "slot": 2,
+            "year": "BE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "BT Lab",
+            "teacher": "Mrs. P. Gadre",
+            "room": "lab 4",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Thursday_0_B2_1",
+            "isPractical": true
+          },
+          {
+            "day": "Thursday",
+            "slot": 4,
+            "year": "BE",
+            "division": "B",
+            "subject": "DL",
+            "teacher": "Mrs. V. Puthran",
+            "room": "Room-103",
+            "type": "THEORY"
+          },
+          {
+            "day": "Thursday",
+            "slot": 6,
+            "year": "BE",
+            "division": "B",
+            "subject": "DL",
+            "teacher": "Mrs. V. Puthran",
+            "room": "Room-101",
+            "type": "THEORY"
+          }
+        ],
+        "Friday": [
+          {
+            "day": "Friday",
+            "slot": 1,
+            "year": "BE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "BDA Lab",
+            "teacher": "Mrs. P. Gadre",
+            "room": "lab 4",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Friday_0_B2_0",
+            "isPractical": true
+          },
+          {
+            "day": "Friday",
+            "slot": 2,
+            "year": "BE",
+            "division": "B",
+            "batch": "B2",
+            "subject": "BDA Lab",
+            "teacher": "Mrs. P. Gadre",
+            "room": "lab 4",
+            "type": "LAB",
+            "sessionLength": 2,
+            "id": "LAB_BE_B_Friday_0_B2_1",
+            "isPractical": true
+          },
+          {
+            "day": "Friday",
+            "slot": 5,
+            "year": "BE",
+            "division": "B",
+            "subject": "DL",
+            "teacher": "Mrs. V. Puthran",
+            "room": "Room-102",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 4,
+            "year": "BE",
+            "division": "B",
+            "subject": "BT",
+            "teacher": "Mrs. P. Gadre",
+            "room": "Room-103",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 3,
+            "year": "BE",
+            "division": "B",
+            "subject": "BDA",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-104",
+            "type": "THEORY"
           }
         ]
       }

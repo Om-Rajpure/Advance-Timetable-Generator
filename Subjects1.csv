@@ -1,0 +1,29 @@
+subject_name,year,weekly_lectures,type,slots
+WC,TE,3,theory,1
+DL,BE,3,theory,1
+AI,TE,3,theory,1
+AOA,TE,3,theory,1
+MIS,BE,3,theory,1
+CN,TE,3,theory,1
+SAIDS,TE,3,theory,1
+DWM,TE,3,theory,1
+COA,SE,3,theory,1
+ESE,SE,3,theory,1
+BDA,BE,3,theory,1
+NLP,BE,3,theory,1
+BT,BE,3,theory,1
+ED,SE,3,theory,1
+DSGT,SE,3,theory,1
+OE-LM,SE,3,theory,1
+FSJP,SE,3,theory,1
+WCN L,TE,1,lab,2
+DL L,BE,1,lab,2
+AI L,TE,1,lab,2
+AOA L,TE,1,lab,2
+BT L,BE,1,lab,2
+FSJP L,SE,1,lab,2
+DWM L,TE,1,lab,2
+COA L,SE,1,lab,2
+BDA L,BE,1,lab,2
+ESE L,SE,1,lab,2
+ED L,SE,1,lab,2
