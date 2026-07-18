@@ -292,13 +292,19 @@ class TheoryScheduler:
         logger.info(f"[CP-SAT] {len(x)} variables created for {len(self.all_divisions)} divisions")
 
         # ------------------------------------------------------------------
-        # D2: Exactly N lectures per subject per division
+        # D2: Exactly N lectures per subject per division (matches smart input)
         # ------------------------------------------------------------------
         weekly_req = self._get_weekly_requirements()
 
         for div in self.all_divisions:
             for subj in self.div_subjects.get(div, []):
-                required = weekly_req.get(subj, 3)
+                required = (
+                    weekly_req.get(subj)
+                    or weekly_req.get(subj.strip())
+                    or weekly_req.get(subj.strip().upper())
+                    or weekly_req.get(subj.strip().lower())
+                    or 3
+                )
                 model.add(
                     sum(
                         x[(div, subj, di, si)]
@@ -652,12 +658,47 @@ class TheoryScheduler:
     # ------------------------------------------------------------------
 
     def _get_weekly_requirements(self):
-        """Return {subj_name: int} from subjects[].weeklyLectures. Default 3."""
+        """Return {subj_name: int} reading all possible keys from smartInputData['subjects']."""
         req = {}
         for subj in self.context.get("smartInputData", {}).get("subjects", []):
+            if not isinstance(subj, dict):
+                continue
             name = subj.get("name", "")
-            count = subj.get("weeklyLectures") or subj.get("lecturesPerWeek") or 3
-            req[name] = int(count)
+            if not name:
+                continue
+
+            val = (
+                subj.get("weeklyLectures")
+                if subj.get("weeklyLectures") is not None
+                else (
+                    subj.get("lecturesPerWeek")
+                    if subj.get("lecturesPerWeek") is not None
+                    else (
+                        subj.get("weekly_lectures")
+                        if subj.get("weekly_lectures") is not None
+                        else (
+                            subj.get("weeklyCount")
+                            if subj.get("weeklyCount") is not None
+                            else (
+                                subj.get("lectures")
+                                if subj.get("lectures") is not None
+                                else 3
+                            )
+                        )
+                    )
+                )
+            )
+            try:
+                count = int(val)
+            except (ValueError, TypeError):
+                count = 3
+            if count <= 0:
+                count = 3
+
+            req[name] = count
+            req[name.strip()] = count
+            req[name.strip().upper()] = count
+            req[name.strip().lower()] = count
         return req
 
     def _pick_room(self, day_name, slot_idx, year_div=""):
