@@ -377,6 +377,62 @@ class TheoryScheduler:
                         model.add(sum(uses) <= 1)
 
         # ------------------------------------------------------------------
+        # NEW-A: Each subject appears AT MOST ONCE per day per division
+        # Without this, CP-SAT packs e.g. DSGT×3 on Monday and 0 on Tuesday.
+        # ------------------------------------------------------------------
+        for div in self.all_divisions:
+            for subj in self.div_subjects.get(div, []):
+                for di in range(days_n):
+                    slots_today = [
+                        x[(div, subj, di, si)]
+                        for si in slots
+                        if (div, subj, di, si) in x
+                    ]
+                    if slots_today:
+                        model.add(sum(slots_today) <= 1)
+
+        logger.info("[CP-SAT] NEW-A constraint applied: each subject at most once per day per division")
+
+        # ------------------------------------------------------------------
+        # NEW-B: Daily theory balance — 2 to 5 lectures per division per day
+        # Prevents packing all lectures into one day (e.g. 6 on Tuesday, 0 on Monday).
+        # The bounds are clamped so the model stays feasible when labs fill slots.
+        # ------------------------------------------------------------------
+        MIN_DAILY_THEORY = 2
+        MAX_DAILY_THEORY = 5
+        for div in self.all_divisions:
+            yr = self.year_of.get(div, "")
+            div_letter = div.split("-")[1] if "-" in div else div
+            for di in range(days_n):
+                day_name = self.days[di]
+                # Count how many slots are already consumed by labs on this day
+                lab_slots_today = sum(
+                    1 for si in slots
+                    if (day_name, si, yr, div_letter) in self.lab_cell_busy
+                )
+                free_today = len(slots) - lab_slots_today
+
+                theory_vars_today = [
+                    x[(div, subj, di, si)]
+                    for subj in self.div_subjects.get(div, [])
+                    for si in slots
+                    if (div, subj, di, si) in x
+                ]
+
+                if not theory_vars_today:
+                    continue
+
+                # Clamp bounds so model stays feasible
+                effective_min = min(MIN_DAILY_THEORY, max(0, free_today))
+                effective_max = min(MAX_DAILY_THEORY, free_today)
+
+                if effective_min <= effective_max:
+                    model.add(sum(theory_vars_today) >= effective_min)
+                    model.add(sum(theory_vars_today) <= effective_max)
+
+        logger.info("[CP-SAT] NEW-B constraint applied: daily theory balance 2-5 per division")
+
+        # ------------------------------------------------------------------
         # D5: Classroom capacity constraint
         # lab_room_busy = set of (room, day, slot) keys from state
         # ------------------------------------------------------------------

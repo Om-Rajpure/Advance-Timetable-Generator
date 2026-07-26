@@ -91,7 +91,22 @@ class TimetableScheduler:
                 print(f"DEBUG_TYPE: teachers = {type(si.get('teachers'))}")
                 print(f"DEBUG_TYPE: subjects = {type(si.get('subjects'))}")
                 print(f"DEBUG_TYPE: map = {type(si.get('teacherSubjectMap'))}")
-                
+
+            # Part 8: Diagnostic — log the exact divisions map so missing divisions
+            # (e.g. BE-C) are immediately visible in the server log.
+            print("\n[DIAG-Part8] branchData.divisions received from payload:")
+            bd_divisions = bd.get('divisions', {}) if isinstance(bd, dict) else {}
+            if bd_divisions:
+                for yr, divs in bd_divisions.items():
+                    print(f"  {yr}: {divs}")
+                total_classes = sum(len(d) for d in bd_divisions.values())
+                print(f"  Total divisions: {total_classes}")
+            else:
+                print("  WARNING: branchData.divisions is EMPTY or missing!")
+            print("[DIAG-Part8] academicYears:", bd.get('academicYears', []) if isinstance(bd, dict) else "N/A")
+            print()
+
+
             # 1. Validate & Normalize Inputs
             # NEW: Strict Data Normalization Layer
             # from .data_normalizer import DataNormalizer, NormalizationError (Moved to top)

@@ -52,7 +52,14 @@ class TeacherLoadManager:
 
         # Reference to TimetableState (set externally after state is created)
         self._state = None
-        
+
+        # DIAGNOSTIC: log the full subject→teacher map so field-name bugs are visible
+        logger.info("[LoadManager] subject_teacher_map at construction:")
+        for subj, teachers in sorted(self.subject_teacher_map.items()):
+            logger.info(f"  '{subj}' -> {teachers}")
+        if not self.subject_teacher_map:
+            logger.warning("[LoadManager] subject_teacher_map is EMPTY — check teacherSubjectMap field names in payload")
+
     def _build_subject_teacher_map(self):
         """Pre-process which teachers can teach which subject."""
         mapping = defaultdict(list)
@@ -233,40 +240,49 @@ class TeacherLoadManager:
     def pick_teacher(self, subject_name, day, slot):
         """
         Return a teacher for subject_name at (day, slot).
-        1. Consult mapped teachers from subject_teacher_cache (built from teacherSubjectMap + teacher.subjects).
-        2. Return least loaded available mapped teacher.
-        3. Fallback to all teachers if no mapped teacher is available.
-        4. Absolute fallback to least loaded mapped teacher/teacher to prevent dropping lectures.
+
+        Step 5.3 — STRICT: Only teachers explicitly mapped to this subject are
+        considered.  The previous fallback to the entire teacher pool caused
+        subjects to be taught by completely wrong teachers (e.g. AI → Mane,
+        WC → Yeole).  That fallback is now REMOVED.
+
+        Priority:
+        1. subject_teacher_map  (built strictly from teacherSubjectMap entries)
+        2. subject_teacher_cache (also parses comma-split keys, slightly broader)
+        3. Absolute last resort: least-loaded mapped teacher (avoids TBA but
+           keeps subject assignment correct)
+        4. "TBA" only when truly no mapping exists for this subject at all.
         """
-        mapped = self.subject_teacher_cache.get(subject_name, [])
-        if not mapped and hasattr(self, 'subject_teacher_map'):
-            mapped = self.subject_teacher_map.get(subject_name, [])
+        # Collect mapped candidates — prefer subject_teacher_map (strict) but
+        # fall through to subject_teacher_cache which catches comma-split variants.
+        mapped = list(self.subject_teacher_map.get(subject_name, []))
+        if not mapped:
+            mapped = list(self.subject_teacher_cache.get(subject_name, []))
 
-        if mapped:
-            sorted_teachers = sorted(mapped, key=lambda t: self.weekly_load.get(t, 0))
-            for teacher in sorted_teachers:
-                if self.is_available(teacher, day, slot):
-                    return teacher
+        if not mapped:
+            logger.warning(
+                f"[LoadManager] pick_teacher: NO mapping found for '{subject_name}' "
+                f"— check teacherSubjectMap.  Returning TBA."
+            )
+            return "TBA"
 
-        # Fallback 1: Any available teacher from smartInputData
-        all_teachers = [
-            t.get('name')
-            for t in self.smart_input.get('teachers', [])
-            if isinstance(t, dict) and t.get('name')
-        ]
-        if all_teachers:
-            sorted_all = sorted(all_teachers, key=lambda t: self.weekly_load.get(t, 0))
-            for teacher in sorted_all:
-                if self.is_available(teacher, day, slot):
-                    return teacher
-            # Fallback 2: Everyone is busy at this slot, return least loaded teacher
-            return sorted_all[0]
+        # Sort by weekly load — least loaded first
+        sorted_teachers = sorted(mapped, key=lambda t: self.weekly_load.get(t, 0))
 
-        # Fallback 3: Return least loaded mapped teacher if present
-        if mapped:
-            return sorted(mapped, key=lambda t: self.weekly_load.get(t, 0))[0]
+        # Return first available mapped teacher
+        for teacher in sorted_teachers:
+            if self.is_available(teacher, day, slot):
+                return teacher
 
-        return "TBA"
+        # All mapped teachers are busy at this slot (e.g. two divisions need the
+        # same rare teacher simultaneously).  Return least-loaded mapped teacher
+        # rather than TBA — CP-SAT already constrained the slot so a real clash
+        # at this point is a secondary teacher conflict, not a room/div conflict.
+        logger.warning(
+            f"[LoadManager] pick_teacher: All mapped teachers for '{subject_name}' "
+            f"busy on {day} slot {slot}. Using least-loaded: {sorted_teachers[0]}"
+        )
+        return sorted_teachers[0]
 
     def rollback_load(self, teacher, day, duration=1):
         """Decrement load counters on rollback."""

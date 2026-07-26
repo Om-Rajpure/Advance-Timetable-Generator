@@ -67,57 +67,151 @@ class LabScheduler:
     def schedule_class_labs(self, class_info):
         """
         Schedule labs ensuring EVERY batch covers ALL lab subjects.
+
+        Part 7: Uses _place_all_batches_atomically() as the primary strategy so
+        all batches of a lab subject land on the SAME (day, start_slot) window.
+        Falls back to the old per-batch sequential placer only if atomic fails.
         """
         if not isinstance(class_info, dict):
             raise TypeError(f"Expected class_info dict, got {type(class_info)}")
-            
+
         year = class_info.get('year')
         division = class_info.get('division')
-        
-        # Get batches (e.g., 3)
+
+        # Get batches (e.g., B1 B2 B3)
         num_batches = int(self.lab_batches_per_year.get(year, 3))
         batches = [f"B{b+1}" for b in range(num_batches)]
-        
+
         # Get required lab subjects for this year (uses robust is_lab_subject)
         lab_subjects = [
-            s for s in self.smart_input.get('subjects', []) 
-            if s.get('year') == year 
+            s for s in self.smart_input.get('subjects', [])
+            if s.get('year') == year
             and (not s.get('division') or s.get('division') == division)
             and is_lab_subject(s)
         ]
 
         if not lab_subjects:
             print(f"  No verified lab subjects for {year}-{division}")
-            return True 
+            return True
 
         print(f"  Scheduling labs for {year}-{division} (Batches: {batches})")
         print(f"  Required Labs: {[s['name'] for s in lab_subjects]}")
-        
-        standard_duration = 2 
+
+        standard_duration = 2
         success_count = 0
-        
-        for batch in batches:
-            batch_index = int(batch[1:]) - 1 if batch[1:].isdigit() else 0
-            rotation = batch_index % len(lab_subjects)
-            subjects_to_schedule = lab_subjects[rotation:] + lab_subjects[:rotation]
-            
-            completed_subjects = 0
-            
-            for subject in subjects_to_schedule:
-                duration = int(subject.get('sessionLength') or subject.get('slots') or standard_duration)
-                
+
+        for subject in lab_subjects:
+            duration = int(subject.get('sessionLength') or subject.get('slots') or standard_duration)
+
+            # --- PRIMARY: Atomic placement (all batches at same window) ---
+            placed_atomically = self._place_all_batches_atomically(
+                year, division, batches, subject, duration
+            )
+
+            if placed_atomically:
+                success_count += 1
+                continue
+
+            # --- FALLBACK: Per-batch sequential (old behaviour) ---
+            print(
+                f"  ⚠️  Atomic placement failed for {subject['name']} "
+                f"\u2014 falling back to per-batch sequential placement"
+            )
+            batch_successes = 0
+            batch_index = 0
+            for batch in batches:
+                rotation = batch_index % len(lab_subjects)
+                batch_index += 1
                 if self._assign_batch_subject(year, division, batch, subject, duration):
-                    completed_subjects += 1
+                    batch_successes += 1
                 else:
-                    print(f"    ❌ Failed to schedule {subject['name']} for {batch}")
-            
-            if completed_subjects == len(lab_subjects):
+                    print(f"    ❌ Failed to schedule {subject['name']} for {batch} (sequential fallback)")
+
+            if batch_successes == num_batches:
                 success_count += 1
             else:
-                print(f"  ⚠️  {batch} only completed {completed_subjects}/{len(lab_subjects)} labs")
+                print(
+                    f"  ⚠️  {subject['name']}: only {batch_successes}/{num_batches} "
+                    f"batches placed (sequential fallback)"
+                )
                 
-        print(f"  Lab Summary for {year}-{division}: {success_count}/{num_batches} batches fully scheduled.")
-        return success_count == num_batches
+        print(f"  Lab Summary for {year}-{division}: {success_count}/{len(lab_subjects)} subjects fully placed.")
+        return success_count == len(lab_subjects)
+
+
+    def _place_all_batches_atomically(self, year, division, batches, subject, duration):
+        """
+        Part 7 — Atomic batch placement.
+
+        Find a single (day, start_slot) window where ALL batches are simultaneously
+        free, then commit every batch at that exact window.  This replaces the old
+        sequential per-batch loop that placed B1 at slot 0, B2 at slot 2, B3 at
+        slot 4 — resulting in batches never running at the same time.
+
+        Returns True if all batches were placed, False otherwise.
+        """
+        windows = self._get_valid_windows(year, division, duration)
+
+        for window in windows:
+            day = window['day']
+            start_slot = window['start_slot']
+
+            # Check ALL batches are free at this exact window
+            all_free = all(
+                self._is_batch_free(day, start_slot, duration, year, division, batch)
+                for batch in batches
+            )
+            if not all_free:
+                continue
+
+            # Check no batch already has a lab on this day (1 lab per batch per day)
+            if any(
+                self._does_batch_have_lab_on_day(year, division, batch, day)
+                for batch in batches
+            ):
+                continue
+
+            # Find a free physical lab room for the duration
+            lab_room = self._find_lab_room(subject, day, start_slot, duration)
+            if not lab_room:
+                continue
+
+            # Find a teacher for each batch (may be same teacher or different)
+            teachers = {}
+            all_found = True
+            for batch in batches:
+                teacher = None
+                if hasattr(self.state, 'load_manager') and self.state.load_manager:
+                    teacher = self.state.load_manager.get_best_teacher_for_lab(
+                        subject['name'], year, division, batch,
+                        day, start_slot, duration, self.state
+                    )
+                if not teacher:
+                    teacher = self._pick_fallback_teacher(subject, day, start_slot, duration)
+                if not teacher:
+                    all_found = False
+                    break
+                teachers[batch] = teacher
+
+            if not all_found:
+                continue
+
+            # All checks passed — commit all batches atomically at the same window
+            for batch in batches:
+                self._commit_assignment(
+                    year, division, batch, subject,
+                    teachers[batch], lab_room, day, start_slot, duration
+                )
+                print(
+                    f"    [Atomic] Placed {subject['name']} Batch {batch} "
+                    f"on {day} slot {start_slot}-{start_slot + duration - 1} "
+                    f"room={lab_room} teacher={teachers[batch]}"
+                )
+            return True
+
+        print(f"    [Atomic] Could not atomically place {subject['name']} for {batches} — all windows exhausted")
+        return False
+
 
     def _assign_batch_subject(self, year, division, batch, subject, duration):
         """Find a valid window and assign specific lab subject to specific batch."""
@@ -187,12 +281,23 @@ class LabScheduler:
         return False
 
     def _pick_fallback_teacher(self, subject, day, start_slot, duration):
-        all_teachers = self.smart_input.get('teachers', [])
-        for t in all_teachers:
-            t_name = t.get('name') if isinstance(t, dict) else str(t)
-            if t_name and self.state.is_teacher_available(t_name, day, start_slot):
+        """
+        Step 5.4: Return None instead of 'TBA' when no suitable teacher is found.
+        Callers check `if not teacher: continue` and retry a different window.
+        Storing 'TBA' in an assignment was masking the failure entirely.
+        """
+        # Only use teachers mapped to this subject (mirrors the strict policy in load_manager)
+        mapped = self.subject_teachers.get(subject.get('name', ''), [])
+        for t_name in mapped:
+            available = True
+            for offset in range(duration):
+                if not self.state.is_teacher_available(t_name, day, start_slot + offset):
+                    available = False
+                    break
+            if available:
                 return t_name
-        return "TBA"
+        # No mapped teacher available at this window — return None so the caller skips it
+        return None
 
     def _is_batch_free(self, day, start_slot, duration, year, division, batch):
         """Check if this specific batch is free during the window."""

@@ -1,13 +1,17 @@
-Timetable entries: 268
-Unique Rooms: ['Lab 1', 'Lab 2', 'Lab 3', 'Lab 4', 'Lab 5', 'Lab 6', 'Room-101', 'Room-102', 'Room-103', 'Room-104', 'Room-105']
+Timetable entries: 318
+Unique Rooms: ['Room-101', 'Room-102', 'Room-103', 'Room-104', 'Room-105', 'Room-106', 'lab 1', 'lab 2', 'lab 3', 'lab 4', 'lab 5']
 Sample Slot:
 {
+  "batch": "B1",
   "day": "Friday",
   "division": "A",
-  "room": "Room-102",
-  "slot": 6,
-  "subject": "Dl",
-  "teacher": "Mr. S. R. Rane",
-  "type": "THEORY",
+  "id": "LAB_BE_A_Friday_4_B1_0",
+  "isPractical": true,
+  "room": "lab 3",
+  "sessionLength": 2,
+  "slot": 5,
+  "subject": "Bt L",
+  "teacher": "Mrs. A. O. Yadav",
+  "type": "LAB",
   "year": "BE"
 }
