@@ -255,7 +255,19 @@ class TheoryScheduler:
         Build the CP-SAT model, solve it, extract the solution, and write
         placements to state via state.assign_slot(dict).
 
-        Returns dict with keys: status, time_ms, gaps, incomplete.
+        PRIORITY ORDER (hard constraints listed first, NEVER relaxed):
+          1. No student/teacher/room clash (D3/D4/D5)
+          2. Every subject scheduled EXACTLY its required weekly count (D2) — HARD
+          3. No gap within a division's day (D6 objective)
+          4. Daily balance NEW-B — SOFT: relaxed progressively across retries
+             Attempt 1: 2–5 theory/day (strict)
+             Attempt 2: 1–6 theory/day (relaxed)
+             Attempt 3: 0–∞ theory/day (curriculum-only — balance dropped entirely)
+
+        D2 is NEVER relaxed. If a subject cannot be scheduled, the solver is
+        declared INFEASIBLE — not silently dropped.
+
+        Returns dict: status, time_ms, gaps, incomplete.
         Falls back to greedy if ortools is not installed.
         """
         if not _ORTOOLS_AVAILABLE:
@@ -265,16 +277,113 @@ class TheoryScheduler:
             return self._greedy_fallback()
 
         t0 = time.perf_counter()
-
-        model = cp_model.CpModel()
-        solver = cp_model.CpSolver()
-
         days_n = len(self.days)
         slots = self.all_slots
 
         if not slots:
             logger.error("[CP-SAT] No theory slots available (all slots reserved for recess?)")
             return {"status": "INFEASIBLE", "time_ms": 0, "gaps": -1, "incomplete": []}
+
+        weekly_req = self._get_weekly_requirements()
+
+        # Print pre-solve curriculum requirement table
+        self._print_required_curriculum(weekly_req)
+
+        # ------------------------------------------------------------------
+        # Retry loop — relax NEW-B progressively; NEVER relax D2 (weekly count)
+        # ------------------------------------------------------------------
+        balance_attempts = [
+            (2, 5,  "strict balance (2–5 theory/day)"),
+            (1, 6,  "relaxed balance (1–6 theory/day)"),
+            (0, 99, "curriculum-only (no daily balance)"),
+        ]
+
+        last_status_str = "INFEASIBLE"
+        last_elapsed_ms = 0.0
+
+        for attempt_idx, (min_daily, max_daily, desc) in enumerate(balance_attempts):
+            logger.info(f"[CP-SAT] Attempt {attempt_idx + 1}/{len(balance_attempts)}: {desc}")
+            print(f"\n[CP-SAT] Attempt {attempt_idx + 1}/{len(balance_attempts)}: {desc}")
+
+            model, solver, x = self._build_model(
+                days_n, slots, weekly_req, min_daily, max_daily
+            )
+
+            logger.info("[CP-SAT] Starting solve...")
+            t_solve = time.perf_counter()
+            status_code = solver.solve(model)
+            last_elapsed_ms = (time.perf_counter() - t0) * 1000
+
+            status_names = {
+                cp_model.OPTIMAL:    "OPTIMAL",
+                cp_model.FEASIBLE:   "FEASIBLE",
+                cp_model.INFEASIBLE: "INFEASIBLE",
+                cp_model.UNKNOWN:    "UNKNOWN",
+            }
+            last_status_str = status_names.get(status_code, "UNKNOWN")
+            logger.info(f"[CP-SAT] {last_status_str} in {last_elapsed_ms:.0f}ms")
+            print(f"[CP-SAT] {last_status_str} in {last_elapsed_ms:.0f}ms")
+
+            if status_code not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+                if attempt_idx < len(balance_attempts) - 1:
+                    logger.warning(
+                        f"[CP-SAT] {last_status_str} with {desc} — retrying with relaxed balance"
+                    )
+                    print(
+                        f"[CP-SAT] {last_status_str} — curriculum constraints may conflict with "
+                        f"strict daily balance. Retrying with relaxed balance..."
+                    )
+                    continue   # try next balance setting
+                else:
+                    # All attempts infeasible — report and abort
+                    logger.error(
+                        "[CP-SAT] INFEASIBLE on all attempts — check teacher mappings, "
+                        "classroom count, and lab occupancy."
+                    )
+                    return {
+                        "status":     last_status_str,
+                        "time_ms":    last_elapsed_ms,
+                        "gaps":       -1,
+                        "incomplete": [],
+                    }
+
+            # Feasible solve found — extract and write to state
+            written_count, incomplete, solved_count = self._extract_and_write(
+                solver, x, weekly_req, days_n, slots
+            )
+            self._print_curriculum_completion_report(weekly_req, incomplete)
+
+            gaps = self._count_gaps()
+            return {
+                "status":     last_status_str,
+                "time_ms":    last_elapsed_ms,
+                "gaps":       gaps,
+                "incomplete": incomplete,
+            }
+
+        # Should never reach here, but safety return
+        return {
+            "status":     last_status_str,
+            "time_ms":    last_elapsed_ms,
+            "gaps":       -1,
+            "incomplete": [],
+        }
+
+    # ------------------------------------------------------------------
+    # Model builder — called once per retry attempt
+    # ------------------------------------------------------------------
+
+    def _build_model(self, days_n, slots, weekly_req, min_daily, max_daily):
+        """
+        Build the CP-SAT model with the given daily-balance bounds.
+
+        min_daily / max_daily control NEW-B (daily balance).
+        D2 (exact weekly count == required) is always hard regardless of these bounds.
+
+        Returns (model, solver, x_dict).
+        """
+        model  = cp_model.CpModel()
+        solver = cp_model.CpSolver()
 
         # ------------------------------------------------------------------
         # D1: Decision variables
@@ -292,10 +401,9 @@ class TheoryScheduler:
         logger.info(f"[CP-SAT] {len(x)} variables created for {len(self.all_divisions)} divisions")
 
         # ------------------------------------------------------------------
-        # D2: Exactly N lectures per subject per division (matches smart input)
+        # D2: HARD — Exactly N lectures per subject per division
+        # This constraint is NEVER relaxed across retry attempts.
         # ------------------------------------------------------------------
-        weekly_req = self._get_weekly_requirements()
-
         for div in self.all_divisions:
             for subj in self.div_subjects.get(div, []):
                 required = (
@@ -317,7 +425,6 @@ class TheoryScheduler:
         # ------------------------------------------------------------------
         # D3: At most 1 subject per slot per division
         #     Force 0 if lab already occupies that slot.
-        #     We use _slot_grid_has_entry() which is safe against list values.
         # ------------------------------------------------------------------
         for div in self.all_divisions:
             yr = self.year_of.get(div, "")
@@ -328,14 +435,12 @@ class TheoryScheduler:
                 for si in slots:
                     cell_key = (day_name, si, yr, div_letter)
 
-                    # Cell occupied by lab → force all theory vars to 0
                     if cell_key in self.lab_cell_busy:
                         for subj in self.div_subjects.get(div, []):
                             if (div, subj, di, si) in x:
                                 model.add(x[(div, subj, di, si)] == 0)
                         continue
 
-                    # At most 1 subject per slot per division
                     vars_here = [
                         x[(div, subj, di, si)]
                         for subj in self.div_subjects.get(div, [])
@@ -346,17 +451,13 @@ class TheoryScheduler:
 
         # ------------------------------------------------------------------
         # D4: Teacher no-overlap (hard)
-        # lab_teacher_busy = set of (teacher, day, slot) keys from state
         # ------------------------------------------------------------------
-        all_teachers = {
-            t for ts in self.subj_teachers.values() for t in ts
-        }
+        all_teachers = {t for ts in self.subj_teachers.values() for t in ts}
 
         for teacher in all_teachers:
             for di in range(days_n):
                 day_name = self.days[di]
                 for si in slots:
-                    # Teacher busy with lab → force all theory vars to 0
                     if (teacher, day_name, si) in self.lab_teacher_busy:
                         for div in self.all_divisions:
                             for subj in self.div_subjects.get(div, []):
@@ -365,7 +466,6 @@ class TheoryScheduler:
                                         model.add(x[(div, subj, di, si)] == 0)
                         continue
 
-                    # At most 1 theory class using this teacher per slot
                     uses = [
                         x[(div, subj, di, si)]
                         for div in self.all_divisions
@@ -377,8 +477,8 @@ class TheoryScheduler:
                         model.add(sum(uses) <= 1)
 
         # ------------------------------------------------------------------
-        # NEW-A: Each subject appears AT MOST ONCE per day per division
-        # Without this, CP-SAT packs e.g. DSGT×3 on Monday and 0 on Tuesday.
+        # NEW-A: Each subject appears AT MOST ONCE per day per division (hard)
+        # Prevents DSGT×3 Monday, AOA×3 Monday, etc.
         # ------------------------------------------------------------------
         for div in self.all_divisions:
             for subj in self.div_subjects.get(div, []):
@@ -391,53 +491,42 @@ class TheoryScheduler:
                     if slots_today:
                         model.add(sum(slots_today) <= 1)
 
-        logger.info("[CP-SAT] NEW-A constraint applied: each subject at most once per day per division")
-
         # ------------------------------------------------------------------
-        # NEW-B: Daily theory balance — 2 to 5 lectures per division per day
-        # Prevents packing all lectures into one day (e.g. 6 on Tuesday, 0 on Monday).
-        # The bounds are clamped so the model stays feasible when labs fill slots.
+        # NEW-B: Daily balance — min_daily to max_daily theory per div per day
+        # SOFT: relaxed across retry attempts; NEVER blocks curriculum completion.
+        # When max_daily >= 99, this constraint is effectively skipped.
         # ------------------------------------------------------------------
-        MIN_DAILY_THEORY = 2
-        MAX_DAILY_THEORY = 5
-        for div in self.all_divisions:
-            yr = self.year_of.get(div, "")
-            div_letter = div.split("-")[1] if "-" in div else div
-            for di in range(days_n):
-                day_name = self.days[di]
-                # Count how many slots are already consumed by labs on this day
-                lab_slots_today = sum(
-                    1 for si in slots
-                    if (day_name, si, yr, div_letter) in self.lab_cell_busy
-                )
-                free_today = len(slots) - lab_slots_today
+        if max_daily < 99:   # 99 is our sentinel for "no balance constraint"
+            for div in self.all_divisions:
+                yr = self.year_of.get(div, "")
+                div_letter = div.split("-")[1] if "-" in div else div
+                for di in range(days_n):
+                    day_name = self.days[di]
+                    lab_slots_today = sum(
+                        1 for si in slots
+                        if (day_name, si, yr, div_letter) in self.lab_cell_busy
+                    )
+                    free_today = len(slots) - lab_slots_today
 
-                theory_vars_today = [
-                    x[(div, subj, di, si)]
-                    for subj in self.div_subjects.get(div, [])
-                    for si in slots
-                    if (div, subj, di, si) in x
-                ]
+                    theory_vars_today = [
+                        x[(div, subj, di, si)]
+                        for subj in self.div_subjects.get(div, [])
+                        for si in slots
+                        if (div, subj, di, si) in x
+                    ]
+                    if not theory_vars_today:
+                        continue
 
-                if not theory_vars_today:
-                    continue
-
-                # Clamp bounds so model stays feasible
-                effective_min = min(MIN_DAILY_THEORY, max(0, free_today))
-                effective_max = min(MAX_DAILY_THEORY, free_today)
-
-                if effective_min <= effective_max:
-                    model.add(sum(theory_vars_today) >= effective_min)
-                    model.add(sum(theory_vars_today) <= effective_max)
-
-        logger.info("[CP-SAT] NEW-B constraint applied: daily theory balance 2-5 per division")
+                    effective_min = min(min_daily, max(0, free_today))
+                    effective_max = min(max_daily, free_today)
+                    if effective_min <= effective_max:
+                        model.add(sum(theory_vars_today) >= effective_min)
+                        model.add(sum(theory_vars_today) <= effective_max)
 
         # ------------------------------------------------------------------
         # D5: Classroom capacity constraint
-        # lab_room_busy = set of (room, day, slot) keys from state
         # ------------------------------------------------------------------
         max_rooms = len(self.classrooms)
-
         for di in range(days_n):
             day_name = self.days[di]
             for si in slots:
@@ -446,14 +535,12 @@ class TheoryScheduler:
                     if (room, day_name, si) in self.lab_room_busy
                 )
                 remaining = max_rooms - labs_using
-
                 if remaining <= 0:
                     for div in self.all_divisions:
                         for subj in self.div_subjects.get(div, []):
                             if (div, subj, di, si) in x:
                                 model.add(x[(div, subj, di, si)] == 0)
                     continue
-
                 theory_here = [
                     x[(div, subj, di, si)]
                     for div in self.all_divisions
@@ -464,20 +551,17 @@ class TheoryScheduler:
                     model.add(sum(theory_here) <= remaining)
 
         # ------------------------------------------------------------------
-        # D6: Gap Minimization & Daily Contiguity Objective
+        # D6: Gap minimisation & early-slot objective (SOFT — optimisation only)
         # ------------------------------------------------------------------
-        # Define cell occupancy per division-day-slot
         occ = {}
         for div in self.all_divisions:
             yr = self.year_of.get(div, "")
             div_letter = div.split("-")[1] if "-" in div else div
-
             for di in range(days_n):
                 day_name = self.days[di]
                 for si in slots:
                     cell_key = (day_name, si, yr, div_letter)
                     if cell_key in self.lab_cell_busy:
-                        # Constant 1 if lab is here
                         bvar = model.new_bool_var(f"occ_lab_{div}_{di}_{si}")
                         model.add(bvar == 1)
                         occ[(div, di, si)] = bvar
@@ -496,33 +580,25 @@ class TheoryScheduler:
                             model.add(bvar == 0)
                             occ[(div, di, si)] = bvar
 
-        # Gap variables per division-day-slot
         all_gaps = []
-
         for div in self.all_divisions:
             for di in range(days_n):
                 for idx, si in enumerate(slots):
-                    before_vars = [occ[(div, di, k)] for k in slots if k < si]
-                    after_vars = [occ[(div, di, k)] for k in slots if k > si]
-
+                    before_vars = [occ[(div, di, k)] for k in slots if k < si and (div, di, k) in occ]
+                    after_vars  = [occ[(div, di, k)] for k in slots if k > si and (div, di, k) in occ]
                     if before_vars and after_vars:
                         has_before = model.new_bool_var(f"hb_{div}_{di}_{si}")
-                        has_after = model.new_bool_var(f"ha_{div}_{di}_{si}")
-
+                        has_after  = model.new_bool_var(f"ha_{div}_{di}_{si}")
                         model.add(sum(before_vars) >= 1).only_enforce_if(has_before)
                         model.add(sum(before_vars) == 0).only_enforce_if(has_before.Not())
-
-                        model.add(sum(after_vars) >= 1).only_enforce_if(has_after)
-                        model.add(sum(after_vars) == 0).only_enforce_if(has_after.Not())
-
-                        is_gap = model.new_bool_var(f"gap_{div}_{di}_{si}")
-                        occ_var = occ[(div, di, si)]
-                        
+                        model.add(sum(after_vars)  >= 1).only_enforce_if(has_after)
+                        model.add(sum(after_vars)  == 0).only_enforce_if(has_after.Not())
+                        is_gap   = model.new_bool_var(f"gap_{div}_{di}_{si}")
+                        occ_var  = occ[(div, di, si)]
                         model.add_bool_and([has_before, has_after, occ_var.Not()]).only_enforce_if(is_gap)
                         model.add_bool_or([has_before.Not(), has_after.Not(), occ_var]).only_enforce_if(is_gap.Not())
                         all_gaps.append(is_gap)
 
-        # Early slot weight
         slot_weight = {si: (len(slots) - idx) for idx, si in enumerate(slots)}
         early_terms = [
             x[(div, subj, di, si)] * slot_weight.get(si, 1)
@@ -532,58 +608,35 @@ class TheoryScheduler:
             for si in slots
             if (div, subj, di, si) in x
         ]
-
-        # Objective: Heavy Penalty for Gaps (-1000 per gap slot), Reward Early Slots
         obj_expr = sum(early_terms) - 1000 * sum(all_gaps)
         model.maximize(obj_expr)
 
-        # ------------------------------------------------------------------
         # Solver parameters
-        # ------------------------------------------------------------------
-        solver.parameters.max_time_in_seconds = 30.0
-        solver.parameters.num_search_workers = 4
-        solver.parameters.log_search_progress = False
-        solver.parameters.cp_model_presolve = True
+        solver.parameters.max_time_in_seconds    = 30.0
+        solver.parameters.num_search_workers     = 4
+        solver.parameters.log_search_progress    = False
+        solver.parameters.cp_model_presolve      = True
 
-        # ------------------------------------------------------------------
-        # Solve
-        # ------------------------------------------------------------------
-        logger.info("[CP-SAT] Starting solve...")
-        status_code = solver.solve(model)
-        elapsed_ms = (time.perf_counter() - t0) * 1000
+        return model, solver, x
 
-        status_names = {
-            cp_model.OPTIMAL: "OPTIMAL",
-            cp_model.FEASIBLE: "FEASIBLE",
-            cp_model.INFEASIBLE: "INFEASIBLE",
-            cp_model.UNKNOWN: "UNKNOWN",
-        }
-        status_str = status_names.get(status_code, "UNKNOWN")
-        logger.info(f"[CP-SAT] {status_str} in {elapsed_ms:.0f}ms")
-        print(f"[CP-SAT] {status_str} in {elapsed_ms:.0f}ms")
+    # ------------------------------------------------------------------
+    # Extraction — called once on the winning solve
+    # ------------------------------------------------------------------
 
-        if status_code not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
-            logger.error(
-                "[CP-SAT] INFEASIBLE — check teacher mappings and classroom count."
-            )
-            return {
-                "status": status_str,
-                "time_ms": elapsed_ms,
-                "gaps": -1,
-                "incomplete": [],
-            }
+    def _extract_and_write(self, solver, x, weekly_req, days_n, slots):
+        """
+        Iterate the solved variable values, pick teacher/room, and write each
+        assignment to state.  Returns (written_count, incomplete_list, solved_count).
 
-        # ------------------------------------------------------------------
-        # Extract solution and write to state
-        # ------------------------------------------------------------------
+        incomplete_list: [(div, subj, placed, required), ...] for any subject
+        that the solver placed fewer times than required (should be empty if D2
+        was satisfied, but kept as a safety net).
+        """
         logger.info("[CP-SAT] Beginning extraction of solved lectures")
         print("[CP-SAT] Beginning extraction of solved lectures")
 
-        # Count how many variables the solver set to 1
         solved_count = sum(
-            1
-            for (div, subj, di, si) in x
-            if solver.value(x[(div, subj, di, si)]) == 1
+            1 for key in x if solver.value(x[key]) == 1
         )
         logger.info(f"[CP-SAT] Solver set {solved_count} variables to 1")
         print(f"[CP-SAT] Solver set {solved_count} lecture-slots to 1")
@@ -592,12 +645,12 @@ class TheoryScheduler:
         incomplete = []
 
         for div in self.all_divisions:
-            yr = self.year_of.get(div, "")
+            yr         = self.year_of.get(div, "")
             div_letter = div.split("-")[1] if "-" in div else div
 
             for subj in self.div_subjects.get(div, []):
                 required = weekly_req.get(subj, 3)
-                placed = 0
+                placed   = 0
 
                 for di, day_name in enumerate(self.days):
                     for si in slots:
@@ -606,24 +659,16 @@ class TheoryScheduler:
                         if solver.value(x[(div, subj, di, si)]) != 1:
                             continue
 
-                        logger.info(
-                            f"[CP-SAT] Extracting {div} {subj} {day_name} slot={si}"
-                        )
-                        print(
-                            f"[CP-SAT] Extracting: {div} | {subj} | {day_name} | slot {si}"
-                        )
-
-                        # Pick teacher — uses pick_teacher with fallbacks
+                        # Pick teacher (strict mapped-only)
                         teacher = self.load_manager.pick_teacher(subj, day_name, si)
                         if not teacher:
                             teacher = "TBA"
 
-                        # Pick room — uses _pick_room with fallbacks
+                        # Pick room
                         room = self._pick_room(day_name, si, year_div=div)
                         if not room:
                             room = f"Room-{div}"
 
-                        # Build assignment dict — matches assign_slot(assignment_dict, lock=False) exactly
                         assignment = {
                             "day":      day_name,
                             "slot":     si,
@@ -635,79 +680,93 @@ class TheoryScheduler:
                             "type":     "THEORY",
                         }
 
-                        logger.info(
-                            f"[CP-SAT] Writing slot: day={day_name!r} slot={si} "
-                            f"year={yr!r} division={div_letter!r} "
-                            f"subject={subj!r} teacher={teacher!r} room={room!r}"
-                        )
-
-                        # Write to state — RAISE on any failure, never swallow
                         try:
                             self.state.assign_slot(assignment)
                         except Exception as e:
                             logger.exception(
-                                f"[CP-SAT] assign_slot FAILED for {div} {subj} "
-                                f"{day_name} slot {si}: {e}"
-                            )
-                            print(
-                                f"  ERROR: assign_slot raised for {div} {subj} "
-                                f"{day_name} slot {si}:"
+                                f"[CP-SAT] assign_slot FAILED for {div} {subj} {day_name} slot {si}: {e}"
                             )
                             traceback.print_exc()
-                            raise   # propagate — never swallow scheduling errors
+                            raise
 
-                        logger.info("[CP-SAT] assign_slot completed successfully")
-                        print(f"  OK: Written {div} {subj} {day_name} slot {si}")
-
-                        # Update load tracking
                         self.load_manager.record_assignment(teacher, day_name, si)
-
-                        # Mark room as used so subsequent picks in this batch avoid it
                         self.lab_room_busy.add((room, day_name, si))
-                        # Update teacher busy set for subsequent constraint checks
                         self.lab_teacher_busy.add((teacher, day_name, si))
-                        # Mark cell as used
                         self.lab_cell_busy.add((day_name, si, yr, div_letter))
 
-                        placed += 1
+                        placed        += 1
                         written_count += 1
 
                 if placed < required:
                     incomplete.append((div, subj, placed, required))
 
-        # ------------------------------------------------------------------
-        # Mandatory post-extraction validation
-        # ------------------------------------------------------------------
-        logger.info(f"[CP-SAT] Written lectures = {written_count} (solver set {solved_count} to 1)")
+        logger.info(f"[CP-SAT] Written {written_count}/{solved_count} lectures")
         print(f"\n[CP-SAT] Extraction complete: {written_count}/{solved_count} lectures written")
 
         if written_count < solved_count:
-            msg = (
-                f"[CP-SAT] WARNING: {solved_count - written_count} solved lectures were NOT written "
-                f"(teacher/room unavailable at extraction time). "
-                f"Incomplete: {incomplete}"
+            logger.warning(
+                f"[CP-SAT] {solved_count - written_count} solved lectures NOT written "
+                f"(teacher/room conflict at extraction). Incomplete: {incomplete}"
             )
-            logger.warning(msg)
-            print(msg)
+        return written_count, incomplete, solved_count
 
-        # Print division-level summary
-        print("\n[CP-SAT] Division lecture summary:")
+    # ------------------------------------------------------------------
+    # Curriculum reports
+    # ------------------------------------------------------------------
+
+    def _print_required_curriculum(self, weekly_req):
+        """Print the pre-solve required curriculum table for every division."""
+        print("\n" + "="*60)
+        print("[CP-SAT] REQUIRED CURRICULUM (pre-solve)")
+        print("="*60)
         for div in self.all_divisions:
-            yr = self.year_of.get(div, "")
-            div_letter = div.split("-")[1] if "-" in div else div
-            for subj in self.div_subjects.get(div, []):
-                expected = weekly_req.get(subj, 3)
-                actual = self.state.get_subject_count(subj, yr, div_letter)
-                status = "OK" if actual >= expected else f"MISSING {expected - actual}"
-                print(f"  {div} | {subj}: {actual}/{expected} [{status}]")
+            subjects = self.div_subjects.get(div, [])
+            total_required = sum(
+                weekly_req.get(s) or weekly_req.get(s.strip()) or 3
+                for s in subjects
+            )
+            print(f"  {div}  ({len(subjects)} subjects, {total_required} theory slots/week)")
+            for subj in subjects:
+                req = weekly_req.get(subj) or weekly_req.get(subj.strip()) or 3
+                print(f"    {subj}: {req}/week")
+        print("="*60 + "\n")
 
-        gaps = self._count_gaps()
-        return {
-            "status":     status_str,
-            "time_ms":    elapsed_ms,
-            "gaps":       gaps,
-            "incomplete": incomplete,
+    def _print_curriculum_completion_report(self, weekly_req, incomplete):
+        """
+        Print a PASS/FAIL curriculum-completion report after extraction.
+        This is the Step 7 Lab Coverage Report equivalent for theory.
+        """
+        print("\n" + "="*60)
+        print("[CP-SAT] CURRICULUM COMPLETION REPORT")
+        print("="*60)
+
+        incomplete_map = {
+            (div, subj): (placed, required)
+            for div, subj, placed, required in incomplete
         }
+
+        all_pass = True
+        for div in self.all_divisions:
+            print(f"  {div}")
+            for subj in self.div_subjects.get(div, []):
+                req = weekly_req.get(subj) or weekly_req.get(subj.strip()) or 3
+                if (div, subj) in incomplete_map:
+                    placed, _ = incomplete_map[(div, subj)]
+                    print(f"    {subj}: {placed}/{req}  ❌ MISSING {req - placed}")
+                    all_pass = False
+                else:
+                    print(f"    {subj}: {req}/{req}  ✓ PASS")
+
+        print("-"*60)
+        if all_pass:
+            print("  OVERALL: ✓ ALL THEORY COMPLETE")
+        else:
+            missing = [(d, s, r-p) for (d, s), (p, r) in incomplete_map.items()]
+            print(f"  OVERALL: ❌ THEORY INCOMPLETE — {len(missing)} subject(s) under-scheduled")
+            for div, subj, deficit in missing:
+                print(f"    Missing {subj} in {div}: {deficit} lecture(s) short")
+        print("="*60 + "\n")
+        return all_pass
 
     # ------------------------------------------------------------------
     # Helpers for schedule()

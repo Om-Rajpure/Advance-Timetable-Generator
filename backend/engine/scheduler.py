@@ -143,6 +143,10 @@ class TimetableScheduler:
             # --- GLOBAL STATE (Shared across classes) ---
             self.constraint_logger = ConstraintLogger()
             global_state = TimetableState(self.context, self.load_manager, logger=self.constraint_logger)
+
+            # Global LabScheduler tied to global_state — used for post-lab validation
+            # (individual per-class schedulers also reference global_state internally)
+            lab_sched = LabScheduler(global_state, self.context)
             
             # 3. Main Generation Loop
             expected_class_count = len(self.normalized_classes)
@@ -218,15 +222,27 @@ class TimetableScheduler:
                     traceback.print_exc()
                     error_msg = f"FAILED to generate {class_key}: {str(class_err)}"
                     print(error_msg, flush=True)
-                    # TASK 4: DO NOT CONTINUE IF DIVISION FAILS
-                    # The user prompt says "Generation FAILS loudly if any division is skipped"
-                    # raising here ensures the whole process stops and returns 500.
                     raise RuntimeError(error_msg)
-            
-            # TASK 5: POST-GENERATION VALIDATION
-            missing_divisions = expected_ids - generated_ids
-            if missing_divisions:
-                raise RuntimeError(f"CRITICAL: The following divisions were SKIPPED: {missing_divisions}")
+
+            # --- POST-LAB VALIDATION (Step 7) ---
+            # Run the lab coverage report for every class. RAISE immediately if
+            # any required lab subject is missing.  No export until all labs pass.
+            print("\n--- Post-Lab Validation (Lab Coverage Report) ---")
+            lab_failures = []
+            for class_obj in self.normalized_classes:
+                yr  = class_obj['year']
+                div = class_obj['division']
+                lab_all_pass = lab_sched.generate_lab_coverage_report(yr, div)
+                if not lab_all_pass:
+                    lab_failures.append(f"{yr}-{div}")
+
+            if lab_failures:
+                raise RuntimeError(
+                    f"CRITICAL: Lab curriculum incomplete for {lab_failures}. "
+                    f"Cannot export timetable. "
+                    f"Fix atomic placement or check teacherSubjectMap for lab subjects."
+                )
+            print("[Scheduler] ✓ All lab coverage checks PASSED\n")
 
             # --- PHASE 3: GLOBAL THEORY SCHEDULING (CP-SAT) ---
             # All labs are placed. Now run the CP-SAT model once across all divisions.
@@ -251,14 +267,26 @@ class TimetableScheduler:
                     f"gaps={cpsat_result['gaps']} | "
                     f"incomplete={len(cpsat_result['incomplete'])}"
                 )
+
+                # --- HARD REJECTION: Incomplete theory is not exportable ---
                 if cpsat_result["incomplete"]:
+                    missing_details = ""
                     for div, subj, placed, needed in cpsat_result["incomplete"]:
-                        print(f"  WARNING: {div} {subj}: {placed}/{needed} lectures placed")
+                        missing_details += f"\n  {div} {subj}: {placed}/{needed} lectures placed"
+                    raise RuntimeError(
+                        f"CRITICAL: Theory curriculum incomplete after all CP-SAT attempts."
+                        f"{missing_details}\n"
+                        f"Cannot export timetable. Check: teacher mappings, classroom count, "
+                        f"lab occupancy density, and subject weekly hours."
+                    )
             except Exception as cpsat_err:
                 import traceback
-                print(f"[Scheduler] CP-SAT theory scheduling failed: {cpsat_err}")
+                print(f"[Scheduler] CP-SAT theory scheduling FAILED: {cpsat_err}")
                 traceback.print_exc()
-                # Non-fatal — labs are still in state; generation continues
+                # HARD FAILURE — curriculum completeness is mandatory, never swallow
+                raise RuntimeError(f"CP-SAT theory scheduling failed: {cpsat_err}") from cpsat_err
+
+
 
             # --- Rebuild all_timetables from global_state (now includes theory) ---
             all_timetables = {}

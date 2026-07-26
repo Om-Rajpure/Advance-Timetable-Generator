@@ -474,14 +474,137 @@ class LabScheduler:
 
     def _pick_best_teacher(self, available_teachers, subject, offset):
         """Pick a teacher. Prefer subject specialist."""
-        # Check explicit map
         specialists = self.subject_teachers.get(subject['name'], [])
-        
         for t in available_teachers:
             if t['name'] in specialists:
                 return t
-        
-        # Fallback: Just take the first one (or shuffled by offset to avoid bias)
         if available_teachers:
             return available_teachers[0]
         return None
+
+    # ------------------------------------------------------------------
+    # Step 7 — Lab Coverage Validator
+    # ------------------------------------------------------------------
+
+    def _count_lab_sessions_for_batch(self, year, division, subject_name, batch):
+        """
+        Return 1 if this lab subject was placed at least once for the given batch,
+        0 otherwise.  A 2-slot lab session counts as 1 session (presence check).
+        """
+        try:
+            from utils.time_utils import calculate_time_slots
+        except ImportError:
+            from backend.utils.time_utils import calculate_time_slots
+
+        time_config = calculate_time_slots(self.branch_data)
+        total_slots = time_config['total_slots']
+        days        = self.branch_data.get('workingDays',
+                          ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
+        for day in days:
+            for slot in range(total_slots):
+                assignments = self.state.get_slot_assignment(day, slot, year, division)
+                if not assignments:
+                    continue
+                slot_list = assignments if isinstance(assignments, list) else [assignments]
+                for a in slot_list:
+                    if (isinstance(a, dict)
+                            and a.get('subject') == subject_name
+                            and a.get('type')    == 'LAB'
+                            and a.get('batch')   == batch):
+                        return 1   # Presence confirmed
+        return 0
+
+    def validate_lab_coverage(self, year, division):
+        """
+        Step 7 — Lab Coverage Validator.
+
+        For every required lab subject and every batch, check that at least one
+        session was placed.  required=1 always (one session per batch per week).
+        lecturesPerWeek / weeklyLectures encodes slot DURATION, not session count.
+
+        Returns (all_pass: bool, report: dict).
+        """
+        num_batches = int(self.lab_batches_per_year.get(year, 3))
+        batches     = [f"B{b+1}" for b in range(num_batches)]
+
+        lab_subjects = [
+            s for s in self.smart_input.get('subjects', [])
+            if s.get('year') == year
+            and (not s.get('division') or s.get('division') == division)
+            and is_lab_subject(s)
+        ]
+
+        report   = {}
+        all_pass = True
+
+        for subj in lab_subjects:
+            name      = subj['name']
+            required  = 1   # Always 1 session per batch per week
+            batch_results = {}
+            subj_pass = True
+
+            for batch in batches:
+                scheduled = self._count_lab_sessions_for_batch(year, division, name, batch)
+                batch_ok  = scheduled >= required
+                batch_results[batch] = {'scheduled': scheduled, 'pass': batch_ok}
+                if not batch_ok:
+                    subj_pass = False
+                    all_pass  = False
+
+            report[name] = {
+                'required':     required,
+                'batches':      batch_results,
+                'subject_pass': subj_pass,
+            }
+
+        return all_pass, report
+
+    def generate_lab_coverage_report(self, year, division):
+        """
+        Print the Step 7 formatted lab coverage report and return all_pass.
+
+        Example:
+            ============================================================
+            LAB COVERAGE REPORT  BE-A
+            ============================================================
+              ok BDA Lab   Required=1/week per batch
+                  B1: 1/1  ok PASS
+            ------------------------------------------------------------
+              FAIL BT Lab
+                  B1: 0/1  MISSING
+            ============================================================
+            OVERALL: ALL LABS COMPLETE
+        """
+        all_pass, report = self.validate_lab_coverage(year, division)
+
+        print("\n" + "="*60)
+        print(f"LAB COVERAGE REPORT  {year}-{division}")
+        print("="*60)
+
+        for subj_name, data in report.items():
+            req    = data['required']
+            s_pass = data['subject_pass']
+            icon   = "PASS" if s_pass else "FAIL"
+            print(f"  [{icon}] {subj_name}   Required={req}/week per batch")
+            for batch, bd in data['batches'].items():
+                sched  = bd['scheduled']
+                b_icon = "ok" if bd['pass'] else "MISSING"
+                print(f"      {batch}: {sched}/{req}  {b_icon}")
+            print("-" * 60)
+
+        if all_pass:
+            print("  OVERALL: ALL LABS COMPLETE")
+        else:
+            fails = [s for s, d in report.items() if not d['subject_pass']]
+            print(f"  OVERALL: LAB INCOMPLETE -- {len(fails)} subject(s) with missing sessions")
+            for subj_name in fails:
+                data = report[subj_name]
+                for batch, bd in data['batches'].items():
+                    if not bd['pass']:
+                        deficit = data['required'] - bd['scheduled']
+                        print(
+                            f"    Missing {subj_name} {batch} in {year}-{division}: "
+                            f"{deficit} session(s) short"
+                        )
+        print("="*60 + "\n")
+        return all_pass

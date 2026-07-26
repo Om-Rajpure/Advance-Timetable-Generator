@@ -89,7 +89,7 @@
           },
           {
             "day": "Monday",
-            "slot": 6,
+            "slot": 3,
             "year": "SE",
             "division": "A",
             "subject": "Coa",
@@ -99,17 +99,7 @@
           },
           {
             "day": "Monday",
-            "slot": 3,
-            "year": "SE",
-            "division": "A",
-            "subject": "Ed",
-            "teacher": "Ms. L. P. Jordan",
-            "room": "Room-101",
-            "type": "THEORY"
-          },
-          {
-            "day": "Monday",
-            "slot": 4,
+            "slot": 5,
             "year": "SE",
             "division": "A",
             "subject": "Oe-lm",
@@ -119,7 +109,7 @@
           },
           {
             "day": "Monday",
-            "slot": 5,
+            "slot": 4,
             "year": "SE",
             "division": "A",
             "subject": "Fsjp",
@@ -215,17 +205,7 @@
           },
           {
             "day": "Tuesday",
-            "slot": 6,
-            "year": "SE",
-            "division": "A",
-            "subject": "Coa",
-            "teacher": "Mrs. G. S. Gawaskar",
-            "room": "Room-101",
-            "type": "THEORY"
-          },
-          {
-            "day": "Tuesday",
-            "slot": 4,
+            "slot": 3,
             "year": "SE",
             "division": "A",
             "subject": "Ed",
@@ -245,7 +225,7 @@
           },
           {
             "day": "Tuesday",
-            "slot": 3,
+            "slot": 4,
             "year": "SE",
             "division": "A",
             "subject": "Fsjp",
@@ -344,6 +324,16 @@
             "slot": 5,
             "year": "SE",
             "division": "A",
+            "subject": "Coa",
+            "teacher": "Mrs. G. S. Gawaskar",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Wednesday",
+            "slot": 3,
+            "year": "SE",
+            "division": "A",
             "subject": "Ese",
             "teacher": "Mrs. N. Kambale",
             "room": "Room-101",
@@ -351,7 +341,7 @@
           },
           {
             "day": "Wednesday",
-            "slot": 4,
+            "slot": 6,
             "year": "SE",
             "division": "A",
             "subject": "Ed",
@@ -361,21 +351,11 @@
           },
           {
             "day": "Wednesday",
-            "slot": 6,
+            "slot": 4,
             "year": "SE",
             "division": "A",
-            "subject": "Dsgt",
-            "teacher": "Ms. T. Murillo",
-            "room": "Room-101",
-            "type": "THEORY"
-          },
-          {
-            "day": "Wednesday",
-            "slot": 3,
-            "year": "SE",
-            "division": "A",
-            "subject": "Fsjp",
-            "teacher": "Mrs. N. Kambale",
+            "subject": "Oe-lm",
+            "teacher": "Mr. T. Stark",
             "room": "Room-101",
             "type": "THEORY"
           }
@@ -467,16 +447,6 @@
           },
           {
             "day": "Thursday",
-            "slot": 5,
-            "year": "SE",
-            "division": "A",
-            "subject": "Coa",
-            "teacher": "Mrs. G. S. Gawaskar",
-            "room": "Room-101",
-            "type": "THEORY"
-          },
-          {
-            "day": "Thursday",
             "slot": 4,
             "year": "SE",
             "division": "A",
@@ -490,18 +460,18 @@
             "slot": 3,
             "year": "SE",
             "division": "A",
-            "subject": "Dsgt",
-            "teacher": "Ms. T. Murillo",
+            "subject": "Ed",
+            "teacher": "Ms. L. P. Jordan",
             "room": "Room-101",
             "type": "THEORY"
           },
           {
             "day": "Thursday",
-            "slot": 6,
+            "slot": 5,
             "year": "SE",
             "division": "A",
-            "subject": "Oe-lm",
-            "teacher": "Mr. T. Stark",
+            "subject": "Dsgt",
+            "teacher": "Ms. T. Murillo",
             "room": "Room-101",
             "type": "THEORY"
           }
@@ -509,11 +479,31 @@
         "Friday": [
           {
             "day": "Friday",
-            "slot": 1,
+            "slot": 3,
+            "year": "SE",
+            "division": "A",
+            "subject": "Coa",
+            "teacher": "Mrs. G. S. Gawaskar",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 4,
             "year": "SE",
             "division": "A",
             "subject": "Ese",
             "teacher": "Mrs. N. Kambale",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 5,
+            "year": "SE",
+            "division": "A",
+            "subject": "Dsgt",
+            "teacher": "Ms. T. Murillo",
             "room": "Room-101",
             "type": "THEORY"
           },
@@ -524,6 +514,16 @@
             "division": "A",
             "subject": "Oe-lm",
             "teacher": "Mr. T. Stark",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 1,
+            "year": "SE",
+            "division": "A",
+            "subject": "Fsjp",
+            "teacher": "Mrs. N. Kambale",
             "room": "Room-101",
             "type": "THEORY"
           }
@@ -619,7 +619,7 @@
           },
           {
             "day": "Monday",
-            "slot": 3,
+            "slot": 4,
             "year": "SE",
             "division": "B",
             "subject": "Coa",
@@ -629,7 +629,7 @@
           },
           {
             "day": "Monday",
-            "slot": 6,
+            "slot": 5,
             "year": "SE",
             "division": "B",
             "subject": "Ese",
@@ -639,21 +639,11 @@
           },
           {
             "day": "Monday",
-            "slot": 4,
+            "slot": 3,
             "year": "SE",
             "division": "B",
-            "subject": "Dsgt",
-            "teacher": "Ms. T. Murillo",
-            "room": "Room-102",
-            "type": "THEORY"
-          },
-          {
-            "day": "Monday",
-            "slot": 5,
-            "year": "SE",
-            "division": "B",
-            "subject": "Oe-lm",
-            "teacher": "Mr. T. Stark",
+            "subject": "Ed",
+            "teacher": "Ms. L. P. Jordan",
             "room": "Room-102",
             "type": "THEORY"
           }
@@ -745,21 +735,31 @@
           },
           {
             "day": "Tuesday",
-            "slot": 4,
-            "year": "SE",
-            "division": "B",
-            "subject": "Ese",
-            "teacher": "Mrs. P. Gadre",
-            "room": "Room-102",
-            "type": "THEORY"
-          },
-          {
-            "day": "Tuesday",
             "slot": 3,
             "year": "SE",
             "division": "B",
             "subject": "Dsgt",
             "teacher": "Ms. T. Murillo",
+            "room": "Room-102",
+            "type": "THEORY"
+          },
+          {
+            "day": "Tuesday",
+            "slot": 4,
+            "year": "SE",
+            "division": "B",
+            "subject": "Oe-lm",
+            "teacher": "Mr. T. Stark",
+            "room": "Room-102",
+            "type": "THEORY"
+          },
+          {
+            "day": "Tuesday",
+            "slot": 5,
+            "year": "SE",
+            "division": "B",
+            "subject": "Fsjp",
+            "teacher": "Mrs. P. Gadre",
             "room": "Room-102",
             "type": "THEORY"
           }
@@ -851,17 +851,17 @@
           },
           {
             "day": "Wednesday",
-            "slot": 5,
+            "slot": 4,
             "year": "SE",
             "division": "B",
-            "subject": "Coa",
-            "teacher": "Mrs.  V. Puthran",
+            "subject": "Ese",
+            "teacher": "Mrs. P. Gadre",
             "room": "Room-102",
             "type": "THEORY"
           },
           {
             "day": "Wednesday",
-            "slot": 3,
+            "slot": 5,
             "year": "SE",
             "division": "B",
             "subject": "Ed",
@@ -871,21 +871,11 @@
           },
           {
             "day": "Wednesday",
-            "slot": 6,
+            "slot": 3,
             "year": "SE",
             "division": "B",
             "subject": "Oe-lm",
             "teacher": "Mr. T. Stark",
-            "room": "Room-102",
-            "type": "THEORY"
-          },
-          {
-            "day": "Wednesday",
-            "slot": 4,
-            "year": "SE",
-            "division": "B",
-            "subject": "Fsjp",
-            "teacher": "Mrs. P. Gadre",
             "room": "Room-102",
             "type": "THEORY"
           }
@@ -977,48 +967,6 @@
           },
           {
             "day": "Friday",
-            "slot": 6,
-            "year": "SE",
-            "division": "B",
-            "subject": "Ese",
-            "teacher": "Mrs. N. Kambale",
-            "room": "Room-101",
-            "type": "THEORY"
-          },
-          {
-            "day": "Friday",
-            "slot": 5,
-            "year": "SE",
-            "division": "B",
-            "subject": "Ed",
-            "teacher": "Ms. L. P. Jordan",
-            "room": "Room-101",
-            "type": "THEORY"
-          },
-          {
-            "day": "Friday",
-            "slot": 4,
-            "year": "SE",
-            "division": "B",
-            "subject": "Dsgt",
-            "teacher": "Ms. T. Murillo",
-            "room": "Room-101",
-            "type": "THEORY"
-          },
-          {
-            "day": "Friday",
-            "slot": 3,
-            "year": "SE",
-            "division": "B",
-            "subject": "Fsjp",
-            "teacher": "Mrs. P. Gadre",
-            "room": "Room-101",
-            "type": "THEORY"
-          }
-        ],
-        "Thursday": [
-          {
-            "day": "Thursday",
             "slot": 4,
             "year": "SE",
             "division": "B",
@@ -1028,12 +976,64 @@
             "type": "THEORY"
           },
           {
-            "day": "Thursday",
+            "day": "Friday",
             "slot": 3,
+            "year": "SE",
+            "division": "B",
+            "subject": "Ese",
+            "teacher": "Mrs. N. Kambale",
+            "room": "Room-102",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 6,
+            "year": "SE",
+            "division": "B",
+            "subject": "Dsgt",
+            "teacher": "Ms. T. Murillo",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 5,
+            "year": "SE",
+            "division": "B",
+            "subject": "Fsjp",
+            "teacher": "Mrs. P. Gadre",
+            "room": "Room-102",
+            "type": "THEORY"
+          }
+        ],
+        "Thursday": [
+          {
+            "day": "Thursday",
+            "slot": 6,
+            "year": "SE",
+            "division": "B",
+            "subject": "Coa",
+            "teacher": "Mrs.  V. Puthran",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Thursday",
+            "slot": 5,
             "year": "SE",
             "division": "B",
             "subject": "Ed",
             "teacher": "Ms. L. P. Jordan",
+            "room": "Room-102",
+            "type": "THEORY"
+          },
+          {
+            "day": "Thursday",
+            "slot": 4,
+            "year": "SE",
+            "division": "B",
+            "subject": "Dsgt",
+            "teacher": "Ms. T. Murillo",
             "room": "Room-102",
             "type": "THEORY"
           },
@@ -1049,7 +1049,7 @@
           },
           {
             "day": "Thursday",
-            "slot": 5,
+            "slot": 3,
             "year": "SE",
             "division": "B",
             "subject": "Fsjp",
@@ -1149,7 +1149,27 @@
           },
           {
             "day": "Tuesday",
+            "slot": 6,
+            "year": "SE",
+            "division": "C",
+            "subject": "Coa",
+            "teacher": "Mrs. G. S. Gawaskar",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Tuesday",
             "slot": 3,
+            "year": "SE",
+            "division": "C",
+            "subject": "Ese",
+            "teacher": "Mrs. N. Kambale",
+            "room": "Room-103",
+            "type": "THEORY"
+          },
+          {
+            "day": "Tuesday",
+            "slot": 5,
             "year": "SE",
             "division": "C",
             "subject": "Ed",
@@ -1165,16 +1185,6 @@
             "subject": "Dsgt",
             "teacher": "Ms. T. Murillo",
             "room": "Room-103",
-            "type": "THEORY"
-          },
-          {
-            "day": "Tuesday",
-            "slot": 5,
-            "year": "SE",
-            "division": "C",
-            "subject": "Fsjp",
-            "teacher": "Mrs. P. Gadre",
-            "room": "Room-102",
             "type": "THEORY"
           }
         ],
@@ -1265,11 +1275,21 @@
           },
           {
             "day": "Monday",
+            "slot": 5,
+            "year": "SE",
+            "division": "C",
+            "subject": "Coa",
+            "teacher": "Mrs.  V. Puthran",
+            "room": "Room-103",
+            "type": "THEORY"
+          },
+          {
+            "day": "Monday",
             "slot": 4,
             "year": "SE",
             "division": "C",
-            "subject": "Ese",
-            "teacher": "Mrs. N. Kambale",
+            "subject": "Ed",
+            "teacher": "Ms. L. P. Jordan",
             "room": "Room-103",
             "type": "THEORY"
           },
@@ -1281,6 +1301,16 @@
             "subject": "Oe-lm",
             "teacher": "Mr. T. Stark",
             "room": "Room-103",
+            "type": "THEORY"
+          },
+          {
+            "day": "Monday",
+            "slot": 6,
+            "year": "SE",
+            "division": "C",
+            "subject": "Fsjp",
+            "teacher": "Mrs. P. Gadre",
+            "room": "Room-101",
             "type": "THEORY"
           }
         ],
@@ -1371,17 +1401,17 @@
           },
           {
             "day": "Thursday",
-            "slot": 6,
+            "slot": 5,
             "year": "SE",
             "division": "C",
-            "subject": "Coa",
-            "teacher": "Mrs. G. S. Gawaskar",
-            "room": "Room-102",
+            "subject": "Ese",
+            "teacher": "Mrs. N. Kambale",
+            "room": "Room-103",
             "type": "THEORY"
           },
           {
             "day": "Thursday",
-            "slot": 5,
+            "slot": 4,
             "year": "SE",
             "division": "C",
             "subject": "Ed",
@@ -1391,22 +1421,22 @@
           },
           {
             "day": "Thursday",
-            "slot": 4,
+            "slot": 3,
             "year": "SE",
             "division": "C",
-            "subject": "Oe-lm",
-            "teacher": "Mr. T. Stark",
+            "subject": "Dsgt",
+            "teacher": "Ms. T. Murillo",
             "room": "Room-103",
             "type": "THEORY"
           },
           {
             "day": "Thursday",
-            "slot": 3,
+            "slot": 6,
             "year": "SE",
             "division": "C",
             "subject": "Fsjp",
             "teacher": "Mrs. N. Kambale",
-            "room": "Room-103",
+            "room": "Room-102",
             "type": "THEORY"
           }
         ],
@@ -1497,7 +1527,7 @@
           },
           {
             "day": "Wednesday",
-            "slot": 3,
+            "slot": 4,
             "year": "SE",
             "division": "C",
             "subject": "Coa",
@@ -1512,61 +1542,31 @@
             "division": "C",
             "subject": "Ese",
             "teacher": "Mrs. P. Gadre",
-            "room": "Room-103",
-            "type": "THEORY"
-          },
-          {
-            "day": "Wednesday",
-            "slot": 5,
-            "year": "SE",
-            "division": "C",
-            "subject": "Ed",
-            "teacher": "Ms. L. P. Jordan",
-            "room": "Room-103",
-            "type": "THEORY"
-          },
-          {
-            "day": "Wednesday",
-            "slot": 4,
-            "year": "SE",
-            "division": "C",
-            "subject": "Dsgt",
-            "teacher": "Ms. T. Murillo",
-            "room": "Room-103",
-            "type": "THEORY"
-          }
-        ],
-        "Friday": [
-          {
-            "day": "Friday",
-            "slot": 5,
-            "year": "SE",
-            "division": "C",
-            "subject": "Coa",
-            "teacher": "Mrs.  V. Puthran",
             "room": "Room-102",
             "type": "THEORY"
           },
           {
-            "day": "Friday",
-            "slot": 4,
-            "year": "SE",
-            "division": "C",
-            "subject": "Ese",
-            "teacher": "Mrs. N. Kambale",
-            "room": "Room-102",
-            "type": "THEORY"
-          },
-          {
-            "day": "Friday",
+            "day": "Wednesday",
             "slot": 3,
             "year": "SE",
             "division": "C",
             "subject": "Dsgt",
             "teacher": "Ms. T. Murillo",
-            "room": "Room-102",
+            "room": "Room-103",
             "type": "THEORY"
           },
+          {
+            "day": "Wednesday",
+            "slot": 5,
+            "year": "SE",
+            "division": "C",
+            "subject": "Oe-lm",
+            "teacher": "Mr. T. Stark",
+            "room": "Room-103",
+            "type": "THEORY"
+          }
+        ],
+        "Friday": [
           {
             "day": "Friday",
             "slot": 1,
@@ -1681,17 +1681,17 @@
           },
           {
             "day": "Monday",
-            "slot": 5,
+            "slot": 6,
             "year": "TE",
             "division": "A",
-            "subject": "Wc",
-            "teacher": "Mr. S. H. Rathod",
-            "room": "Room-103",
+            "subject": "AI",
+            "teacher": "TBA",
+            "room": "Room-102",
             "type": "THEORY"
           },
           {
             "day": "Monday",
-            "slot": 3,
+            "slot": 5,
             "year": "TE",
             "division": "A",
             "subject": "Aoa",
@@ -1701,17 +1701,17 @@
           },
           {
             "day": "Monday",
-            "slot": 6,
+            "slot": 4,
             "year": "TE",
             "division": "A",
-            "subject": "Computer Networks",
-            "teacher": "Dr. O.m. Rajpure",
-            "room": "Room-103",
+            "subject": "Saids",
+            "teacher": "Ms. K. S. Patil",
+            "room": "Room-104",
             "type": "THEORY"
           },
           {
             "day": "Monday",
-            "slot": 4,
+            "slot": 3,
             "year": "TE",
             "division": "A",
             "subject": "Dwm",
@@ -1807,17 +1807,17 @@
           },
           {
             "day": "Tuesday",
-            "slot": 3,
+            "slot": 4,
             "year": "TE",
             "division": "A",
             "subject": "Wc",
-            "teacher": "Mrs. N. P. Shelar",
+            "teacher": "Mr. S. H. Rathod",
             "room": "Room-104",
             "type": "THEORY"
           },
           {
             "day": "Tuesday",
-            "slot": 4,
+            "slot": 3,
             "year": "TE",
             "division": "A",
             "subject": "AI",
@@ -1832,7 +1832,7 @@
             "division": "A",
             "subject": "Computer Networks",
             "teacher": "Dr. O.m. Rajpure",
-            "room": "Room-103",
+            "room": "Room-104",
             "type": "THEORY"
           },
           {
@@ -1933,11 +1933,11 @@
           },
           {
             "day": "Wednesday",
-            "slot": 4,
+            "slot": 3,
             "year": "TE",
             "division": "A",
-            "subject": "Aoa",
-            "teacher": "Mrs. P. N. Shedge",
+            "subject": "Wc",
+            "teacher": "Mrs. N. P. Shelar",
             "room": "Room-104",
             "type": "THEORY"
           },
@@ -1946,18 +1946,18 @@
             "slot": 5,
             "year": "TE",
             "division": "A",
-            "subject": "Computer Networks",
-            "teacher": "Dr. O.m. Rajpure",
+            "subject": "AI",
+            "teacher": "TBA",
             "room": "Room-104",
             "type": "THEORY"
           },
           {
             "day": "Wednesday",
-            "slot": 3,
+            "slot": 4,
             "year": "TE",
             "division": "A",
-            "subject": "Saids",
-            "teacher": "Ms. K. S. Patil",
+            "subject": "Computer Networks",
+            "teacher": "Dr. O.m. Rajpure",
             "room": "Room-104",
             "type": "THEORY"
           },
@@ -1968,7 +1968,7 @@
             "division": "A",
             "subject": "Dwm",
             "teacher": "Mrs. R. A. Mane",
-            "room": "Room-104",
+            "room": "Room-103",
             "type": "THEORY"
           }
         ],
@@ -2059,21 +2059,21 @@
           },
           {
             "day": "Thursday",
-            "slot": 6,
+            "slot": 5,
             "year": "TE",
             "division": "A",
             "subject": "Wc",
             "teacher": "Mr. S. H. Rathod",
-            "room": "Room-103",
+            "room": "Room-104",
             "type": "THEORY"
           },
           {
             "day": "Thursday",
-            "slot": 5,
+            "slot": 3,
             "year": "TE",
             "division": "A",
-            "subject": "AI",
-            "teacher": "TBA",
+            "subject": "Aoa",
+            "teacher": "Mrs. P. N. Shedge",
             "room": "Room-104",
             "type": "THEORY"
           },
@@ -2089,12 +2089,12 @@
           },
           {
             "day": "Thursday",
-            "slot": 3,
+            "slot": 6,
             "year": "TE",
             "division": "A",
             "subject": "Dwm",
             "teacher": "Mrs. R. A. Mane",
-            "room": "Room-104",
+            "room": "Room-103",
             "type": "THEORY"
           }
         ],
@@ -2104,8 +2104,8 @@
             "slot": 1,
             "year": "TE",
             "division": "A",
-            "subject": "AI",
-            "teacher": "TBA",
+            "subject": "Aoa",
+            "teacher": "Mrs. P. N. Shedge",
             "room": "Room-103",
             "type": "THEORY"
           },
@@ -2114,8 +2114,8 @@
             "slot": 2,
             "year": "TE",
             "division": "A",
-            "subject": "Aoa",
-            "teacher": "Mrs. P. N. Shedge",
+            "subject": "Computer Networks",
+            "teacher": "Dr. O.m. Rajpure",
             "room": "Room-103",
             "type": "THEORY"
           }
@@ -2211,7 +2211,27 @@
           },
           {
             "day": "Monday",
+            "slot": 5,
+            "year": "TE",
+            "division": "B",
+            "subject": "Wc",
+            "teacher": "Mrs. N. P. Shelar",
+            "room": "Room-105",
+            "type": "THEORY"
+          },
+          {
+            "day": "Monday",
             "slot": 4,
+            "year": "TE",
+            "division": "B",
+            "subject": "AI",
+            "teacher": "TBA",
+            "room": "Room-105",
+            "type": "THEORY"
+          },
+          {
+            "day": "Monday",
+            "slot": 3,
             "year": "TE",
             "division": "B",
             "subject": "Aoa",
@@ -2221,32 +2241,12 @@
           },
           {
             "day": "Monday",
-            "slot": 3,
+            "slot": 6,
             "year": "TE",
             "division": "B",
             "subject": "Computer Networks",
             "teacher": "Dr. O.m. Rajpure",
-            "room": "Room-105",
-            "type": "THEORY"
-          },
-          {
-            "day": "Monday",
-            "slot": 5,
-            "year": "TE",
-            "division": "B",
-            "subject": "Saids",
-            "teacher": "Ms. K. S. Patil",
-            "room": "Room-104",
-            "type": "THEORY"
-          },
-          {
-            "day": "Monday",
-            "slot": 6,
-            "year": "TE",
-            "division": "B",
-            "subject": "Dwm",
-            "teacher": "Mrs. R. A. Mane",
-            "room": "Room-104",
+            "room": "Room-103",
             "type": "THEORY"
           }
         ],
@@ -2337,11 +2337,11 @@
           },
           {
             "day": "Wednesday",
-            "slot": 3,
+            "slot": 5,
             "year": "TE",
             "division": "B",
             "subject": "Wc",
-            "teacher": "Mr. S. H. Rathod",
+            "teacher": "Mrs. N. P. Shelar",
             "room": "Room-105",
             "type": "THEORY"
           },
@@ -2350,14 +2350,14 @@
             "slot": 6,
             "year": "TE",
             "division": "B",
-            "subject": "AI",
-            "teacher": "TBA",
-            "room": "Room-105",
+            "subject": "Computer Networks",
+            "teacher": "Dr. O.m. Rajpure",
+            "room": "Room-104",
             "type": "THEORY"
           },
           {
             "day": "Wednesday",
-            "slot": 5,
+            "slot": 3,
             "year": "TE",
             "division": "B",
             "subject": "Saids",
@@ -2463,21 +2463,11 @@
           },
           {
             "day": "Tuesday",
-            "slot": 4,
-            "year": "TE",
-            "division": "B",
-            "subject": "Wc",
-            "teacher": "Mrs. N. P. Shelar",
-            "room": "Room-105",
-            "type": "THEORY"
-          },
-          {
-            "day": "Tuesday",
             "slot": 6,
             "year": "TE",
             "division": "B",
-            "subject": "AI",
-            "teacher": "TBA",
+            "subject": "Wc",
+            "teacher": "Mr. S. H. Rathod",
             "room": "Room-103",
             "type": "THEORY"
           },
@@ -2486,8 +2476,18 @@
             "slot": 3,
             "year": "TE",
             "division": "B",
-            "subject": "Aoa",
-            "teacher": "Mrs. P. N. Shedge",
+            "subject": "AI",
+            "teacher": "TBA",
+            "room": "Room-105",
+            "type": "THEORY"
+          },
+          {
+            "day": "Tuesday",
+            "slot": 4,
+            "year": "TE",
+            "division": "B",
+            "subject": "Saids",
+            "teacher": "Ms. K. S. Patil",
             "room": "Room-105",
             "type": "THEORY"
           },
@@ -2496,9 +2496,9 @@
             "slot": 5,
             "year": "TE",
             "division": "B",
-            "subject": "Saids",
-            "teacher": "Ms. K. S. Patil",
-            "room": "Room-104",
+            "subject": "Dwm",
+            "teacher": "Mrs. R. A. Mane",
+            "room": "Room-105",
             "type": "THEORY"
           }
         ],
@@ -2589,11 +2589,21 @@
           },
           {
             "day": "Friday",
-            "slot": 5,
+            "slot": 3,
             "year": "TE",
             "division": "B",
-            "subject": "Wc",
-            "teacher": "Mrs. N. P. Shelar",
+            "subject": "AI",
+            "teacher": "TBA",
+            "room": "Room-103",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 4,
+            "year": "TE",
+            "division": "B",
+            "subject": "Aoa",
+            "teacher": "Mrs. P. N. Shedge",
             "room": "Room-103",
             "type": "THEORY"
           },
@@ -2602,24 +2612,14 @@
             "slot": 6,
             "year": "TE",
             "division": "B",
-            "subject": "AI",
-            "teacher": "TBA",
+            "subject": "Computer Networks",
+            "teacher": "Dr. O.m. Rajpure",
             "room": "Room-102",
             "type": "THEORY"
           },
           {
             "day": "Friday",
-            "slot": 4,
-            "year": "TE",
-            "division": "B",
-            "subject": "Computer Networks",
-            "teacher": "Dr. O.m. Rajpure",
-            "room": "Room-103",
-            "type": "THEORY"
-          },
-          {
-            "day": "Friday",
-            "slot": 3,
+            "slot": 5,
             "year": "TE",
             "division": "B",
             "subject": "Dwm",
@@ -2631,22 +2631,22 @@
         "Thursday": [
           {
             "day": "Thursday",
-            "slot": 1,
+            "slot": 2,
             "year": "TE",
             "division": "B",
             "subject": "Aoa",
             "teacher": "Mrs. P. N. Shedge",
-            "room": "Room-101",
+            "room": "Room-102",
             "type": "THEORY"
           },
           {
             "day": "Thursday",
-            "slot": 2,
+            "slot": 1,
             "year": "TE",
             "division": "B",
-            "subject": "Computer Networks",
-            "teacher": "Dr. O.m. Rajpure",
-            "room": "Room-102",
+            "subject": "Saids",
+            "teacher": "Ms. K. S. Patil",
+            "room": "Room-101",
             "type": "THEORY"
           }
         ]
@@ -2741,27 +2741,37 @@
           },
           {
             "day": "Thursday",
+            "slot": 4,
+            "year": "TE",
+            "division": "C",
+            "subject": "Wc",
+            "teacher": "Mrs. N. P. Shelar",
+            "room": "Room-105",
+            "type": "THEORY"
+          },
+          {
+            "day": "Thursday",
             "slot": 5,
             "year": "TE",
             "division": "C",
-            "subject": "AI",
-            "teacher": "TBA",
+            "subject": "Computer Networks",
+            "teacher": "Dr. O.m. Rajpure",
             "room": "Room-105",
+            "type": "THEORY"
+          },
+          {
+            "day": "Thursday",
+            "slot": 6,
+            "year": "TE",
+            "division": "C",
+            "subject": "Saids",
+            "teacher": "Ms. K. S. Patil",
+            "room": "Room-104",
             "type": "THEORY"
           },
           {
             "day": "Thursday",
             "slot": 3,
-            "year": "TE",
-            "division": "C",
-            "subject": "Saids",
-            "teacher": "Ms. K. S. Patil",
-            "room": "Room-105",
-            "type": "THEORY"
-          },
-          {
-            "day": "Thursday",
-            "slot": 4,
             "year": "TE",
             "division": "C",
             "subject": "Dwm",
@@ -2857,7 +2867,27 @@
           },
           {
             "day": "Friday",
+            "slot": 3,
+            "year": "TE",
+            "division": "C",
+            "subject": "Wc",
+            "teacher": "Mr. S. H. Rathod",
+            "room": "Room-104",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
             "slot": 4,
+            "year": "TE",
+            "division": "C",
+            "subject": "AI",
+            "teacher": "TBA",
+            "room": "Room-104",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 5,
             "year": "TE",
             "division": "C",
             "subject": "Aoa",
@@ -2867,22 +2897,12 @@
           },
           {
             "day": "Friday",
-            "slot": 3,
+            "slot": 6,
             "year": "TE",
             "division": "C",
             "subject": "Saids",
             "teacher": "Ms. K. S. Patil",
-            "room": "Room-104",
-            "type": "THEORY"
-          },
-          {
-            "day": "Friday",
-            "slot": 5,
-            "year": "TE",
-            "division": "C",
-            "subject": "Dwm",
-            "teacher": "Mrs. R. A. Mane",
-            "room": "Room-104",
+            "room": "Room-103",
             "type": "THEORY"
           }
         ],
@@ -2976,18 +2996,18 @@
             "slot": 6,
             "year": "TE",
             "division": "C",
-            "subject": "Wc",
-            "teacher": "Mr. S. H. Rathod",
-            "room": "Room-105",
+            "subject": "AI",
+            "teacher": "TBA",
+            "room": "Room-104",
             "type": "THEORY"
           },
           {
             "day": "Monday",
-            "slot": 1,
+            "slot": 2,
             "year": "TE",
             "division": "C",
-            "subject": "AI",
-            "teacher": "TBA",
+            "subject": "Aoa",
+            "teacher": "Mrs. P. N. Shedge",
             "room": "Room-101",
             "type": "THEORY"
           },
@@ -2996,18 +3016,18 @@
             "slot": 5,
             "year": "TE",
             "division": "C",
-            "subject": "Aoa",
-            "teacher": "Mrs. P. N. Shedge",
-            "room": "Room-105",
+            "subject": "Computer Networks",
+            "teacher": "Dr. O.m. Rajpure",
+            "room": "Room-106",
             "type": "THEORY"
           },
           {
             "day": "Monday",
-            "slot": 2,
+            "slot": 1,
             "year": "TE",
             "division": "C",
-            "subject": "Computer Networks",
-            "teacher": "Dr. O.m. Rajpure",
+            "subject": "Dwm",
+            "teacher": "Mrs. R. A. Mane",
             "room": "Room-101",
             "type": "THEORY"
           }
@@ -3099,16 +3119,48 @@
           },
           {
             "day": "Tuesday",
-            "slot": 5,
+            "slot": 2,
             "year": "TE",
             "division": "C",
             "subject": "Wc",
-            "teacher": "Mrs. N. P. Shelar",
-            "room": "Room-105",
+            "teacher": "Mr. S. H. Rathod",
+            "room": "Room-101",
             "type": "THEORY"
           },
           {
             "day": "Tuesday",
+            "slot": 6,
+            "year": "TE",
+            "division": "C",
+            "subject": "Aoa",
+            "teacher": "Mrs. P. N. Shedge",
+            "room": "Room-104",
+            "type": "THEORY"
+          },
+          {
+            "day": "Tuesday",
+            "slot": 1,
+            "year": "TE",
+            "division": "C",
+            "subject": "Computer Networks",
+            "teacher": "Dr. O.m. Rajpure",
+            "room": "Room-101",
+            "type": "THEORY"
+          },
+          {
+            "day": "Tuesday",
+            "slot": 5,
+            "year": "TE",
+            "division": "C",
+            "subject": "Saids",
+            "teacher": "Ms. K. S. Patil",
+            "room": "Room-106",
+            "type": "THEORY"
+          }
+        ],
+        "Wednesday": [
+          {
+            "day": "Wednesday",
             "slot": 2,
             "year": "TE",
             "division": "C",
@@ -3118,65 +3170,13 @@
             "type": "THEORY"
           },
           {
-            "day": "Tuesday",
-            "slot": 1,
-            "year": "TE",
-            "division": "C",
-            "subject": "Computer Networks",
-            "teacher": "Dr. O.m. Rajpure",
-            "room": "Room-101",
-            "type": "THEORY"
-          }
-        ],
-        "Wednesday": [
-          {
             "day": "Wednesday",
             "slot": 1,
-            "year": "TE",
-            "division": "C",
-            "subject": "Wc",
-            "teacher": "Mr. S. H. Rathod",
-            "room": "Room-101",
-            "type": "THEORY"
-          },
-          {
-            "day": "Wednesday",
-            "slot": 5,
-            "year": "TE",
-            "division": "C",
-            "subject": "Aoa",
-            "teacher": "Mrs. P. N. Shedge",
-            "room": "Room-106",
-            "type": "THEORY"
-          },
-          {
-            "day": "Wednesday",
-            "slot": 4,
-            "year": "TE",
-            "division": "C",
-            "subject": "Computer Networks",
-            "teacher": "Dr. O.m. Rajpure",
-            "room": "Room-106",
-            "type": "THEORY"
-          },
-          {
-            "day": "Wednesday",
-            "slot": 2,
-            "year": "TE",
-            "division": "C",
-            "subject": "Saids",
-            "teacher": "Ms. K. S. Patil",
-            "room": "Room-101",
-            "type": "THEORY"
-          },
-          {
-            "day": "Wednesday",
-            "slot": 3,
             "year": "TE",
             "division": "C",
             "subject": "Dwm",
             "teacher": "Mrs. R. A. Mane",
-            "room": "Room-106",
+            "room": "Room-101",
             "type": "THEORY"
           }
         ]
@@ -3286,24 +3286,24 @@
             "slot": 6,
             "year": "BE",
             "division": "A",
-            "subject": "Mis",
-            "teacher": "Mrs. K. Singh",
-            "room": "Room-104",
-            "type": "THEORY"
-          },
-          {
-            "day": "Thursday",
-            "slot": 5,
-            "year": "BE",
-            "division": "A",
             "subject": "Bda",
             "teacher": "Ms. A. Hulk",
-            "room": "Room-106",
+            "room": "Room-105",
             "type": "THEORY"
           },
           {
             "day": "Thursday",
             "slot": 3,
+            "year": "BE",
+            "division": "A",
+            "subject": "Nlp",
+            "teacher": "Mrs. B. Yeole",
+            "room": "Room-106",
+            "type": "THEORY"
+          },
+          {
+            "day": "Thursday",
+            "slot": 5,
             "year": "BE",
             "division": "A",
             "subject": "Bt",
@@ -3402,6 +3402,16 @@
             "slot": 4,
             "year": "BE",
             "division": "A",
+            "subject": "Dl",
+            "teacher": "Mr. S. R. Rane",
+            "room": "Room-105",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 3,
+            "year": "BE",
+            "division": "A",
             "subject": "Mis",
             "teacher": "Mrs. R. A. Mane",
             "room": "Room-105",
@@ -3410,16 +3420,6 @@
           {
             "day": "Friday",
             "slot": 5,
-            "year": "BE",
-            "division": "A",
-            "subject": "Bda",
-            "teacher": "Ms. A. Hulk",
-            "room": "Room-105",
-            "type": "THEORY"
-          },
-          {
-            "day": "Friday",
-            "slot": 3,
             "year": "BE",
             "division": "A",
             "subject": "Nlp",
@@ -3515,21 +3515,21 @@
           },
           {
             "day": "Monday",
-            "slot": 1,
+            "slot": 2,
             "year": "BE",
             "division": "A",
-            "subject": "Nlp",
-            "teacher": "Mrs. B. Yeole",
+            "subject": "Mis",
+            "teacher": "Mrs. R. A. Mane",
             "room": "Room-102",
             "type": "THEORY"
           },
           {
             "day": "Monday",
-            "slot": 2,
+            "slot": 1,
             "year": "BE",
             "division": "A",
-            "subject": "Bt",
-            "teacher": "Mrs. A. O. Yadav",
+            "subject": "Bda",
+            "teacher": "Ms. A. Hulk",
             "room": "Room-102",
             "type": "THEORY"
           }
@@ -3537,7 +3537,7 @@
         "Tuesday": [
           {
             "day": "Tuesday",
-            "slot": 4,
+            "slot": 3,
             "year": "BE",
             "division": "A",
             "subject": "Dl",
@@ -3547,12 +3547,12 @@
           },
           {
             "day": "Tuesday",
-            "slot": 1,
+            "slot": 4,
             "year": "BE",
             "division": "A",
             "subject": "Mis",
-            "teacher": "Mrs. R. A. Mane",
-            "room": "Room-102",
+            "teacher": "Mrs. K. Singh",
+            "room": "Room-106",
             "type": "THEORY"
           },
           {
@@ -3567,12 +3567,12 @@
           },
           {
             "day": "Tuesday",
-            "slot": 3,
+            "slot": 1,
             "year": "BE",
             "division": "A",
             "subject": "Bt",
             "teacher": "Mrs. A. O. Yadav",
-            "room": "Room-106",
+            "room": "Room-102",
             "type": "THEORY"
           }
         ],
@@ -3582,8 +3582,8 @@
             "slot": 2,
             "year": "BE",
             "division": "A",
-            "subject": "Dl",
-            "teacher": "Mr. S. R. Rane",
+            "subject": "Nlp",
+            "teacher": "Mrs. B. Yeole",
             "room": "Room-102",
             "type": "THEORY"
           },
@@ -3592,8 +3592,8 @@
             "slot": 1,
             "year": "BE",
             "division": "A",
-            "subject": "Nlp",
-            "teacher": "Mrs. B. Yeole",
+            "subject": "Bt",
+            "teacher": "Mrs. A. O. Yadav",
             "room": "Room-102",
             "type": "THEORY"
           }
@@ -3689,12 +3689,22 @@
           },
           {
             "day": "Friday",
-            "slot": 6,
+            "slot": 5,
+            "year": "BE",
+            "division": "B",
+            "subject": "Dl",
+            "teacher": "Mr. S. R. Rane",
+            "room": "Room-106",
+            "type": "THEORY"
+          },
+          {
+            "day": "Friday",
+            "slot": 4,
             "year": "BE",
             "division": "B",
             "subject": "Mis",
             "teacher": "Mrs. K. Singh",
-            "room": "Room-103",
+            "room": "Room-106",
             "type": "THEORY"
           },
           {
@@ -3709,22 +3719,12 @@
           },
           {
             "day": "Friday",
-            "slot": 5,
+            "slot": 6,
             "year": "BE",
             "division": "B",
             "subject": "Nlp",
             "teacher": "Mrs. B. Yeole",
-            "room": "Room-106",
-            "type": "THEORY"
-          },
-          {
-            "day": "Friday",
-            "slot": 4,
-            "year": "BE",
-            "division": "B",
-            "subject": "Bt",
-            "teacher": "Mrs. A. O. Yadav",
-            "room": "Room-106",
+            "room": "Room-104",
             "type": "THEORY"
           }
         ],
@@ -3815,21 +3815,11 @@
           },
           {
             "day": "Monday",
-            "slot": 5,
-            "year": "BE",
-            "division": "B",
-            "subject": "Mis",
-            "teacher": "Mrs. K. Singh",
-            "room": "Room-106",
-            "type": "THEORY"
-          },
-          {
-            "day": "Monday",
             "slot": 1,
             "year": "BE",
             "division": "B",
-            "subject": "Bda",
-            "teacher": "Ms. A. Hulk",
+            "subject": "Dl",
+            "teacher": "Mr. S. R. Rane",
             "room": "Room-103",
             "type": "THEORY"
           },
@@ -3838,8 +3828,8 @@
             "slot": 2,
             "year": "BE",
             "division": "B",
-            "subject": "Nlp",
-            "teacher": "Mrs. B. Yeole",
+            "subject": "Bt",
+            "teacher": "Mrs. A. O. Yadav",
             "room": "Room-103",
             "type": "THEORY"
           }
@@ -3931,37 +3921,17 @@
           },
           {
             "day": "Tuesday",
-            "slot": 6,
-            "year": "BE",
-            "division": "B",
-            "subject": "Dl",
-            "teacher": "Mr. S. R. Rane",
-            "room": "Room-104",
-            "type": "THEORY"
-          },
-          {
-            "day": "Tuesday",
-            "slot": 2,
+            "slot": 1,
             "year": "BE",
             "division": "B",
             "subject": "Mis",
-            "teacher": "Mrs. R. A. Mane",
+            "teacher": "Mrs. K. Singh",
             "room": "Room-103",
             "type": "THEORY"
           },
           {
             "day": "Tuesday",
-            "slot": 5,
-            "year": "BE",
-            "division": "B",
-            "subject": "Bda",
-            "teacher": "Ms. A. Hulk",
-            "room": "Room-106",
-            "type": "THEORY"
-          },
-          {
-            "day": "Tuesday",
-            "slot": 1,
+            "slot": 2,
             "year": "BE",
             "division": "B",
             "subject": "Bt",
@@ -3983,34 +3953,64 @@
           },
           {
             "day": "Wednesday",
+            "slot": 3,
+            "year": "BE",
+            "division": "B",
+            "subject": "Mis",
+            "teacher": "Mrs. R. A. Mane",
+            "room": "Room-106",
+            "type": "THEORY"
+          },
+          {
+            "day": "Wednesday",
             "slot": 2,
+            "year": "BE",
+            "division": "B",
+            "subject": "Bda",
+            "teacher": "Ms. A. Hulk",
+            "room": "Room-103",
+            "type": "THEORY"
+          },
+          {
+            "day": "Wednesday",
+            "slot": 4,
             "year": "BE",
             "division": "B",
             "subject": "Nlp",
             "teacher": "Mrs. B. Yeole",
-            "room": "Room-103",
+            "room": "Room-106",
+            "type": "THEORY"
+          },
+          {
+            "day": "Wednesday",
+            "slot": 5,
+            "year": "BE",
+            "division": "B",
+            "subject": "Bt",
+            "teacher": "Mrs. A. O. Yadav",
+            "room": "Room-106",
             "type": "THEORY"
           }
         ],
         "Thursday": [
           {
             "day": "Thursday",
-            "slot": 2,
+            "slot": 1,
             "year": "BE",
             "division": "B",
-            "subject": "Dl",
-            "teacher": "Mr. S. R. Rane",
-            "room": "Room-103",
+            "subject": "Bda",
+            "teacher": "Ms. A. Hulk",
+            "room": "Room-102",
             "type": "THEORY"
           },
           {
             "day": "Thursday",
-            "slot": 1,
+            "slot": 2,
             "year": "BE",
             "division": "B",
-            "subject": "Bt",
-            "teacher": "Mrs. A. O. Yadav",
-            "room": "Room-102",
+            "subject": "Nlp",
+            "teacher": "Mrs. B. Yeole",
+            "room": "Room-103",
             "type": "THEORY"
           }
         ]
