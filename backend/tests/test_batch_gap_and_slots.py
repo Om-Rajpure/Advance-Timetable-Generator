@@ -289,7 +289,7 @@ class TestLabSafeSlots(unittest.TestCase):
             'branchData': {'workingDays': ['Monday'], 'labBatchesPerYear': {'BE': 1}},
             'smartInputData': {'subjects': [], 'teachers': [], 'teacherSubjectMap': []},
         }
-        scheduler = TheoryScheduler(self.state, context)
+        scheduler = TheoryScheduler(self.state, None, context)
 
         safe = scheduler._get_lab_safe_theory_slots(
             self.day, self.year, self.division, self.state, recess_slot=8
@@ -310,7 +310,7 @@ class TestLabSafeSlots(unittest.TestCase):
             'branchData': {'workingDays': ['Monday'], 'labBatchesPerYear': {'BE': 1}},
             'smartInputData': {'subjects': [], 'teachers': [], 'teacherSubjectMap': []},
         }
-        scheduler = TheoryScheduler(self.state, context)
+        scheduler = TheoryScheduler(self.state, None, context)
         safe = scheduler._get_lab_safe_theory_slots(
             self.day, self.year, self.division, self.state, recess_slot=8
         )
@@ -325,7 +325,7 @@ class TestLabSafeSlots(unittest.TestCase):
             'branchData': {'workingDays': ['Monday'], 'labBatchesPerYear': {'BE': 1}},
             'smartInputData': {'subjects': [], 'teachers': [], 'teacherSubjectMap': []},
         }
-        scheduler = TheoryScheduler(self.state, context)
+        scheduler = TheoryScheduler(self.state, None, context)
         safe = scheduler._get_lab_safe_theory_slots(
             self.day, self.year, self.division, self.state, recess_slot=8
         )
@@ -376,7 +376,7 @@ class TestContiguityPreference(unittest.TestCase):
             'branchData': {'workingDays': ['Monday'], 'labBatchesPerYear': {'BE': 0}},
             'smartInputData': {'subjects': [], 'teachers': [], 'teacherSubjectMap': []},
         }
-        scheduler = TheoryScheduler(self.state, context)
+        scheduler = TheoryScheduler(self.state, None, context)
         safe = scheduler._get_lab_safe_theory_slots(
             self.day, self.year, self.division, self.state, recess_slot=4
         )
@@ -421,7 +421,7 @@ class TestContiguityPreference(unittest.TestCase):
             'branchData': {'workingDays': ['Monday'], 'labBatchesPerYear': {'BE': 0}},
             'smartInputData': {'subjects': [], 'teachers': [], 'teacherSubjectMap': []},
         }
-        scheduler = TheoryScheduler(self.state, context)
+        scheduler = TheoryScheduler(self.state, None, context)
         safe = scheduler._get_lab_safe_theory_slots(
             self.day, self.year, self.division, self.state, recess_slot=4
         )

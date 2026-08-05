@@ -285,19 +285,66 @@ function SmartInput() {
                 }
             }
 
-            // 3. Send to Backend
+            // 3. Send to Backend with Server Wake-up Health Check & Retry Mechanism
             console.log('Sending Generation Payload:', payload)
 
-            const response = await fetch(`${API_BASE_URL}/api/generate/full`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify(payload)
-            })
+            // Warm-up Ping: Ensure Render free instance is awake before sending full generation payload
+            try {
+                let healthOk = false;
+                for (let pingAttempt = 0; pingAttempt < 3; pingAttempt++) {
+                    try {
+                        const healthRes = await fetch(`${API_BASE_URL}/api/health`, { method: 'GET' });
+                        if (healthRes.ok) {
+                            healthOk = true;
+                            break;
+                        }
+                    } catch (e) {
+                        console.warn(`Server wake-up ping ${pingAttempt + 1} failed. Retrying...`);
+                    }
+                    await new Promise(r => setTimeout(r, 2000));
+                }
+                if (!healthOk) {
+                    console.warn("Server health check did not respond immediately, attempting generation request directly...");
+                }
+            } catch (e) {
+                // Non-blocking ping failure
+            }
 
-            const responseText = await response.text()
+            // Retry Loop for Generation Request (handles cold starts & transient gateway drops)
+            let response;
+            let responseText = '';
+            let maxRetries = 2;
+
+            for (let attempt = 0; attempt <= maxRetries; attempt++) {
+                try {
+                    response = await fetch(`${API_BASE_URL}/api/generate/full`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    responseText = await response.text();
+
+                    // If gateway timeout (502/504) and we have retries left, wait 3s and retry
+                    if ((response.status === 504 || response.status === 502) && attempt < maxRetries) {
+                        console.warn(`Generation attempt ${attempt + 1} received HTTP ${response.status}. Retrying in 3s...`);
+                        await new Promise(r => setTimeout(r, 3000));
+                        continue;
+                    }
+                    break; // Success or non-retriable response
+                } catch (netErr) {
+                    if (attempt < maxRetries) {
+                        console.warn(`Network error on attempt ${attempt + 1}. Retrying in 3s...`, netErr);
+                        await new Promise(r => setTimeout(r, 3000));
+                        continue;
+                    }
+                    throw netErr;
+                }
+            }
+
             let result;
 
             try {
@@ -306,16 +353,16 @@ function SmartInput() {
                 // If parsing fails, it's likely a 500/502/504 HTML error page
                 console.error("Non-JSON Response received:", responseText.substring(0, 500)); // Log first 500 chars
 
-                if (response.status === 504 || response.status === 502) {
+                if (response && (response.status === 504 || response.status === 502)) {
                     throw {
                         message: "Server Timeout or Gateway Error",
                         stage: "TIMEOUT",
-                        details: "The generation process took too long and the server timed out. This is common on free hosting tiers."
+                        details: "The backend server took too long to respond (common on free Render/Vercel hosting tiers due to cold starts). Please wait 10 seconds for the server to wake up and try again."
                     }
                 }
 
                 throw {
-                    message: `Server Error (${response.status})`,
+                    message: `Server Error (${response ? response.status : 'Unknown'})`,
                     stage: "SERVER_ERROR",
                     details: "The server returned an invalid response. Check backend logs."
                 }

@@ -199,14 +199,14 @@ class TheoryScheduler:
         Return set of (teacher, day, slot) tuples already occupied by labs.
         teacher_assignments keys are (teacher, day, slot) -- iterate keys directly.
         """
-        return set(self.state.teacher_assignments.keys())
+        return set(getattr(self.state, 'teacher_assignments', {}).keys())
 
     def _read_lab_room_busy(self):
         """
         Return set of (room, day, slot) tuples already occupied by labs.
         room_assignments keys are (room, day, slot).
         """
-        return set(self.state.room_assignments.keys())
+        return set(getattr(self.state, 'room_assignments', {}).keys())
 
     def _read_lab_cell_busy(self):
         """
@@ -221,6 +221,27 @@ class TheoryScheduler:
                 continue
             busy.add(key)  # key = (day, slot, year, div)
         return busy
+
+    def _get_lab_safe_theory_slots(self, day, year, div, state, recess_slot=None):
+        """
+        Helper for gap evaluation & legacy test compatibility.
+        Returns list of available theory slots ordered by gap minimization preference.
+        """
+        slots = self.all_slots if self.all_slots else list(range(8))
+        recess = recess_slot if recess_slot is not None else self.recess_slot
+        
+        div_letter = div.split("-")[1] if "-" in div else div
+        cell_busy = self._read_lab_cell_busy()
+        
+        valid_slots = []
+        for s in slots:
+            if s == recess:
+                continue
+            cell_key = (day, s, year, div_letter)
+            if cell_key not in cell_busy:
+                valid_slots.append(s)
+                
+        return sorted(valid_slots, key=lambda s: (s if s < 3 else s + 1))
 
     def _parse_time(self, time_str):
         """Convert '9:00 AM' -> minutes since midnight."""
@@ -635,8 +656,9 @@ class TheoryScheduler:
         obj_expr = sum(early_terms) - 1000 * sum(all_gaps)
         model.maximize(obj_expr)
 
-        # Solver parameters
-        solver.parameters.max_time_in_seconds    = 30.0
+        # Solver parameters (Bounded to 4.0s per attempt to guarantee fast response & avoid HTTP 504 timeouts)
+        timeout_budget = float(self.context.get('max_solver_time', 4.0))
+        solver.parameters.max_time_in_seconds    = timeout_budget
         solver.parameters.num_search_workers     = 4
         solver.parameters.log_search_progress    = False
         solver.parameters.cp_model_presolve      = True
