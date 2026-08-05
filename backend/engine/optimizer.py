@@ -3,9 +3,9 @@ Timetable Optimizer
 
 Post-generation optimization using local search to improve soft constraint scores.
 
-FIX 1: Type mismatch corrected — filter for 'THEORY' (not 'Lecture').
+FIX 1: Type mismatch corrected -- filter for 'THEORY' (not 'Lecture').
 FIX 4: Gap-targeted neighbor generation + early stopping + swap validity check.
-FIX E: _evaluate_swap_quality() added — evaluates swap outcomes at per-batch gap
+FIX E: _evaluate_swap_quality() added -- evaluates swap outcomes at per-batch gap
        level instead of division level. Optimizer accepts swaps when batch gaps
        improve or stay equal while other soft constraints improve.
 """
@@ -54,7 +54,7 @@ class TimetableOptimizer:
         self.swaps_accepted = 0
 
     # ------------------------------------------------------------------
-    # FIX 1: _is_swappable — single source of truth for moveable slots
+    # FIX 1: _is_swappable -- single source of truth for moveable slots
     # ------------------------------------------------------------------
 
     def _is_swappable(self, slot):
@@ -240,13 +240,13 @@ class TimetableOptimizer:
         """
         Generate a neighbor timetable by swapping two compatible THEORY slots.
 
-        FIX 1:  Filter uses self._is_swappable() → 'THEORY' only.
+        FIX 1:  Filter uses self._is_swappable() -> 'THEORY' only.
         FIX 4A: 70% of the time target gap-causing slots; 30% random exploration.
 
         Returns:
             Modified timetable or None if no valid swap found.
         """
-        # FIX 1: use _is_swappable() — only 'THEORY' slots, never 'LAB'
+        # FIX 1: use _is_swappable() -- only 'THEORY' slots, never 'LAB'
         swappable = [s for s in timetable if self._is_swappable(s)]
         logger.debug(f"[Optimizer] Found {len(swappable)} swappable theory slots")
 
@@ -373,4 +373,4 @@ class TimetableOptimizer:
         # the score delta from constraint_engine.validate_timetable() already
         # encapsulates quality; _evaluate_swap_quality is provided for any caller
         # that maintains a live state object and wants a direct gap delta.
-        return 0  # placeholder — real delta requires post-swap state read
+        return 0  # placeholder -- real delta requires post-swap state read

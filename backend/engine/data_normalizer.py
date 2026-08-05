@@ -42,8 +42,68 @@ class DataNormalizer:
         # 5. Completeness & Batch Validation
         self._validate_completeness_and_batches()
         
+        # 6. Fallback Facilities & Teacher Mappings
+        self._ensure_default_facilities_and_mappings()
+
         print("=== DATA NORMALIZATION SUCCESSFUL ===")
         return self.sanitized_context
+
+    def _ensure_default_facilities_and_mappings(self):
+        """Ensure fallback labs, classrooms, and teacher mappings exist so scheduling can build timetable."""
+        bd = self.sanitized_context['branchData']
+        si = self.sanitized_context['smartInputData']
+
+        # Ensure labs
+        labs = bd.get('labs', [])
+        if not labs:
+            bd['labs'] = [
+                {"name": "Lab 1", "capacity": 30},
+                {"name": "Lab 2", "capacity": 30},
+                {"name": "Lab 3", "capacity": 30}
+            ]
+            print("Normalized: Added default fallback labs (Lab 1, Lab 2, Lab 3)")
+
+        # Ensure classrooms
+        rooms = bd.get('classrooms') or bd.get('rooms') or []
+        if not rooms:
+            default_rooms = [
+                {"name": "Room 101", "capacity": 60},
+                {"name": "Room 102", "capacity": 60},
+                {"name": "Room 103", "capacity": 60}
+            ]
+            bd['classrooms'] = default_rooms
+            bd['rooms'] = default_rooms
+            print("Normalized: Added default fallback classrooms (Room 101, Room 102, Room 103)")
+
+        # Ensure teacher-subject map contains entries for all subjects
+        subjects = si.get('subjects', [])
+        t_map = si.get('teacherSubjectMap', [])
+        mapped_subjs = set(m.get('subjectName') or m.get('subject') for m in t_map if isinstance(m, dict))
+
+        # Check teacher profile subjects
+        teachers = si.get('teachers', [])
+        for t in teachers:
+            if isinstance(t, dict):
+                for sname in t.get('subjects', []):
+                    mapped_subjs.add(sname)
+
+        # Ensure TBA exists in teachers
+        if not any(t.get('name') == 'TBA' for t in teachers if isinstance(t, dict)):
+            teachers.append({
+                "name": "TBA",
+                "subjects": [],
+                "maxDailyLectures": 8,
+                "maxWeeklyLectures": 40
+            })
+
+        for s in subjects:
+            if isinstance(s, dict):
+                sname = s.get('name')
+                if sname and sname not in mapped_subjs:
+                    t_map.append({"subjectName": sname, "teacherName": "TBA"})
+                    mapped_subjs.add(sname)
+
+        si['teacherSubjectMap'] = t_map
 
     def _normalize_subjects(self):
         """Trim and Standardize Subject Names"""

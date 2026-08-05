@@ -227,23 +227,47 @@ def generate_full_timetable():
     except Exception as e:
         import traceback
         tb = traceback.format_exc()
-        print("CRITICAL SERVER CRASH TRACEBACK:")
+        print("GENERATION EXCEPTION CAUGHT:")
         print(tb)
-        print(f"CRITICAL SERVER CRASH MESSAGE: {str(e)}")
+        print(f"GENERATION FAILURE MESSAGE: {str(e)}")
+
+        # Run Constraint Resource Analysis on failure
+        resource_analysis_data = None
+        report_text = ""
+        try:
+            from engine.constraint_analyzer import ConstraintAnalyzer
+            analyzer = ConstraintAnalyzer(context=context)
+            resource_analysis_data = analyzer.analyze()
+            report_text = resource_analysis_data.get("reportText", "")
+        except Exception as _ca_err:
+            print(f"Failed to run ConstraintAnalyzer in route handler: {_ca_err}")
+
+        # Check if exception contains formatted report string
+        err_msg = str(e)
+        if "RESOURCE ANALYSIS" in err_msg and not report_text:
+            report_text = err_msg
+
+        is_runtime_failure = isinstance(e, RuntimeError) or "TIMETABLE GENERATION FAILED" in err_msg or "CRITICAL" in err_msg
         
-        crash_info = {
+        failure_info = {
             "success": False,
-            "stage": "SERVER_CRASH",
-            "reason": "INTERNAL_SERVER_ERROR",
-            "details": str(e),
+            "stage": "CONSTRAINT_RESOURCE_ANALYSIS" if is_runtime_failure else "SERVER_CRASH",
+            "reason": "SCHEDULING_INFEASIBLE" if is_runtime_failure else "INTERNAL_SERVER_ERROR",
+            "errorType": type(e).__name__,
+            "message": err_msg,
+            "details": err_msg,
+            "resourceAnalysis": resource_analysis_data,
+            "reportText": report_text,
             "traceback": tb
         }
+        
         try:
-            with open('backend_last_crash.json', 'w') as f: json.dump(crash_info, f, default=str)
+            with open('backend_last_error.json', 'w') as f: json.dump(failure_info, f, default=str)
         except:
             pass 
             
-        return jsonify(crash_info), 500
+        status_code = 400 if is_runtime_failure else 500
+        return jsonify(failure_info), status_code
 
 
 @generation_bp.route('/partial', methods=['POST'])

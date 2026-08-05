@@ -14,6 +14,7 @@ const PromptInput = lazy(() => import('../components/PromptInput'))
 const PreviewTable = lazy(() => import('../components/PreviewTable'))
 import GenerationLoading from '../components/GenerationLoading'
 import ValidationBanner from '../components/ValidationBanner'
+import ResourceAnalysisModal from '../components/ResourceAnalysisModal'
 
 
 function SmartInput() {
@@ -45,6 +46,11 @@ function SmartInput() {
 
     // Validation State
     const [validationErrors, setValidationErrors] = useState([])
+
+    // Resource Analysis Modal State
+    const [analysisReportData, setAnalysisReportData] = useState(null)
+    const [analysisReportText, setAnalysisReportText] = useState("")
+    const [showAnalysisModal, setShowAnalysisModal] = useState(false)
 
     const branchInfo = getBranchInfo()
     const academicYears = branchInfo.years || ['FE', 'SE', 'TE', 'BE']
@@ -319,7 +325,9 @@ function SmartInput() {
                 throw {
                     message: result.message || 'Generation failed',
                     details: result.error || result.details,
-                    stage: result.stage
+                    stage: result.stage,
+                    resourceAnalysis: result.resourceAnalysis,
+                    reportText: result.reportText
                 }
             }
 
@@ -351,12 +359,19 @@ function SmartInput() {
                 }
             })
 
-            // Prevent execution of catch block by returning early if needed, 
-            // but the try block should complete naturally.
             return;
 
         } catch (error) {
             console.error('Generation Error:', error)
+
+            // Check if Resource Analysis Report is available
+            if (error.resourceAnalysis || error.reportText || (error.message && error.message.includes("RESOURCE ANALYSIS"))) {
+                setAnalysisReportData(error.resourceAnalysis || null)
+                setAnalysisReportText(error.reportText || error.message || "")
+                setShowAnalysisModal(true)
+                setIsGenerating(false)
+                return
+            }
 
             // Network Error Handling
             if (error instanceof TypeError && error.message === "Failed to fetch") {
@@ -655,6 +670,19 @@ ${advice}
                     )}
                 </Suspense>
             </div>
+
+            {/* Resource Analysis Report Modal */}
+            {showAnalysisModal && (
+                <ResourceAnalysisModal
+                    analysisData={analysisReportData}
+                    reportText={analysisReportText}
+                    onClose={() => setShowAnalysisModal(false)}
+                    onEditData={() => {
+                        setShowAnalysisModal(false)
+                        setInputStage('editing')
+                    }}
+                />
+            )}
         </div>
     )
 }

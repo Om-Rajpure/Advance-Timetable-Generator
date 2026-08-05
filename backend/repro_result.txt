@@ -1,0 +1,6 @@
+REPRO EXECUTION STARTED
+
+✅ GENERATION FINISHED
+Success: False
+❌ 'timetables' key missing in result
+{'success': False, 'stage': 'GENERATION_FAILED', 'errorType': 'AttributeError', 'message': "'NoneType' object has no attribute 'strip'", 'details': 'Critical error before generation loop started.', 'traceback': 'Traceback (most recent call last):\n  File "C:\\Users\\omraj\\OneDrive\\Desktop\\Laptop\\Projects\\Adv Timetable Gen\\backend\\engine\\scheduler.py", line 117, in generate\n    self.context = normalizer.normalize()\n                   ^^^^^^^^^^^^^^^^^^^^^^\n  File "C:\\Users\\omraj\\OneDrive\\Desktop\\Laptop\\Projects\\Adv Timetable Gen\\backend\\engine\\data_normalizer.py", line 37, in normalize\n    self._expand_divisions()\n  File "C:\\Users\\omraj\\OneDrive\\Desktop\\Laptop\\Projects\\Adv Timetable Gen\\backend\\engine\\data_normalizer.py", line 86, in _expand_divisions\n    div = s.get(\'division\', \'\').strip()\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: \'NoneType\' object has no attribute \'strip\'\n'}

@@ -130,7 +130,7 @@ class ScheduleOptimizer:
                 if start_s + duration > total_slots:
                     continue
 
-                # FIX 3b: Explicit recess-slot skip — reject ANY window whose
+                # FIX 3b: Explicit recess-slot skip -- reject ANY window whose
                 # range [start_s, start_s + duration) includes the recess slot.
                 if recess_slot is not None:
                     hit_recess = any(
@@ -146,7 +146,7 @@ class ScheduleOptimizer:
                     break
             
             if not placed:
-                print(f"⚠️ Compaction Warning: Could not re-place block {block[0]['subject']} ({block[0]['type']}) in {year}-{division}. Restoring to original.")
+                print(f"[WARNING] Compaction Warning: Could not re-place block {block[0]['subject']} ({block[0]['type']}) in {year}-{division}. Restoring to original.")
                 # RESTORE to original slots
                 # We need to ensure original slots are still free?
                 # We cleared them, and if we followed specific order (sorted by time), 
@@ -158,7 +158,7 @@ class ScheduleOptimizer:
                 if self._can_place_block(block, day, start_original, duration):
                     self._place_block(block, day, start_original)
                 else:
-                    print(f"❌ CRITICAL: Could not even restore {block[0]['subject']} to original slot {start_original}!")
+                    print(f"[FAIL] CRITICAL: Could not even restore {block[0]['subject']} to original slot {start_original}!")
                     failed_blocks.append(block)
 
     def _can_place_block(self, block, day, start_slot, duration):

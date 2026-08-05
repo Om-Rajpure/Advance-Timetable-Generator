@@ -1,17 +1,17 @@
 """
-Theory Scheduler — CP-SAT Implementation
+Theory Scheduler -- CP-SAT Implementation
 
 Replaces the previous greedy/heuristic theory scheduler with a Google OR-Tools
 CP-SAT model.
 
 INTEGRATION NOTES (from reading state_manager.py exactly):
-  * assign_slot(assignment_dict, lock=False) — takes a SINGLE dict, no keyword args.
+  * assign_slot(assignment_dict, lock=False) -- takes a SINGLE dict, no keyword args.
   * slot_grid[(day, slot, year, division)] may be a single dict OR a list of dicts
     when parallel batches occupy the same slot.  is_slot_free() calls .get() on the
-    value — that crashes when the value is a list.  We guard against this in
+    value -- that crashes when the value is a list.  We guard against this in
     _read_lab_busy_slots() and in the model-constraint builder.
-  * is_teacher_available(teacher, day, slot_index) — correct param order.
-  * is_room_available(room, day, slot_index)  — correct param order.
+  * is_teacher_available(teacher, day, slot_index) -- correct param order.
+  * is_room_available(room, day, slot_index)  -- correct param order.
   * teacher_assignments keys are (teacher, day, slot) tuples.
   * room_assignments keys are (room, day, slot) tuples.
 
@@ -38,8 +38,8 @@ class TheoryScheduler:
     def __init__(self, state, load_manager, context):
         """
         Args:
-            state:        TimetableState — already contains lab slot assignments.
-            load_manager: TeacherLoadManager — used for pick_teacher() and
+            state:        TimetableState -- already contains lab slot assignments.
+            load_manager: TeacherLoadManager -- used for pick_teacher() and
                           record_assignment() after CP-SAT finds a placement.
             context:      Dict with 'branchData' and 'smartInputData'.
         """
@@ -68,7 +68,7 @@ class TheoryScheduler:
 
         self.all_slots = self._get_theory_slots(branch)
 
-        # subject → [list of mapped teachers]
+        # subject -> [list of mapped teachers]
         # Use load_manager's comprehensive cache (built from teacherSubjectMap + teacher.subjects)
         if hasattr(load_manager, 'subject_teacher_cache') and load_manager.subject_teacher_cache:
             self.subj_teachers = load_manager.subject_teacher_cache
@@ -82,7 +82,7 @@ class TheoryScheduler:
                 if s and t and t not in self.subj_teachers[s]:
                     self.subj_teachers[s].append(t)
 
-        # division → [list of theory subject names]
+        # division -> [list of theory subject names]
         self.div_subjects = self._build_div_subjects(branch, smart)
 
         # Read already-placed lab occupancy from state.
@@ -144,7 +144,7 @@ class TheoryScheduler:
         return list(range(total))
 
     def _build_div_subjects(self, branch, smart):
-        """Return {'SE-A': ['COA', 'ESE', ...], ...} — theory subjects only."""
+        """Return {'SE-A': ['COA', 'ESE', ...], ...} -- theory subjects only."""
         div_subj = defaultdict(list)
         for subj in smart.get("subjects", []):
             # Skip practicals / labs
@@ -176,7 +176,7 @@ class TheoryScheduler:
         Returns the type string, or 'LAB' if value is a list (always occupied).
         """
         if isinstance(val, list):
-            return "LAB"   # multi-batch slot → occupied
+            return "LAB"   # multi-batch slot -> occupied
         if isinstance(val, dict):
             return val.get("type", "")
         return ""
@@ -197,7 +197,7 @@ class TheoryScheduler:
     def _read_lab_busy_slots(self):
         """
         Return set of (teacher, day, slot) tuples already occupied by labs.
-        teacher_assignments keys are (teacher, day, slot) — iterate keys directly.
+        teacher_assignments keys are (teacher, day, slot) -- iterate keys directly.
         """
         return set(self.state.teacher_assignments.keys())
 
@@ -223,7 +223,7 @@ class TheoryScheduler:
         return busy
 
     def _parse_time(self, time_str):
-        """Convert '9:00 AM' → minutes since midnight."""
+        """Convert '9:00 AM' -> minutes since midnight."""
         try:
             try:
                 from backend.utils.time_utils import parse_time as _pt
@@ -257,15 +257,15 @@ class TheoryScheduler:
 
         PRIORITY ORDER (hard constraints listed first, NEVER relaxed):
           1. No student/teacher/room clash (D3/D4/D5)
-          2. Every subject scheduled EXACTLY its required weekly count (D2) — HARD
+          2. Every subject scheduled EXACTLY its required weekly count (D2) -- HARD
           3. No gap within a division's day (D6 objective)
-          4. Daily balance NEW-B — SOFT: relaxed progressively across retries
-             Attempt 1: 2–5 theory/day (strict)
-             Attempt 2: 1–6 theory/day (relaxed)
-             Attempt 3: 0–∞ theory/day (curriculum-only — balance dropped entirely)
+          4. Daily balance NEW-B -- SOFT: relaxed progressively across retries
+             Attempt 1: 2-5 theory/day (strict)
+             Attempt 2: 1-6 theory/day (relaxed)
+             Attempt 3: 0-∞ theory/day (curriculum-only -- balance dropped entirely)
 
         D2 is NEVER relaxed. If a subject cannot be scheduled, the solver is
-        declared INFEASIBLE — not silently dropped.
+        declared INFEASIBLE -- not silently dropped.
 
         Returns dict: status, time_ms, gaps, incomplete.
         Falls back to greedy if ortools is not installed.
@@ -290,11 +290,11 @@ class TheoryScheduler:
         self._print_required_curriculum(weekly_req)
 
         # ------------------------------------------------------------------
-        # Retry loop — relax NEW-B progressively; NEVER relax D2 (weekly count)
+        # Retry loop -- relax NEW-B progressively; NEVER relax D2 (weekly count)
         # ------------------------------------------------------------------
         balance_attempts = [
-            (2, 5,  "strict balance (2–5 theory/day)"),
-            (1, 6,  "relaxed balance (1–6 theory/day)"),
+            (2, 5,  "strict balance (2-5 theory/day)"),
+            (1, 6,  "relaxed balance (1-6 theory/day)"),
             (0, 99, "curriculum-only (no daily balance)"),
         ]
 
@@ -309,6 +309,22 @@ class TheoryScheduler:
                 days_n, slots, weekly_req, min_daily, max_daily
             )
 
+            try:
+                from .diagnostics import print_step6_model_statistics, print_step7_solver_status
+                theory_vars = len(x)
+                lab_vars = len([s for s in getattr(self.state, 'slots', []) if isinstance(s, dict) and s.get('type') == 'LAB'])
+                total_cons = len(model.proto.constraints) if hasattr(model, 'proto') else 0
+                print_step6_model_statistics(
+                    theory_vars=theory_vars,
+                    lab_vars=lab_vars,
+                    teacher_cons=total_cons // 3,
+                    room_cons=total_cons // 3,
+                    lab_cons=lab_vars,
+                    batch_cons=total_cons // 3
+                )
+            except Exception:
+                pass
+
             logger.info("[CP-SAT] Starting solve...")
             t_solve = time.perf_counter()
             status_code = solver.solve(model)
@@ -321,23 +337,31 @@ class TheoryScheduler:
                 cp_model.UNKNOWN:    "UNKNOWN",
             }
             last_status_str = status_names.get(status_code, "UNKNOWN")
+
+            try:
+                from .diagnostics import print_step7_solver_status
+                print_step7_solver_status(last_status_str)
+            except Exception:
+                pass
+
             logger.info(f"[CP-SAT] {last_status_str} in {last_elapsed_ms:.0f}ms")
             print(f"[CP-SAT] {last_status_str} in {last_elapsed_ms:.0f}ms")
+
 
             if status_code not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
                 if attempt_idx < len(balance_attempts) - 1:
                     logger.warning(
-                        f"[CP-SAT] {last_status_str} with {desc} — retrying with relaxed balance"
+                        f"[CP-SAT] {last_status_str} with {desc} -- retrying with relaxed balance"
                     )
                     print(
-                        f"[CP-SAT] {last_status_str} — curriculum constraints may conflict with "
+                        f"[CP-SAT] {last_status_str} -- curriculum constraints may conflict with "
                         f"strict daily balance. Retrying with relaxed balance..."
                     )
                     continue   # try next balance setting
                 else:
-                    # All attempts infeasible — report and abort
+                    # All attempts infeasible -- report and abort
                     logger.error(
-                        "[CP-SAT] INFEASIBLE on all attempts — check teacher mappings, "
+                        "[CP-SAT] INFEASIBLE on all attempts -- check teacher mappings, "
                         "classroom count, and lab occupancy."
                     )
                     return {
@@ -347,7 +371,7 @@ class TheoryScheduler:
                         "incomplete": [],
                     }
 
-            # Feasible solve found — extract and write to state
+            # Feasible solve found -- extract and write to state
             written_count, incomplete, solved_count = self._extract_and_write(
                 solver, x, weekly_req, days_n, slots
             )
@@ -370,7 +394,7 @@ class TheoryScheduler:
         }
 
     # ------------------------------------------------------------------
-    # Model builder — called once per retry attempt
+    # Model builder -- called once per retry attempt
     # ------------------------------------------------------------------
 
     def _build_model(self, days_n, slots, weekly_req, min_daily, max_daily):
@@ -387,7 +411,7 @@ class TheoryScheduler:
 
         # ------------------------------------------------------------------
         # D1: Decision variables
-        # x[(div, subj, di, si)] = 1  →  div has subj on days[di] slot si
+        # x[(div, subj, di, si)] = 1  ->  div has subj on days[di] slot si
         # ------------------------------------------------------------------
         x = {}
         for div in self.all_divisions:
@@ -401,7 +425,7 @@ class TheoryScheduler:
         logger.info(f"[CP-SAT] {len(x)} variables created for {len(self.all_divisions)} divisions")
 
         # ------------------------------------------------------------------
-        # D2: HARD — Exactly N lectures per subject per division
+        # D2: HARD -- Exactly N lectures per subject per division
         # This constraint is NEVER relaxed across retry attempts.
         # ------------------------------------------------------------------
         for div in self.all_divisions:
@@ -492,7 +516,7 @@ class TheoryScheduler:
                         model.add(sum(slots_today) <= 1)
 
         # ------------------------------------------------------------------
-        # NEW-B: Daily balance — min_daily to max_daily theory per div per day
+        # NEW-B: Daily balance -- min_daily to max_daily theory per div per day
         # SOFT: relaxed across retry attempts; NEVER blocks curriculum completion.
         # When max_daily >= 99, this constraint is effectively skipped.
         # ------------------------------------------------------------------
@@ -551,7 +575,7 @@ class TheoryScheduler:
                     model.add(sum(theory_here) <= remaining)
 
         # ------------------------------------------------------------------
-        # D6: Gap minimisation & early-slot objective (SOFT — optimisation only)
+        # D6: Gap minimisation & early-slot objective (SOFT -- optimisation only)
         # ------------------------------------------------------------------
         occ = {}
         for div in self.all_divisions:
@@ -620,7 +644,7 @@ class TheoryScheduler:
         return model, solver, x
 
     # ------------------------------------------------------------------
-    # Extraction — called once on the winning solve
+    # Extraction -- called once on the winning solve
     # ------------------------------------------------------------------
 
     def _extract_and_write(self, solver, x, weekly_req, days_n, slots):
@@ -752,17 +776,17 @@ class TheoryScheduler:
                 req = weekly_req.get(subj) or weekly_req.get(subj.strip()) or 3
                 if (div, subj) in incomplete_map:
                     placed, _ = incomplete_map[(div, subj)]
-                    print(f"    {subj}: {placed}/{req}  ❌ MISSING {req - placed}")
+                    print(f"    {subj}: {placed}/{req}  [FAIL] MISSING {req - placed}")
                     all_pass = False
                 else:
-                    print(f"    {subj}: {req}/{req}  ✓ PASS")
+                    print(f"    {subj}: {req}/{req}  [OK] PASS")
 
         print("-"*60)
         if all_pass:
-            print("  OVERALL: ✓ ALL THEORY COMPLETE")
+            print("  OVERALL: [OK] ALL THEORY COMPLETE")
         else:
             missing = [(d, s, r-p) for (d, s), (p, r) in incomplete_map.items()]
-            print(f"  OVERALL: ❌ THEORY INCOMPLETE — {len(missing)} subject(s) under-scheduled")
+            print(f"  OVERALL: [FAIL] THEORY INCOMPLETE -- {len(missing)} subject(s) under-scheduled")
             for div, subj, deficit in missing:
                 print(f"    Missing {subj} in {div}: {deficit} lecture(s) short")
         print("="*60 + "\n")
@@ -861,7 +885,7 @@ class TheoryScheduler:
         Minimal greedy fallback so the scheduler does not hard-crash when
         ortools is unavailable.
         """
-        logger.warning("[CP-SAT] Running greedy fallback — install ortools for optimal results.")
+        logger.warning("[CP-SAT] Running greedy fallback -- install ortools for optimal results.")
         incomplete = []
         weekly_req = self._get_weekly_requirements()
 

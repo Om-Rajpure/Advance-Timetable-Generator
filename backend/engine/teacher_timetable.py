@@ -2,7 +2,7 @@
 Teacher Timetable Generator
 
 Derives a per-teacher weekly schedule from the completed state.slot_grid.
-This is a pure data pivot — it contains no scheduling logic.
+This is a pure data pivot -- it contains no scheduling logic.
 
 Usage (called from scheduler.py after all slots are placed):
 
@@ -12,7 +12,7 @@ Usage (called from scheduler.py after all slots are placed):
     teacher_timetables = gen.generate()
     response["teacher_timetables"] = teacher_timetables
 
-Output format — one entry per teacher:
+Output format -- one entry per teacher:
     {
         teacher_name: {
             "name":         str,
@@ -36,7 +36,7 @@ class TeacherTimetableGenerator:
     def __init__(self, state, context):
         """
         Args:
-            state:   TimetableState — fully populated after generation.
+            state:   TimetableState -- fully populated after generation.
             context: Dict with 'branchData' and 'smartInputData'.
         """
         self.state = state
@@ -56,7 +56,7 @@ class TeacherTimetableGenerator:
     def generate(self):
         """
         Returns:
-            dict[str, dict] — teacher_name → individual weekly schedule.
+            dict[str, dict] -- teacher_name -> individual weekly schedule.
         """
         result = {}
 

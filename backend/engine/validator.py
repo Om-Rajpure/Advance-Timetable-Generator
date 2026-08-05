@@ -39,11 +39,11 @@ class TimetableValidator:
                 validation_summary[division_key] = "✅ VALID"
                 print(f"   ✅ {division_key} passed validation.")
             except ValidationError as e:
-                validation_summary[division_key] = f"❌ FAILED: {e.reason}"
-                print(f"   ❌ {division_key} FAILED: {e.details}")
+                validation_summary[division_key] = f"[FAIL] FAILED: {e.reason}"
+                print(f"   [FAIL] {division_key} FAILED: {e.details}")
                 raise e
             except Exception as e:
-                validation_summary[division_key] = "❌ CRASHED"
+                validation_summary[division_key] = "[FAIL] CRASHED"
                 import traceback
                 traceback.print_exc()
                 raise ValidationError(

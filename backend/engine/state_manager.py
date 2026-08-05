@@ -57,7 +57,7 @@ class TimetableState:
         # Dedicated tracker for physical laboratory rooms, completely separate from
         # the general room_assignments dict (which mixes classrooms and labs).
         #
-        # Key   : (lab_name, day, slot_index)   — all normalised to str/int
+        # Key   : (lab_name, day, slot_index)   -- all normalised to str/int
         # Value : list of assignment dicts occupying that lab at that time
         #
         # Invariant: len(lab_occupancy[key]) <= 1  at all times.
@@ -352,7 +352,7 @@ class TimetableState:
         existing = self.slot_grid.get(slot_key)
 
         if existing is None:
-            return False   # nothing to remove — safe no-op
+            return False   # nothing to remove -- safe no-op
 
         if isinstance(existing, list):
             # Multi-batch slot: remove all assignments in the list
@@ -479,8 +479,8 @@ class TimetableState:
         Return True if the physical laboratory *lab_name* is free at
         (day, slot_index) across ALL years, ALL divisions, ALL batches.
 
-        Uses the dedicated lab_occupancy dict — never the general
-        room_assignments dict — so theory-classroom names can never
+        Uses the dedicated lab_occupancy dict -- never the general
+        room_assignments dict -- so theory-classroom names can never
         accidentally shadow a lab name or vice-versa.
 
         Args:
@@ -515,7 +515,7 @@ class TimetableState:
     def release_lab_globally(self, lab_name, day, slot_index, assignment):
         """
         Release a previously occupied lab slot (used by rollback_slot).
-        Removes the assignment from lab_occupancy only — room_assignments
+        Removes the assignment from lab_occupancy only -- room_assignments
         is handled by the existing rollback_slot() logic.
         """
         lab_key = (str(lab_name), str(day), int(slot_index))
@@ -608,11 +608,11 @@ class TimetableState:
             n = branchData['labBatchesPerYear'].get(year, 0)
             return [f"B{i+1}" for i in range(n)]
 
-        If not defined, returns [] (no batches — treat as division-level only).
+        If not defined, returns [] (no batches -- treat as division-level only).
 
         Args:
             year:     e.g. "BE"
-            division: e.g. "A"  (unused currently — all divisions share the
+            division: e.g. "A"  (unused currently -- all divisions share the
                                   same batch count per year; kept for API stability)
         """
         n = self.branch_data.get('labBatchesPerYear', {}).get(year, 0)

@@ -42,27 +42,39 @@ class TeacherLoadManager:
         self.subject_teacher_cache = self._build_subject_teacher_map()
 
         # 4. Strict subject->teacher map built ONLY from teacherSubjectMap.
-        #    Used by pick_teacher() — never falls back to all teachers.
+        #    Used by pick_teacher() -- stores both raw and canonical keys.
+        try:
+            from .diagnostics import get_canonical_subject_id
+        except ImportError:
+            def get_canonical_subject_id(x): return str(x).upper()
+
         self.subject_teacher_map = defaultdict(list)
         for mapping in self.smart_input.get('teacherSubjectMap', []):
             subj = mapping.get('subjectName', '')
             t = mapping.get('teacherName', '')
-            if subj and t and t not in self.subject_teacher_map[subj]:
-                self.subject_teacher_map[subj].append(t)
+            if subj and t:
+                cid = get_canonical_subject_id(subj)
+                for k in (subj, cid):
+                    if t not in self.subject_teacher_map[k]:
+                        self.subject_teacher_map[k].append(t)
 
         # Reference to TimetableState (set externally after state is created)
         self._state = None
 
-        # DIAGNOSTIC: log the full subject→teacher map so field-name bugs are visible
+        # DIAGNOSTIC: log the full subject->teacher map so field-name bugs are visible
         logger.info("[LoadManager] subject_teacher_map at construction:")
         for subj, teachers in sorted(self.subject_teacher_map.items()):
             logger.info(f"  '{subj}' -> {teachers}")
         if not self.subject_teacher_map:
-            logger.warning("[LoadManager] subject_teacher_map is EMPTY — check teacherSubjectMap field names in payload")
+            logger.warning("[LoadManager] subject_teacher_map is EMPTY -- check teacherSubjectMap field names in payload")
 
     def _build_subject_teacher_map(self):
         """Pre-process which teachers can teach which subject."""
         mapping = defaultdict(list)
+        try:
+            from .diagnostics import get_canonical_subject_id
+        except ImportError:
+            def get_canonical_subject_id(x): return str(x).upper()
         
         teachers = self.smart_input.get('teachers', [])
         explicit_map = self.smart_input.get('teacherSubjectMap', [])
@@ -73,7 +85,6 @@ class TeacherLoadManager:
             tea = em.get('teacherName')
             
             if sub_raw and tea:
-                # Handle comma-separated subjects (e.g. "Math, Physics") OR Lists
                 if isinstance(sub_raw, str):
                     subs = [s.strip() for s in sub_raw.split(',')]
                 elif isinstance(sub_raw, list):
@@ -83,29 +94,33 @@ class TeacherLoadManager:
                     
                 for sub in subs:
                     if sub:
-                        mapping[sub].append(tea)
+                        cid = get_canonical_subject_id(sub)
+                        for k in (sub, cid):
+                            if tea not in mapping[k]:
+                                mapping[k].append(tea)
                 
         # 2. Fallback to Teacher's subject list
         for t in teachers:
             name = t.get('name')
             subjects = t.get('subjects', [])
             
-            # Normalize 'subjects' if it's a string (though it should be a list)
             if isinstance(subjects, str):
                 subjects = [s.strip() for s in subjects.split(',')]
                 
             for s in subjects:
-                # Handle comma-separated inside list items (defensive)
                 if isinstance(s, str) and ',' in s:
                     sub_items = [x.strip() for x in s.split(',')]
                 else:
                     sub_items = [s]
                     
                 for sub in sub_items:
-                    if name not in mapping[sub]:
-                        mapping[sub].append(name)
+                    cid = get_canonical_subject_id(sub)
+                    for k in (sub, cid):
+                        if name not in mapping[k]:
+                            mapping[k].append(name)
                     
         return mapping
+
 
     def get_or_select_theory_teacher(self, subject, year, division):
         """
@@ -222,7 +237,7 @@ class TeacherLoadManager:
     def record_assignment(self, teacher, day, slot):
         """
         Record a theory slot assignment in load counters.
-        Alias for commit_load(duration=1) — used by CP-SAT TheoryScheduler.
+        Alias for commit_load(duration=1) -- used by CP-SAT TheoryScheduler.
         """
         self.commit_load(teacher, day, duration=1)
 
@@ -241,10 +256,10 @@ class TeacherLoadManager:
         """
         Return a teacher for subject_name at (day, slot).
 
-        Step 5.3 — STRICT: Only teachers explicitly mapped to this subject are
+        Step 5.3 -- STRICT: Only teachers explicitly mapped to this subject are
         considered.  The previous fallback to the entire teacher pool caused
-        subjects to be taught by completely wrong teachers (e.g. AI → Mane,
-        WC → Yeole).  That fallback is now REMOVED.
+        subjects to be taught by completely wrong teachers (e.g. AI -> Mane,
+        WC -> Yeole).  That fallback is now REMOVED.
 
         Priority:
         1. subject_teacher_map  (built strictly from teacherSubjectMap entries)
@@ -253,7 +268,7 @@ class TeacherLoadManager:
            keeps subject assignment correct)
         4. "TBA" only when truly no mapping exists for this subject at all.
         """
-        # Collect mapped candidates — prefer subject_teacher_map (strict) but
+        # Collect mapped candidates -- prefer subject_teacher_map (strict) but
         # fall through to subject_teacher_cache which catches comma-split variants.
         mapped = list(self.subject_teacher_map.get(subject_name, []))
         if not mapped:
@@ -262,11 +277,11 @@ class TeacherLoadManager:
         if not mapped:
             logger.warning(
                 f"[LoadManager] pick_teacher: NO mapping found for '{subject_name}' "
-                f"— check teacherSubjectMap.  Returning TBA."
+                f"-- check teacherSubjectMap.  Returning TBA."
             )
             return "TBA"
 
-        # Sort by weekly load — least loaded first
+        # Sort by weekly load -- least loaded first
         sorted_teachers = sorted(mapped, key=lambda t: self.weekly_load.get(t, 0))
 
         # Return first available mapped teacher
@@ -276,7 +291,7 @@ class TeacherLoadManager:
 
         # All mapped teachers are busy at this slot (e.g. two divisions need the
         # same rare teacher simultaneously).  Return least-loaded mapped teacher
-        # rather than TBA — CP-SAT already constrained the slot so a real clash
+        # rather than TBA -- CP-SAT already constrained the slot so a real clash
         # at this point is a secondary teacher conflict, not a room/div conflict.
         logger.warning(
             f"[LoadManager] pick_teacher: All mapped teachers for '{subject_name}' "
